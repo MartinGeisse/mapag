@@ -1,6 +1,5 @@
 package name.martingeisse.mapag.ide;
 
-import com.intellij.lexer.FlexAdapter;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
@@ -8,9 +7,8 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import name.martingeisse.mapag.input.FlexGeneratedMapagLexer;
+import name.martingeisse.mapag.input.MapagLexer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,7 +28,7 @@ public class MapagSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
 			@NotNull
 			@Override
 			public Lexer getHighlightingLexer() {
-				return new FlexAdapter(new FlexGeneratedMapagLexer(null));
+				return new MapagLexer();
 			}
 
 			@NotNull
