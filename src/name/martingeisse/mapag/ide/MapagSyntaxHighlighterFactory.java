@@ -36,6 +36,8 @@ public class MapagSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
 			@NotNull
 			@Override
 			public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
+				throw new UnsupportedOperationException(); // TODO
+				/*
 				if (tokenType instanceof MapagSpecificationToken) {
 					if (tokenType == MapagSpecificationElementTypes.IDENTIFIER) {
 						return MapagTextAttributeKeys.IDENTIFIER;
@@ -82,6 +84,7 @@ public class MapagSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
 					}
 				}
 				return EMPTY;
+				*/
 				// TODO comments
 			}
 
