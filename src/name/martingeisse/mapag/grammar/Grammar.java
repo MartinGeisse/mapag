@@ -7,6 +7,10 @@ import java.util.List;
  */
 public final class Grammar {
 
+	public static final String IMPLICIT_START_NONTERMINAL_NAME = "%start";
+	public static final String EOF_TOKEN_NAME = "%eof";
+	public static final String ERROR_TOKEN_NAME = "%error";
+
 	private final String packageName;
 	private final String className;
 	private final List<TerminalDefinition> terminalDefinitions;

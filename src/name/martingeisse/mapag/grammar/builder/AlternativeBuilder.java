@@ -1,4 +1,4 @@
-package name.martingeisse.parsergen.grammar;
+package name.martingeisse.mapag.grammar.builder;
 
 import com.google.common.collect.ImmutableList;
 
@@ -8,19 +8,19 @@ import java.util.List;
 /**
  *
  */
-public final class Alternative {
+public final class AlternativeBuilder {
 
 	private final ImmutableList<Symbol> expansionSymbols;
 
-	public Alternative(ImmutableList<Symbol> expansionSymbols) {
+	public AlternativeBuilder(ImmutableList<Symbol> expansionSymbols) {
 		this.expansionSymbols = expansionSymbols;
 	}
 
-	public Alternative(List<Symbol> expansionSymbols) {
+	public AlternativeBuilder(List<Symbol> expansionSymbols) {
 		this(ImmutableList.copyOf(expansionSymbols));
 	}
 
-	public Alternative(Symbol... expansionSymbols) {
+	public AlternativeBuilder(Symbol... expansionSymbols) {
 		this(ImmutableList.copyOf(expansionSymbols));
 	}
 
@@ -46,14 +46,14 @@ public final class Alternative {
 		return false;
 	}
 
-	public Alternative vanishNonterminal(Nonterminal nonterminal) {
+	public AlternativeBuilder vanishNonterminal(Nonterminal nonterminal) {
 		List<Symbol> filteredSymbols = new ArrayList<>();
 		for (Symbol symbol : expansionSymbols) {
 			if (!symbol.equals(nonterminal)) {
 				filteredSymbols.add(symbol);
 			}
 		}
-		return new Alternative(filteredSymbols);
+		return new AlternativeBuilder(filteredSymbols);
 	}
 
 }

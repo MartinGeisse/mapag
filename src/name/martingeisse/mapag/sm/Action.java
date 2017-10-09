@@ -1,4 +1,4 @@
-package name.martingeisse.parsergen.sm;
+package name.martingeisse.mapag.sm;
 
 import name.martingeisse.parsergen.grammar.Alternative;
 import name.martingeisse.parsergen.grammar.Nonterminal;

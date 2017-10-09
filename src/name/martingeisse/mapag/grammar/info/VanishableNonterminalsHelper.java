@@ -1,4 +1,4 @@
-package name.martingeisse.parsergen.grammar.info;
+package name.martingeisse.mapag.grammar.info;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;

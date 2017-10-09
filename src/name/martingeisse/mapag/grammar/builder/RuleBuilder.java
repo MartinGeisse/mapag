@@ -1,4 +1,4 @@
-package name.martingeisse.parsergen.grammar;
+package name.martingeisse.mapag.grammar.builder;
 
 import com.google.common.collect.ImmutableList;
 
@@ -8,12 +8,12 @@ import java.util.List;
 /**
  *
  */
-public final class Rule {
+public final class RuleBuilder {
 
 	private final Nonterminal nonterminal;
-	private final ImmutableList<Alternative> alternatives;
+	private final ImmutableList<AlternativeBuilder> alternatives;
 
-	public Rule(Nonterminal nonterminal, ImmutableList<Alternative> alternatives) {
+	public RuleBuilder(Nonterminal nonterminal, ImmutableList<AlternativeBuilder> alternatives) {
 		this.nonterminal = nonterminal;
 		this.alternatives = alternatives;
 		if (alternatives.isEmpty()) {
@@ -21,7 +21,7 @@ public final class Rule {
 		}
 	}
 
-	public Rule(Nonterminal nonterminal, List<Alternative> alternatives) {
+	public RuleBuilder(Nonterminal nonterminal, List<AlternativeBuilder> alternatives) {
 		this.nonterminal = nonterminal;
 		this.alternatives = ImmutableList.copyOf(alternatives);
 		if (alternatives.isEmpty()) {
@@ -29,7 +29,7 @@ public final class Rule {
 		}
 	}
 
-	public Rule(Nonterminal nonterminal, Alternative... alternatives) {
+	public RuleBuilder(Nonterminal nonterminal, AlternativeBuilder... alternatives) {
 		this.nonterminal = nonterminal;
 		this.alternatives = ImmutableList.copyOf(alternatives);
 		if (alternatives.length == 0) {
@@ -40,32 +40,32 @@ public final class Rule {
 	/**
 	 * Builds a rule with a single alternative containing the specified expansion symbols in sequence.
 	 */
-	public static Rule fromSingleAlternative(Nonterminal nonterminal, Symbol... expansionSymbols) {
-		return new Rule(nonterminal, ImmutableList.of(new Alternative(expansionSymbols)));
+	public static RuleBuilder fromSingleAlternative(Nonterminal nonterminal, Symbol... expansionSymbols) {
+		return new RuleBuilder(nonterminal, ImmutableList.of(new AlternativeBuilder(expansionSymbols)));
 	}
 
 	/**
 	 * Builds a rule with multiple alternatives, all containing a single symbol. Can be used e.g. for the rule for
 	 * an "operator" nonterminal.
 	 */
-	public static Rule fromSingleSymbolAlternatives(Nonterminal nonterminal, Symbol... expansionSymbols) {
-		List<Alternative> alternatives = new ArrayList<>();
+	public static RuleBuilder fromSingleSymbolAlternatives(Nonterminal nonterminal, Symbol... expansionSymbols) {
+		List<AlternativeBuilder> alternatives = new ArrayList<>();
 		for (Symbol expansionSymbol : expansionSymbols) {
-			alternatives.add(new Alternative(expansionSymbol));
+			alternatives.add(new AlternativeBuilder(expansionSymbol));
 		}
-		return new Rule(nonterminal, alternatives);
+		return new RuleBuilder(nonterminal, alternatives);
 	}
 
 	public Nonterminal getNonterminal() {
 		return nonterminal;
 	}
 
-	public ImmutableList<Alternative> getAlternatives() {
+	public ImmutableList<AlternativeBuilder> getAlternatives() {
 		return alternatives;
 	}
 
 	public boolean isImmediatelyVanishable() {
-		for (Alternative alternative : alternatives) {
+		for (AlternativeBuilder alternative : alternatives) {
 			if (alternative.getExpansionSymbols().isEmpty()) {
 				return true;
 			}
@@ -73,15 +73,15 @@ public final class Rule {
 		return false;
 	}
 
-	public Rule vanishNonterminal(Nonterminal nonterminalToVanish) {
+	public RuleBuilder vanishNonterminal(Nonterminal nonterminalToVanish) {
 		if (nonterminalToVanish.equals(this.nonterminal)) {
 			throw new IllegalArgumentException("cannot vanish a nonterminal from its own rule");
 		}
-		List<Alternative> modifiedAlternatives = new ArrayList<>();
-		for (Alternative alternative : this.alternatives) {
+		List<AlternativeBuilder> modifiedAlternatives = new ArrayList<>();
+		for (AlternativeBuilder alternative : this.alternatives) {
 			modifiedAlternatives.add(alternative.vanishNonterminal(nonterminalToVanish));
 		}
-		return new Rule(this.nonterminal, modifiedAlternatives);
+		return new RuleBuilder(this.nonterminal, modifiedAlternatives);
 	}
 
 }

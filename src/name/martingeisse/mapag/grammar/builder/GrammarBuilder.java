@@ -1,4 +1,4 @@
-package name.martingeisse.parsergen.grammar;
+package name.martingeisse.mapag.grammar.builder;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -11,19 +11,19 @@ import java.util.Set;
 /**
  *
  */
-public final class Grammar {
+public final class GrammarBuilder {
 
 	private final ImmutableSet<Terminal> alphabet;
 	private final Nonterminal startSymbol;
-	private final ImmutableList<Rule> rules;
+	private final ImmutableList<RuleBuilder> rules;
 
-	public Grammar(ImmutableSet<Terminal> alphabet, Nonterminal startSymbol, ImmutableList<Rule> rules) {
+	public GrammarBuilder(ImmutableSet<Terminal> alphabet, Nonterminal startSymbol, ImmutableList<RuleBuilder> rules) {
 		this.alphabet = alphabet;
 		this.startSymbol = startSymbol;
 		this.rules = rules;
 		{
 			Set nonterminals = new HashSet();
-			for (Rule rule : rules) {
+			for (RuleBuilder rule : rules) {
 				if (!nonterminals.add(rule.getNonterminal())) {
 					throw new IllegalArgumentException("argument rule list contains duplicates for nonterminal " + rule.getNonterminal());
 				}
@@ -39,22 +39,22 @@ public final class Grammar {
 		return startSymbol;
 	}
 
-	public ImmutableList<Rule> getRules() {
+	public ImmutableList<RuleBuilder> getRules() {
 		return rules;
 	}
 
-	public Grammar vanishNonterminal(Nonterminal nonterminalToVanish) {
-		List<Rule> modifiedRules = new ArrayList<>();
-		for (Rule rule : rules) {
+	public GrammarBuilder vanishNonterminal(Nonterminal nonterminalToVanish) {
+		List<RuleBuilder> modifiedRules = new ArrayList<>();
+		for (RuleBuilder rule : rules) {
 			if (!rule.getNonterminal().equals(nonterminalToVanish)) {
 				modifiedRules.add(rule.vanishNonterminal(nonterminalToVanish));
 			}
 		}
-		return new Grammar(alphabet, startSymbol, ImmutableList.copyOf(modifiedRules));
+		return new GrammarBuilder(alphabet, startSymbol, ImmutableList.copyOf(modifiedRules));
 	}
 
-	public Rule getRuleFor(Nonterminal nonterminal) {
-		for (Rule rule : rules) {
+	public RuleBuilder getRuleFor(Nonterminal nonterminal) {
+		for (RuleBuilder rule : rules) {
 			if (rule.getNonterminal().equals(nonterminal)) {
 				return rule;
 			}

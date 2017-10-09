@@ -1,4 +1,4 @@
-package name.martingeisse.parsergen.sm;
+package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.parsergen.grammar.Nonterminal;
