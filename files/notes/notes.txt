@@ -1,0 +1,7 @@
+
+PsiBuilder: This has been built for LL parsing. It is not compatible with LR parsing in the usual way.
+
+Workaround: Mark at start. Use psiBuilder.advanceLexer() to read all tokens and feed them to the parser. Do not build
+	an AST but rather record all shift and reduce steps (might have to use a tree for recording, but that's not an
+	AST, rather it's very similar to the concrete derivation tree). rollbackTo() the marker at start, then execute the
+	recorded steps and set the actual markers.
