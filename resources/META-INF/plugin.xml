@@ -1,0 +1,62 @@
+<idea-plugin>
+  <id>name.martingeisse.mapag</id>
+  <name>MaPaG</name>
+  <version>0.1</version>
+  <vendor email="martingeisse@googlemail.com" url="https://github.com/MartinGeisse">Martin Geisse</vendor>
+
+  <description><![CDATA[
+      Enter short description for your plugin here.<br>
+      <em>most HTML tags may be used</em>
+    ]]></description>
+
+  <change-notes><![CDATA[
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>
+    ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="145.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
+
+
+
+
+
+<idea-plugin>
+
+
+<description>JavaPOT is a grammar pre-processor for JavaCUP. It supports optional (?), zero-or-more (*),
+  one-or-more (+) and nested alterntives (|) on the right hand side and works with AST class generation instead of
+  embedded actions. JavaPOT is only available as an IntelliJ plugin and should be used together with a JFlex-generated
+  Lexer.</description>
+
+<change-notes>...</change-notes>
+
+<!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+<idea-version since-build="145.0"/>
+
+<depends>com.intellij.modules.lang</depends>
+
+<extensions defaultExtensionNs="com.intellij">
+  <fileTypeFactory implementation="name.martingeisse.name.martingeisse.mapag.ide.MapagFileTypeFactory" />
+  <lang.syntaxHighlighterFactory language="JAVAPOT" implementationClass="name.martingeisse.name.martingeisse.mapag.ide.MapagSyntaxHighlighterFactory" />
+  <lang.parserDefinition language="JAVAPOT" implementationClass="name.martingeisse.name.martingeisse.mapag.ide.MapagParserDefinition" />
+</extensions>
+
+</idea-plugin>
