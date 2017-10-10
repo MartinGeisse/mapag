@@ -1,9 +1,5 @@
 package name.martingeisse.mapag.grammar.info;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import name.martingeisse.parsergen.grammar.*;
-
 import java.util.*;
 
 /**
@@ -12,27 +8,27 @@ import java.util.*;
 final class FirstSetHelper {
 
 	private final Grammar grammar;
-	private final ImmutableSet<Nonterminal> vanishableNonterminals;
+	private final Set<Nonterminal> vanishableNonterminals;
 	private boolean hasRun = false;
 	private final List<Nonterminal> todoNonterminals = new ArrayList<>();
 	private final Set<Nonterminal> checkedNonterminals = new HashSet<>();
 	private final Set<Terminal> result = new HashSet<>();
 
-	public FirstSetHelper(Grammar grammar, ImmutableSet<Nonterminal> vanishableNonterminals, Nonterminal targetNonterminal) {
+	public FirstSetHelper(Grammar grammar, Set<Nonterminal> vanishableNonterminals, Nonterminal targetNonterminal) {
 		this.grammar = grammar;
 		this.vanishableNonterminals = vanishableNonterminals;
 		todoNonterminals.add(targetNonterminal);
 	}
 
-	static ImmutableMap<Nonterminal, ImmutableSet<Terminal>> runFor(Grammar grammar, ImmutableSet<Nonterminal> vanishableNonterminals) {
-		Map<Nonterminal, ImmutableSet<Terminal>> result = new HashMap<>();
+	static Map<Nonterminal, Set<Terminal>> runFor(Grammar grammar, Set<Nonterminal> vanishableNonterminals) {
+		Map<Nonterminal, Set<Terminal>> result = new HashMap<>();
 		for (Rule rule : grammar.getRules()) {
 			result.put(rule.getNonterminal(), runFor(grammar, vanishableNonterminals, rule.getNonterminal()));
 		}
-		return ImmutableMap.copyOf(result);
+		return Map.copyOf(result);
 	}
 
-	static ImmutableSet<Terminal> runFor(Grammar grammar, ImmutableSet<Nonterminal> vanishableNonterminals, Nonterminal targetNonterminal) {
+	static Set<Terminal> runFor(Grammar grammar, Set<Nonterminal> vanishableNonterminals, Nonterminal targetNonterminal) {
 		FirstSetHelper helper = new FirstSetHelper(grammar, vanishableNonterminals, targetNonterminal);
 		helper.run();
 		return helper.getResult();
@@ -92,11 +88,11 @@ final class FirstSetHelper {
 		}
 	}
 
-	public ImmutableSet<Terminal> getResult() {
+	public Set<Terminal> getResult() {
 		if (!hasRun) {
 			throw new IllegalStateException("This helper has not run yet");
 		}
-		return ImmutableSet.copyOf(result);
+		return Set.copyOf(result);
 	}
 
 }

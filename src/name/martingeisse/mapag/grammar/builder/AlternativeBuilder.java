@@ -1,7 +1,5 @@
 package name.martingeisse.mapag.grammar.builder;
 
-import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,21 +8,17 @@ import java.util.List;
  */
 public final class AlternativeBuilder {
 
-	private final ImmutableList<Symbol> expansionSymbols;
+	private final List<Symbol> expansionSymbols;
 
-	public AlternativeBuilder(ImmutableList<Symbol> expansionSymbols) {
+	public AlternativeBuilder(List<Symbol> expansionSymbols) {
 		this.expansionSymbols = expansionSymbols;
 	}
 
-	public AlternativeBuilder(List<Symbol> expansionSymbols) {
-		this(ImmutableList.copyOf(expansionSymbols));
-	}
-
 	public AlternativeBuilder(Symbol... expansionSymbols) {
-		this(ImmutableList.copyOf(expansionSymbols));
+		this(List.copyOf(expansionSymbols));
 	}
 
-	public ImmutableList<Symbol> getExpansionSymbols() {
+	public List<Symbol> getExpansionSymbols() {
 		return expansionSymbols;
 	}
 

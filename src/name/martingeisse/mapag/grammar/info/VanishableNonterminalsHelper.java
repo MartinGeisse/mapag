@@ -1,7 +1,5 @@
 package name.martingeisse.mapag.grammar.info;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import name.martingeisse.parsergen.grammar.Alternative;
 import name.martingeisse.parsergen.grammar.Grammar;
 import name.martingeisse.parsergen.grammar.Nonterminal;
@@ -19,13 +17,13 @@ final class VanishableNonterminalsHelper {
 
 	private final Grammar originalGrammar;
 	private boolean hasRun = false;
-	private ImmutableSet<Nonterminal> result;
+	private Set<Nonterminal> result;
 
 	VanishableNonterminalsHelper(Grammar grammar) {
 		this.originalGrammar = grammar;
 	}
 
-	static ImmutableSet<Nonterminal> runFor(Grammar grammar) {
+	static Set<Nonterminal> runFor(Grammar grammar) {
 		VanishableNonterminalsHelper helper = new VanishableNonterminalsHelper(grammar);
 		helper.run();
 		return helper.getResult();
@@ -39,7 +37,7 @@ final class VanishableNonterminalsHelper {
 		hasRun = true;
 	}
 
-	ImmutableSet<Nonterminal> getResult() {
+	Set<Nonterminal> getResult() {
 		if (!hasRun) {
 			throw new IllegalStateException("This helper has not run yet");
 		}
@@ -64,24 +62,24 @@ final class VanishableNonterminalsHelper {
 				filteredRules.add(filteredRule);
 			}
 		}
-		return new Grammar(grammar.getAlphabet(), grammar.getStartSymbol(), ImmutableList.copyOf(filteredRules));
+		return new Grammar(grammar.getAlphabet(), grammar.getStartSymbol(), List.copyOf(filteredRules));
 	}
 
-	private static ImmutableSet<Nonterminal> determineImmediatelyVanishableNonterminals(Grammar grammar) {
+	private static Set<Nonterminal> determineImmediatelyVanishableNonterminals(Grammar grammar) {
 		Set<Nonterminal> result = new HashSet<>();
 		for (Rule rule : grammar.getRules()) {
 			if (rule.isImmediatelyVanishable()) {
 				result.add(rule.getNonterminal());
 			}
 		}
-		return ImmutableSet.copyOf(result);
+		return Set.copyOf(result);
 	}
 
-	private static ImmutableSet<Nonterminal> determineVanishableNonterminals(Grammar grammar) {
+	private static Set<Nonterminal> determineVanishableNonterminals(Grammar grammar) {
 		grammar = determineWithoutAlternativesContainingTerminals(grammar);
 		Set<Nonterminal> result = new HashSet<>();
 		while (true) {
-			ImmutableSet<Nonterminal> immediatelyVanishableNonterminals = determineImmediatelyVanishableNonterminals(grammar);
+			Set<Nonterminal> immediatelyVanishableNonterminals = determineImmediatelyVanishableNonterminals(grammar);
 			if (immediatelyVanishableNonterminals.isEmpty()) {
 				break;
 			}
@@ -90,6 +88,6 @@ final class VanishableNonterminalsHelper {
 				grammar = grammar.vanishNonterminal(nonterminal);
 			}
 		}
-		return ImmutableSet.copyOf(result);
+		return Set.copyOf(result);
 	}
 }

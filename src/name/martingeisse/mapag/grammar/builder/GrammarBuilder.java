@@ -1,8 +1,5 @@
 package name.martingeisse.mapag.grammar.builder;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,11 +10,11 @@ import java.util.Set;
  */
 public final class GrammarBuilder {
 
-	private final ImmutableSet<Terminal> alphabet;
+	private final Set<Terminal> alphabet;
 	private final Nonterminal startSymbol;
-	private final ImmutableList<RuleBuilder> rules;
+	private final List<RuleBuilder> rules;
 
-	public GrammarBuilder(ImmutableSet<Terminal> alphabet, Nonterminal startSymbol, ImmutableList<RuleBuilder> rules) {
+	public GrammarBuilder(Set<Terminal> alphabet, Nonterminal startSymbol, List<RuleBuilder> rules) {
 		this.alphabet = alphabet;
 		this.startSymbol = startSymbol;
 		this.rules = rules;
@@ -31,7 +28,7 @@ public final class GrammarBuilder {
 		}
 	}
 
-	public ImmutableSet<Terminal> getAlphabet() {
+	public Set<Terminal> getAlphabet() {
 		return alphabet;
 	}
 
@@ -39,7 +36,7 @@ public final class GrammarBuilder {
 		return startSymbol;
 	}
 
-	public ImmutableList<RuleBuilder> getRules() {
+	public List<RuleBuilder> getRules() {
 		return rules;
 	}
 
@@ -50,7 +47,7 @@ public final class GrammarBuilder {
 				modifiedRules.add(rule.vanishNonterminal(nonterminalToVanish));
 			}
 		}
-		return new GrammarBuilder(alphabet, startSymbol, ImmutableList.copyOf(modifiedRules));
+		return new GrammarBuilder(alphabet, startSymbol, List.copyOf(modifiedRules));
 	}
 
 	public RuleBuilder getRuleFor(Nonterminal nonterminal) {

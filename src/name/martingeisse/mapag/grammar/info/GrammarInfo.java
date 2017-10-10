@@ -1,8 +1,6 @@
 package name.martingeisse.mapag.grammar.info;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.Grammar;
 import name.martingeisse.parsergen.grammar.*;
 
 import java.util.*;
@@ -13,8 +11,8 @@ import java.util.*;
 public final class GrammarInfo {
 
 	private final Grammar grammar;
-	private final ImmutableSet<Nonterminal> vanishableNonterminals;
-	private final ImmutableMap<Nonterminal, ImmutableSet<Terminal>> firstSets;
+	private final Set<String> vanishableNonterminals;
+	private final Map<String, Set<String>> firstSets;
 
 	public GrammarInfo(Grammar grammar) {
 		this.grammar = grammar;
@@ -26,7 +24,7 @@ public final class GrammarInfo {
 		return grammar;
 	}
 
-	public ImmutableSet<Nonterminal> getVanishableNonterminals() {
+	public Set<Nonterminal> getVanishableNonterminals() {
 		return vanishableNonterminals;
 	}
 
@@ -43,11 +41,11 @@ public final class GrammarInfo {
 		return true;
 	}
 
-	public ImmutableMap<Nonterminal, ImmutableSet<Terminal>> getFirstSets() {
+	public Map<Nonterminal, Set<Terminal>> getFirstSets() {
 		return firstSets;
 	}
 
-	public ImmutableSet<Terminal> determineFirstSetForSentence(List<Symbol> sentence) {
+	public Set<Terminal> determineFirstSetForSentence(List<Symbol> sentence) {
 		Set<Terminal> result = new HashSet<>();
 		for (Symbol symbol : sentence) {
 			if (symbol instanceof Terminal) {
@@ -60,7 +58,7 @@ public final class GrammarInfo {
 				}
 			}
 		}
-		return ImmutableSet.copyOf(result);
+		return Set.copyOf(result);
 	}
 
 }

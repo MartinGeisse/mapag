@@ -1,7 +1,5 @@
 package name.martingeisse.mapag.grammar.builder;
 
-import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +9,9 @@ import java.util.List;
 public final class RuleBuilder {
 
 	private final Nonterminal nonterminal;
-	private final ImmutableList<AlternativeBuilder> alternatives;
+	private final List<AlternativeBuilder> alternatives;
 
-	public RuleBuilder(Nonterminal nonterminal, ImmutableList<AlternativeBuilder> alternatives) {
+	public RuleBuilder(Nonterminal nonterminal, List<AlternativeBuilder> alternatives) {
 		this.nonterminal = nonterminal;
 		this.alternatives = alternatives;
 		if (alternatives.isEmpty()) {
@@ -23,7 +21,7 @@ public final class RuleBuilder {
 
 	public RuleBuilder(Nonterminal nonterminal, List<AlternativeBuilder> alternatives) {
 		this.nonterminal = nonterminal;
-		this.alternatives = ImmutableList.copyOf(alternatives);
+		this.alternatives = List.copyOf(alternatives);
 		if (alternatives.isEmpty()) {
 			throw new IllegalArgumentException("trying to build a rule without alternatives");
 		}
@@ -31,7 +29,7 @@ public final class RuleBuilder {
 
 	public RuleBuilder(Nonterminal nonterminal, AlternativeBuilder... alternatives) {
 		this.nonterminal = nonterminal;
-		this.alternatives = ImmutableList.copyOf(alternatives);
+		this.alternatives = List.copyOf(alternatives);
 		if (alternatives.length == 0) {
 			throw new IllegalArgumentException("trying to build a rule without alternatives");
 		}
@@ -41,7 +39,7 @@ public final class RuleBuilder {
 	 * Builds a rule with a single alternative containing the specified expansion symbols in sequence.
 	 */
 	public static RuleBuilder fromSingleAlternative(Nonterminal nonterminal, Symbol... expansionSymbols) {
-		return new RuleBuilder(nonterminal, ImmutableList.of(new AlternativeBuilder(expansionSymbols)));
+		return new RuleBuilder(nonterminal, List.of(new AlternativeBuilder(expansionSymbols)));
 	}
 
 	/**
@@ -60,7 +58,7 @@ public final class RuleBuilder {
 		return nonterminal;
 	}
 
-	public ImmutableList<AlternativeBuilder> getAlternatives() {
+	public List<AlternativeBuilder> getAlternatives() {
 		return alternatives;
 	}
 
