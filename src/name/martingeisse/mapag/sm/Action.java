@@ -1,7 +1,6 @@
 package name.martingeisse.mapag.sm;
 
-import name.martingeisse.parsergen.grammar.Alternative;
-import name.martingeisse.parsergen.grammar.Nonterminal;
+import name.martingeisse.mapag.grammar.info.AlternativeInfo;
 
 /**
  * Note: null is used to represent "syntax error" / unused entries since it's compatible with each subclass.
@@ -26,22 +25,21 @@ public abstract class Action {
 
 	public static final class ReduceAction extends Action {
 
-		private final Nonterminal nonterminal;
-		private final Alternative alternative;
+		private final String nonterminal;
+		private final AlternativeInfo alternativeInfo;
 
-		public ReduceAction(Nonterminal nonterminal, Alternative alternative) {
+		public ReduceAction(String nonterminal, AlternativeInfo alternativeInfo) {
 			this.nonterminal = nonterminal;
-			this.alternative = alternative;
+			this.alternativeInfo = alternativeInfo;
 		}
 
-		public Nonterminal getNonterminal() {
+		public String getNonterminal() {
 			return nonterminal;
 		}
 
-		public Alternative getAlternative() {
-			return alternative;
+		public AlternativeInfo getAlternativeInfo() {
+			return alternativeInfo;
 		}
-
 	}
 
 	public static final class AcceptAction extends Action {

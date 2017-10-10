@@ -1,9 +1,6 @@
 package name.martingeisse.mapag.sm;
 
-import com.google.common.collect.ImmutableSet;
-import name.martingeisse.parsergen.grammar.Nonterminal;
-import name.martingeisse.parsergen.grammar.Terminal;
-import org.apache.commons.lang3.tuple.Pair;
+import name.martingeisse.mapag.util.Pair;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,13 +10,13 @@ import java.util.Set;
  */
 public final class State {
 
-	private final ImmutableSet<StateElement> elements;
+	private final Set<StateElement> elements;
 
-	public State(ImmutableSet<StateElement> elements) {
+	public State(Set<StateElement> elements) {
 		this.elements = elements;
 	}
 
-	public ImmutableSet<StateElement> getElements() {
+	public Set<StateElement> getElements() {
 		return elements;
 	}
 
@@ -43,7 +40,7 @@ public final class State {
 	}
 
 	// Returns the action type and the set of participating elements, or null to indicate a run-time syntax error.
-	public Pair<StateElement.ActionType, ImmutableSet<StateElement>> determineReactionToTerminal(Terminal terminal) {
+	public Pair<StateElement.ActionType, Set<StateElement>> determineReactionToTerminal(String terminal) {
 		Set<StateElement> elementsThatWantToShift = new HashSet<>();
 		Set<StateElement> elementsThatWantToReduce = new HashSet<>();
 		elementLoop:
@@ -71,32 +68,32 @@ public final class State {
 			if (elementsThatWantToReduce.isEmpty()) {
 				return null;
 			} else {
-				Set<Nonterminal> reductionNonterminals = getReductionNonterminals(elementsThatWantToReduce);
+				Set<String> reductionNonterminals = getReductionNonterminals(elementsThatWantToReduce);
 				if (reductionNonterminals.isEmpty()) {
 					throw new RuntimeException("cannot happen");
 				} else if (reductionNonterminals.size() > 1) {
 					throw new StateMachineException("reduce/reduce conflict in state " + this + " on terminal " + terminal);
 				}
-				return Pair.of(StateElement.ActionType.REDUCE, ImmutableSet.copyOf(elementsThatWantToReduce));
+				return new Pair<>(StateElement.ActionType.REDUCE, elementsThatWantToReduce);
 			}
 		} else {
 			if (elementsThatWantToReduce.isEmpty()) {
-				return Pair.of(StateElement.ActionType.SHIFT, ImmutableSet.copyOf(elementsThatWantToShift));
+				return new Pair<>(StateElement.ActionType.SHIFT, elementsThatWantToShift);
 			} else {
 				throw new StateMachineException("shift/reduce conflict in state " + this + " on terminal " + terminal);
 			}
 		}
 	}
 
-	private static Set<Nonterminal> getReductionNonterminals(Set<StateElement> elements) {
-		Set<Nonterminal> result = new HashSet<>();
+	private static Set<String> getReductionNonterminals(Set<StateElement> elements) {
+		Set<String> result = new HashSet<>();
 		for (StateElement element : elements) {
 			result.add(element.getLeftSide());
 		}
 		return result;
 	}
 
-	public ImmutableSet<StateElement> determineRootElementsAfterShiftingNonterminal(Nonterminal nonterminal) {
+	public Set<StateElement> determineRootElementsAfterShiftingNonterminal(String nonterminal) {
 		Set<StateElement> result = new HashSet<>();
 		for (StateElement originalElement : elements) {
 			StateElement nextElement = originalElement.determineNextRootElementForNonterminal(nonterminal);
@@ -104,7 +101,7 @@ public final class State {
 				result.add(nextElement);
 			}
 		}
-		return ImmutableSet.copyOf(result);
+		return result;
 	}
 
 }

@@ -1,64 +1,57 @@
 package name.martingeisse.mapag.sm;
 
-import com.google.common.collect.ImmutableList;
-import name.martingeisse.parsergen.grammar.Alternative;
-import name.martingeisse.parsergen.grammar.Nonterminal;
-import name.martingeisse.parsergen.grammar.Symbol;
-import name.martingeisse.parsergen.grammar.Terminal;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
+import name.martingeisse.mapag.grammar.info.AlternativeInfo;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  *
  */
 public final class StateElement {
 
-	private final Nonterminal leftSide;
-	private final Alternative alternative;
+	private final String leftSide;
+	private final AlternativeInfo alternativeInfo;
 	private final int position;
-	private final Terminal followTerminal;
+	private final String followTerminal;
 
-	public StateElement(Nonterminal leftSide, Alternative alternative, int position, Terminal followTerminal) {
+	public StateElement(String leftSide, AlternativeInfo alternativeInfo, int position, String followTerminal) {
 		this.leftSide = leftSide;
-		this.alternative = alternative;
+		this.alternativeInfo = alternativeInfo;
 		this.position = position;
 		this.followTerminal = followTerminal;
 	}
 
-	public Nonterminal getLeftSide() {
+	public String getLeftSide() {
 		return leftSide;
 	}
 
-	public Alternative getAlternative() {
-		return alternative;
+	public AlternativeInfo getAlternativeInfo() {
+		return alternativeInfo;
 	}
 
 	public int getPosition() {
 		return position;
 	}
 
-	public Terminal getFollowTerminal() {
+	public String getFollowTerminal() {
 		return followTerminal;
 	}
 
 	public boolean isAtEnd() {
-		return position == alternative.getExpansionSymbols().size();
+		return position == alternativeInfo.getExpansion().size();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof StateElement) {
 			StateElement other = (StateElement) obj;
-			return leftSide.equals(other.leftSide) && alternative.equals(other.alternative) && position == other.position && followTerminal.equals(other.followTerminal);
+			return leftSide.equals(other.leftSide) && alternativeInfo.equals(other.alternativeInfo) && position == other.position && followTerminal.equals(other.followTerminal);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(leftSide).append(alternative).append(position).append(followTerminal).toHashCode();
+		return new HashCodeBuilder().append(leftSide).append(alternativeInfo).append(position).append(followTerminal).toHashCode();
 	}
 
 	@Override
@@ -66,7 +59,7 @@ public final class StateElement {
 		StringBuilder builder = new StringBuilder();
 		builder.append(leftSide).append(" ::= ");
 		int i = 0;
-		for (Symbol symbol : alternative.getExpansionSymbols()) {
+		for (String symbol : alternativeInfo.getExpansion()) {
 			if (i == position) {
 				builder.append(". ");
 			}
@@ -80,10 +73,10 @@ public final class StateElement {
 		return builder.toString();
 	}
 
-	public ActionType determineActionTypeForTerminal(Terminal terminal) {
+	public ActionType determineActionTypeForTerminal(String terminal) {
 		if (isAtEnd()) {
 			return followTerminal.equals(terminal) ? ActionType.REDUCE : ActionType.DROP_ELEMENT;
-		} else if (alternative.getExpansionSymbols().get(position).equals(terminal)) {
+		} else if (alternativeInfo.getExpansion().get(position).equals(terminal)) {
 			return ActionType.SHIFT;
 		} else {
 			return ActionType.DROP_ELEMENT;
@@ -96,10 +89,10 @@ public final class StateElement {
 		DROP_ELEMENT
 	}
 
-	public StateElement determineNextRootElementForNonterminal(Nonterminal nonterminal) {
+	public StateElement determineNextRootElementForNonterminal(String nonterminal) {
 		if (isAtEnd()) {
 			return null;
-		} else if (alternative.getExpansionSymbols().get(position).equals(nonterminal)) {
+		} else if (alternativeInfo.getExpansion().get(position).equals(nonterminal)) {
 			return getShifted();
 		} else {
 			return null;
@@ -108,10 +101,10 @@ public final class StateElement {
 
 	// returns this element with the first symbol shifted
 	public StateElement getShifted() {
-		if (position == alternative.getExpansionSymbols().size()) {
+		if (position == alternativeInfo.getExpansion().size()) {
 			throw new IllegalStateException("cannot shift -- remaining right side is already empty");
 		}
-		return new StateElement(leftSide, alternative, position + 1, followTerminal);
+		return new StateElement(leftSide, alternativeInfo, position + 1, followTerminal);
 	}
 
 }

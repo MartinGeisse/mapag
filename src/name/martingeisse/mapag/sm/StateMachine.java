@@ -1,10 +1,9 @@
 package name.martingeisse.mapag.sm;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import name.martingeisse.parsergen.grammar.*;
-import name.martingeisse.parsergen.grammar.info.GrammarInfo;
-import org.apache.commons.lang3.tuple.Pair;
+import name.martingeisse.mapag.grammar.NonterminalDefinition;
+import name.martingeisse.mapag.grammar.TerminalDefinition;
+import name.martingeisse.mapag.grammar.info.GrammarInfo;
+import name.martingeisse.mapag.util.Pair;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,12 +15,10 @@ import java.util.Set;
  */
 public class StateMachine {
 
-	private static final Nonterminal IMPLICIT_ROOT_NONTERMINAL = new Nonterminal("IMPLICIT_ROOT_NONTERMINAL / egiuwihueiweouhgiouewhgiuewhguiewhguiewhgiouewhgweiu");
-
 	private final GrammarInfo grammarInfo;
 	private final Set<State> states = new HashSet<>();
-	private final Map<State, Map<Terminal, Action>> terminalActions = new HashMap<>();
-	private final Map<State, Map<Nonterminal, Action.ShiftAction>> nonterminalActions = new HashMap<>();
+	private final Map<State, Map<String, Action>> terminalActions = new HashMap<>();
+	private final Map<State, Map<String, Action.ShiftAction>> nonterminalActions = new HashMap<>();
 	private final State startState;
 
 	/**
@@ -41,8 +38,8 @@ public class StateMachine {
 		return builder.build();
 	}
 
-	private Map<Terminal, Action> getOrCreateTerminalActionMap(State state) {
-		Map<Terminal, Action> result = terminalActions.get(state);
+	private Map<String, Action> getOrCreateTerminalActionMap(State state) {
+		Map<String, Action> result = terminalActions.get(state);
 		if (result == null) {
 			result = new HashMap<>();
 			terminalActions.put(state, result);
@@ -50,8 +47,8 @@ public class StateMachine {
 		return result;
 	}
 
-	private Map<Nonterminal, Action.ShiftAction> getOrCreateNonterminalActionMap(State state) {
-		Map<Nonterminal, Action.ShiftAction> result = nonterminalActions.get(state);
+	private Map<String, Action.ShiftAction> getOrCreateNonterminalActionMap(State state) {
+		Map<String, Action.ShiftAction> result = nonterminalActions.get(state);
 		if (result == null) {
 			result = new HashMap<>();
 			nonterminalActions.put(state, result);
@@ -65,8 +62,9 @@ public class StateMachine {
 			getOrCreateNonterminalActionMap(state);
 
 			// Determine reaction to terminals in this state.
-			for (Terminal terminal : grammarInfo.getGrammar().getAlphabet()) {
-				Pair<StateElement.ActionType, ImmutableSet<StateElement>> reaction =  state.determineReactionToTerminal(terminal);
+			for (TerminalDefinition terminalDefinition : grammarInfo.getTerminalDefinitions().values()) {
+				String terminal = terminalDefinition.getName();
+				Pair<StateElement.ActionType, Set<StateElement>> reaction =  state.determineReactionToTerminal(terminal);
 				if (reaction == null) {
 					continue;
 				}
@@ -88,7 +86,7 @@ public class StateMachine {
 					}
 
 					case REDUCE: {
-						Nonterminal reduced = reaction.getRight().iterator().next().getLeftSide();
+						String reduced = reaction.getRight().iterator().next().getLeftSide();
 						getOrCreateTerminalActionMap(state).put(terminal, new Action.ReduceAction(reduced, null)); // TODO pass alternative
 						break;
 					}
@@ -101,9 +99,9 @@ public class StateMachine {
 
 			// Determine reaction to nonterminals in this state. This just tries all nonterminals for simplicity, and
 			// thus adds unnessecary states if the grammar contains alternatives that can never match. We don't care.
-			for (Rule rule : grammarInfo.getGrammar().getRules()) {
-				Nonterminal nonterminal = rule.getNonterminal();
-				ImmutableSet<StateElement> nextRootElements = state.determineRootElementsAfterShiftingNonterminal(nonterminal);
+			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getNonterminalDefinitions().values()) {
+				String nonterminal = nonterminalDefinition.getName();
+				Set<StateElement> nextRootElements = state.determineRootElementsAfterShiftingNonterminal(nonterminal);
 				if (nextRootElements.isEmpty()) {
 					continue;
 				}
@@ -128,11 +126,11 @@ public class StateMachine {
 		return states;
 	}
 
-	public Map<State, Map<Terminal, Action>> getTerminalActions() {
+	public Map<State, Map<String, Action>> getTerminalActions() {
 		return terminalActions;
 	}
 
-	public Map<State, Map<Nonterminal, Action.ShiftAction>> getNonterminalActions() {
+	public Map<State, Map<String, Action.ShiftAction>> getNonterminalActions() {
 		return nonterminalActions;
 	}
 

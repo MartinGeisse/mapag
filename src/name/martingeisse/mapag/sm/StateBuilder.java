@@ -1,9 +1,6 @@
 package name.martingeisse.mapag.sm;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import name.martingeisse.parsergen.grammar.*;
-import name.martingeisse.parsergen.grammar.info.GrammarInfo;
+import name.martingeisse.mapag.grammar.info.GrammarInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,7 +21,7 @@ final class StateBuilder {
 
 	public void addElementClosure(StateElement rootElement) {
 		if (elements.add(rootElement)) {
-			ImmutableList<Symbol> remainingRightSide = rootElement.getRemainingRightSide();
+			List<String> remainingRightSide = rootElement.getRemainingRightSide();
 			if (!remainingRightSide.isEmpty()) {
 				Symbol currentRightSideSymbol = remainingRightSide.get(0);
 				if (currentRightSideSymbol instanceof Nonterminal) {
@@ -53,7 +50,7 @@ final class StateBuilder {
 	}
 
 	public State build() {
-		return new State(ImmutableSet.copyOf(elements));
+		return new State(elements);
 	}
 
 }
