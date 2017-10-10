@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.grammar;
+package name.martingeisse.mapag.ide;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;

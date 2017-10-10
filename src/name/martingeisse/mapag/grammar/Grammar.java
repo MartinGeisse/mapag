@@ -15,14 +15,16 @@ public final class Grammar {
 	private final String className;
 	private final List<TerminalDefinition> terminalDefinitions;
 	private final List<NonterminalDefinition> nonterminalDefinitions;
+	private final PrecedenceTable precedenceTable;
 	private final String startNonterminalName;
 	private final List<Production> productions;
 
-	public Grammar(String packageName, String className, List<TerminalDefinition> terminalDefinitions, List<NonterminalDefinition> nonterminalDefinitions, String startNonterminalName, List<Production> productions) {
+	public Grammar(String packageName, String className, List<TerminalDefinition> terminalDefinitions, List<NonterminalDefinition> nonterminalDefinitions, PrecedenceTable precedenceTable, String startNonterminalName, List<Production> productions) {
 		this.packageName = packageName;
 		this.className = className;
 		this.terminalDefinitions = terminalDefinitions;
 		this.nonterminalDefinitions = nonterminalDefinitions;
+		this.precedenceTable = precedenceTable;
 		this.startNonterminalName = startNonterminalName;
 		this.productions = productions;
 	}
@@ -41,6 +43,10 @@ public final class Grammar {
 
 	public List<NonterminalDefinition> getNonterminalDefinitions() {
 		return nonterminalDefinitions;
+	}
+
+	public PrecedenceTable getPrecedenceTable() {
+		return precedenceTable;
 	}
 
 	public String getStartNonterminalName() {

@@ -51,13 +51,14 @@ production ::=
 	;
 
 expression ::=
-	IDENTIFIER (COLON IDENTIFIER)?
-	| expression+
-	| expression BAR expression
-	| expression ASTERISK
-	| expression PLUS
-	| expression QUESTION_MARK
-	| OPENING_PARENTHESIS expression CLOSING_PARENTHESIS (COLON IDENTIFIER)?
+    (
+    	IDENTIFIER (COLON IDENTIFIER)?
+	    | expression BAR expression
+	    | expression ASTERISK
+	    | expression PLUS
+	    | expression QUESTION_MARK
+	    | OPENING_PARENTHESIS expression CLOSING_PARENTHESIS (COLON IDENTIFIER)?
+	)+
 	;
 
 
