@@ -7,29 +7,27 @@ import java.util.*;
  */
 final class FirstSetHelper {
 
-	private final Grammar grammar;
-	private final Set<Nonterminal> vanishableNonterminals;
+	private final GrammarInfo grammarInfo;
 	private boolean hasRun = false;
-	private final List<Nonterminal> todoNonterminals = new ArrayList<>();
-	private final Set<Nonterminal> checkedNonterminals = new HashSet<>();
-	private final Set<Terminal> result = new HashSet<>();
+	private final List<String> todoNonterminals = new ArrayList<>();
+	private final Set<String> checkedNonterminals = new HashSet<>();
+	private final Set<String> result = new HashSet<>();
 
-	public FirstSetHelper(Grammar grammar, Set<Nonterminal> vanishableNonterminals, Nonterminal targetNonterminal) {
-		this.grammar = grammar;
-		this.vanishableNonterminals = vanishableNonterminals;
+	public FirstSetHelper(GrammarInfo grammarInfo, String targetNonterminal) {
+		this.grammarInfo = grammarInfo;
 		todoNonterminals.add(targetNonterminal);
 	}
 
-	static Map<Nonterminal, Set<Terminal>> runFor(Grammar grammar, Set<Nonterminal> vanishableNonterminals) {
-		Map<Nonterminal, Set<Terminal>> result = new HashMap<>();
-		for (Rule rule : grammar.getRules()) {
-			result.put(rule.getNonterminal(), runFor(grammar, vanishableNonterminals, rule.getNonterminal()));
+	static Map<String, Set<String>> runFor(GrammarInfo grammarInfo) {
+		Map<String, Set<String>> result = new HashMap<>();
+		for (NonterminalInfo nonterminalInfo : grammarInfo.getNonterminalInfos().values()) {
+			result.put(nonterminalInfo.getNonterminal(), runFor(grammarInfo, nonterminalInfo.getNonterminal()));
 		}
-		return Map.copyOf(result);
+		return result;
 	}
 
-	static Set<Terminal> runFor(Grammar grammar, Set<Nonterminal> vanishableNonterminals, Nonterminal targetNonterminal) {
-		FirstSetHelper helper = new FirstSetHelper(grammar, vanishableNonterminals, targetNonterminal);
+	static Set<String> runFor(GrammarInfo grammarInfo, String targetNonterminal) {
+		FirstSetHelper helper = new FirstSetHelper(grammarInfo, targetNonterminal);
 		helper.run();
 		return helper.getResult();
 	}
@@ -45,23 +43,23 @@ final class FirstSetHelper {
 	}
 
 	void processNextTodo() {
-		Nonterminal nonterminalToExpand = todoNonterminals.remove(todoNonterminals.size() - 1);
+		String nonterminalToExpand = todoNonterminals.remove(todoNonterminals.size() - 1);
 		// don't include the same nonterminal's first-set twice recursively -- this can't add more terminals in any
 		// case, but would end up in an infinite loop.
 		if (!checkedNonterminals.contains(nonterminalToExpand)) {
-			include(grammar.getRuleFor(nonterminalToExpand));
+			include(grammarInfo.getNonterminalInfos().get(nonterminalToExpand));
 			checkedNonterminals.add(nonterminalToExpand);
 		}
 	}
 
-	void include(Rule rule) {
-		for (Alternative alternative : rule.getAlternatives()) {
-			include(alternative);
+	void include(NonterminalInfo nonterminalInfo) {
+		for (AlternativeInfo alternativeInfo : nonterminalInfo.getAlternatives()) {
+			include(alternativeInfo);
 		}
 	}
 
-	void include(Alternative alternative) {
-		for (Symbol symbol : alternative.getExpansionSymbols()) {
+	void include(AlternativeInfo alternativeInfo) {
+		for (String symbol : alternativeInfo.getExpansion()) {
 			if (!include(symbol)) {
 				return;
 			}
@@ -77,22 +75,23 @@ final class FirstSetHelper {
 
 	// returns true to continue with further symbols from the current alternative, false to stop and go on with the
 	// next alternative.
-	boolean include(Symbol symbol) {
-		if (symbol instanceof Terminal) {
-			result.add((Terminal)symbol);
+	boolean include(String symbol) {
+		if (grammarInfo.isTerminal((symbol))) {
+			result.add(symbol);
 			return false;
+		} else if (grammarInfo.isNonterminal(symbol)) {
+			todoNonterminals.add(symbol);
+			return grammarInfo.getVanishableNonterminals().contains(symbol);
 		} else {
-			Nonterminal expansionNonterminal = (Nonterminal)symbol;
-			todoNonterminals.add(expansionNonterminal);
-			return vanishableNonterminals.contains(expansionNonterminal);
+			throw new RuntimeException("unknown symbol: " + symbol);
 		}
 	}
 
-	public Set<Terminal> getResult() {
+	public Set<String> getResult() {
 		if (!hasRun) {
 			throw new IllegalStateException("This helper has not run yet");
 		}
-		return Set.copyOf(result);
+		return result;
 	}
 
 }
