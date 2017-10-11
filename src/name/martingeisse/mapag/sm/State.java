@@ -41,8 +41,8 @@ public final class State {
 		return elements.toString();
 	}
 
-	// Returns the action type and the set of participating elements, or null to indicate a run-time syntax error.
-	public Pair<StateElement.ActionType, ImmutableSet<StateElement>> determineReactionToTerminal(String terminal) {
+	// Returns null to indicate a run-time syntax error
+	public Action determineActionForTerminal(GrammarInfo grammarInfo, String terminal) {
 		Set<StateElement> elementsThatWantToShift = new HashSet<>();
 		Set<StateElement> elementsThatWantToReduce = new HashSet<>();
 		elementLoop:
@@ -70,29 +70,39 @@ public final class State {
 			if (elementsThatWantToReduce.isEmpty()) {
 				return null;
 			} else {
-				Set<String> reductionNonterminals = getReductionNonterminals(elementsThatWantToReduce);
-				if (reductionNonterminals.isEmpty()) {
-					throw new RuntimeException("cannot happen");
-				} else if (reductionNonterminals.size() > 1) {
-					throw new StateMachineException("reduce/reduce conflict in state " + this + " on terminal " + terminal);
-				}
-				return new Pair<>(StateElement.ActionType.REDUCE, ImmutableSet.copyOf(elementsThatWantToReduce));
+				return getReduce(elementsThatWantToReduce);
 			}
 		} else {
 			if (elementsThatWantToReduce.isEmpty()) {
-				return new Pair<>(StateElement.ActionType.SHIFT, ImmutableSet.copyOf(elementsThatWantToShift));
+				return getShift(grammarInfo, elementsThatWantToShift);
 			} else {
 				throw new StateMachineException("shift/reduce conflict in state " + this + " on terminal " + terminal);
 			}
 		}
 	}
 
-	private static Set<String> getReductionNonterminals(Set<StateElement> elements) {
+	private static Action.Reduce getReduce(Set<StateElement> elements) {
 		Set<String> result = new HashSet<>();
 		for (StateElement element : elements) {
 			result.add(element.getLeftSide());
 		}
+
+
+		if (reductionNonterminals.isEmpty()) {
+			throw new RuntimeException("cannot happen");
+		} else if (reductionNonterminals.size() > 1) {
+			throw new StateMachineException("reduce/reduce conflict in state " + this + " on terminal " + terminal);
+		}
+
 		return result;
+	}
+
+	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elements) {
+		StateBuilder builder = new StateBuilder(grammarInfo);
+		for (StateElement element : elements) {
+			builder.addElementClosure(element.getShifted());
+		}
+		return new Action.Shift(builder.build());
 	}
 
 	// Returns null if that nonterminal would cause a syntax error. This corresponds to an empty table entry and

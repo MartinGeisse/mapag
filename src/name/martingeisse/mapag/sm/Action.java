@@ -10,11 +10,11 @@ public abstract class Action {
 	private Action() {
 	}
 
-	public static final class ShiftAction extends Action {
+	public static final class Shift extends Action {
 
 		private final State nextState;
 
-		public ShiftAction(State nextState) {
+		public Shift(State nextState) {
 			this.nextState = nextState;
 		}
 
@@ -23,12 +23,12 @@ public abstract class Action {
 		}
 	}
 
-	public static final class ReduceAction extends Action {
+	public static final class Reduce extends Action {
 
 		private final String nonterminal;
 		private final Alternative alternative;
 
-		public ReduceAction(String nonterminal, Alternative alternative) {
+		public Reduce(String nonterminal, Alternative alternative) {
 			this.nonterminal = nonterminal;
 			this.alternative = alternative;
 		}
@@ -42,11 +42,11 @@ public abstract class Action {
 		}
 	}
 
-	public static final class AcceptAction extends Action {
+	public static final class Accept extends Action {
 
-		public static final AcceptAction INSTANCE = new AcceptAction();
+		public static final Accept INSTANCE = new Accept();
 
-		private AcceptAction() {
+		private Accept() {
 		}
 
 	}

@@ -1,129 +1,34 @@
 package name.martingeisse.mapag.sm;
 
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
-import name.martingeisse.mapag.grammar.extended.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.extended.TerminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
-import name.martingeisse.mapag.util.Pair;
-import name.martingeisse.mapag.util.ParameterUtil;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 /**
  *
  */
 public class StateMachine {
 
-	private final GrammarInfo grammarInfo;
-	private final Set<State> states = new HashSet<>();
-	private final Map<State, Map<String, Action>> terminalActions = new HashMap<>();
-	private final Map<State, Map<String, Action.ShiftAction>> nonterminalActions = new HashMap<>();
+	private final ImmutableSet<State> states;
+	private final ImmutableMap<State, ImmutableMap<String, Action>> terminalActions;
+	private final ImmutableMap<State, ImmutableMap<String, Action.Shift>> nonterminalActions;
 	private final State startState;
 
-	public StateMachine(GrammarInfo grammarInfo) {
-		this.grammarInfo = ParameterUtil.ensureNotNull(grammarInfo, "grammarInfo");
-		this.startState = buildStartState(grammarInfo);
-		addStates(startState);
+	public StateMachine(ImmutableSet<State> states, ImmutableMap<State, ImmutableMap<String, Action>> terminalActions, ImmutableMap<State, ImmutableMap<String, Action.Shift>> nonterminalActions, State startState) {
+		this.states = states;
+		this.terminalActions = terminalActions;
+		this.nonterminalActions = nonterminalActions;
+		this.startState = startState;
 	}
 
-	private static State buildStartState(GrammarInfo grammarInfo) {
-		Grammar grammar = grammarInfo.getGrammar();
-		Alternative implicitAlternative = new Alternative(grammar.getStartSymbol());
-		StateBuilder builder = new StateBuilder(grammarInfo);
-		builder.addElementClosure(new StateElement(IMPLICIT_ROOT_NONTERMINAL, implicitAlternative, 0, Terminal.EOF));
-		return builder.build();
-	}
-
-	private Map<String, Action> getOrCreateTerminalActionMap(State state) {
-		Map<String, Action> result = terminalActions.get(state);
-		if (result == null) {
-			result = new HashMap<>();
-			terminalActions.put(state, result);
-		}
-		return result;
-	}
-
-	private Map<String, Action.ShiftAction> getOrCreateNonterminalActionMap(State state) {
-		Map<String, Action.ShiftAction> result = nonterminalActions.get(state);
-		if (result == null) {
-			result = new HashMap<>();
-			nonterminalActions.put(state, result);
-		}
-		return result;
-	}
-
-	private void addStates(State state) {
-		if (states.add(state)) {
-			getOrCreateTerminalActionMap(state);
-			getOrCreateNonterminalActionMap(state);
-
-			// Determine reaction to terminals in this state.
-			for (TerminalDefinition terminalDefinition : grammarInfo.getGrammar().getTerminalDefinitions().values()) {
-				String terminal = terminalDefinition.getName();
-				Pair<StateElement.ActionType, Set<StateElement>> reaction =  state.determineReactionToTerminal(terminal);
-				if (reaction == null) {
-					continue;
-				}
-				switch (reaction.getLeft()) {
-
-					case DROP_ELEMENT:
-						throw new RuntimeException();
-
-					case SHIFT: {
-						// note: the reaction contains the participating current elements, not the new roots.
-						StateBuilder builder = new StateBuilder(grammarInfo);
-						for (StateElement participatingElement : reaction.getRight()) {
-							builder.addElementClosure(participatingElement.getShifted());
-						}
-						State nextState = builder.build();
-						addStates(nextState);
-						getOrCreateTerminalActionMap(state).put(terminal, new Action.ShiftAction(nextState));
-						break;
-					}
-
-					case REDUCE: {
-						String reduced = reaction.getRight().iterator().next().getLeftSide();
-						getOrCreateTerminalActionMap(state).put(terminal, new Action.ReduceAction(reduced, null)); // TODO pass alternative
-						break;
-					}
-
-					default:
-						throw new RuntimeException();
-
-				}
-			}
-
-			// Determine reaction to nonterminals in this state. This just tries all nonterminals for simplicity, and
-			// thus adds unnessecary states if the grammar contains alternatives that can never match. We don't care.
-			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
-				String nonterminal = nonterminalDefinition.getName();
-				State nextState = state.determineNextStateAfterShiftingNonterminal(grammarInfo, nonterminal);
-				if (nextState != null) {
-					addStates(nextState);
-					getOrCreateNonterminalActionMap(state).put(nonterminal, new Action.ShiftAction(nextState));
-				}
-			}
-
-		}
-	}
-
-	public GrammarInfo getGrammarInfo() {
-		return grammarInfo;
-	}
-
-	public Set<State> getStates() {
+	public ImmutableSet<State> getStates() {
 		return states;
 	}
 
-	public Map<State, Map<String, Action>> getTerminalActions() {
+	public ImmutableMap<State, ImmutableMap<String, Action>> getTerminalActions() {
 		return terminalActions;
 	}
 
-	public Map<State, Map<String, Action.ShiftAction>> getNonterminalActions() {
+	public ImmutableMap<State, ImmutableMap<String, Action.Shift>> getNonterminalActions() {
 		return nonterminalActions;
 	}
 
