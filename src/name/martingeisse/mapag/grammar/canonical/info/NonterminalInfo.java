@@ -1,6 +1,4 @@
-package name.martingeisse.mapag.grammar.info;
-
-import name.martingeisse.mapag.grammar.NonterminalDefinition;
+package name.martingeisse.mapag.grammar.canonical.info;
 
 import java.util.List;
 

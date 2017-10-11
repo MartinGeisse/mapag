@@ -1,6 +1,6 @@
-package name.martingeisse.mapag.grammar;
+package name.martingeisse.mapag.grammar.canonical;
 
-import name.martingeisse.mapag.grammar.expression.Expression;
+import name.martingeisse.mapag.grammar.canonical.expression.Expression;
 
 /**
  *

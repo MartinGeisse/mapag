@@ -1,8 +1,8 @@
 package name.martingeisse.mapag.sm;
 
-import name.martingeisse.mapag.grammar.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.TerminalDefinition;
-import name.martingeisse.mapag.grammar.info.GrammarInfo;
+import name.martingeisse.mapag.grammar.extended.NonterminalDefinition;
+import name.martingeisse.mapag.grammar.extended.TerminalDefinition;
+import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.Pair;
 
 import java.util.HashMap;

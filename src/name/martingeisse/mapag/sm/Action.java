@@ -1,6 +1,6 @@
 package name.martingeisse.mapag.sm;
 
-import name.martingeisse.mapag.grammar.info.AlternativeInfo;
+import name.martingeisse.mapag.grammar.canonical.info.AlternativeInfo;
 
 /**
  * Note: null is used to represent "syntax error" / unused entries since it's compatible with each subclass.

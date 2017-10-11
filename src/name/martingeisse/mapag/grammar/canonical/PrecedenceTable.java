@@ -1,4 +1,6 @@
-package name.martingeisse.mapag.grammar;
+package name.martingeisse.mapag.grammar.canonical;
+
+import name.martingeisse.mapag.grammar.Associativity;
 
 import java.util.List;
 

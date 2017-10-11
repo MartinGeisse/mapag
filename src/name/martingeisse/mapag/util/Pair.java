@@ -1,5 +1,7 @@
 package name.martingeisse.mapag.util;
 
+import java.util.Objects;
+
 /**
  *
  */
@@ -19,6 +21,25 @@ public final class Pair<A, B> {
 
 	public B getRight() {
 		return right;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Pair) {
+			Pair other = (Pair) obj;
+			return (Objects.equals(left, other.left) && Objects.equals(right, other.right));
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return (left == null ? 0 : left.hashCode()) ^ (right == null ? 0 : right.hashCode());
+	}
+
+	@Override
+	public String toString() {
+		return "(" + left + ", " + right + ")";
 	}
 
 }

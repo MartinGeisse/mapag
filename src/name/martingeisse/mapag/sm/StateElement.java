@@ -1,6 +1,6 @@
 package name.martingeisse.mapag.sm;
 
-import name.martingeisse.mapag.grammar.info.AlternativeInfo;
+import name.martingeisse.mapag.grammar.canonical.info.AlternativeInfo;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**

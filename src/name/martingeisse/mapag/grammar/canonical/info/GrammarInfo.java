@@ -1,9 +1,9 @@
-package name.martingeisse.mapag.grammar.info;
+package name.martingeisse.mapag.grammar.canonical.info;
 
-import name.martingeisse.mapag.grammar.Grammar;
-import name.martingeisse.mapag.grammar.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.Production;
-import name.martingeisse.mapag.grammar.TerminalDefinition;
+import name.martingeisse.mapag.grammar.extended.Grammar;
+import name.martingeisse.mapag.grammar.extended.NonterminalDefinition;
+import name.martingeisse.mapag.grammar.extended.Production;
+import name.martingeisse.mapag.grammar.extended.TerminalDefinition;
 
 import java.util.*;
 import java.util.function.Function;

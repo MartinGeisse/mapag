@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.grammar.info;
+package name.martingeisse.mapag.grammar.canonical.info;
 
 import java.util.*;
 

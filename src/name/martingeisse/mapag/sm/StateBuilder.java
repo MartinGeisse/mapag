@@ -1,6 +1,6 @@
 package name.martingeisse.mapag.sm;
 
-import name.martingeisse.mapag.grammar.info.GrammarInfo;
+import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
