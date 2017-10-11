@@ -1,5 +1,12 @@
 package name.martingeisse.mapag.grammar.canonical.info;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.Grammar;
+import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+import name.martingeisse.mapag.util.ParameterUtil;
+
 import java.util.*;
 
 /**
@@ -7,27 +14,29 @@ import java.util.*;
  */
 final class FirstSetHelper {
 
-	private final GrammarInfo grammarInfo;
+	private final Grammar grammar;
+	private final ImmutableSet<String> vanishableNonterminals;
 	private boolean hasRun = false;
 	private final List<String> todoNonterminals = new ArrayList<>();
 	private final Set<String> checkedNonterminals = new HashSet<>();
 	private final Set<String> result = new HashSet<>();
 
-	public FirstSetHelper(GrammarInfo grammarInfo, String targetNonterminal) {
-		this.grammarInfo = grammarInfo;
-		todoNonterminals.add(targetNonterminal);
+	public FirstSetHelper(Grammar grammar, ImmutableSet<String> vanishableNonterminals, String targetNonterminal) {
+		this.grammar = ParameterUtil.ensureNotNull(grammar, "grammar");;
+		this.vanishableNonterminals = vanishableNonterminals;
+		todoNonterminals.add(ParameterUtil.ensureNotNullOrEmpty(targetNonterminal, "targetNonterminal"));
 	}
 
-	static Map<String, Set<String>> runFor(GrammarInfo grammarInfo) {
-		Map<String, Set<String>> result = new HashMap<>();
-		for (NonterminalInfo nonterminalInfo : grammarInfo.getNonterminalInfos().values()) {
-			result.put(nonterminalInfo.getNonterminal(), runFor(grammarInfo, nonterminalInfo.getNonterminal()));
+	static ImmutableMap<String, ImmutableSet<String>> runFor(Grammar grammar, ImmutableSet<String> vanishableNonterminals) {
+		Map<String, ImmutableSet<String>> result = new HashMap<>();
+		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
+			result.put(nonterminalDefinition.getName(), runFor(grammar, vanishableNonterminals, nonterminalDefinition.getName()));
 		}
-		return result;
+		return ImmutableMap.copyOf(result);
 	}
 
-	static Set<String> runFor(GrammarInfo grammarInfo, String targetNonterminal) {
-		FirstSetHelper helper = new FirstSetHelper(grammarInfo, targetNonterminal);
+	static ImmutableSet<String> runFor(Grammar grammar, ImmutableSet<String> vanishableNonterminals, String targetNonterminal) {
+		FirstSetHelper helper = new FirstSetHelper(grammar, vanishableNonterminals, targetNonterminal);
 		helper.run();
 		return helper.getResult();
 	}
@@ -47,19 +56,19 @@ final class FirstSetHelper {
 		// don't include the same nonterminal's first-set twice recursively -- this can't add more terminals in any
 		// case, but would end up in an infinite loop.
 		if (!checkedNonterminals.contains(nonterminalToExpand)) {
-			include(grammarInfo.getNonterminalInfos().get(nonterminalToExpand));
+			include(grammar.getNonterminalDefinitions().get(nonterminalToExpand));
 			checkedNonterminals.add(nonterminalToExpand);
 		}
 	}
 
-	void include(NonterminalInfo nonterminalInfo) {
-		for (AlternativeInfo alternativeInfo : nonterminalInfo.getAlternatives()) {
-			include(alternativeInfo);
+	void include(NonterminalDefinition nonterminalDefinition) {
+		for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
+			include(alternative);
 		}
 	}
 
-	void include(AlternativeInfo alternativeInfo) {
-		for (String symbol : alternativeInfo.getExpansion()) {
+	void include(Alternative alternative) {
+		for (String symbol : alternative.getExpansion()) {
 			if (!include(symbol)) {
 				return;
 			}
@@ -76,22 +85,22 @@ final class FirstSetHelper {
 	// returns true to continue with further symbols from the current alternative, false to stop and go on with the
 	// next alternative.
 	boolean include(String symbol) {
-		if (grammarInfo.isTerminal((symbol))) {
+		if (grammar.isTerminal((symbol))) {
 			result.add(symbol);
 			return false;
-		} else if (grammarInfo.isNonterminal(symbol)) {
+		} else if (grammar.isNonterminal(symbol)) {
 			todoNonterminals.add(symbol);
-			return grammarInfo.getVanishableNonterminals().contains(symbol);
+			return vanishableNonterminals.contains(symbol);
 		} else {
 			throw new RuntimeException("unknown symbol: " + symbol);
 		}
 	}
 
-	public Set<String> getResult() {
+	public ImmutableSet<String> getResult() {
 		if (!hasRun) {
 			throw new IllegalStateException("This helper has not run yet");
 		}
-		return result;
+		return ImmutableSet.copyOf(result);
 	}
 
 }

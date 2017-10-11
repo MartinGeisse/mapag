@@ -1,5 +1,11 @@
 package name.martingeisse.mapag.grammar.canonical.info;
 
+import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.Grammar;
+import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+import name.martingeisse.mapag.util.ParameterUtil;
+
 import java.util.*;
 
 /**
@@ -7,17 +13,18 @@ import java.util.*;
  */
 final class VanishableNonterminalsHelper {
 
-	private final GrammarInfo grammarInfo;
+	private final Grammar grammar;
 	private boolean hasRun = false;
 	private Map<String, List<List<String>>> remainingGrammar;
 	private Set<String> result;
 
-	VanishableNonterminalsHelper(GrammarInfo grammarInfo) {
-		this.grammarInfo = grammarInfo;
+	VanishableNonterminalsHelper(Grammar grammar) {
+		ParameterUtil.ensureNotNull(grammar, "grammar");
+		this.grammar = grammar;
 	}
 
-	static Set<String> runFor(GrammarInfo grammarInfo) {
-		VanishableNonterminalsHelper helper = new VanishableNonterminalsHelper(grammarInfo);
+	static ImmutableSet<String> runFor(Grammar grammar) {
+		VanishableNonterminalsHelper helper = new VanishableNonterminalsHelper(grammar);
 		helper.run();
 		return helper.getResult();
 	}
@@ -32,25 +39,25 @@ final class VanishableNonterminalsHelper {
 		hasRun = true;
 	}
 
-	Set<String> getResult() {
+	ImmutableSet<String> getResult() {
 		if (!hasRun) {
 			throw new IllegalStateException("This helper has not run yet");
 		}
-		return result;
+		return ImmutableSet.copyOf(result);
 	}
 
 	private void initializeGrammar() {
 		remainingGrammar = new HashMap<>();
-		for (Map.Entry<String, NonterminalInfo> nonterminalInfoEntry : grammarInfo.getNonterminalInfos().entrySet()) {
+		for (Map.Entry<String, NonterminalDefinition> nonterminalDefinitionEntry : grammar.getNonterminalDefinitions().entrySet()) {
 			List<List<String>> alternatives = new ArrayList<>();
-			for (AlternativeInfo alternativeInfo : nonterminalInfoEntry.getValue().getAlternatives()) {
-				List<String> expansion = alternativeInfo.getExpansion();
-				if (!grammarInfo.sentenceContainsTerminals(expansion)) {
+			for (Alternative alternative : nonterminalDefinitionEntry.getValue().getAlternatives()) {
+				List<String> expansion = alternative.getExpansion();
+				if (!grammar.sentenceContainsTerminals(expansion)) {
 					alternatives.add(new ArrayList<>(expansion));
 				}
 			}
 			if (!alternatives.isEmpty()) {
-				remainingGrammar.put(nonterminalInfoEntry.getKey(), alternatives);
+				remainingGrammar.put(nonterminalDefinitionEntry.getKey(), alternatives);
 			}
 		}
 	}
@@ -89,24 +96,6 @@ final class VanishableNonterminalsHelper {
 				alternative.removeIf(symbol -> symbol.equals(nonterminalToVanish));
 			});
 		});
-
-
-		/*
-		TODO remove if the above works
-
-		Iterator<Map.Entry<String, List<List<String>>>> nonterminalIterator = remainingGrammar.entrySet().iterator();
-		while (nonterminalIterator.hasNext()) {
-			Map.Entry<String, List<List<String>>> nonterminalEntry = nonterminalIterator.next();
-			Iterator<List<String>> alternativeIterator = nonterminalEntry.getValue().iterator();
-			while (alternativeIterator.hasNext()) {
-				List<String> alternative = alternativeIterator.next();
-				alternative.removeIf(symbol -> symbol.equals(nonterminalToVanish));
-			}
-			if (nonterminalEntry.getValue().isEmpty()) {
-				nonterminalIterator.remove();
-			}
-		}
-		*/
 	}
 
 }

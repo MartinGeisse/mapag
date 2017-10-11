@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 /**
@@ -18,6 +19,11 @@ public final class Alternative {
 
 	public ImmutableList<String> getExpansion() {
 		return expansion;
+	}
+
+	public Alternative vanishNonterminal(String nonterminalToVanish) {
+		ParameterUtil.ensureNotNullOrEmpty(nonterminalToVanish, "nonterminalToVanish");
+		return new Alternative(ListUtil.withElementsRemoved(expansion, symbol -> symbol.equals(nonterminalToVanish)));
 	}
 
 }
