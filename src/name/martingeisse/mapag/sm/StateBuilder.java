@@ -23,6 +23,7 @@ final class StateBuilder {
 	}
 
 	public void addElementClosure(StateElement rootElement) {
+		ParameterUtil.ensureNotNull(rootElement, "rootElement");
 		if (elements.add(rootElement)) {
 			if (!rootElement.isAtEnd()) {
 				String currentRightSideSymbol = rootElement.getNextSymbol();
@@ -56,8 +57,15 @@ final class StateBuilder {
 		}
 	}
 
+	public boolean isEmpty() {
+		return elements.isEmpty();
+	}
+
 	public State build() {
-		return new State(elements);
+		if (elements.isEmpty()) {
+			throw new IllegalStateException("no state elements have been added");
+		}
+		return new State(ImmutableSet.copyOf(elements));
 	}
 
 }

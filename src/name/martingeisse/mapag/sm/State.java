@@ -1,5 +1,7 @@
 package name.martingeisse.mapag.sm;
 
+import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.Pair;
 
 import java.util.HashSet;
@@ -10,13 +12,13 @@ import java.util.Set;
  */
 public final class State {
 
-	private final Set<StateElement> elements;
+	private final ImmutableSet<StateElement> elements;
 
-	public State(Set<StateElement> elements) {
+	public State(ImmutableSet<StateElement> elements) {
 		this.elements = elements;
 	}
 
-	public Set<StateElement> getElements() {
+	public ImmutableSet<StateElement> getElements() {
 		return elements;
 	}
 
@@ -40,7 +42,7 @@ public final class State {
 	}
 
 	// Returns the action type and the set of participating elements, or null to indicate a run-time syntax error.
-	public Pair<StateElement.ActionType, Set<StateElement>> determineReactionToTerminal(String terminal) {
+	public Pair<StateElement.ActionType, ImmutableSet<StateElement>> determineReactionToTerminal(String terminal) {
 		Set<StateElement> elementsThatWantToShift = new HashSet<>();
 		Set<StateElement> elementsThatWantToReduce = new HashSet<>();
 		elementLoop:
@@ -74,11 +76,11 @@ public final class State {
 				} else if (reductionNonterminals.size() > 1) {
 					throw new StateMachineException("reduce/reduce conflict in state " + this + " on terminal " + terminal);
 				}
-				return new Pair<>(StateElement.ActionType.REDUCE, elementsThatWantToReduce);
+				return new Pair<>(StateElement.ActionType.REDUCE, ImmutableSet.copyOf(elementsThatWantToReduce));
 			}
 		} else {
 			if (elementsThatWantToReduce.isEmpty()) {
-				return new Pair<>(StateElement.ActionType.SHIFT, elementsThatWantToShift);
+				return new Pair<>(StateElement.ActionType.SHIFT, ImmutableSet.copyOf(elementsThatWantToShift));
 			} else {
 				throw new StateMachineException("shift/reduce conflict in state " + this + " on terminal " + terminal);
 			}
@@ -93,15 +95,17 @@ public final class State {
 		return result;
 	}
 
-	public Set<StateElement> determineRootElementsAfterShiftingNonterminal(String nonterminal) {
-		Set<StateElement> result = new HashSet<>();
+	// Returns null if that nonterminal would cause a syntax error. This corresponds to an empty table entry and
+	// cannot happen at runtime in LR(1).
+	public State determineNextStateAfterShiftingNonterminal(GrammarInfo grammarInfo, String nonterminal) {
+		StateBuilder builder = new StateBuilder(grammarInfo);
 		for (StateElement originalElement : elements) {
 			StateElement nextElement = originalElement.determineNextRootElementForNonterminal(nonterminal);
 			if (nextElement != null) {
-				result.add(nextElement);
+				builder.addElementClosure(nextElement);
 			}
 		}
-		return result;
+		return builder.isEmpty() ? null : builder.build();
 	}
 
 }

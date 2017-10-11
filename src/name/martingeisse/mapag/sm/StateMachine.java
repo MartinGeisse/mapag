@@ -1,5 +1,7 @@
 package name.martingeisse.mapag.sm;
 
+import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import name.martingeisse.mapag.grammar.extended.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.extended.TerminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
@@ -60,7 +62,7 @@ public class StateMachine {
 			getOrCreateNonterminalActionMap(state);
 
 			// Determine reaction to terminals in this state.
-			for (TerminalDefinition terminalDefinition : grammarInfo.getTerminalDefinitions().values()) {
+			for (TerminalDefinition terminalDefinition : grammarInfo.getGrammar().getTerminalDefinitions().values()) {
 				String terminal = terminalDefinition.getName();
 				Pair<StateElement.ActionType, Set<StateElement>> reaction =  state.determineReactionToTerminal(terminal);
 				if (reaction == null) {
@@ -97,20 +99,13 @@ public class StateMachine {
 
 			// Determine reaction to nonterminals in this state. This just tries all nonterminals for simplicity, and
 			// thus adds unnessecary states if the grammar contains alternatives that can never match. We don't care.
-			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getNonterminalDefinitions().values()) {
+			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
 				String nonterminal = nonterminalDefinition.getName();
-				Set<StateElement> nextRootElements = state.determineRootElementsAfterShiftingNonterminal(nonterminal);
-				if (nextRootElements.isEmpty()) {
-					continue;
+				State nextState = state.determineNextStateAfterShiftingNonterminal(grammarInfo, nonterminal);
+				if (nextState != null) {
+					addStates(nextState);
+					getOrCreateNonterminalActionMap(state).put(nonterminal, new Action.ShiftAction(nextState));
 				}
-				// note: the nextRootElements already contains the next roots, not the participating current state's elements
-				StateBuilder builder = new StateBuilder(grammarInfo);
-				for (StateElement rootElement : nextRootElements) {
-					builder.addElementClosure(rootElement);
-				}
-				State nextState = builder.build();
-				addStates(nextState);
-				getOrCreateNonterminalActionMap(state).put(nonterminal, new Action.ShiftAction(nextState));
 			}
 
 		}
