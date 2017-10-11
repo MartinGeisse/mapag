@@ -53,7 +53,7 @@ public final class GrammarInfo {
 		return firstSets;
 	}
 
-	public Set<String> determineFirstSetForSentence(List<String> sentence) {
+	public ImmutableSet<String> determineFirstSetForSentence(List<String> sentence) {
 		ParameterUtil.ensureNotNull(sentence, "sentence");
 		Set<String> result = new HashSet<>();
 		for (String symbol : sentence) {
@@ -70,7 +70,7 @@ public final class GrammarInfo {
 				throw new IllegalArgumentException("unknown symbol name in sentence: " + symbol);
 			}
 		}
-		return result;
+		return ImmutableSet.copyOf(result);
 	}
 
 }

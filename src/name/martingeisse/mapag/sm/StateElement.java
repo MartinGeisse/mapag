@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.sm;
 
-import name.martingeisse.mapag.grammar.canonical.info.AlternativeInfo;
+import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.util.ParameterUtil;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
@@ -9,23 +10,29 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public final class StateElement {
 
 	private final String leftSide;
-	private final AlternativeInfo alternativeInfo;
+	private final Alternative alternative;
 	private final int position;
 	private final String followTerminal;
 
-	public StateElement(String leftSide, AlternativeInfo alternativeInfo, int position, String followTerminal) {
-		this.leftSide = leftSide;
-		this.alternativeInfo = alternativeInfo;
+	public StateElement(String leftSide, Alternative alternative, int position, String followTerminal) {
+		this.leftSide = ParameterUtil.ensureNotNullOrEmpty(leftSide, "leftSide");
+		this.alternative = ParameterUtil.ensureNotNull(alternative, "alternative");
 		this.position = position;
-		this.followTerminal = followTerminal;
+		if (position < 0) {
+			throw new IllegalArgumentException("position cannot be negative");
+		}
+		if (position > alternative.getExpansion().size()) {
+			throw new IllegalArgumentException("position cannot be greater than the number of right-hand symbols");
+		}
+		this.followTerminal = ParameterUtil.ensureNotNullOrEmpty(followTerminal, "followTerminal");
 	}
 
 	public String getLeftSide() {
 		return leftSide;
 	}
 
-	public AlternativeInfo getAlternativeInfo() {
-		return alternativeInfo;
+	public Alternative getAlternative() {
+		return alternative;
 	}
 
 	public int getPosition() {
@@ -37,21 +44,29 @@ public final class StateElement {
 	}
 
 	public boolean isAtEnd() {
-		return position == alternativeInfo.getExpansion().size();
+		return position == alternative.getExpansion().size();
+	}
+
+	public String getNextSymbol() {
+		if (isAtEnd()) {
+			return followTerminal;
+		} else {
+			return alternative.getExpansion().get(position);
+		}
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof StateElement) {
 			StateElement other = (StateElement) obj;
-			return leftSide.equals(other.leftSide) && alternativeInfo.equals(other.alternativeInfo) && position == other.position && followTerminal.equals(other.followTerminal);
+			return leftSide.equals(other.leftSide) && alternative.equals(other.alternative) && position == other.position && followTerminal.equals(other.followTerminal);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(leftSide).append(alternativeInfo).append(position).append(followTerminal).toHashCode();
+		return new HashCodeBuilder().append(leftSide).append(alternative).append(position).append(followTerminal).toHashCode();
 	}
 
 	@Override
@@ -59,7 +74,7 @@ public final class StateElement {
 		StringBuilder builder = new StringBuilder();
 		builder.append(leftSide).append(" ::= ");
 		int i = 0;
-		for (String symbol : alternativeInfo.getExpansion()) {
+		for (String symbol : alternative.getExpansion()) {
 			if (i == position) {
 				builder.append(". ");
 			}
@@ -69,14 +84,15 @@ public final class StateElement {
 		if (i == position) {
 			builder.append(". ");
 		}
-		builder.append(" : ").append(followTerminal);
+		builder.append(": ").append(followTerminal);
 		return builder.toString();
 	}
 
 	public ActionType determineActionTypeForTerminal(String terminal) {
+		ParameterUtil.ensureNotNullOrEmpty(terminal, "terminal");
 		if (isAtEnd()) {
 			return followTerminal.equals(terminal) ? ActionType.REDUCE : ActionType.DROP_ELEMENT;
-		} else if (alternativeInfo.getExpansion().get(position).equals(terminal)) {
+		} else if (alternative.getExpansion().get(position).equals(terminal)) {
 			return ActionType.SHIFT;
 		} else {
 			return ActionType.DROP_ELEMENT;
@@ -90,9 +106,10 @@ public final class StateElement {
 	}
 
 	public StateElement determineNextRootElementForNonterminal(String nonterminal) {
+		ParameterUtil.ensureNotNullOrEmpty(nonterminal, "nonterminal");
 		if (isAtEnd()) {
 			return null;
-		} else if (alternativeInfo.getExpansion().get(position).equals(nonterminal)) {
+		} else if (alternative.getExpansion().get(position).equals(nonterminal)) {
 			return getShifted();
 		} else {
 			return null;
@@ -101,10 +118,10 @@ public final class StateElement {
 
 	// returns this element with the first symbol shifted
 	public StateElement getShifted() {
-		if (position == alternativeInfo.getExpansion().size()) {
+		if (isAtEnd()) {
 			throw new IllegalStateException("cannot shift -- remaining right side is already empty");
 		}
-		return new StateElement(leftSide, alternativeInfo, position + 1, followTerminal);
+		return new StateElement(leftSide, alternative, position + 1, followTerminal);
 	}
 
 }

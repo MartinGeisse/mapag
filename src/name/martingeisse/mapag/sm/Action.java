@@ -1,6 +1,6 @@
 package name.martingeisse.mapag.sm;
 
-import name.martingeisse.mapag.grammar.canonical.info.AlternativeInfo;
+import name.martingeisse.mapag.grammar.canonical.Alternative;
 
 /**
  * Note: null is used to represent "syntax error" / unused entries since it's compatible with each subclass.
@@ -26,19 +26,19 @@ public abstract class Action {
 	public static final class ReduceAction extends Action {
 
 		private final String nonterminal;
-		private final AlternativeInfo alternativeInfo;
+		private final Alternative alternative;
 
-		public ReduceAction(String nonterminal, AlternativeInfo alternativeInfo) {
+		public ReduceAction(String nonterminal, Alternative alternative) {
 			this.nonterminal = nonterminal;
-			this.alternativeInfo = alternativeInfo;
+			this.alternative = alternative;
 		}
 
 		public String getNonterminal() {
 			return nonterminal;
 		}
 
-		public AlternativeInfo getAlternativeInfo() {
-			return alternativeInfo;
+		public Alternative getAlternative() {
+			return alternative;
 		}
 	}
 

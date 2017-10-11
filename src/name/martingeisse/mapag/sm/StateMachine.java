@@ -4,6 +4,7 @@ import name.martingeisse.mapag.grammar.extended.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.extended.TerminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.Pair;
+import name.martingeisse.mapag.util.ParameterUtil;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,11 +22,8 @@ public class StateMachine {
 	private final Map<State, Map<String, Action.ShiftAction>> nonterminalActions = new HashMap<>();
 	private final State startState;
 
-	/**
-	 * Note: This object becomes invalid if the grammar gets changed after calling this constructor!
-	 */
 	public StateMachine(GrammarInfo grammarInfo) {
-		this.grammarInfo = grammarInfo;
+		this.grammarInfo = ParameterUtil.ensureNotNull(grammarInfo, "grammarInfo");
 		this.startState = buildStartState(grammarInfo);
 		addStates(startState);
 	}
