@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.extended;
 
-import java.util.List;
+import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.util.ParameterUtil;
 
 /**
  *
@@ -9,20 +10,23 @@ public final class Grammar {
 
 	private final String packageName;
 	private final String className;
-	private final List<TerminalDeclaration> terminalDefinitions;
-	private final List<NonterminalDeclaration> nonterminalDefinitions;
+	private final ImmutableList<TerminalDeclaration> terminalDeclarations;
+	private final ImmutableList<NonterminalDeclaration> nonterminalDeclarations;
 	private final PrecedenceTable precedenceTable;
 	private final String startNonterminalName;
-	private final List<Production> productions;
+	private final ImmutableList<Production> productions;
 
-	public Grammar(String packageName, String className, List<TerminalDeclaration> terminalDefinitions, List<NonterminalDeclaration> nonterminalDefinitions, PrecedenceTable precedenceTable, String startNonterminalName, List<Production> productions) {
-		this.packageName = packageName;
-		this.className = className;
-		this.terminalDefinitions = terminalDefinitions;
-		this.nonterminalDefinitions = nonterminalDefinitions;
-		this.precedenceTable = precedenceTable;
-		this.startNonterminalName = startNonterminalName;
-		this.productions = productions;
+	public Grammar(String packageName, String className, ImmutableList<TerminalDeclaration> terminalDeclarations, ImmutableList<NonterminalDeclaration> nonterminalDeclarations, PrecedenceTable precedenceTable, String startNonterminalName, ImmutableList<Production> productions) {
+		this.packageName = ParameterUtil.ensureNotNullOrEmpty(packageName, "packageName");
+		this.className = ParameterUtil.ensureNotNullOrEmpty(className, "className");
+		this.terminalDeclarations = ParameterUtil.ensureNotNull(terminalDeclarations, "terminalDeclarations");
+		ParameterUtil.ensureNoNullElement(terminalDeclarations, "terminalDeclarations");
+		this.nonterminalDeclarations = ParameterUtil.ensureNotNull(nonterminalDeclarations, "nonterminalDeclarations");
+		ParameterUtil.ensureNoNullElement(nonterminalDeclarations, "nonterminalDeclarations");
+		this.precedenceTable = (precedenceTable == null ? new PrecedenceTable(ImmutableList.of()) : precedenceTable);
+		this.startNonterminalName = ParameterUtil.ensureNotNullOrEmpty(startNonterminalName, "startNonterminalName");
+		this.productions = ParameterUtil.ensureNotNull(productions, "productions");
+		ParameterUtil.ensureNoNullElement(productions, "productions");
 	}
 
 	public String getPackageName() {
@@ -33,12 +37,12 @@ public final class Grammar {
 		return className;
 	}
 
-	public List<TerminalDeclaration> getTerminalDefinitions() {
-		return terminalDefinitions;
+	public ImmutableList<TerminalDeclaration> getTerminalDeclarations() {
+		return terminalDeclarations;
 	}
 
-	public List<NonterminalDeclaration> getNonterminalDefinitions() {
-		return nonterminalDefinitions;
+	public ImmutableList<NonterminalDeclaration> getNonterminalDeclarations() {
+		return nonterminalDeclarations;
 	}
 
 	public PrecedenceTable getPrecedenceTable() {
@@ -49,7 +53,7 @@ public final class Grammar {
 		return startNonterminalName;
 	}
 
-	public List<Production> getProductions() {
+	public ImmutableList<Production> getProductions() {
 		return productions;
 	}
 

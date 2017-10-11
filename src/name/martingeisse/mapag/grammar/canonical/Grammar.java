@@ -1,7 +1,6 @@
 package name.martingeisse.mapag.grammar.canonical;
 
-import name.martingeisse.mapag.grammar.extended.NonterminalDeclaration;
-import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.List;
 
@@ -10,26 +9,18 @@ import java.util.List;
  */
 public final class Grammar {
 
-	public static final String IMPLICIT_START_NONTERMINAL_NAME = "%start";
-	public static final String EOF_TOKEN_NAME = "%eof";
-	public static final String ERROR_TOKEN_NAME = "%error";
-
 	private final String packageName;
 	private final String className;
-	private final List<TerminalDeclaration> terminalDefinitions;
-	private final List<NonterminalDeclaration> nonterminalDefinitions;
-	private final PrecedenceTable precedenceTable;
+	private final ImmutableMap<String, TerminalDefinition> terminalDefinitions;
+	private final ImmutableMap<String, NonterminalDefinition> nonterminalDefinitions;
 	private final String startNonterminalName;
-	private final List<Production> productions;
 
-	public Grammar(String packageName, String className, List<TerminalDeclaration> terminalDefinitions, List<NonterminalDeclaration> nonterminalDefinitions, PrecedenceTable precedenceTable, String startNonterminalName, List<Production> productions) {
+	public Grammar(String packageName, String className, ImmutableMap<String, TerminalDefinition> terminalDefinitions, ImmutableMap<String, NonterminalDefinition> nonterminalDefinitions, String startNonterminalName) {
 		this.packageName = packageName;
 		this.className = className;
 		this.terminalDefinitions = terminalDefinitions;
 		this.nonterminalDefinitions = nonterminalDefinitions;
-		this.precedenceTable = precedenceTable;
 		this.startNonterminalName = startNonterminalName;
-		this.productions = productions;
 	}
 
 	public String getPackageName() {
@@ -40,24 +31,41 @@ public final class Grammar {
 		return className;
 	}
 
-	public List<TerminalDeclaration> getTerminalDefinitions() {
+	public ImmutableMap<String, TerminalDefinition> getTerminalDefinitions() {
 		return terminalDefinitions;
 	}
+	public boolean isTerminal(String name) {
+		return terminalDefinitions.containsKey(name);
+	}
 
-	public List<NonterminalDeclaration> getNonterminalDefinitions() {
+	public boolean sentenceContainsTerminals(List<String> sentence) {
+		for (String symbol : sentence) {
+			if (isTerminal(symbol)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public ImmutableMap<String, NonterminalDefinition> getNonterminalDefinitions() {
 		return nonterminalDefinitions;
 	}
 
-	public PrecedenceTable getPrecedenceTable() {
-		return precedenceTable;
+	public boolean isNonterminal(String name) {
+		return nonterminalDefinitions.containsKey(name);
+	}
+
+	public boolean sentenceContainsNonterminals(List<String> sentence) {
+		for (String symbol : sentence) {
+			if (isNonterminal(symbol)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public String getStartNonterminalName() {
 		return startNonterminalName;
-	}
-
-	public List<Production> getProductions() {
-		return productions;
 	}
 
 }

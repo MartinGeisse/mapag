@@ -1,19 +1,19 @@
 package name.martingeisse.mapag.grammar.canonical;
 
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 /**
  *
  */
 public final class Alternative {
 
-	private final List<String> expansion;
+	private final ImmutableList<String> expansion;
 
-	public Alternative(List<String> expansion) {
+	public Alternative(ImmutableList<String> expansion) {
 		this.expansion = expansion;
 	}
 
-	public List<String> getExpansion() {
+	public ImmutableList<String> getExpansion() {
 		return expansion;
 	}
 
