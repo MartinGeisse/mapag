@@ -2,7 +2,6 @@ package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
-import name.martingeisse.mapag.util.Pair;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -70,7 +69,7 @@ public final class State {
 			if (elementsThatWantToReduce.isEmpty()) {
 				return null;
 			} else {
-				return getReduce(elementsThatWantToReduce);
+				return getReduce(terminal, elementsThatWantToReduce).checkForAcceptingImplicitStartNonterminal();
 			}
 		} else {
 			if (elementsThatWantToReduce.isEmpty()) {
@@ -81,20 +80,16 @@ public final class State {
 		}
 	}
 
-	private static Action.Reduce getReduce(Set<StateElement> elements) {
-		Set<String> result = new HashSet<>();
-		for (StateElement element : elements) {
-			result.add(element.getLeftSide());
-		}
-
-
-		if (reductionNonterminals.isEmpty()) {
-			throw new RuntimeException("cannot happen");
-		} else if (reductionNonterminals.size() > 1) {
+	private Action.Reduce getReduce(String terminal, Set<StateElement> elements) {
+		// All state elements are at the end and have the specified terminal as their follow-terminal. So they can
+		// only differ in their left side or alternative. Either case is a reduce/reduce conflict. Note that equal
+		// duplicates have been filtered out since StateElement has proper hashCode()/equals() support and the elements
+		// are stored in a Set<>.
+		if (elements.size() > 1) {
 			throw new StateMachineException("reduce/reduce conflict in state " + this + " on terminal " + terminal);
 		}
-
-		return result;
+		StateElement element = elements.iterator().next();
+		return new Action.Reduce(element.getLeftSide(), element.getAlternative());
 	}
 
 	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elements) {

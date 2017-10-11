@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.sm;
 
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 
 /**
@@ -40,6 +41,15 @@ public abstract class Action {
 		public Alternative getAlternative() {
 			return alternative;
 		}
+
+		public Action checkForAcceptingImplicitStartNonterminal() {
+			if (nonterminal.equals(SpecialSymbols.IMPLICIT_START_NONTERMINAL_NAME)) {
+				return Accept.INSTANCE;
+			} else {
+				return this;
+			}
+		}
+
 	}
 
 	public static final class Accept extends Action {
