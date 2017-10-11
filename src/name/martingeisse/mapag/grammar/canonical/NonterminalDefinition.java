@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.util.ParameterUtil;
 
 /**
  *
@@ -11,7 +12,8 @@ public final class NonterminalDefinition extends SymbolDefinition {
 
 	public NonterminalDefinition(String name, ImmutableList<Alternative> alternatives) {
 		super(name);
-		this.alternatives = alternatives;
+		this.alternatives = ParameterUtil.ensureNotNull(alternatives, "alternatives");
+		ParameterUtil.ensureNoNullElement(alternatives, "alternatives");
 	}
 
 	public ImmutableList<Alternative> getAlternatives() {

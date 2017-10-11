@@ -112,4 +112,78 @@ public class ParameterUtil {
 		return argument;
 	}
 
+	/**
+	 * Ensures that the specified array argument does not contain any null or empty-string element. This method does not
+	 * ensure that the array itself is a non-null reference; instead, it will simply skip the element check if the array
+	 * itself is null.
+	 *
+	 * @param argument the argument value (may be null)
+	 * @param name     the argument name (for error messages)
+	 * @return the argument value for convenience
+	 */
+	public static String[] ensureNoNullOrEmptyElement(final String[] argument, final String name) {
+		if (argument != null) {
+			for (int i = 0; i < argument.length; i++) {
+				if (argument[i] == null) {
+					throw new IllegalArgumentException("argument contains null element at index " + i + ": " + name);
+				}
+				if (argument[i].isEmpty()) {
+					throw new IllegalArgumentException("argument contains empty element at index " + i + ": " + name);
+				}
+			}
+		}
+		return argument;
+	}
+
+	/**
+	 * Ensures that the specified list argument does not contain any null or empty-string element. This method does not
+	 * ensure that the list itself is a non-null reference; instead, it will simply skip the element check if the list
+	 * itself is null.
+	 *
+	 * @param argument the argument value (may be null)
+	 * @param name     the argument name (for error messages)
+	 * @return the argument value for convenience
+	 */
+	public static List<String> ensureNoNullOrEmptyElement(final List<String> argument, final String name) {
+		if (argument != null) {
+			int i = 0;
+			for (String element : argument) {
+				if (element == null) {
+					throw new IllegalArgumentException("argument contains null element at index " + i + ": " + name);
+				}
+				if (element.isEmpty()) {
+					throw new IllegalArgumentException("argument contains empty element at index " + i + ": " + name);
+				}
+				i++;
+			}
+		}
+		return argument;
+	}
+
+	/**
+	 * Ensures that the specified collection argument does not contain any null or empty-string element. If the
+	 * collection is a list, you should use {@link #ensureNoNullElement(List, String)} instead since, in case of errors,
+	 * it will also include the index where null was found as part of the exception message. This method does not ensure
+	 * that the collection itself is a non-null reference; instead, it will simply skip the element check if the
+	 * collection itself is null.
+	 *
+	 * @param <I>      the iterable type
+	 * @param argument the argument value (may be null)
+	 * @param name     the argument name (for error messages)
+	 * @return the argument value for convenience
+	 */
+	public static <I extends Iterable<String>> I ensureNoNullOrEmptyElement(final I argument, final String name) {
+		if (argument != null) {
+			for (String element : argument) {
+				if (element == null) {
+					throw new IllegalArgumentException("argument contains null element: " + name);
+				}
+				if (element.isEmpty()) {
+					throw new IllegalArgumentException("argument contains empty element: " + name);
+				}
+			}
+		}
+		return argument;
+	}
+
 }
