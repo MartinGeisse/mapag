@@ -1,33 +1,28 @@
 package name.martingeisse.mapag.codegen;
 
+import name.martingeisse.mapag.grammar.canonical.Grammar;
+import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
+import name.martingeisse.mapag.sm.StateMachine;
+
 /**
  *
  */
 public class MapagParserClassGenerator {
 
-	private String packageName;
-	private String className;
+	private final GrammarInfo grammarInfo;
+	private final Grammar grammar;
+	private final StateMachine stateMachine;
 
-	public String getPackageName() {
-		return packageName;
-	}
-
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
-	}
-
-	public String getClassName() {
-		return className;
-	}
-
-	public void setClassName(String className) {
-		this.className = className;
+	public MapagParserClassGenerator(GrammarInfo grammarInfo, StateMachine stateMachine) {
+		this.grammarInfo = grammarInfo;
+		this.grammar = grammarInfo.getGrammar();
+		this.stateMachine = stateMachine;
 	}
 
 	public void generate() {
-		println("package " + packageName + ";\n");
+		println("package " + grammar.getPackageName() + ";\n");
 		println();
-		println("class " + className + " {");
+		println("class " + grammar.getClassName() + " {");
 		println("}");
 	}
 
