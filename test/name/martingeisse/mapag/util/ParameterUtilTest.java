@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -65,17 +66,17 @@ public class ParameterUtilTest {
 	}
 
 	@Test
-	public void testEnsureNotNullOrEmptyWithNull() {
-		testException(ParameterUtil::ensureNotNullOrEmpty, null);
+	public void testEnsureNotNullOrEmptyStringWithNull() {
+		testException(ParameterUtil::ensureNotNullOrEmpty, (String) null);
 	}
 
 	@Test
-	public void testEnsureNotNullOrEmptyWithEmpty() {
+	public void testEnsureNotNullOrEmptyStringWithEmpty() {
 		testException(ParameterUtil::ensureNotNullOrEmpty, "");
 	}
 
 	@Test
-	public void testEnsureNotNullOrEmptyWithNonNull() {
+	public void testEnsureNotNullOrEmptyStringWithNonNull() {
 		ParameterUtil.ensureNotNullOrEmpty("foo", NAME);
 	}
 
@@ -112,6 +113,21 @@ public class ParameterUtilTest {
 		ParameterUtil.ensureNoNullOrEmptyElement(new String[]{"foo", "xxx", "bar"}, NAME);
 		ParameterUtil.ensureNoNullOrEmptyElement(Arrays.asList("foo", "xxx", "bar"), NAME);
 		ParameterUtil.ensureNoNullOrEmptyElement((Iterable<String>) Arrays.asList("foo", "xxx", "bar"), NAME);
+	}
+
+	@Test
+	public void testEnsureNotNullOrEmptyCollectionWithNull() {
+		testException(ParameterUtil::ensureNotNullOrEmpty, (Collection<?>) null);
+	}
+
+	@Test
+	public void testEnsureNotNullOrEmptyCollectionWithEmpty() {
+		testException(ParameterUtil::ensureNotNullOrEmpty, ImmutableList.of());
+	}
+
+	@Test
+	public void testEnsureNotNullOrEmptyCollectionWithNonNull() {
+		ParameterUtil.ensureNotNullOrEmpty(ImmutableList.of("foo"), NAME);
 	}
 
 }

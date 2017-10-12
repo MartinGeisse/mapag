@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.util;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -186,4 +187,20 @@ public class ParameterUtil {
 		return argument;
 	}
 
+	/**
+	 * Ensures that the specified argument is not null or an empty collection.
+	 *
+	 * @param argument the argument value
+	 * @param name     the argument name (for error messages)
+	 * @return the argument value for convenience
+	 */
+	public static <T extends Collection<?>> T ensureNotNullOrEmpty(final T argument, final String name) {
+		if (argument == null) {
+			throw new IllegalArgumentException("argument is null: " + name);
+		}
+		if (argument.isEmpty()) {
+			throw new IllegalArgumentException("argument is empty: " + name);
+		}
+		return argument;
+	}
 }

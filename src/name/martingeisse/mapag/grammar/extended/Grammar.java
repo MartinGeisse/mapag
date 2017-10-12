@@ -17,15 +17,15 @@ public final class Grammar {
 	private final ImmutableList<Production> productions;
 
 	public Grammar(String packageName, String className, ImmutableList<TerminalDeclaration> terminalDeclarations, ImmutableList<NonterminalDeclaration> nonterminalDeclarations, PrecedenceTable precedenceTable, String startNonterminalName, ImmutableList<Production> productions) {
-		this.packageName = ParameterUtil.ensureNotNullOrEmpty(packageName, "packageName");
+		this.packageName = ParameterUtil.ensureNotNull(packageName, "packageName");
 		this.className = ParameterUtil.ensureNotNullOrEmpty(className, "className");
-		this.terminalDeclarations = ParameterUtil.ensureNotNull(terminalDeclarations, "terminalDeclarations");
+		this.terminalDeclarations = ParameterUtil.ensureNotNullOrEmpty(terminalDeclarations, "terminalDeclarations");
 		ParameterUtil.ensureNoNullElement(terminalDeclarations, "terminalDeclarations");
-		this.nonterminalDeclarations = ParameterUtil.ensureNotNull(nonterminalDeclarations, "nonterminalDeclarations");
+		this.nonterminalDeclarations = ParameterUtil.ensureNotNullOrEmpty(nonterminalDeclarations, "nonterminalDeclarations");
 		ParameterUtil.ensureNoNullElement(nonterminalDeclarations, "nonterminalDeclarations");
 		this.precedenceTable = (precedenceTable == null ? new PrecedenceTable(ImmutableList.of()) : precedenceTable);
 		this.startNonterminalName = ParameterUtil.ensureNotNullOrEmpty(startNonterminalName, "startNonterminalName");
-		this.productions = ParameterUtil.ensureNotNull(productions, "productions");
+		this.productions = ParameterUtil.ensureNotNullOrEmpty(productions, "productions");
 		ParameterUtil.ensureNoNullElement(productions, "productions");
 	}
 
