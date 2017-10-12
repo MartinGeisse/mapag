@@ -14,4 +14,8 @@ public final class OptionalExpression extends Expression {
 		this.operand = operand;
 	}
 
+	public Expression getOperand() {
+		return operand;
+	}
+
 }
