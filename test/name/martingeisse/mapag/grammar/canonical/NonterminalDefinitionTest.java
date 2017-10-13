@@ -35,4 +35,9 @@ public class NonterminalDefinitionTest {
 		new NonterminalDefinition("nt", ImmutableList.of());
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testPercentSignInNameNotAllowed() {
+		new NonterminalDefinition("%foo", ALTERNATIVES);
+	}
+
 }

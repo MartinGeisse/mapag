@@ -38,9 +38,18 @@ public class GrammarTest {
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
 		Assert.assertEquals(PACKAGE_NAME, grammar.getPackageName());
 		Assert.assertEquals(CLASS_NAME, grammar.getClassName());
-		Assert.assertEquals(ImmutableSet.copyOf(TERMINALS), ImmutableSet.copyOf(grammar.getTerminalDefinitions().values()));
-		Assert.assertEquals(ImmutableSet.copyOf(NONTERMINALS), ImmutableSet.copyOf(grammar.getNonterminalDefinitions().values()));
 		Assert.assertEquals(START_NONTERMINAL_NAME, grammar.getStartNonterminalName());
+
+		Assert.assertEquals(3, grammar.getTerminalDefinitions().size());
+		Assert.assertEquals(TERMINAL_1, grammar.getTerminalDefinitions().get("foo"));
+		Assert.assertEquals(TERMINAL_2, grammar.getTerminalDefinitions().get("bar"));
+		Assert.assertEquals(TERMINAL_3, grammar.getTerminalDefinitions().get("baz"));
+
+		Assert.assertEquals(3, grammar.getNonterminalDefinitions().size());
+		Assert.assertEquals(NONTERMINAL_1, grammar.getNonterminalDefinitions().get("nt1"));
+		Assert.assertEquals(NONTERMINAL_2, grammar.getNonterminalDefinitions().get("nt2"));
+		Assert.assertEquals(NONTERMINAL_3, grammar.getNonterminalDefinitions().get("dummyStart"));
+
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -106,6 +115,67 @@ public class GrammarTest {
 	@Test
 	public void testTerminalNonterminalNameCollision() {
 		// TODO
+	}
+
+	@Test
+	public void testIsTerminal() {
+		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+
+		// terminals
+		Assert.assertTrue(grammar.isTerminal("foo"));
+		Assert.assertTrue(grammar.isTerminal("bar"));
+		Assert.assertTrue(grammar.isTerminal("baz"));
+
+		// undefined
+		Assert.assertFalse(grammar.isTerminal("abc"));
+
+		// nonterminals
+		Assert.assertFalse(grammar.isTerminal("nt1"));
+		Assert.assertFalse(grammar.isTerminal("nt2"));
+		Assert.assertFalse(grammar.isTerminal("dummyStart"));
+
+		// special
+		Assert.assertFalse(grammar.isTerminal("%start"));
+		Assert.assertFalse(grammar.isTerminal("%eof"));
+		Assert.assertFalse(grammar.isTerminal("%error"));
+
+		// special undefined
+		Assert.assertFalse(grammar.isTerminal("%wegoiewjgioejwgoewjhgiouewhguiewhjgoiew"));
+
+	}
+
+	@Test
+	public void testSentenceContainsTerminals() {
+		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+		// Assert.assertTrue(grammar.sentenceContainsTerminals(ImmutableList.of("nt1"));
+		// TODO
+	}
+
+	@Test
+	public void testIsNonterminal() {
+		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+
+		// terminals
+		Assert.assertFalse(grammar.isTerminal("foo"));
+		Assert.assertFalse(grammar.isTerminal("bar"));
+		Assert.assertFalse(grammar.isTerminal("baz"));
+
+		// nonterminals
+		Assert.assertTrue(grammar.isTerminal("nt1"));
+		Assert.assertTrue(grammar.isTerminal("nt2"));
+		Assert.assertTrue(grammar.isTerminal("dummyStart"));
+
+		// undefined
+		Assert.assertFalse(grammar.isTerminal("abc"));
+
+		// special
+		Assert.assertFalse(grammar.isTerminal("%start"));
+		Assert.assertFalse(grammar.isTerminal("%eof"));
+		Assert.assertFalse(grammar.isTerminal("%error"));
+
+		// special undefined
+		Assert.assertFalse(grammar.isTerminal("%wegoiewjgioejwgoewjhgiouewhguiewhjgoiew"));
+
 	}
 
 }

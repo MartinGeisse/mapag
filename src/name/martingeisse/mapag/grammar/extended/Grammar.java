@@ -57,4 +57,8 @@ public final class Grammar {
 		return productions;
 	}
 
+	public void validate() {
+		// TODO
+	}
+
 }

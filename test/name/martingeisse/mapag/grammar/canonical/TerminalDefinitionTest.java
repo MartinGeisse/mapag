@@ -40,4 +40,8 @@ public class TerminalDefinitionTest {
 		new TerminalDefinition("foo", null, null);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testPercentSignInNameNotAllowed() {
+		new TerminalDefinition("%foo", 5, Associativity.LEFT);
+	}
 }

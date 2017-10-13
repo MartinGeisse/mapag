@@ -11,6 +11,9 @@ public abstract class SymbolDefinition {
 
 	public SymbolDefinition(String name) {
 		ParameterUtil.ensureNotNullOrEmpty(name, "name");
+		if (name.indexOf('%') != -1) {
+			throw new IllegalArgumentException("user-defined symbol names must not contain the '%' character");
+		}
 		this.name = name;
 	}
 

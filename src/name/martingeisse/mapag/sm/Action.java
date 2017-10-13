@@ -42,8 +42,8 @@ public abstract class Action {
 			return alternative;
 		}
 
-		public Action checkForAcceptingImplicitStartNonterminal() {
-			if (nonterminal.equals(SpecialSymbols.IMPLICIT_START_NONTERMINAL_NAME)) {
+		public Action checkForAcceptingRootSymbol() {
+			if (nonterminal.equals(SpecialSymbols.ROOT_SYMBOL_NAME)) {
 				return Accept.INSTANCE;
 			} else {
 				return this;

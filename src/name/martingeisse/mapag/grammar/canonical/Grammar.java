@@ -95,4 +95,8 @@ public final class Grammar {
 		return startNonterminalName;
 	}
 
+	public void validate() {
+		// TODO
+	}
+
 }

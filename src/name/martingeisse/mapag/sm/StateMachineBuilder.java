@@ -33,7 +33,7 @@ public class StateMachineBuilder {
 		String startNonterminal = grammarInfo.getGrammar().getStartNonterminalName();
 		Alternative implicitAlternative = new Alternative(ImmutableList.of(startNonterminal));
 		StateBuilder builder = new StateBuilder(grammarInfo);
-		builder.addElementClosure(new StateElement(SpecialSymbols.IMPLICIT_START_NONTERMINAL_NAME, implicitAlternative, 0, SpecialSymbols.EOF_TOKEN_NAME));
+		builder.addElementClosure(new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, implicitAlternative, 0, SpecialSymbols.EOF_SYMBOL_NAME));
 		State startState = builder.build();
 		addStates(startState);
 		return new StateMachine(ImmutableSet.copyOf(states), makeImmutable(terminalActions), makeImmutable(nonterminalActions), startState);

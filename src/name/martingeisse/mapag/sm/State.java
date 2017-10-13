@@ -69,7 +69,7 @@ public final class State {
 			if (elementsThatWantToReduce.isEmpty()) {
 				return null;
 			} else {
-				return getReduce(terminal, elementsThatWantToReduce).checkForAcceptingImplicitStartNonterminal();
+				return getReduce(terminal, elementsThatWantToReduce).checkForAcceptingRootSymbol();
 			}
 		} else {
 			if (elementsThatWantToReduce.isEmpty()) {
