@@ -64,7 +64,7 @@ public class GrammarTest {
 		new Grammar(PACKAGE_NAME, CLASS_NAME, null, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testEmptyTerminalDeclarations() {
 		new Grammar(PACKAGE_NAME, CLASS_NAME, ImmutableList.of(), NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 	}
@@ -74,7 +74,7 @@ public class GrammarTest {
 		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, null, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testEmptyNonterminalDeclarations() {
 		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, ImmutableList.of(), PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 	}
@@ -106,7 +106,7 @@ public class GrammarTest {
 		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, null);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testEmptyProductions() {
 		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, ImmutableList.of());
 	}

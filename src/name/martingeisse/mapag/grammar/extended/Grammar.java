@@ -19,13 +19,13 @@ public final class Grammar {
 	public Grammar(String packageName, String className, ImmutableList<TerminalDeclaration> terminalDeclarations, ImmutableList<NonterminalDeclaration> nonterminalDeclarations, PrecedenceTable precedenceTable, String startNonterminalName, ImmutableList<Production> productions) {
 		this.packageName = ParameterUtil.ensureNotNull(packageName, "packageName");
 		this.className = ParameterUtil.ensureNotNullOrEmpty(className, "className");
-		this.terminalDeclarations = ParameterUtil.ensureNotNullOrEmpty(terminalDeclarations, "terminalDeclarations");
+		this.terminalDeclarations = ParameterUtil.ensureNotNull(terminalDeclarations, "terminalDeclarations");
 		ParameterUtil.ensureNoNullElement(terminalDeclarations, "terminalDeclarations");
-		this.nonterminalDeclarations = ParameterUtil.ensureNotNullOrEmpty(nonterminalDeclarations, "nonterminalDeclarations");
+		this.nonterminalDeclarations = ParameterUtil.ensureNotNull(nonterminalDeclarations, "nonterminalDeclarations");
 		ParameterUtil.ensureNoNullElement(nonterminalDeclarations, "nonterminalDeclarations");
 		this.precedenceTable = (precedenceTable == null ? new PrecedenceTable(ImmutableList.of()) : precedenceTable);
 		this.startNonterminalName = ParameterUtil.ensureNotNullOrEmpty(startNonterminalName, "startNonterminalName");
-		this.productions = ParameterUtil.ensureNotNullOrEmpty(productions, "productions");
+		this.productions = ParameterUtil.ensureNotNull(productions, "productions");
 		ParameterUtil.ensureNoNullElement(productions, "productions");
 	}
 

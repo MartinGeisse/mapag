@@ -3,7 +3,10 @@ package name.martingeisse.mapag.grammar.canonical;
 import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.util.ParameterUtil;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -16,16 +19,28 @@ public final class Grammar {
 	private final ImmutableMap<String, NonterminalDefinition> nonterminalDefinitions;
 	private final String startNonterminalName;
 
-	public Grammar(String packageName, String className, ImmutableMap<String, TerminalDefinition> terminalDefinitions, ImmutableMap<String, NonterminalDefinition> nonterminalDefinitions, String startNonterminalName) {
-		this.packageName = ParameterUtil.ensureNotNullOrEmpty(packageName, "packageName");
+	public Grammar(String packageName, String className, Collection<TerminalDefinition> terminalDefinitions, Collection<NonterminalDefinition> nonterminalDefinitions, String startNonterminalName) {
+
+		this.packageName = ParameterUtil.ensureNotNull(packageName, "packageName");
 		this.className = ParameterUtil.ensureNotNullOrEmpty(className, "className");
-		this.terminalDefinitions = ParameterUtil.ensureNotNull(terminalDefinitions, "terminalDefinitions");
-		ParameterUtil.ensureNoNullOrEmptyElement(terminalDefinitions.keySet(), "terminalDefinitions.keySet()");
-		ParameterUtil.ensureNoNullElement(terminalDefinitions.values(), "terminalDefinitions.values()");
-		this.nonterminalDefinitions = ParameterUtil.ensureNotNull(nonterminalDefinitions, "nonterminalDefinitions");
-		ParameterUtil.ensureNoNullOrEmptyElement(nonterminalDefinitions.keySet(), "nonterminalDefinitions.keySet()");
-		ParameterUtil.ensureNoNullElement(nonterminalDefinitions.values(), "nonterminalDefinitions.values()");
+
+		ParameterUtil.ensureNotNull(terminalDefinitions, "terminalDefinitions");
+		ParameterUtil.ensureNoNullElement(terminalDefinitions, "terminalDefinitions");
+		this.terminalDefinitions = mapByName(terminalDefinitions);
+
+		ParameterUtil.ensureNotNull(nonterminalDefinitions, "nonterminalDefinitions");
+		ParameterUtil.ensureNoNullElement(nonterminalDefinitions, "nonterminalDefinitions");
+		this.nonterminalDefinitions = mapByName(nonterminalDefinitions);
+
 		this.startNonterminalName = ParameterUtil.ensureNotNullOrEmpty(startNonterminalName, "startNonterminalName");
+	}
+
+	private static <T extends SymbolDefinition> ImmutableMap<String, T> mapByName(Collection<T> collection) {
+		Map<String, T> result = new HashMap<>();
+		for (T element : collection) {
+			result.put(element.getName(), element);
+		}
+		return ImmutableMap.copyOf(result);
 	}
 
 	public String getPackageName() {
