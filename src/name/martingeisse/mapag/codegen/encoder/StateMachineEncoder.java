@@ -38,7 +38,7 @@ public final class StateMachineEncoder {
 
 	private <T> ImmutableList<T> list(Collection<T> input, Comparator<T> comparator) {
 		List<T> list = new ArrayList<>(input);
-		Collections.sort(list, comparator);
+		list.sort(comparator);
 		return ImmutableList.copyOf(list);
 	}
 
@@ -47,9 +47,7 @@ public final class StateMachineEncoder {
 	}
 
 	private <T extends Comparable<T>> ImmutableList<T> list(Collection<T> input) {
-		List<T> list = new ArrayList<>(input);
-		Collections.sort(list);
-		return ImmutableList.copyOf(list);
+		return list(input, (Comparator<T>)null);
 	}
 
 	public int getTerminalIndex(String terminal) {

@@ -11,7 +11,7 @@ public final class ListComparator<T, L extends List<? extends T>> implements Com
 	private final Comparator<T> elementComparator;
 
 	public ListComparator(Comparator<T> elementComparator) {
-		this.elementComparator = elementComparator;
+		this.elementComparator = ParameterUtil.ensureNotNull(elementComparator, "elementComparator");;
 	}
 
 	public static <T extends Comparable<T>, L extends List<? extends T>> ListComparator<T, L> forComparableElements() {

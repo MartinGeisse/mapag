@@ -12,7 +12,7 @@ public final class NonterminalDefinition extends SymbolDefinition {
 
 	public NonterminalDefinition(String name, ImmutableList<Alternative> alternatives) {
 		super(name);
-		this.alternatives = ParameterUtil.ensureNotNull(alternatives, "alternatives");
+		this.alternatives = ParameterUtil.ensureNotNullOrEmpty(alternatives, "alternatives");
 		ParameterUtil.ensureNoNullElement(alternatives, "alternatives");
 	}
 

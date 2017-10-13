@@ -21,7 +21,7 @@ public final class Alternative {
 		return expansion;
 	}
 
-	public Alternative vanishNonterminal(String nonterminalToVanish) {
+	public Alternative vanishSymbol(String nonterminalToVanish) {
 		ParameterUtil.ensureNotNullOrEmpty(nonterminalToVanish, "nonterminalToVanish");
 		return new Alternative(ListUtil.withElementsRemoved(expansion, symbol -> symbol.equals(nonterminalToVanish)));
 	}

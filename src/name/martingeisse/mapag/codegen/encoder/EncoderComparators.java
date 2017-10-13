@@ -46,9 +46,9 @@ final class EncoderComparators {
 
 	static final Comparator<State> stateComparator = (s1, s2) -> {
 		List<StateElement> elements1 = new ArrayList<>(s1.getElements());
-		Collections.sort(elements1, stateElementComparator);
+		elements1.sort(stateElementComparator);
 		List<StateElement> elements2 = new ArrayList<>(s2.getElements());
-		Collections.sort(elements2, stateElementComparator);
+		elements2.sort(stateElementComparator);
 		return stateElementListComparator.compare(elements1, elements2);
 	};
 
