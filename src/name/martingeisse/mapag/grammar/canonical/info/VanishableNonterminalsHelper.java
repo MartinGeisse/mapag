@@ -15,7 +15,7 @@ final class VanishableNonterminalsHelper {
 
 	private final Grammar grammar;
 	private boolean hasRun = false;
-	private Map<String, List<List<String>>> remainingGrammar;
+	private Map<String, List<Alternative>> remainingGrammar;
 	private Set<String> result;
 
 	VanishableNonterminalsHelper(Grammar grammar) {
@@ -49,11 +49,10 @@ final class VanishableNonterminalsHelper {
 	private void initializeGrammar() {
 		remainingGrammar = new HashMap<>();
 		for (Map.Entry<String, NonterminalDefinition> nonterminalDefinitionEntry : grammar.getNonterminalDefinitions().entrySet()) {
-			List<List<String>> alternatives = new ArrayList<>();
+			List<Alternative> alternatives = new ArrayList<>();
 			for (Alternative alternative : nonterminalDefinitionEntry.getValue().getAlternatives()) {
-				List<String> expansion = alternative.getExpansion();
-				if (!grammar.sentenceContainsTerminals(expansion)) {
-					alternatives.add(new ArrayList<>(expansion));
+				if (!grammar.sentenceContainsTerminals(alternative.getExpansion())) {
+					alternatives.add(alternative);
 				}
 			}
 			if (!alternatives.isEmpty()) {
@@ -78,9 +77,9 @@ final class VanishableNonterminalsHelper {
 
 	private Set<String> determineImmediatelyVanishableNonterminals() {
 		Set<String> result = new HashSet<>();
-		nonterminalLoop: for (Map.Entry<String, List<List<String>>> nonterminalEntry : remainingGrammar.entrySet()) {
-			for (List<String> alternative : nonterminalEntry.getValue()) {
-				if (alternative.isEmpty()) {
+		nonterminalLoop: for (Map.Entry<String, List<Alternative>> nonterminalEntry : remainingGrammar.entrySet()) {
+			for (Alternative alternative : nonterminalEntry.getValue()) {
+				if (alternative.getExpansion().isEmpty()) {
 					result.add(nonterminalEntry.getKey());
 					continue nonterminalLoop;
 				}
@@ -92,9 +91,7 @@ final class VanishableNonterminalsHelper {
 	private void vanishNonterminal(String nonterminalToVanish) {
 		remainingGrammar.remove(nonterminalToVanish);
 		remainingGrammar.values().forEach(alternatives -> {
-			alternatives.forEach(alternative -> {
-				alternative.removeIf(symbol -> symbol.equals(nonterminalToVanish));
-			});
+			alternatives.replaceAll(alternative -> alternative.vanishSymbol(nonterminalToVanish));
 		});
 	}
 
