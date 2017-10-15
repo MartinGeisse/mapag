@@ -3,6 +3,11 @@ package name.martingeisse.mapag.grammar.extended;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.util.ParameterUtil;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  *
  */
@@ -58,7 +63,59 @@ public final class Grammar {
 	}
 
 	public void validate() {
-		// TODO
+
+		Set<String> terminalNames = new HashSet<>();
+		for (TerminalDeclaration terminalDeclaration : terminalDeclarations) {
+			if (!terminalNames.add(terminalDeclaration.getName())) {
+				throw new IllegalStateException("redeclaration of terminal: " + terminalDeclaration.getName());
+			}
+		}
+
+		Set<String> nonterminalNames = new HashSet<>();
+		for (NonterminalDeclaration nonterminalDeclaration : nonterminalDeclarations) {
+			if (!nonterminalNames.add(nonterminalDeclaration.getName())) {
+				throw new IllegalStateException("redeclaration of nonterminal: " + nonterminalDeclaration.getName());
+			}
+		}
+
+		{
+			Set<String> nameIntersection = new HashSet<>(terminalNames);
+			nameIntersection.retainAll(nonterminalNames);
+			if (!nameIntersection.isEmpty()) {
+				throw new IllegalStateException("redeclaration of terminals as nonterminals: " + nameIntersection);
+			}
+		}
+
+		Map<String, PrecedenceTable.Entry> precedenceTableEntriesByName = new HashMap<>();
+		for (PrecedenceTable.Entry entry : precedenceTable.getEntries()) {
+			String name = entry.getTerminalName();
+			if (!terminalNames.contains(name)) {
+				throw new IllegalStateException("unknown terminal name in precedence table: " + name);
+			}
+			if (precedenceTableEntriesByName.put(name, entry) != null) {
+				throw new IllegalStateException("terminal appears twice in precedence table: " + name);
+			}
+		}
+
+		if (!nonterminalNames.contains(startNonterminalName)) {
+			throw new IllegalStateException("start symbol was not declared as a nonterminal: " + startNonterminalName);
+		}
+
+		boolean foundProductionForStartSymbol = false;
+		for (Production production : productions) {
+			String leftHandSide = production.getLeftHandSide();
+			if (!nonterminalNames.contains(leftHandSide)) {
+				throw new IllegalStateException("left-hand symbol in production was not declared as a nonterminal: " + leftHandSide);
+			}
+			if (leftHandSide.equals(startNonterminalName)) {
+				foundProductionForStartSymbol = true;
+			}
+			// TODO check expressions, but first move this code to a separate validator so we can pass state easier
+		}
+		if (!foundProductionForStartSymbol) {
+			throw new IllegalStateException("no production found for start symbol");
+		}
+
 	}
 
 }
