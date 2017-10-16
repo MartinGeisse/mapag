@@ -6,26 +6,13 @@ import name.martingeisse.mapag.grammar.extended.expression.SymbolReference;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static name.martingeisse.mapag.grammar.extended.TestGrammarObjects.*;
+
 /**
  *
  */
 public class GrammarTest {
 
-	private static final String PACKAGE_NAME = "foo.bar";
-	private static final String CLASS_NAME = "MyClass";
-	private static final TerminalDeclaration TERMINAL_1 = new TerminalDeclaration("ttt");
-	private static final TerminalDeclaration TERMINAL_2 = new TerminalDeclaration("uuu");
-	private static final TerminalDeclaration TERMINAL_3 = new TerminalDeclaration("vvv");
-	private static final ImmutableList<TerminalDeclaration> TERMINALS = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3);
-	private static final NonterminalDeclaration NONTERMINAL_1 = new NonterminalDeclaration("ttt");
-	private static final NonterminalDeclaration NONTERMINAL_2 = new NonterminalDeclaration("uuu");
-	private static final NonterminalDeclaration NONTERMINAL_3 = new NonterminalDeclaration("vvv");
-	private static final ImmutableList<NonterminalDeclaration> NONTERMINALS = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3);
-	private static final PrecedenceTable PRECEDENCE_TABLE_EMPTY = new PrecedenceTable(ImmutableList.of());
-	private static final PrecedenceTable PRECEDENCE_TABLE_NONEMPTY = new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(TERMINAL_2.getName(), Associativity.LEFT)));
-	private static final String START_NONTERMINAL_NAME = "dummyStart";
-	private static final Production PRODUCTION_1 = new Production(NONTERMINAL_1.getName(), new SymbolReference(TERMINAL_1.getName()));
-	private static final ImmutableList<Production> PRODUCTIONS = ImmutableList.of(PRODUCTION_1);
 
 	@Test
 	public void testConstructorGetter() {

@@ -151,8 +151,22 @@ public class GrammarTest {
 	@Test
 	public void testSentenceContainsTerminals() {
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
-		// Assert.assertTrue(grammar.sentenceContainsTerminals(ImmutableList.of("nt1"));
-		// TODO
+
+		Assert.assertFalse(grammar.sentenceContainsTerminals(ImmutableList.of()));
+		Assert.assertFalse(grammar.sentenceContainsTerminals(ImmutableList.of("undefinedSymbol")));
+		Assert.assertFalse(grammar.sentenceContainsTerminals(ImmutableList.of("undefinedSymbol", "anotherUndefinedSymbol")));
+		Assert.assertFalse(grammar.sentenceContainsTerminals(ImmutableList.of("nt1")));
+		Assert.assertFalse(grammar.sentenceContainsTerminals(ImmutableList.of("nt2")));
+		Assert.assertFalse(grammar.sentenceContainsTerminals(ImmutableList.of("nt2", "nt1")));
+		Assert.assertFalse(grammar.sentenceContainsTerminals(ImmutableList.of("undefinedSymbol", "nt1")));
+
+		Assert.assertTrue(grammar.sentenceContainsTerminals(ImmutableList.of("foo")));
+		Assert.assertTrue(grammar.sentenceContainsTerminals(ImmutableList.of("foo", "bar")));
+		Assert.assertTrue(grammar.sentenceContainsTerminals(ImmutableList.of("foo", "undefinedSymbol")));
+		Assert.assertTrue(grammar.sentenceContainsTerminals(ImmutableList.of("foo", "nt1")));
+		Assert.assertTrue(grammar.sentenceContainsTerminals(ImmutableList.of("nt1", "foo")));
+		Assert.assertTrue(grammar.sentenceContainsTerminals(ImmutableList.of("nt1", "foo", "nt2")));
+
 	}
 
 	@Test
@@ -185,8 +199,22 @@ public class GrammarTest {
 	@Test
 	public void testSentenceContainsNonterminals() {
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
-		// Assert.assertTrue(grammar.sentenceContainsNonterminals(ImmutableList.of("nt1"));
-		// TODO
+
+		Assert.assertFalse(grammar.sentenceContainsNonterminals(ImmutableList.of()));
+		Assert.assertFalse(grammar.sentenceContainsNonterminals(ImmutableList.of("undefinedSymbol")));
+		Assert.assertFalse(grammar.sentenceContainsNonterminals(ImmutableList.of("undefinedSymbol", "anotherUndefinedSymbol")));
+		Assert.assertFalse(grammar.sentenceContainsNonterminals(ImmutableList.of("foo")));
+		Assert.assertFalse(grammar.sentenceContainsNonterminals(ImmutableList.of("foo", "bar")));
+		Assert.assertFalse(grammar.sentenceContainsNonterminals(ImmutableList.of("foo", "undefinedSymbol")));
+
+		Assert.assertTrue(grammar.sentenceContainsNonterminals(ImmutableList.of("nt1")));
+		Assert.assertTrue(grammar.sentenceContainsNonterminals(ImmutableList.of("nt2")));
+		Assert.assertTrue(grammar.sentenceContainsNonterminals(ImmutableList.of("nt2", "nt1")));
+		Assert.assertTrue(grammar.sentenceContainsNonterminals(ImmutableList.of("undefinedSymbol", "nt1")));
+		Assert.assertTrue(grammar.sentenceContainsNonterminals(ImmutableList.of("foo", "nt1")));
+		Assert.assertTrue(grammar.sentenceContainsNonterminals(ImmutableList.of("nt1", "foo")));
+		Assert.assertTrue(grammar.sentenceContainsNonterminals(ImmutableList.of("foo", "nt1", "bar")));
+
 	}
 
 }
