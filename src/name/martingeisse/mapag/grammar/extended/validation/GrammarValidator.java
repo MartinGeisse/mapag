@@ -48,12 +48,13 @@ public final class GrammarValidator {
 
 		precedenceTableEntriesByName = new HashMap<>();
 		for (PrecedenceTable.Entry entry : grammar.getPrecedenceTable().getEntries()) {
-			String name = entry.getTerminalName();
-			if (!terminalNames.contains(name)) {
-				throw new IllegalStateException("unknown terminal name in precedence table: " + name);
-			}
-			if (precedenceTableEntriesByName.put(name, entry) != null) {
-				throw new IllegalStateException("terminal appears twice in precedence table: " + name);
+			for (String name : entry.getTerminalNames()) {
+				if (!terminalNames.contains(name)) {
+					throw new IllegalStateException("unknown terminal name in precedence table: " + name);
+				}
+				if (precedenceTableEntriesByName.put(name, entry) != null) {
+					throw new IllegalStateException("terminal appears twice in precedence table: " + name);
+				}
 			}
 		}
 

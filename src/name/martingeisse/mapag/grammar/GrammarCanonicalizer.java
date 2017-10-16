@@ -48,23 +48,25 @@ public final class GrammarCanonicalizer {
 		// change definition based on the precedence table
 		int precedenceIndex = 0;
 		for (PrecedenceTable.Entry entry : inputGrammar.getPrecedenceTable().getEntries()) {
-			TerminalDefinition terminalDefinition = new TerminalDefinition(entry.getTerminalName(), precedenceIndex, entry.getAssociativity());
-			terminalDefinitions.put(entry.getTerminalName(), terminalDefinition);
+			for (String name : entry.getTerminalNames()) {
+				TerminalDefinition terminalDefinition = new TerminalDefinition(name, precedenceIndex, entry.getAssociativity());
+				terminalDefinitions.put(name, terminalDefinition);
+			}
 			precedenceIndex++;
 		}
 
 		// build nonterminal alternatives
-		// TODO check
 		this.nonterminalAlternatives = new HashMap<>();
 		for (Production production : inputGrammar.getProductions()) {
 			addToplevelAlternatives(production);
 		}
 
-		// build nonterminal definitions TODO check
+		// build nonterminal definitions
 		nonterminalDefinitions = new HashMap<>();
 		for (Map.Entry<String, List<Alternative>> nonterminalAlternativesEntry : nonterminalAlternatives.entrySet()) {
 			String nonterminalName = nonterminalAlternativesEntry.getKey();
-			NonterminalDefinition nonterminalDefinition = new NonterminalDefinition(nonterminalName, ImmutableList.copyOf(nonterminalAlternativesEntry.getValue()));
+			ImmutableList<Alternative> alternatives = ImmutableList.copyOf(nonterminalAlternativesEntry.getValue());
+			NonterminalDefinition nonterminalDefinition = new NonterminalDefinition(nonterminalName, alternatives);
 			nonterminalDefinitions.put(nonterminalName, nonterminalDefinition);
 		}
 

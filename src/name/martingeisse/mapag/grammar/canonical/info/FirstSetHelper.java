@@ -23,7 +23,6 @@ final class FirstSetHelper {
 
 	public FirstSetHelper(Grammar grammar, ImmutableSet<String> vanishableNonterminals, String targetNonterminal) {
 		this.grammar = ParameterUtil.ensureNotNull(grammar, "grammar");
-		;
 		this.vanishableNonterminals = vanishableNonterminals;
 		todoNonterminals.add(ParameterUtil.ensureNotNullOrEmpty(targetNonterminal, "targetNonterminal"));
 	}
