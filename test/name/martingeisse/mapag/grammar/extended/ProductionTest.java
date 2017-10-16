@@ -1,7 +1,6 @@
 package name.martingeisse.mapag.grammar.extended;
 
 import name.martingeisse.mapag.grammar.extended.expression.Expression;
-import name.martingeisse.mapag.grammar.extended.expression.OrExpression;
 import name.martingeisse.mapag.grammar.extended.expression.SymbolReference;
 import org.junit.Assert;
 import org.junit.Test;

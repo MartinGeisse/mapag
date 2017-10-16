@@ -8,7 +8,10 @@ import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.util.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -47,7 +50,7 @@ public final class StateMachineEncoder {
 	}
 
 	private <T extends Comparable<T>> ImmutableList<T> list(Collection<T> input) {
-		return list(input, (Comparator<T>)null);
+		return list(input, (Comparator<T>) null);
 	}
 
 	public int getTerminalIndex(String terminal) {

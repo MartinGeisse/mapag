@@ -77,7 +77,8 @@ final class VanishableNonterminalsHelper {
 
 	private Set<String> determineImmediatelyVanishableNonterminals() {
 		Set<String> result = new HashSet<>();
-		nonterminalLoop: for (Map.Entry<String, List<Alternative>> nonterminalEntry : remainingGrammar.entrySet()) {
+		nonterminalLoop:
+		for (Map.Entry<String, List<Alternative>> nonterminalEntry : remainingGrammar.entrySet()) {
 			for (Alternative alternative : nonterminalEntry.getValue()) {
 				if (alternative.getExpansion().isEmpty()) {
 					result.add(nonterminalEntry.getKey());

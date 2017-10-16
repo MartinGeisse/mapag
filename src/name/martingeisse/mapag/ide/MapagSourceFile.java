@@ -3,8 +3,6 @@ package name.martingeisse.mapag.ide;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
-import name.martingeisse.mapag.ide.MapagFileType;
-import name.martingeisse.mapag.ide.MapagSpecificationLanguage;
 import org.jetbrains.annotations.NotNull;
 
 /**

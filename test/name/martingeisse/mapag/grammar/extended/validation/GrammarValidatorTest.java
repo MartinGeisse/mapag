@@ -16,7 +16,6 @@ public class GrammarValidatorTest {
 		new GrammarValidator(grammar).validate();
 	}
 
-
 	@Test
 	public void test() {
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);

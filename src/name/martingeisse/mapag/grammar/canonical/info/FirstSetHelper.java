@@ -16,13 +16,14 @@ final class FirstSetHelper {
 
 	private final Grammar grammar;
 	private final ImmutableSet<String> vanishableNonterminals;
-	private boolean hasRun = false;
 	private final List<String> todoNonterminals = new ArrayList<>();
 	private final Set<String> checkedNonterminals = new HashSet<>();
 	private final Set<String> result = new HashSet<>();
+	private boolean hasRun = false;
 
 	public FirstSetHelper(Grammar grammar, ImmutableSet<String> vanishableNonterminals, String targetNonterminal) {
-		this.grammar = ParameterUtil.ensureNotNull(grammar, "grammar");;
+		this.grammar = ParameterUtil.ensureNotNull(grammar, "grammar");
+		;
 		this.vanishableNonterminals = vanishableNonterminals;
 		todoNonterminals.add(ParameterUtil.ensureNotNullOrEmpty(targetNonterminal, "targetNonterminal"));
 	}

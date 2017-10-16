@@ -17,5 +17,5 @@ public final class OneOrMoreExpression extends Expression {
 	public Expression getOperand() {
 		return operand;
 	}
-	
+
 }

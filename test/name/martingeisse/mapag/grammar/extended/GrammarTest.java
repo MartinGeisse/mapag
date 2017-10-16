@@ -1,8 +1,6 @@
 package name.martingeisse.mapag.grammar.extended;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.mapag.grammar.Associativity;
-import name.martingeisse.mapag.grammar.extended.expression.SymbolReference;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +10,6 @@ import static name.martingeisse.mapag.grammar.extended.TestGrammarObjects.*;
  *
  */
 public class GrammarTest {
-
 
 	@Test
 	public void testConstructorGetter() {

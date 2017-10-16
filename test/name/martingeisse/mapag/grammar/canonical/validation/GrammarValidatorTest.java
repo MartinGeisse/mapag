@@ -2,9 +2,7 @@ package name.martingeisse.mapag.grammar.canonical.validation;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.Associativity;
-import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import org.junit.Test;
 

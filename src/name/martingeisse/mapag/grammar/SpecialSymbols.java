@@ -6,14 +6,15 @@ package name.martingeisse.mapag.grammar;
 public final class SpecialSymbols {
 
 	/**
-	 * This symbol is used internally in the construction of the state machine. It must not be used
-	 * anywhere in the extended or canonical grammar.
+	 * This symbol is used internally in the construction of the state machine. It must not be used anywhere in the
+	 * extended or canonical grammar.
 	 */
 	public static final String ROOT_SYMBOL_NAME = "%start";
 
 	/**
 	 * This symbol is passed to the parser at runtime when the lexer runs out of terminals. Therefore it also plays a
-	 * role in the construction of the state machine. It must not be used anywhere in the extended or canonical grammar.
+	 * role in the construction of the state machine. It must not be used anywhere in the extended or canonical
+	 * grammar.
 	 */
 	public static final String EOF_SYMBOL_NAME = "%eof";
 

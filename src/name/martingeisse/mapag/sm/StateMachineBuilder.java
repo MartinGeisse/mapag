@@ -29,6 +29,14 @@ public class StateMachineBuilder {
 		this.grammarInfo = ParameterUtil.ensureNotNull(grammarInfo, "grammarInfo");
 	}
 
+	private static <A, B, C> ImmutableMap<A, ImmutableMap<B, C>> makeImmutable(Map<A, Map<B, C>> original) {
+		Map<A, ImmutableMap<B, C>> result = new HashMap<>();
+		for (Map.Entry<A, Map<B, C>> outerEntry : original.entrySet()) {
+			result.put(outerEntry.getKey(), ImmutableMap.copyOf(outerEntry.getValue()));
+		}
+		return ImmutableMap.copyOf(result);
+	}
+
 	public StateMachine build() {
 		String startNonterminal = grammarInfo.getGrammar().getStartNonterminalName();
 		Alternative implicitAlternative = new Alternative(ImmutableList.of(startNonterminal));
@@ -37,14 +45,6 @@ public class StateMachineBuilder {
 		State startState = builder.build();
 		addStates(startState);
 		return new StateMachine(ImmutableSet.copyOf(states), makeImmutable(terminalActions), makeImmutable(nonterminalActions), startState);
-	}
-
-	private static <A, B, C> ImmutableMap<A, ImmutableMap<B, C>> makeImmutable(Map<A, Map<B, C>> original) {
-		Map<A, ImmutableMap<B, C>> result = new HashMap<>();
-		for (Map.Entry<A, Map<B, C>> outerEntry : original.entrySet()) {
-			result.put(outerEntry.getKey(), ImmutableMap.copyOf(outerEntry.getValue()));
-		}
-		return ImmutableMap.copyOf(result);
 	}
 
 	private Map<String, Action> getOrCreateTerminalActionMap(State state) {
@@ -79,7 +79,7 @@ public class StateMachineBuilder {
 				}
 				getOrCreateTerminalActionMap(state).put(terminal, action);
 				if (action instanceof Action.Shift) {
-					addStates(((Action.Shift)action).getNextState());
+					addStates(((Action.Shift) action).getNextState());
 				}
 			}
 

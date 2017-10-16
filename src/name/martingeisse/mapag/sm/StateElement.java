@@ -99,12 +99,6 @@ public final class StateElement {
 		}
 	}
 
-	public enum ActionType {
-		SHIFT,
-		REDUCE,
-		DROP_ELEMENT
-	}
-
 	public StateElement determineNextRootElementForNonterminal(String nonterminal) {
 		ParameterUtil.ensureNotNullOrEmpty(nonterminal, "nonterminal");
 		if (isAtEnd()) {
@@ -122,6 +116,12 @@ public final class StateElement {
 			throw new IllegalStateException("cannot shift -- remaining right side is already empty");
 		}
 		return new StateElement(leftSide, alternative, position + 1, followTerminal);
+	}
+
+	public enum ActionType {
+		SHIFT,
+		REDUCE,
+		DROP_ELEMENT
 	}
 
 }

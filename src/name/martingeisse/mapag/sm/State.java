@@ -17,6 +17,14 @@ public final class State {
 		this.elements = elements;
 	}
 
+	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elements) {
+		StateBuilder builder = new StateBuilder(grammarInfo);
+		for (StateElement element : elements) {
+			builder.addElementClosure(element.getShifted());
+		}
+		return new Action.Shift(builder.build());
+	}
+
 	public ImmutableSet<StateElement> getElements() {
 		return elements;
 	}
@@ -90,14 +98,6 @@ public final class State {
 		}
 		StateElement element = elements.iterator().next();
 		return new Action.Reduce(element.getLeftSide(), element.getAlternative());
-	}
-
-	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elements) {
-		StateBuilder builder = new StateBuilder(grammarInfo);
-		for (StateElement element : elements) {
-			builder.addElementClosure(element.getShifted());
-		}
-		return new Action.Shift(builder.build());
 	}
 
 	// Returns null if that nonterminal would cause a syntax error. This corresponds to an empty table entry and

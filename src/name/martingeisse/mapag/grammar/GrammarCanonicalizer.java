@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
-import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
@@ -42,7 +41,7 @@ public final class GrammarCanonicalizer {
 		this.terminalDefinitions = new HashMap<>();
 		for (TerminalDeclaration terminalDeclaration : inputGrammar.getTerminalDeclarations()) {
 			TerminalDefinition terminalDefinition = new TerminalDefinition(
-					terminalDeclaration.getName(), null, Associativity.NONASSOC);
+				terminalDeclaration.getName(), null, Associativity.NONASSOC);
 			terminalDefinitions.put(terminalDeclaration.getName(), terminalDefinition);
 		}
 
@@ -71,11 +70,11 @@ public final class GrammarCanonicalizer {
 
 		// build the output grammar
 		this.outputGrammar = new name.martingeisse.mapag.grammar.canonical.Grammar(
-				inputGrammar.getPackageName(),
-				inputGrammar.getClassName(),
-				terminalDefinitions.values(),
-				nonterminalDefinitions.values(),
-				inputGrammar.getStartNonterminalName()
+			inputGrammar.getPackageName(),
+			inputGrammar.getClassName(),
+			terminalDefinitions.values(),
+			nonterminalDefinitions.values(),
+			inputGrammar.getStartNonterminalName()
 		);
 
 	}

@@ -7,7 +7,6 @@ import name.martingeisse.mapag.util.ListComparator;
 import name.martingeisse.mapag.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
 final class EncoderComparators {
 
 	static final Comparator<Alternative> alternativeComparator = Comparator.comparing(a -> a.getExpansion(),
-			ListComparator.forComparableElements());
+		ListComparator.forComparableElements());
 
 	static final Comparator<Pair<String, Alternative>> reductionComparator = (r1, r2) -> {
 		int leftResult = r1.getLeft().compareTo(r2.getLeft());
