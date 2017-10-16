@@ -77,11 +77,5 @@ Discussion: should a rule like [[ E -> E (+ | - | * | /) E ]] be split automatic
 - con: automatic transformations make errors harder to track down
 - con: is a special case optimization for expressions -- little use elsewhere
 
-The same is less severe for ad-hoc nonterminals because those can be named according to their content and are thus
-easier to track down.
-
--------
-
-
-
-
+The statement "automatic transformations make errors harder to track down" is less severe for ad-hoc nonterminals
+because those can be named according to their content and are thus easier to track down.
