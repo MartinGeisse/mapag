@@ -38,7 +38,9 @@ public final class Grammar {
 	private static <T extends SymbolDefinition> ImmutableMap<String, T> mapByName(Collection<T> collection) {
 		Map<String, T> result = new HashMap<>();
 		for (T element : collection) {
-			result.put(element.getName(), element);
+			if (result.put(element.getName(), element) != null) {
+				throw new IllegalArgumentException("duplicate name: " + element.getName());
+			}
 		}
 		return ImmutableMap.copyOf(result);
 	}
@@ -93,10 +95,6 @@ public final class Grammar {
 
 	public String getStartNonterminalName() {
 		return startNonterminalName;
-	}
-
-	public void validate() {
-		// TODO
 	}
 
 }

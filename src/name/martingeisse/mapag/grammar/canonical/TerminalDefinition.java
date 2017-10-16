@@ -15,6 +15,9 @@ public final class TerminalDefinition extends SymbolDefinition {
 		super(name);
 		this.precedenceIndex = precedenceIndex;
 		this.associativity = ParameterUtil.ensureNotNull(associativity, "associativity");
+		if (precedenceIndex == null && associativity != Associativity.NONASSOC) {
+			throw new IllegalArgumentException("terminal without precedence index cannot have associativity " + associativity + " since it cannot have any effect");
+		}
 	}
 
 	public Integer getPrecedenceIndex() {

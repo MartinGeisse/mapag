@@ -8,6 +8,7 @@ import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
+import name.martingeisse.mapag.grammar.extended.validation.GrammarValidator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public final class GrammarCanonicalizer {
 		}
 
 		// make sure the input grammar is valid (don't trust the caller to do the validation)
-		inputGrammar.validate();
+		new GrammarValidator(inputGrammar).validate();
 
 		// define terminals using defaults
 		this.terminalDefinitions = new HashMap<>();

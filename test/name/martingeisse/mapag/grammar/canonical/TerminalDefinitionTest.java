@@ -23,11 +23,16 @@ public class TerminalDefinitionTest {
 	}
 
 	@Test
-	public void testNullPrecedenceIndex() {
-		TerminalDefinition terminalDefinition = new TerminalDefinition("foo", null, Associativity.LEFT);
+	public void testNullPrecedenceIndexNonassoc() {
+		TerminalDefinition terminalDefinition = new TerminalDefinition("foo", null, Associativity.NONASSOC);
 		Assert.assertEquals("foo", terminalDefinition.getName());
 		Assert.assertNull(terminalDefinition.getPrecedenceIndex());
-		Assert.assertEquals(Associativity.LEFT, terminalDefinition.getAssociativity());
+		Assert.assertEquals(Associativity.NONASSOC, terminalDefinition.getAssociativity());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testNullPrecedenceIndexLeftAssoc() {
+		new TerminalDefinition("foo", null, Associativity.LEFT);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

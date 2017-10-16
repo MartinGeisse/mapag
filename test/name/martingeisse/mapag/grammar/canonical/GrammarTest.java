@@ -1,37 +1,16 @@
 package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static name.martingeisse.mapag.grammar.canonical.TestGrammarObjects.*;
 
 /**
  *
  */
 public class GrammarTest {
-
-	private static final String PACKAGE_NAME = "foo.bar";
-	private static final String CLASS_NAME = "MyClass";
-	private static final String START_NONTERMINAL_NAME = "dummyStart";
-
-	private static final TerminalDefinition TERMINAL_1 = new TerminalDefinition("foo", null, Associativity.NONASSOC);
-	private static final TerminalDefinition TERMINAL_2 = new TerminalDefinition("bar", null, Associativity.LEFT);
-	private static final TerminalDefinition TERMINAL_3 = new TerminalDefinition("baz", 3, Associativity.RIGHT);
-	private static final ImmutableList<TerminalDefinition> TERMINALS = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3);
-
-	private static final NonterminalDefinition NONTERMINAL_1 = new NonterminalDefinition("nt1", ImmutableList.of(
-		new Alternative(ImmutableList.of()),
-		new Alternative(ImmutableList.of("foo", "bar")),
-		new Alternative(ImmutableList.of("foo", "baz"))
-	));
-	private static final NonterminalDefinition NONTERMINAL_2 = new NonterminalDefinition("nt2", ImmutableList.of(
-		new Alternative(ImmutableList.of("nt3", "nt3"))
-	));
-	private static final NonterminalDefinition NONTERMINAL_3 = new NonterminalDefinition("dummyStart", ImmutableList.of(
-		new Alternative(ImmutableList.of("nt1", "nt2", "baz"))
-	));
-	private static final ImmutableList<NonterminalDefinition> NONTERMINALS = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3);
 
 	@Test
 	public void testConstructorGetter() {
@@ -102,19 +81,44 @@ public class GrammarTest {
 		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, "");
 	}
 
-	@Test
-	public void testTwoTerminalsNameCollision() {
-		// TODO
+	@Test(expected = IllegalArgumentException.class)
+	public void testTwoTerminalsNameCollisionEqual() {
+		TerminalDefinition conflictingTerminal = new TerminalDefinition("bar", null, Associativity.LEFT);
+		ImmutableList<TerminalDefinition> terminals = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3, conflictingTerminal);
+		new Grammar(PACKAGE_NAME, CLASS_NAME, terminals, NONTERMINALS, START_NONTERMINAL_NAME);
 	}
 
-	@Test
-	public void testTwoNonterminalsNameCollision() {
-		// TODO
+	@Test(expected = IllegalArgumentException.class)
+	public void testTwoTerminalsNameCollisionDifferent() {
+		TerminalDefinition conflictingTerminal = new TerminalDefinition("bar", 2, Associativity.RIGHT);
+		ImmutableList<TerminalDefinition> terminals = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3, conflictingTerminal);
+		new Grammar(PACKAGE_NAME, CLASS_NAME, terminals, NONTERMINALS, START_NONTERMINAL_NAME);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testTwoNonterminalsNameCollisionEqual() {
+		NonterminalDefinition conflictingNonterminal = new NonterminalDefinition("nt2", ImmutableList.of(
+			new Alternative(ImmutableList.of("nt3", "nt3"))
+		));
+		ImmutableList<NonterminalDefinition> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminal);
+		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, nonterminals, START_NONTERMINAL_NAME);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testTwoNonterminalsNameCollisionDifferent() {
+		NonterminalDefinition conflictingNonterminal = new NonterminalDefinition("nt2", ImmutableList.of(
+			new Alternative(ImmutableList.of("nt1", "nt1"))
+		));
+		ImmutableList<NonterminalDefinition> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminal);
+		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, nonterminals, START_NONTERMINAL_NAME);
 	}
 
 	@Test
 	public void testTerminalNonterminalNameCollision() {
-		// TODO
+		// this succeeds in building the grammar object but should fail validation (which is tested in the validator's test class)
+		TerminalDefinition conflictingTerminal = new TerminalDefinition("nt2", 2, Associativity.RIGHT);
+		ImmutableList<TerminalDefinition> terminals = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3, conflictingTerminal);
+		new Grammar(PACKAGE_NAME, CLASS_NAME, terminals, NONTERMINALS, START_NONTERMINAL_NAME);
 	}
 
 	@Test
@@ -156,26 +160,33 @@ public class GrammarTest {
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
 
 		// terminals
-		Assert.assertFalse(grammar.isTerminal("foo"));
-		Assert.assertFalse(grammar.isTerminal("bar"));
-		Assert.assertFalse(grammar.isTerminal("baz"));
+		Assert.assertFalse(grammar.isNonterminal("foo"));
+		Assert.assertFalse(grammar.isNonterminal("bar"));
+		Assert.assertFalse(grammar.isNonterminal("baz"));
 
 		// nonterminals
-		Assert.assertTrue(grammar.isTerminal("nt1"));
-		Assert.assertTrue(grammar.isTerminal("nt2"));
-		Assert.assertTrue(grammar.isTerminal("dummyStart"));
+		Assert.assertTrue(grammar.isNonterminal("nt1"));
+		Assert.assertTrue(grammar.isNonterminal("nt2"));
+		Assert.assertTrue(grammar.isNonterminal("dummyStart"));
 
 		// undefined
-		Assert.assertFalse(grammar.isTerminal("abc"));
+		Assert.assertFalse(grammar.isNonterminal("abc"));
 
 		// special
-		Assert.assertFalse(grammar.isTerminal("%start"));
-		Assert.assertFalse(grammar.isTerminal("%eof"));
-		Assert.assertFalse(grammar.isTerminal("%error"));
+		Assert.assertFalse(grammar.isNonterminal("%start"));
+		Assert.assertFalse(grammar.isNonterminal("%eof"));
+		Assert.assertFalse(grammar.isNonterminal("%error"));
 
 		// special undefined
-		Assert.assertFalse(grammar.isTerminal("%wegoiewjgioejwgoewjhgiouewhguiewhjgoiew"));
+		Assert.assertFalse(grammar.isNonterminal("%wegoiewjgioejwgoewjhgiouewhguiewhjgoiew"));
 
+	}
+
+	@Test
+	public void testSentenceContainsNonterminals() {
+		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+		// Assert.assertTrue(grammar.sentenceContainsNonterminals(ImmutableList.of("nt1"));
+		// TODO
 	}
 
 }
