@@ -93,7 +93,8 @@ public final class GrammarValidator {
 			validateExpression(sequenceExpression.getRight());
 		} else if (expression instanceof SymbolReference) {
 			SymbolReference symbolReference = (SymbolReference) expression;
-			if (!terminalNames.contains(symbolReference) && !nonterminalNames.contains(symbolReference)) {
+			String symbolName = symbolReference.getSymbolName();
+			if (!terminalNames.contains(symbolName) && !nonterminalNames.contains(symbolName)) {
 				throw new IllegalStateException("unknown symbol used on the right-hand side of a production: " + symbolReference.getSymbolName());
 			}
 		} else if (expression instanceof ZeroOrMoreExpression) {
