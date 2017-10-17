@@ -5,18 +5,13 @@
 %terminals {
     KW_PACKAGE, KW_CLASS, KW_TERMINALS, KW_NONTERMINALS, KW_PRECEDENCE, KW_LEFT, KW_RIGHT, KW_NONASSOC, KW_START,
     OPENING_CURLY_BRACE, CLOSING_CURLY_BRACE, OPENING_PARENTHESIS, CLOSING_PARENTHESIS,
-    DOT, COMMA, SEMICOLON, COLON, EXPANDS_TO, QUESTION_MARK, ASTERISK, PLUS,
+    DOT, COMMA, SEMICOLON, COLON, EXPANDS_TO, QUESTION_MARK, ASTERISK, PLUS, BAR,
 	IDENTIFIER
 }
 
 %nonterminals {
     grammar, symbolDefinitions, symbolDefinition, precedenceList, precedenceDeclaration,
 	productionList, production, expression, hierarchicalIdentifier, nonemptyIdentifierList
-}
-
-%precedence {
-    %left BAR;
-    %nonassoc QUESTION_MARK, ASTERISK, PLUS;
 }
 
 %start grammar;
@@ -45,20 +40,36 @@ precedenceDeclaration ::=
 // productions
 //
 
+// Note: The way toplevelExpression and nestedExpression is used here seems to be unnecessarily complex -- it looks
+// like operator precedence done "the old way". AFAIK it's still the best solution since this is a special case
+// due to the interaction of top-level BAR-ing, nested BAR-ing and precedence annotations. If precedence annotations
+// were possible at any nesting level then we'd just make them another expression type and no distinction between
+// top-level and nested BAR-ing were necessary -- but unfortunately that's not the case.
+
 production ::=
-	IDENTIFIER COLON_COLON_EQUALS expression SEMICOLON
+	IDENTIFIER COLON_COLON_EQUALS alternative (BAR alternative)* SEMICOLON
 	| error SEMICOLON
 	;
 
-expression ::=
-    (
-    	IDENTIFIER (COLON IDENTIFIER)?
-	    | expression BAR expression
-	    | expression ASTERISK
-	    | expression PLUS
-	    | expression QUESTION_MARK
-	    | OPENING_PARENTHESIS expression CLOSING_PARENTHESIS (COLON IDENTIFIER)?
-	)+
+alternative ::=
+    toplevelExpression+ (KW_PRECEDENCE IDENTIFIER)?
+    ;
+
+toplevelExpression ::=
+   	IDENTIFIER (COLON IDENTIFIER)?
+    | toplevelExpression ASTERISK
+    | toplevelExpression PLUS
+    | toplevelExpression QUESTION_MARK
+    | OPENING_PARENTHESIS nestedExpression+ CLOSING_PARENTHESIS (COLON IDENTIFIER)?
+    ;
+
+nestedExpression ::=
+    IDENTIFIER (COLON IDENTIFIER)?
+    | nestedExpression BAR toplevelExpression
+    | nestedExpression ASTERISK
+    | nestedExpression PLUS
+    | nestedExpression QUESTION_MARK
+    | OPENING_PARENTHESIS nestedExpression+ CLOSING_PARENTHESIS (COLON IDENTIFIER)?
 	;
 
 

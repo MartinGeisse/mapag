@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.grammar.extended;
 
+import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,29 +10,36 @@ import org.junit.Test;
  */
 public class PrecedenceTableEntryTest {
 
+	private static final ImmutableSet<String> TERMINAL_NAMES = ImmutableSet.of("abc", "def");
+
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullTerminalName() {
+	public void testNullTerminalNames() {
 		new PrecedenceTable.Entry(null, Associativity.NONASSOC);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testEmptyTerminalName() {
-		new PrecedenceTable.Entry("", Associativity.NONASSOC);
+	public void testEmptyTerminalNames() {
+		new PrecedenceTable.Entry(ImmutableSet.of(), Associativity.NONASSOC);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testTerminalNamesContainsEmpty() {
+		new PrecedenceTable.Entry(ImmutableSet.of("abc", "", "foo"), Associativity.NONASSOC);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullAssociativity() {
-		new PrecedenceTable.Entry("foo", null);
+		new PrecedenceTable.Entry(ImmutableSet.of("foo"), null);
 	}
 
 	@Test
 	public void testConstructorGetter() {
-		PrecedenceTable.Entry entry1 = new PrecedenceTable.Entry("foo", Associativity.NONASSOC);
-		Assert.assertEquals("foo", entry1.getTerminalName());
+		PrecedenceTable.Entry entry1 = new PrecedenceTable.Entry(TERMINAL_NAMES, Associativity.NONASSOC);
+		Assert.assertEquals(TERMINAL_NAMES, entry1.getTerminalNames());
 		Assert.assertEquals(Associativity.NONASSOC, entry1.getAssociativity());
 
-		PrecedenceTable.Entry entry2 = new PrecedenceTable.Entry("bar", Associativity.RIGHT);
-		Assert.assertEquals("bar", entry2.getTerminalName());
+		PrecedenceTable.Entry entry2 = new PrecedenceTable.Entry(TERMINAL_NAMES, Associativity.RIGHT);
+		Assert.assertEquals(TERMINAL_NAMES, entry2.getTerminalNames());
 		Assert.assertEquals(Associativity.RIGHT, entry2.getAssociativity());
 	}
 
