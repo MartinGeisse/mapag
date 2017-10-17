@@ -2,13 +2,15 @@ package name.martingeisse.mapag.grammar.extended.validation;
 
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.extended.expression.*;
+import name.martingeisse.mapag.util.ParameterUtil;
 
 final class ExpressionValidatorImpl implements ExpressionValidator {
 
 	private final ImmutableSet<String> knownSymbols;
 
 	ExpressionValidatorImpl(ImmutableSet<String> knownSymbols) {
-		this.knownSymbols = knownSymbols;
+		this.knownSymbols = ParameterUtil.ensureNotNullOrEmpty(knownSymbols, "knownSymbols");
+		ParameterUtil.ensureNoNullOrEmptyElement(knownSymbols, "knownSymbols");
 	}
 
 	public void validateExpression(Expression expression) {

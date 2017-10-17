@@ -3,6 +3,7 @@ package name.martingeisse.mapag.grammar.extended.validation;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.extended.Alternative;
 import name.martingeisse.mapag.grammar.extended.Production;
+import name.martingeisse.mapag.util.ParameterUtil;
 
 class ProductionValidatorImpl implements ProductionValidator {
 
@@ -13,10 +14,12 @@ class ProductionValidatorImpl implements ProductionValidator {
 	private boolean foundProductionForStartSymbol = false;
 
 	ProductionValidatorImpl(ImmutableSet<String> terminalNames, ImmutableSet<String> nonterminalNames, String startSymbol, ExpressionValidator expressionValidator) {
-		this.terminalNames = terminalNames;
-		this.nonterminalNames = nonterminalNames;
-		this.expressionValidator = expressionValidator;
-		this.startSymbol = startSymbol;
+		this.terminalNames = ParameterUtil.ensureNotNullOrEmpty(terminalNames, "terminalNames");
+		ParameterUtil.ensureNoNullOrEmptyElement(terminalNames, "terminalNames");
+		this.nonterminalNames = ParameterUtil.ensureNotNullOrEmpty(nonterminalNames, "nonterminalNames");
+		ParameterUtil.ensureNoNullOrEmptyElement(nonterminalNames, "nonterminalNames");
+		this.startSymbol = ParameterUtil.ensureNotNullOrEmpty(startSymbol, "startSymbol");
+		this.expressionValidator = ParameterUtil.ensureNotNull(expressionValidator, "expressionValidator");
 	}
 
 	public void validateProduction(Production production) {
