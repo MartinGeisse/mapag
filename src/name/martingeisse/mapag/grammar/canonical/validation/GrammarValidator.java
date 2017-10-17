@@ -28,6 +28,8 @@ public class GrammarValidator {
 			}
 		}
 
+		// TODO no two terminals with same precedence level but different associativity
+
 		if (grammar.getNonterminalDefinitions().get(grammar.getStartNonterminalName()) == null) {
 			throw new IllegalStateException("no definition found for start nonterminal: " + grammar.getStartNonterminalName());
 		}
