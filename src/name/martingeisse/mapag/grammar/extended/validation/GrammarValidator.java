@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.grammar.extended.validation;
 
+import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.extended.*;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 
@@ -62,6 +63,9 @@ public final class GrammarValidator {
 			throw new IllegalStateException("start symbol was not declared as a nonterminal: " + grammar.getStartNonterminalName());
 		}
 
+		Set<String> allSymbolNames = new HashSet<>(terminalNames);
+		allSymbolNames.addAll(nonterminalNames);
+		ExpressionValidator expressionValidator = new ExpressionValidator(ImmutableSet.copyOf(allSymbolNames));
 		boolean foundProductionForStartSymbol = false;
 		for (Production production : grammar.getProductions()) {
 			String leftHandSide = production.getLeftHandSide();
@@ -71,7 +75,15 @@ public final class GrammarValidator {
 			if (leftHandSide.equals(grammar.getStartNonterminalName())) {
 				foundProductionForStartSymbol = true;
 			}
-			// TODO validateExpression(production.getRightHandSide());
+			for (Alternative alternative : production.getAlternatives()) {
+				expressionValidator.validateExpression(alternative.getExpression());
+				if (alternative.getPrecedenceSpecificationType() == Alternative.PrecedenceSpecificationType.EXPLICIT) {
+					if (!terminalNames.contains(alternative.getPrecedenceSpecification())) {
+						throw new IllegalStateException("unknown terminal name '" +
+								alternative.getPrecedenceSpecification() + " in rule precedence specification for nonterminal " + leftHandSide);
+					}
+				}
+			}
 		}
 		if (!foundProductionForStartSymbol) {
 			throw new IllegalStateException("no production found for start symbol");

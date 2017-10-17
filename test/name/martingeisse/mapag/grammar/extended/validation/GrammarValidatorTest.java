@@ -50,43 +50,25 @@ public class GrammarValidatorTest {
 		new GrammarValidator(grammar).validate();
 	}
 
-	@DataProvider
-	public static Object[][] getTestUnknownTerminalInPrecedenceTableData() {
-		return new Object[][]{
-				{
-						ImmutableList.of(
-								new PrecedenceTable.Entry(ImmutableSet.of("foo", "bar"), Associativity.LEFT),
-								new PrecedenceTable.Entry(ImmutableSet.of("baz", "xyz"), Associativity.LEFT)
-						)
-				}
-		};
-	}
-
 	@Test(expected = IllegalStateException.class)
-	@UseDataProvider("getTestUnknownTerminalInPrecedenceTableData")
-	public void testUnknownTerminalInPrecedenceTable(ImmutableList<PrecedenceTable.Entry> entries) {
-		PrecedenceTable precedenceTable = new PrecedenceTable(entries);
+	public void testUnknownTerminalInPrecedenceTable() {
+		PrecedenceTable precedenceTable = new PrecedenceTable(ImmutableList.of(
+				new PrecedenceTable.Entry(ImmutableSet.of("foo", "bar"), Associativity.LEFT),
+				new PrecedenceTable.Entry(ImmutableSet.of("baz", "xyz"), Associativity.LEFT)
+		)
+		);
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
-	@DataProvider
-	public static Object[][] getTestDuplicateTerminalInPrecedenceTableData() {
-		return new Object[][]{
-				{
-						ImmutableList.of(
-								new PrecedenceTable.Entry(ImmutableSet.of("foo"), Associativity.LEFT),
-								new PrecedenceTable.Entry(ImmutableSet.of("bar"), Associativity.LEFT),
-								new PrecedenceTable.Entry(ImmutableSet.of("baz", "foo"), Associativity.LEFT)
-						)
-				}
-		};
-	}
-
 	@Test(expected = IllegalStateException.class)
-	@UseDataProvider("getTestDuplicateTerminalInPrecedenceTableData")
-	public void testDuplicateTerminalInPrecedenceTable(ImmutableList<PrecedenceTable.Entry> entries) {
-		PrecedenceTable precedenceTable = new PrecedenceTable(entries);
+	public void testDuplicateTerminalInPrecedenceTable() {
+		PrecedenceTable precedenceTable = new PrecedenceTable(ImmutableList.of(
+				new PrecedenceTable.Entry(ImmutableSet.of("foo"), Associativity.LEFT),
+				new PrecedenceTable.Entry(ImmutableSet.of("bar"), Associativity.LEFT),
+				new PrecedenceTable.Entry(ImmutableSet.of("baz", "foo"), Associativity.LEFT)
+		)
+		);
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
