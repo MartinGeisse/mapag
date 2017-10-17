@@ -2,13 +2,10 @@ package name.martingeisse.mapag.grammar.extended.validation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.extended.*;
-import name.martingeisse.mapag.grammar.extended.expression.SequenceExpression;
-import name.martingeisse.mapag.grammar.extended.expression.SymbolReference;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -79,71 +76,37 @@ public class GrammarValidatorTest {
 		new GrammarValidator(grammar).validate();
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void testUnknownNonterminalInProduction() {
-		Alternative alternative = new Alternative(new SymbolReference("foo"));
-		ImmutableList<Production> productions = ImmutableList.of(
-				new Production("unknown", ImmutableList.of(alternative))
-		);
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
-		new GrammarValidator(grammar).validate();
-	}
+	@Test
+	public void testProductionValidatorGetsCalled() {
+		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		GrammarValidator.ProductionValidatorFactory productionValidatorFactory = (terminalNames, nonterminalNames, startSymbol) -> {
+			Assert.assertEquals(ImmutableSet.of(TERMINAL_1.getName(), TERMINAL_2.getName(), TERMINAL_3.getName()), terminalNames);
+			Assert.assertEquals(ImmutableSet.of(NONTERMINAL_1.getName(), NONTERMINAL_2.getName(), NONTERMINAL_3.getName()), nonterminalNames);
+			Assert.assertEquals(START_NONTERMINAL_NAME, startSymbol);
+			return new ProductionValidator() {
 
-//	@DataProvider
-//	public static Object[][] getTestUnknownSymbolReferenceInSecondProductionData() {
-//		Alternative unknownFirst = new Alternative(new SequenceExpression(new SymbolReference("unknown"), new SymbolReference("bar")));
-//		Alternative unknownSecond = new Alternative(new SequenceExpression(new SymbolReference("bar"), new SymbolReference("unknown")));
-//		Alternative unknownPrecedence = new Alternative(new SymbolReference("bar"), Alternative.PrecedenceSpecificationType.EXPLICIT, "xyz");
-//
-//		return new Object[][]{
-//				{
-//						ImmutableList.of(
-//								new Production("nt2", ImmutableList.of(new Alternative())),
-//								PRODUCTION_1,
-//								)
-//				},
-//				{
-//						ImmutableList.of(
-//								new Production("nt2", new SequenceExpression(new SymbolReference("foo"), new SymbolReference("unknown"))),
-//								PRODUCTION_1,
-//								)
-//				},
-//				{
-//						ImmutableList.of(
-//								PRODUCTION_1,
-//								new Production("nt2", new SequenceExpression(new SymbolReference("unknown"), new SymbolReference("bar")))
-//						)
-//				},
-//				{
-//						ImmutableList.of(
-//								PRODUCTION_1,
-//								new Production("nt2", new SequenceExpression(new SymbolReference("foo"), new SymbolReference("unknown")))
-//						)
-//				}
-//		};
-//	}
-//
-//	@Test(expected = IllegalStateException.class)
-//	@UseDataProvider("getTestUnknownSymbolReferenceInSecondProductionData")
-//	public void testUnknownSymbolReference(ImmutableList<Production> productions) {
-//		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
-//		new GrammarValidator(grammar).validate();
-//	}
-//
-//
-//	@DataProvider
-//	public static Object[][] getTestUnknownSymbolReferenceInSecondProductionData() {
-//
-//	}
-//
-//	@Test(expected = IllegalStateException.class)
-//	public void testValidateExpression() {
-//		Alternative alternative = new Alternative(new SymbolReference("foo"));
-//		ImmutableList<Production> productions = ImmutableList.of(
-//				new Production("unknown", ImmutableList.of(alternative))
-//		);
-//		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
-//		new GrammarValidator(grammar).validate();
-//	}
+				int counter = 0;
+
+				@Override
+				public void validateProduction(Production production) {
+					if (counter == 0) {
+						Assert.assertEquals(PRODUCTION_1, production);
+					} else if (counter == 1) {
+						Assert.assertEquals(PRODUCTION_2, production);
+					} else {
+						Assert.fail("invalid counter: " + counter);
+					}
+					counter++;
+				}
+
+				@Override
+				public void finish() {
+					Assert.assertEquals(2, counter);
+				}
+
+			};
+		};
+		new GrammarValidator(grammar, productionValidatorFactory).validate();
+	}
 
 }

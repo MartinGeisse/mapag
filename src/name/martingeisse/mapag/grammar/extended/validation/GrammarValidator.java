@@ -2,7 +2,6 @@ package name.martingeisse.mapag.grammar.extended.validation;
 
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.extended.*;
-import name.martingeisse.mapag.grammar.extended.expression.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,25 +13,41 @@ import java.util.Set;
  */
 public final class GrammarValidator {
 
-	private final Grammar grammar;
-	private Set<String> terminalNames;
-	private Set<String> nonterminalNames;
-	private Map<String, PrecedenceTable.Entry> precedenceTableEntriesByName;
-
-	public GrammarValidator(Grammar grammar) {
-		this.grammar = grammar;
+	interface ProductionValidatorFactory {
+		ProductionValidator createProductionValidator(ImmutableSet<String> terminalNames,
+													  ImmutableSet<String> nonterminalNames,
+													  String startSymbol);
 	}
 
+	private final Grammar grammar;
+	private final ProductionValidatorFactory productionValidatorFactory;
+
+	public GrammarValidator(Grammar grammar) {
+		this(grammar, (terminalNames, nonterminalNames, startSymbol) -> {
+			ImmutableSet<String> allSymbolNames = ImmutableSet.<String>builder().addAll(terminalNames).addAll(nonterminalNames).build();
+			ExpressionValidator expressionValidator = new ExpressionValidatorImpl(allSymbolNames);
+			return new ProductionValidatorImpl(terminalNames, nonterminalNames, startSymbol, expressionValidator);
+		});
+	}
+
+	GrammarValidator(Grammar grammar, ProductionValidatorFactory productionValidatorFactory) {
+		this.grammar = grammar;
+		this.productionValidatorFactory = productionValidatorFactory;
+	}
+
+	/**
+	 * This method may be called only once.
+	 */
 	public void validate() {
 
-		terminalNames = new HashSet<>();
+		Set<String> terminalNames = new HashSet<>();
 		for (TerminalDeclaration terminalDeclaration : grammar.getTerminalDeclarations()) {
 			if (!terminalNames.add(terminalDeclaration.getName())) {
 				throw new IllegalStateException("redeclaration of terminal: " + terminalDeclaration.getName());
 			}
 		}
 
-		nonterminalNames = new HashSet<>();
+		Set<String> nonterminalNames = new HashSet<>();
 		for (NonterminalDeclaration nonterminalDeclaration : grammar.getNonterminalDeclarations()) {
 			if (!nonterminalNames.add(nonterminalDeclaration.getName())) {
 				throw new IllegalStateException("redeclaration of nonterminal: " + nonterminalDeclaration.getName());
@@ -47,7 +62,7 @@ public final class GrammarValidator {
 			}
 		}
 
-		precedenceTableEntriesByName = new HashMap<>();
+		Map<String, PrecedenceTable.Entry> precedenceTableEntriesByName = new HashMap<>();
 		for (PrecedenceTable.Entry entry : grammar.getPrecedenceTable().getEntries()) {
 			for (String name : entry.getTerminalNames()) {
 				if (!terminalNames.contains(name)) {
@@ -63,31 +78,14 @@ public final class GrammarValidator {
 			throw new IllegalStateException("start symbol was not declared as a nonterminal: " + grammar.getStartNonterminalName());
 		}
 
-		Set<String> allSymbolNames = new HashSet<>(terminalNames);
-		allSymbolNames.addAll(nonterminalNames);
-		ExpressionValidator expressionValidator = new ExpressionValidator(ImmutableSet.copyOf(allSymbolNames));
-		boolean foundProductionForStartSymbol = false;
+		ProductionValidator productionValidator = productionValidatorFactory.createProductionValidator(
+				ImmutableSet.copyOf(terminalNames),
+				ImmutableSet.copyOf(nonterminalNames),
+				grammar.getStartNonterminalName());
 		for (Production production : grammar.getProductions()) {
-			String leftHandSide = production.getLeftHandSide();
-			if (!nonterminalNames.contains(leftHandSide)) {
-				throw new IllegalStateException("left-hand symbol in production was not declared as a nonterminal: " + leftHandSide);
-			}
-			if (leftHandSide.equals(grammar.getStartNonterminalName())) {
-				foundProductionForStartSymbol = true;
-			}
-			for (Alternative alternative : production.getAlternatives()) {
-				expressionValidator.validateExpression(alternative.getExpression());
-				if (alternative.getPrecedenceSpecificationType() == Alternative.PrecedenceSpecificationType.EXPLICIT) {
-					if (!terminalNames.contains(alternative.getPrecedenceSpecification())) {
-						throw new IllegalStateException("unknown terminal name '" +
-								alternative.getPrecedenceSpecification() + " in rule precedence specification for nonterminal " + leftHandSide);
-					}
-				}
-			}
+			productionValidator.validateProduction(production);
 		}
-		if (!foundProductionForStartSymbol) {
-			throw new IllegalStateException("no production found for start symbol");
-		}
+		productionValidator.finish();
 
 	}
 

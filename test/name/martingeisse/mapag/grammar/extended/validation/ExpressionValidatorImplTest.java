@@ -12,9 +12,24 @@ import org.junit.runner.RunWith;
  *
  */
 @RunWith(DataProviderRunner.class)
-public class ExpressionValidatorTest {
+public class ExpressionValidatorImplTest {
 
 	private static final ImmutableSet<String> KNOWN_SYMBOLS = ImmutableSet.of("foo", "bar");
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testNullKnownSymbols() {
+		new ExpressionValidatorImpl(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testEmptyKnownSymbols() {
+		new ExpressionValidatorImpl(ImmutableSet.of());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testKnownSymbolsContainsEmpty() {
+		new ExpressionValidatorImpl(ImmutableSet.of("foo", "", "bar"));
+	}
 
 	@DataProvider
 	public static Object[][] getTestInvalidExpressionData() {
@@ -49,7 +64,7 @@ public class ExpressionValidatorTest {
 	@Test(expected = IllegalStateException.class)
 	@UseDataProvider("getTestInvalidExpressionData")
 	public void testInvalidExpression(Expression expression) {
-		new ExpressionValidator(KNOWN_SYMBOLS).validateExpression(expression);
+		new ExpressionValidatorImpl(KNOWN_SYMBOLS).validateExpression(expression);
 	}
 
 	@DataProvider
@@ -79,7 +94,7 @@ public class ExpressionValidatorTest {
 	@Test
 	@UseDataProvider("getTestValidExpressionData")
 	public void testValidExpression(Expression expression) {
-		new ExpressionValidator(KNOWN_SYMBOLS).validateExpression(expression);
+		new ExpressionValidatorImpl(KNOWN_SYMBOLS).validateExpression(expression);
 	}
 
 }
