@@ -89,12 +89,13 @@ public final class GrammarCanonicalizer {
 
 	private name.martingeisse.mapag.grammar.canonical.Alternative convertAlternative(String nonterminalName, name.martingeisse.mapag.grammar.extended.Alternative inputAlternative) {
 		// TODO check
-		List<Alternative> alternatives = nonterminalAlternatives.get(nonterminalName);
-		if (alternatives == null) {
-			alternatives = new ArrayList<>();
-			nonterminalAlternatives.put(nonterminalName, alternatives);
-		}
-		alternatives.add(alternative);
+//		List<Alternative> alternatives = nonterminalAlternatives.get(nonterminalName);
+//		if (alternatives == null) {
+//			alternatives = new ArrayList<>();
+//			nonterminalAlternatives.put(nonterminalName, alternatives);
+//		}
+//		alternatives.add(alternative);
+		throw new RuntimeException();
 	}
 
 	public name.martingeisse.mapag.grammar.canonical.Grammar getResult() {

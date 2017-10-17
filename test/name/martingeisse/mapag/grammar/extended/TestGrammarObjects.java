@@ -20,9 +20,9 @@ public class TestGrammarObjects {
 	public static final NonterminalDeclaration NONTERMINAL_3 = new NonterminalDeclaration("dummyStart");
 	public static final ImmutableList<NonterminalDeclaration> NONTERMINALS = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3);
 	public static final PrecedenceTable PRECEDENCE_TABLE_EMPTY = new PrecedenceTable(ImmutableList.of());
-	public static final PrecedenceTable PRECEDENCE_TABLE_NONEMPTY = new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(TERMINAL_2.getName(), Associativity.LEFT)));
+	public static final PrecedenceTable PRECEDENCE_TABLE_NONEMPTY = null; // TODO new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(TERMINAL_2.getName(), Associativity.LEFT)));
 	public static final String START_NONTERMINAL_NAME = "dummyStart";
-	public static final Production PRODUCTION_1 = new Production(START_NONTERMINAL_NAME, new SymbolReference(TERMINAL_1.getName()));
+	public static final Production PRODUCTION_1 = null;// TODO new Production(START_NONTERMINAL_NAME, new SymbolReference(TERMINAL_1.getName()));
 	public static final ImmutableList<Production> PRODUCTIONS = ImmutableList.of(PRODUCTION_1);
 
 	// prevent instantiation

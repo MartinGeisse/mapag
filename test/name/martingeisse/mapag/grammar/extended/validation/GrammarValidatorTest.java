@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.extended.validation;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -49,24 +50,43 @@ public class GrammarValidatorTest {
 		new GrammarValidator(grammar).validate();
 	}
 
+	@DataProvider
+	public static Object[][] getTestUnknownTerminalInPrecedenceTableData() {
+		return new Object[][]{
+				{
+						ImmutableList.of(
+								new PrecedenceTable.Entry(ImmutableSet.of("foo", "bar"), Associativity.LEFT),
+								new PrecedenceTable.Entry(ImmutableSet.of("baz", "xyz"), Associativity.LEFT)
+						)
+				}
+		};
+	}
+
 	@Test(expected = IllegalStateException.class)
-	public void testUnknownTerminalInPrecedenceTable() {
-		PrecedenceTable precedenceTable = new PrecedenceTable(ImmutableList.of(
-			new PrecedenceTable.Entry("foo", Associativity.LEFT),
-			new PrecedenceTable.Entry("bar", Associativity.LEFT),
-			new PrecedenceTable.Entry("xyz", Associativity.LEFT)
-		));
+	@UseDataProvider("getTestUnknownTerminalInPrecedenceTableData")
+	public void testUnknownTerminalInPrecedenceTable(ImmutableList<PrecedenceTable.Entry> entries) {
+		PrecedenceTable precedenceTable = new PrecedenceTable(entries);
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
+	@DataProvider
+	public static Object[][] getTestDuplicateTerminalInPrecedenceTableData() {
+		return new Object[][]{
+				{
+						ImmutableList.of(
+								new PrecedenceTable.Entry(ImmutableSet.of("foo"), Associativity.LEFT),
+								new PrecedenceTable.Entry(ImmutableSet.of("bar"), Associativity.LEFT),
+								new PrecedenceTable.Entry(ImmutableSet.of("baz", "foo"), Associativity.LEFT)
+						)
+				}
+		};
+	}
+
 	@Test(expected = IllegalStateException.class)
-	public void testDuplicateTerminalInPrecedenceTable() {
-		PrecedenceTable precedenceTable = new PrecedenceTable(ImmutableList.of(
-			new PrecedenceTable.Entry("foo", Associativity.LEFT),
-			new PrecedenceTable.Entry("bar", Associativity.LEFT),
-			new PrecedenceTable.Entry("foo", Associativity.LEFT)
-		));
+	@UseDataProvider("getTestDuplicateTerminalInPrecedenceTableData")
+	public void testDuplicateTerminalInPrecedenceTable(ImmutableList<PrecedenceTable.Entry> entries) {
+		PrecedenceTable precedenceTable = new PrecedenceTable(entries);
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
@@ -79,52 +99,69 @@ public class GrammarValidatorTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownNonterminalInProduction() {
+		Alternative alternative = new Alternative(new SymbolReference("foo"));
 		ImmutableList<Production> productions = ImmutableList.of(
-			new Production("unknown", new SymbolReference("foo"))
+				new Production("unknown", ImmutableList.of(alternative))
 		);
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
 		new GrammarValidator(grammar).validate();
 	}
 
-	@DataProvider
-	public static Object[][] getTestUnknownSymbolReferenceInSecondProductionData() {
-		return new Object[][] {
-			{
-				ImmutableList.of(
-					PRODUCTION_1,
-					new Production("nt2", new SequenceExpression(new SymbolReference("unknown"), new SymbolReference("bar"))),
-					new Production("nt1", new SequenceExpression(new SymbolReference("foo"), new SymbolReference("bar")))
-				)
-			},
-			{
-				ImmutableList.of(
-					PRODUCTION_1,
-					new Production("nt2", new SequenceExpression(new SymbolReference("foo"), new SymbolReference("unknown"))),
-					new Production("nt1", new SequenceExpression(new SymbolReference("foo"), new SymbolReference("bar")))
-				)
-			},
-			{
-				ImmutableList.of(
-					PRODUCTION_1,
-					new Production("nt1", new SequenceExpression(new SymbolReference("foo"), new SymbolReference("bar"))),
-					new Production("nt2", new SequenceExpression(new SymbolReference("unknown"), new SymbolReference("bar")))
-				)
-			},
-			{
-				ImmutableList.of(
-					PRODUCTION_1,
-					new Production("nt1", new SequenceExpression(new SymbolReference("foo"), new SymbolReference("bar"))),
-					new Production("nt2", new SequenceExpression(new SymbolReference("foo"), new SymbolReference("unknown")))
-				)
-			}
-		};
-	}
-
-	@Test(expected = IllegalStateException.class)
-	@UseDataProvider("getTestUnknownSymbolReferenceInSecondProductionData")
-	public void testUnknownSymbolReference(ImmutableList<Production> productions) {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
-		new GrammarValidator(grammar).validate();
-	}
+//	@DataProvider
+//	public static Object[][] getTestUnknownSymbolReferenceInSecondProductionData() {
+//		Alternative unknownFirst = new Alternative(new SequenceExpression(new SymbolReference("unknown"), new SymbolReference("bar")));
+//		Alternative unknownSecond = new Alternative(new SequenceExpression(new SymbolReference("bar"), new SymbolReference("unknown")));
+//		Alternative unknownPrecedence = new Alternative(new SymbolReference("bar"), Alternative.PrecedenceSpecificationType.EXPLICIT, "xyz");
+//
+//		return new Object[][]{
+//				{
+//						ImmutableList.of(
+//								new Production("nt2", ImmutableList.of(new Alternative())),
+//								PRODUCTION_1,
+//								)
+//				},
+//				{
+//						ImmutableList.of(
+//								new Production("nt2", new SequenceExpression(new SymbolReference("foo"), new SymbolReference("unknown"))),
+//								PRODUCTION_1,
+//								)
+//				},
+//				{
+//						ImmutableList.of(
+//								PRODUCTION_1,
+//								new Production("nt2", new SequenceExpression(new SymbolReference("unknown"), new SymbolReference("bar")))
+//						)
+//				},
+//				{
+//						ImmutableList.of(
+//								PRODUCTION_1,
+//								new Production("nt2", new SequenceExpression(new SymbolReference("foo"), new SymbolReference("unknown")))
+//						)
+//				}
+//		};
+//	}
+//
+//	@Test(expected = IllegalStateException.class)
+//	@UseDataProvider("getTestUnknownSymbolReferenceInSecondProductionData")
+//	public void testUnknownSymbolReference(ImmutableList<Production> productions) {
+//		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
+//		new GrammarValidator(grammar).validate();
+//	}
+//
+//
+//	@DataProvider
+//	public static Object[][] getTestUnknownSymbolReferenceInSecondProductionData() {
+//
+//	}
+//
+//	@Test(expected = IllegalStateException.class)
+//	public void testValidateExpression() {
+//		Alternative alternative = new Alternative(new SymbolReference("foo"));
+//		ImmutableList<Production> productions = ImmutableList.of(
+//				new Production("unknown", ImmutableList.of(alternative))
+//		);
+//		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
+//		new GrammarValidator(grammar).validate();
+//	}
 
 }

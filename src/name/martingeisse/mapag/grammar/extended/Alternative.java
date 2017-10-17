@@ -24,6 +24,9 @@ public final class Alternative {
 			if (precedenceSpecification == null) {
 				throw new IllegalArgumentException("missing precedence specification for precedence specification type " + precedenceSpecificationType);
 			}
+			if (precedenceSpecification.isEmpty()) {
+				throw new IllegalArgumentException("empty precedence specification for precedence specification type " + precedenceSpecificationType);
+			}
 		} else {
 			if (precedenceSpecification != null) {
 				throw new IllegalArgumentException("precedence specification is invalid for precedence specification type " + precedenceSpecificationType);
