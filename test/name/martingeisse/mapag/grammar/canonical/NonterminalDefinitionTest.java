@@ -9,7 +9,6 @@ import org.junit.Test;
  */
 public class NonterminalDefinitionTest {
 
-	// TODO precedence
 	private static final Alternative ALTERNATIVE_1 = new Alternative(ImmutableList.of("foo", "bar"), null);
 	private static final Alternative ALTERNATIVE_2 = new Alternative(ImmutableList.of("a", "b"), null);
 	private static final ImmutableList<Alternative> ALTERNATIVES = ImmutableList.of(ALTERNATIVE_1, ALTERNATIVE_2);
@@ -24,6 +23,11 @@ public class NonterminalDefinitionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullName() {
 		new NonterminalDefinition(null, ALTERNATIVES);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testEmptyName() {
+		new NonterminalDefinition("", ALTERNATIVES);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

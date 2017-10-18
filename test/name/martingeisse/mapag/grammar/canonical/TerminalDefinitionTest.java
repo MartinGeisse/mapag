@@ -22,6 +22,11 @@ public class TerminalDefinitionTest {
 		new TerminalDefinition(null, 5, Associativity.LEFT);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testEmptyName() {
+		new TerminalDefinition("", 5, Associativity.LEFT);
+	}
+
 	@Test
 	public void testNullPrecedenceIndexNonassoc() {
 		TerminalDefinition terminalDefinition = new TerminalDefinition("foo", null, Associativity.NONASSOC);
