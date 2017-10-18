@@ -82,62 +82,62 @@ public class AlternativeTest {
 
 	// TODO
 
-	@DataProvider
-	public static Object[][] getValidAlternatives() {
-		return new Object[][]{
-				{new Alternative(ImmutableList.of(), null)},
-				{new Alternative(ImmutableList.of(), "xyz")},
-				{new Alternative(EXPANSION, null)},
-				{new Alternative(EXPANSION, "xyz")},
-		};
-	}
-
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testVanishSymbolNullWithNullPrecedence() {
-		new Alternative(EXPANSION, null).vanishSymbol(null);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testVanishSymbolNullWithNonNullPrecedence() {
-		new Alternative(EXPANSION, "xyz").vanishSymbol(null);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testVanishSymbolNullInEmptyAlternativeWithNullPrecedence() {
-		new Alternative(ImmutableList.of(), null).vanishSymbol(null);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testVanishSymbolNullInEmptyAlternativeWithNonNullPrecedence() {
-		new Alternative(ImmutableList.of(), "xyz").vanishSymbol(null);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testVanishSymbolEmptyWithNullPrecedence() {
-		new Alternative(EXPANSION).vanishSymbol("");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testVanishSymbolEmptyInEmptyAlternative() {
-		new Alternative(ImmutableList.of()).vanishSymbol("");
-	}
-
-	@Test
-	public void testVanishSymbolInEmptyAlternative() {
-		Assert.assertTrue(new Alternative(ImmutableList.of()).vanishSymbol("foo").getExpansion().isEmpty());
-	}
-
-	@Test
-	public void testVanishSymbol() {
-		ImmutableList<String> expected = ImmutableList.of("bar", "baz", "abc");
-		Assert.assertEquals(expected, new Alternative(EXPANSION).vanishSymbol("foo").getExpansion());
-	}
-
-	@Test
-	public void testVanishSymbolToEmptyAlternative() {
-		ImmutableList<String> input = ImmutableList.of("bar", "bar");
-		Assert.assertEquals(0, new Alternative(input).vanishSymbol("bar").getExpansion().size());
-	}
+//	@DataProvider
+//	public static Object[][] getValidAlternatives() {
+//		return new Object[][]{
+//				{new Alternative(ImmutableList.of(), null)},
+//				{new Alternative(ImmutableList.of(), "xyz")},
+//				{new Alternative(EXPANSION, null)},
+//				{new Alternative(EXPANSION, "xyz")},
+//		};
+//	}
+//
+//
+//	@Test(expected = IllegalArgumentException.class)
+//	public void testVanishSymbolNullWithNullPrecedence() {
+//		new Alternative(EXPANSION, null).vanishSymbol(null);
+//	}
+//
+//	@Test(expected = IllegalArgumentException.class)
+//	public void testVanishSymbolNullWithNonNullPrecedence() {
+//		new Alternative(EXPANSION, "xyz").vanishSymbol(null);
+//	}
+//
+//	@Test(expected = IllegalArgumentException.class)
+//	public void testVanishSymbolNullInEmptyAlternativeWithNullPrecedence() {
+//		new Alternative(ImmutableList.of(), null).vanishSymbol(null);
+//	}
+//
+//	@Test(expected = IllegalArgumentException.class)
+//	public void testVanishSymbolNullInEmptyAlternativeWithNonNullPrecedence() {
+//		new Alternative(ImmutableList.of(), "xyz").vanishSymbol(null);
+//	}
+//
+//	@Test(expected = IllegalArgumentException.class)
+//	public void testVanishSymbolEmptyWithNullPrecedence() {
+//		new Alternative(EXPANSION).vanishSymbol("");
+//	}
+//
+//	@Test(expected = IllegalArgumentException.class)
+//	public void testVanishSymbolEmptyInEmptyAlternative() {
+//		new Alternative(ImmutableList.of()).vanishSymbol("");
+//	}
+//
+//	@Test
+//	public void testVanishSymbolInEmptyAlternative() {
+//		Assert.assertTrue(new Alternative(ImmutableList.of()).vanishSymbol("foo").getExpansion().isEmpty());
+//	}
+//
+//	@Test
+//	public void testVanishSymbol() {
+//		ImmutableList<String> expected = ImmutableList.of("bar", "baz", "abc");
+//		Assert.assertEquals(expected, new Alternative(EXPANSION).vanishSymbol("foo").getExpansion());
+//	}
+//
+//	@Test
+//	public void testVanishSymbolToEmptyAlternative() {
+//		ImmutableList<String> input = ImmutableList.of("bar", "bar");
+//		Assert.assertEquals(0, new Alternative(input).vanishSymbol("bar").getExpansion().size());
+//	}
 
 }

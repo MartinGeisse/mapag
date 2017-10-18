@@ -14,7 +14,9 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 	}
 
 	public void validateExpression(Expression expression) {
-		if (expression instanceof OneOrMoreExpression) {
+		if (expression instanceof EmptyExpression) {
+			// OK, nothing to do
+		} else if (expression instanceof OneOrMoreExpression) {
 			validateExpression(((OneOrMoreExpression) expression).getOperand());
 		} else if (expression instanceof OptionalExpression) {
 			validateExpression(((OptionalExpression) expression).getOperand());

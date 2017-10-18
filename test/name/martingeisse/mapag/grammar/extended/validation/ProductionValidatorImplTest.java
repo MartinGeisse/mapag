@@ -84,7 +84,7 @@ public class ProductionValidatorImplTest {
 	}
 
 	@Test
-	public void testNoProductionForStartSymbolCheckedInFinishMethod() {
+	public void testNoProductionForStartSymbolGetsCheckedInFinishMethod() {
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "def", NOP_EXPRESSION_VALIDATOR);
 		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_1)));
 		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_2)));

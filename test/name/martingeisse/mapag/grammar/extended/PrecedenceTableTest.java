@@ -14,7 +14,6 @@ public class PrecedenceTableTest {
 	private static final PrecedenceTable.Entry ENTRY_1 = new PrecedenceTable.Entry(ImmutableSet.of("foo"), Associativity.NONASSOC);
 	private static final PrecedenceTable.Entry ENTRY_2 = new PrecedenceTable.Entry(ImmutableSet.of("bar"), Associativity.RIGHT);
 
-	// cannot test with null element because ImmutableList prevents that
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullArgument() {
 		new PrecedenceTable(null);

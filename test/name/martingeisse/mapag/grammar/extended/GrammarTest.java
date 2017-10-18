@@ -50,6 +50,7 @@ public class GrammarTest {
 
 	@Test
 	public void testEmptyTerminalDeclarations() {
+		// allowed by the constructor, but caught during validation
 		new Grammar(PACKAGE_NAME, CLASS_NAME, ImmutableList.of(), NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 	}
 
@@ -60,6 +61,7 @@ public class GrammarTest {
 
 	@Test
 	public void testEmptyNonterminalDeclarations() {
+		// allowed by the constructor, but caught during validation
 		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, ImmutableList.of(), PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 	}
 
@@ -92,6 +94,7 @@ public class GrammarTest {
 
 	@Test
 	public void testEmptyProductions() {
+		// allowed by the constructor, but caught during validation
 		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, ImmutableList.of());
 	}
 
