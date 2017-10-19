@@ -3,10 +3,13 @@ package name.martingeisse.mapag.grammar;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
+import name.martingeisse.mapag.grammar.extended.Alternative;
 import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
+import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.grammar.extended.validation.GrammarValidator;
+import name.martingeisse.mapag.util.ParameterUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +28,7 @@ public final class GrammarCanonicalizer {
 	private name.martingeisse.mapag.grammar.canonical.Grammar outputGrammar;
 
 	public GrammarCanonicalizer(name.martingeisse.mapag.grammar.extended.Grammar inputGrammar) {
-		this.inputGrammar = inputGrammar;
+		this.inputGrammar = ParameterUtil.ensureNotNull(inputGrammar, "inputGrammar");
 	}
 
 	public void run() {
@@ -40,7 +43,7 @@ public final class GrammarCanonicalizer {
 		this.terminalDefinitions = new HashMap<>();
 		for (TerminalDeclaration terminalDeclaration : inputGrammar.getTerminalDeclarations()) {
 			TerminalDefinition terminalDefinition = new TerminalDefinition(
-				terminalDeclaration.getName(), null, Associativity.NONASSOC);
+					terminalDeclaration.getName(), null, Associativity.NONASSOC);
 			terminalDefinitions.put(terminalDeclaration.getName(), terminalDefinition);
 		}
 
@@ -78,11 +81,11 @@ public final class GrammarCanonicalizer {
 
 		// build the output grammar
 		this.outputGrammar = new name.martingeisse.mapag.grammar.canonical.Grammar(
-			inputGrammar.getPackageName(),
-			inputGrammar.getClassName(),
-			terminalDefinitions.values(),
-			nonterminalDefinitions.values(),
-			inputGrammar.getStartNonterminalName()
+				inputGrammar.getPackageName(),
+				inputGrammar.getClassName(),
+				terminalDefinitions.values(),
+				nonterminalDefinitions.values(),
+				inputGrammar.getStartNonterminalName()
 		);
 
 	}
@@ -96,6 +99,25 @@ public final class GrammarCanonicalizer {
 //		}
 //		alternatives.add(alternative);
 		throw new RuntimeException();
+	}
+
+	private String determineEffectivePrecedenceTerminal(Alternative alternative) {
+		switch (alternative.getPrecedenceSpecificationType()) {
+
+			case UNDEFINED:
+				return null;
+
+			case EXPLICIT:
+				return alternative.getPrecedenceSpecification();
+
+			case IMPLICIT:
+				return determineImplicitPrecedenceTerminal(alternative.getExpression());
+
+			default:
+				throw new RuntimeException("unknown precedence specification type: " + alternative.getPrecedenceSpecificationType());
+
+		}
+
 	}
 
 	public name.martingeisse.mapag.grammar.canonical.Grammar getResult() {
