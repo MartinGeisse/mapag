@@ -36,6 +36,11 @@ public class FirstSetHelperTest {
 	@DataProvider
 	public static Object[][] getTestData() {
 		return new Object[][]{
+
+				//
+				// cases involving only a single nonterminal
+				//
+
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
@@ -45,6 +50,317 @@ public class FirstSetHelperTest {
 						ImmutableSet.of("dummyStart"),
 						ImmutableMap.of("dummyStart", ImmutableSet.of()),
 				},
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo", "bar"), null),
+										new Alternative(ImmutableList.of("baz", "bar"), null)
+								))
+						),
+						ImmutableSet.of(),
+						ImmutableMap.of("dummyStart", ImmutableSet.of("foo", "baz")),
+				},
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo", "bar"), null),
+										new Alternative(ImmutableList.of("baz", "bar"), null),
+										new Alternative(ImmutableList.of(), null)
+								))
+						),
+						ImmutableSet.of("dummyStart"),
+						ImmutableMap.of("dummyStart", ImmutableSet.of("foo", "baz")),
+				},
+
+				//
+				// inheriting first-set symbols from nested nonterminals
+				//
+
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null),
+										new Alternative(ImmutableList.of("nt1"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("bar"), null)
+								))
+						),
+						ImmutableSet.of(),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo", "bar"),
+								"nt1", ImmutableSet.of("bar")
+						),
+				},
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null),
+										new Alternative(ImmutableList.of("nt1"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt2"), null),
+										new Alternative(ImmutableList.of("bar"), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("baz"), null)
+								))
+						),
+						ImmutableSet.of(),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo", "bar", "baz"),
+								"nt1", ImmutableSet.of("bar", "baz"),
+								"nt2", ImmutableSet.of("baz")
+						),
+				},
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null),
+										new Alternative(ImmutableList.of("nt1"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt2"), null),
+										new Alternative(ImmutableList.of("bar"), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("baz"), null)
+								))
+						),
+						ImmutableSet.of(),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo", "bar", "baz"),
+								"nt1", ImmutableSet.of("bar", "baz"),
+								"nt2", ImmutableSet.of("baz")
+						),
+				},
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null),
+										new Alternative(ImmutableList.of("nt1"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt2"), null),
+										new Alternative(ImmutableList.of("foo"), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null)
+								))
+						),
+						ImmutableSet.of(),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo"),
+								"nt1", ImmutableSet.of("foo"),
+								"nt2", ImmutableSet.of("foo")
+						),
+				},
+
+				//
+				// don't inherit the second symbol's first set if the first symbol is not vanishable
+				//
+
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt1", "nt2"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("bar"), null)
+								))
+						),
+						ImmutableSet.of(),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo"),
+								"nt1", ImmutableSet.of("foo"),
+								"nt2", ImmutableSet.of("bar")
+						),
+				},
+
+
+				//
+				// inherit the second symbol's first set if the first symbol is vanishable
+				//
+
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt1", "nt2"), null)
+										)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null),
+										new Alternative(ImmutableList.of(), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("bar"), null)
+								))
+						),
+						ImmutableSet.of("nt1"),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo", "bar"),
+								"nt1", ImmutableSet.of("foo"),
+								"nt2", ImmutableSet.of("bar")
+						),
+				},
+
+				//
+				// inherit the third symbol's first set only if both the first and second symbols are vanishable
+				//
+
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("bar"), null)
+								)),
+								new NonterminalDefinition("nt3", ImmutableList.of(
+										new Alternative(ImmutableList.of("baz"), null)
+								))
+						),
+						ImmutableSet.of(),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo"),
+								"nt1", ImmutableSet.of("foo"),
+								"nt2", ImmutableSet.of("bar"),
+								"nt3", ImmutableSet.of("baz")
+						),
+				},
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null),
+										new Alternative(ImmutableList.of(), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("bar"), null)
+								)),
+								new NonterminalDefinition("nt3", ImmutableList.of(
+										new Alternative(ImmutableList.of("baz"), null)
+								))
+						),
+						ImmutableSet.of("nt1"),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo", "bar"),
+								"nt1", ImmutableSet.of("foo"),
+								"nt2", ImmutableSet.of("bar"),
+								"nt3", ImmutableSet.of("baz")
+						),
+				},
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("bar"), null),
+										new Alternative(ImmutableList.of(), null)
+								)),
+								new NonterminalDefinition("nt3", ImmutableList.of(
+										new Alternative(ImmutableList.of("baz"), null)
+								))
+						),
+						ImmutableSet.of("nt2"),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo"),
+								"nt1", ImmutableSet.of("foo"),
+								"nt2", ImmutableSet.of("bar"),
+								"nt3", ImmutableSet.of("baz")
+						),
+				},
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null),
+										new Alternative(ImmutableList.of(), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("bar"), null),
+										new Alternative(ImmutableList.of(), null)
+								)),
+								new NonterminalDefinition("nt3", ImmutableList.of(
+										new Alternative(ImmutableList.of("baz"), null)
+								))
+						),
+						ImmutableSet.of("nt1", "nt2"),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo", "bar", "baz"),
+								"nt1", ImmutableSet.of("foo"),
+								"nt2", ImmutableSet.of("bar"),
+								"nt3", ImmutableSet.of("baz")
+						),
+				},
+
+				//
+				// inherit first-set symbols that the second symbol inherited from a nested symbol IFF the first
+				// symbol is vanishable
+				//
+
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt1", "nt2"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt3"), null)
+								)),
+								new NonterminalDefinition("nt3", ImmutableList.of(
+										new Alternative(ImmutableList.of("bar"), null)
+								))
+						),
+						ImmutableSet.of(),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo"),
+								"nt1", ImmutableSet.of("foo"),
+								"nt2", ImmutableSet.of("bar"),
+								"nt3", ImmutableSet.of("bar")
+						),
+				},
+				{
+						ImmutableList.of(
+								new NonterminalDefinition("dummyStart", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt1", "nt2"), null)
+								)),
+								new NonterminalDefinition("nt1", ImmutableList.of(
+										new Alternative(ImmutableList.of("foo"), null),
+										new Alternative(ImmutableList.of(), null)
+								)),
+								new NonterminalDefinition("nt2", ImmutableList.of(
+										new Alternative(ImmutableList.of("nt3"), null)
+								)),
+								new NonterminalDefinition("nt3", ImmutableList.of(
+										new Alternative(ImmutableList.of("bar"), null)
+								))
+						),
+						ImmutableSet.of("nt1"),
+						ImmutableMap.of(
+								"dummyStart", ImmutableSet.of("foo", "bar"),
+								"nt1", ImmutableSet.of("foo"),
+								"nt2", ImmutableSet.of("bar"),
+								"nt3", ImmutableSet.of("bar")
+						),
+				},
+
+
 		};
 	}
 
@@ -54,10 +370,8 @@ public class FirstSetHelperTest {
 								 ImmutableSet<String> vanishableNonterminals,
 								 ImmutableMap<String, ImmutableSet<String>> expectedResult) {
 		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, nonterminals, START_NONTERMINAL_NAME);
-		ImmutableMap<String, ImmutableSet<String>> result =  FirstSetHelper.runFor(grammar, vanishableNonterminals);
+		ImmutableMap<String, ImmutableSet<String>> result = FirstSetHelper.runFor(grammar, vanishableNonterminals);
 		Assert.assertEquals(expectedResult, result);
 	}
-
-	// TODO
 
 }
