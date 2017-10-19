@@ -20,6 +20,11 @@ import static name.martingeisse.mapag.grammar.canonical.TestGrammarObjects.*;
 @RunWith(DataProviderRunner.class)
 public class VanishableNonterminalsHelperTest {
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testNullInput() {
+		VanishableNonterminalsHelper.runFor(null);
+	}
+
 	@DataProvider
 	public static Object[][] getTestData() {
 		return new Object[][]{
