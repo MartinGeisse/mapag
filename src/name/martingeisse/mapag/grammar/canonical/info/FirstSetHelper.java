@@ -28,6 +28,8 @@ final class FirstSetHelper {
 	}
 
 	static ImmutableMap<String, ImmutableSet<String>> runFor(Grammar grammar, ImmutableSet<String> vanishableNonterminals) {
+		ParameterUtil.ensureNotNull(grammar, "grammar");
+		ParameterUtil.ensureNotNull(vanishableNonterminals, "vanishableNonterminals");
 		Map<String, ImmutableSet<String>> result = new HashMap<>();
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			result.put(nonterminalDefinition.getName(), runFor(grammar, vanishableNonterminals, nonterminalDefinition.getName()));
@@ -36,6 +38,9 @@ final class FirstSetHelper {
 	}
 
 	static ImmutableSet<String> runFor(Grammar grammar, ImmutableSet<String> vanishableNonterminals, String targetNonterminal) {
+		ParameterUtil.ensureNotNull(grammar, "grammar");
+		ParameterUtil.ensureNotNull(vanishableNonterminals, "vanishableNonterminals");
+		ParameterUtil.ensureNotNull(targetNonterminal, "targetNonterminal");
 		FirstSetHelper helper = new FirstSetHelper(grammar, vanishableNonterminals, targetNonterminal);
 		helper.run();
 		return helper.getResult();
