@@ -41,12 +41,12 @@ public class NonterminalDefinitionValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyNull() {
-		new NonterminalDefinitionValidator(ImmutableMap.of(), null).validate();
+		new NonterminalDefinitionValidator(ImmutableMap.of(), null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullEmpty() {
-		new NonterminalDefinitionValidator(null, ImmutableMap.of()).validate();
+		new NonterminalDefinitionValidator(null, ImmutableMap.of());
 	}
 
 	@Test
@@ -73,25 +73,25 @@ public class NonterminalDefinitionValidatorTest {
 		validator.validate(new Alternative(ImmutableList.of("y"), "d"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testUnknownSymbolInExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
 		validator.validate(new Alternative(ImmutableList.of("a", "u"), null));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testUnknownPrecedenceTerminalWithEmptyExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
 		validator.validate(new Alternative(ImmutableList.of(), "u"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testUnknownPrecedenceTerminalWithNonemptyExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
 		validator.validate(new Alternative(ImmutableList.of("a"), "u"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testNonterminalUsedForPrecedence() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
 		validator.validate(new Alternative(ImmutableList.of("a"), "x"));

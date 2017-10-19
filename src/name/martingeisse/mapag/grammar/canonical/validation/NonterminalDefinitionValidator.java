@@ -3,6 +3,7 @@ package name.martingeisse.mapag.grammar.canonical.validation;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
+import name.martingeisse.mapag.util.ParameterUtil;
 
 import java.util.Map;
 
@@ -15,8 +16,8 @@ class NonterminalDefinitionValidator {
 	private final Map<String, NonterminalDefinition> nonterminalDefinitions;
 
 	NonterminalDefinitionValidator(Map<String, TerminalDefinition> terminalDefinitions, Map<String, NonterminalDefinition> nonterminalDefinitions) {
-		this.terminalDefinitions = terminalDefinitions;
-		this.nonterminalDefinitions = nonterminalDefinitions;
+		this.terminalDefinitions = ParameterUtil.ensureNotNull(terminalDefinitions, "terminalDefinitions");
+		this.nonterminalDefinitions = ParameterUtil.ensureNotNull(nonterminalDefinitions, "nonterminalDefinitions");
 	}
 
 	void validate() {
