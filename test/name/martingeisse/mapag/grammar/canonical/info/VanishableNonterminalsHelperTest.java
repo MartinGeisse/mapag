@@ -104,7 +104,79 @@ public class VanishableNonterminalsHelperTest {
 				),
 				ImmutableSet.of("abc", "dummyStart"),
 			},
+			{
+				ImmutableList.of(
+					new NonterminalDefinition("dummyStart", ImmutableList.of(
+						new Alternative(ImmutableList.of("foo"), null),
+						new Alternative(ImmutableList.of("abc", "def", "abc", "def"), null)
+					)),
+					new NonterminalDefinition("abc", ImmutableList.of(
+						new Alternative(ImmutableList.of("bar"), null),
+						new Alternative(ImmutableList.of("def", "def"), null)
+					)),
+					new NonterminalDefinition("def", ImmutableList.of(
+						new Alternative(ImmutableList.of("bar"), null),
+						new Alternative(ImmutableList.of(), null)
+					))
+				),
+				ImmutableSet.of("abc", "def", "dummyStart"),
+			},
 
+			//
+			// don't vanish a symbol through direct or indirect recursion
+			//
+
+			{
+				ImmutableList.of(
+					new NonterminalDefinition("dummyStart", ImmutableList.of(
+						new Alternative(ImmutableList.of("foo"), null),
+						new Alternative(ImmutableList.of("abc"), null)
+					)),
+					new NonterminalDefinition("abc", ImmutableList.of(
+						new Alternative(ImmutableList.of("abc"), null),
+						new Alternative(ImmutableList.of("foo"), null)
+					))
+				),
+				ImmutableSet.of(),
+			},
+			{
+				ImmutableList.of(
+					new NonterminalDefinition("dummyStart", ImmutableList.of(
+						new Alternative(ImmutableList.of("foo"), null),
+						new Alternative(ImmutableList.of("abc"), null)
+					)),
+					new NonterminalDefinition("abc", ImmutableList.of(
+						new Alternative(ImmutableList.of("def"), null),
+						new Alternative(ImmutableList.of("foo"), null)
+					)),
+					new NonterminalDefinition("def", ImmutableList.of(
+						new Alternative(ImmutableList.of("abc"), null),
+						new Alternative(ImmutableList.of("foo"), null)
+					))
+				),
+				ImmutableSet.of(),
+			},
+
+			//
+			// test case where a vanishable symbol gets vanished in another symbol's right-hand side, but there
+			// are other symbols left so the second once cannot vanish too
+			//
+
+			{
+				ImmutableList.of(
+					new NonterminalDefinition("dummyStart", ImmutableList.of(
+						new Alternative(ImmutableList.of("def", "foo"), null)
+					)),
+					new NonterminalDefinition("abc", ImmutableList.of(
+						new Alternative(ImmutableList.of("foo", "def"), null)
+					)),
+					new NonterminalDefinition("def", ImmutableList.of(
+						new Alternative(ImmutableList.of("foo"), null),
+						new Alternative(ImmutableList.of(), null)
+					))
+				),
+				ImmutableSet.of("def"),
+			},
 
 		};
 	}
