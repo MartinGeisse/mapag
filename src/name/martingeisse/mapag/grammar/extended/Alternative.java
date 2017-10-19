@@ -47,9 +47,33 @@ public final class Alternative {
 	}
 
 	public enum PrecedenceSpecificationType {
-		IMPLICIT,
-		EXPLICIT,
-		UNDEFINED
+
+		IMPLICIT {
+			@Override
+			public String toString(String specification) {
+				return "";
+			}
+		},
+		EXPLICIT {
+			@Override
+			public String toString(String specification) {
+				return specification;
+			}
+		},
+		UNDEFINED {
+			@Override
+			public String toString(String specification) {
+				return "%precedence %undefined";
+			}
+		};
+
+		public abstract String toString(String specification);
+
+	}
+
+	@Override
+	public String toString() {
+		return "{" + expression + " / " + precedenceSpecificationType.toString(precedenceSpecification) + '}';
 	}
 
 }

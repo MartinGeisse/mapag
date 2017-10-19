@@ -2,6 +2,7 @@ package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.util.ParameterUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -18,6 +19,11 @@ public final class NonterminalDefinition extends SymbolDefinition {
 
 	public ImmutableList<Alternative> getAlternatives() {
 		return alternatives;
+	}
+
+	@Override
+	public String toString() {
+		return getName() + " ::= " + StringUtils.join(alternatives, " | ") + ';';
 	}
 
 }

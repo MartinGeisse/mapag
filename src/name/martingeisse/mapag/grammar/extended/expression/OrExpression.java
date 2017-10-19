@@ -25,4 +25,9 @@ public final class OrExpression extends Expression {
 		return rightOperand;
 	}
 
+	@Override
+	public String toString() {
+		return "(" + leftOperand + " | " + rightOperand + ')';
+	}
+
 }

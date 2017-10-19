@@ -25,4 +25,9 @@ public final class SequenceExpression extends Expression {
 		return right;
 	}
 
+	@Override
+	public String toString() {
+		return "(" + left.toString() + ' ' + right.toString() + ')';
+	}
+
 }

@@ -23,7 +23,7 @@ public class TestGrammarObjects {
 		new Alternative(ImmutableList.of("foo", "baz"), null)
 	));
 	public static final NonterminalDefinition NONTERMINAL_2 = new NonterminalDefinition("nt2", ImmutableList.of(
-		new Alternative(ImmutableList.of("nt3", "nt3"), null)
+		new Alternative(ImmutableList.of("dummyStart", "dummyStart"), null)
 	));
 	public static final NonterminalDefinition NONTERMINAL_3 = new NonterminalDefinition("dummyStart", ImmutableList.of(
 		new Alternative(ImmutableList.of("nt1", "nt2", "baz"), null)

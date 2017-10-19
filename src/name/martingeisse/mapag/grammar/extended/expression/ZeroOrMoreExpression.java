@@ -18,4 +18,9 @@ public final class ZeroOrMoreExpression extends Expression {
 		return operand;
 	}
 
+	@Override
+	public String toString() {
+		return "(" + operand.toString() + ")*";
+	}
+
 }

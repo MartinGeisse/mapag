@@ -18,4 +18,9 @@ public final class SymbolReference extends Expression {
 		return symbolName;
 	}
 
+	@Override
+	public String toString() {
+		return symbolName;
+	}
+
 }
