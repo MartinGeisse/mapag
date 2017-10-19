@@ -3,9 +3,9 @@ package name.martingeisse.mapag.grammar.canonical.validation;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+import name.martingeisse.mapag.util.ParameterUtil;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -15,7 +15,7 @@ public class GrammarValidator {
 	private final Grammar grammar;
 
 	public GrammarValidator(Grammar grammar) {
-		this.grammar = grammar;
+		this.grammar = ParameterUtil.ensureNotNull(grammar, "grammar");
 	}
 
 	public void validate() {
@@ -28,22 +28,22 @@ public class GrammarValidator {
 			}
 		}
 
-		// TODO no two terminals with same precedence level but different associativity
+		validateAssociativityConsistency();
 
 		if (grammar.getNonterminalDefinitions().get(grammar.getStartNonterminalName()) == null) {
 			throw new IllegalStateException("no definition found for start nonterminal: " + grammar.getStartNonterminalName());
 		}
 
-		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
-			for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
-				for (String symbol : alternative.getExpansion()) {
-					if (!grammar.getTerminalDefinitions().containsKey(symbol) && !grammar.getNonterminalDefinitions().containsKey(symbol)) {
-						throw new IllegalStateException("unknown symbol in nonterminal expansion: " + symbol);
-					}
-				}
-			}
-		}
+		validateNonterminalDefinitions();
 
+	}
+
+	protected void validateAssociativityConsistency() {
+		new AssociativityConsistencyValidator().validate(grammar.getTerminalDefinitions().values());
+	}
+
+	protected void validateNonterminalDefinitions() {
+		new NonterminalDefinitionValidator(grammar.getTerminalDefinitions(), grammar.getNonterminalDefinitions()).validate();
 	}
 
 }
