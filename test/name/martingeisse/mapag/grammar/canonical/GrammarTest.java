@@ -10,7 +10,7 @@ import static name.martingeisse.mapag.grammar.canonical.TestGrammarObjects.*;
 /**
  *
  */
-public class GrammarTest { // TODO
+public class GrammarTest {
 
 	@Test
 	public void testConstructorGetter() {

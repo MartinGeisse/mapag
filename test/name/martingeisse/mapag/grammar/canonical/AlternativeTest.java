@@ -2,13 +2,16 @@ package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableList;
 import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
  */
+@RunWith(DataProviderRunner.class)
 public class AlternativeTest {
 
 	private static final ImmutableList<String> EXPANSION = ImmutableList.of("foo", "bar", "baz", "foo", "abc");
@@ -123,7 +126,7 @@ public class AlternativeTest {
 			Assert.assertEquals(ImmutableList.of("foo", "baz", "foo", "abc"), alternative.vanishSymbol("bar").getExpansion());
 			Assert.assertTrue(alternative.vanishSymbol("bar").getEffectivePrecedenceTerminal().equals("foo"));
 
-			Assert.assertEquals(ImmutableList.of(EXPANSION), alternative.vanishSymbol("xyz").getExpansion());
+			Assert.assertEquals(EXPANSION, alternative.vanishSymbol("xyz").getExpansion());
 			Assert.assertTrue(alternative.vanishSymbol("xyz").getEffectivePrecedenceTerminal().equals("foo"));
 		}
 		{
@@ -135,7 +138,7 @@ public class AlternativeTest {
 			Assert.assertEquals(ImmutableList.of("foo", "baz", "foo", "abc"), alternative.vanishSymbol("bar").getExpansion());
 			Assert.assertTrue(alternative.vanishSymbol("bar").getEffectivePrecedenceTerminal().equals("xyz"));
 
-			Assert.assertEquals(ImmutableList.of(EXPANSION), alternative.vanishSymbol("xyz").getExpansion());
+			Assert.assertEquals(EXPANSION, alternative.vanishSymbol("xyz").getExpansion());
 			Assert.assertTrue(alternative.vanishSymbol("xyz").getEffectivePrecedenceTerminal().equals("xyz"));
 		}
 	}
@@ -144,9 +147,9 @@ public class AlternativeTest {
 	public void testVanishSymbolToEmptyAlternative() {
 		ImmutableList<String> input = ImmutableList.of("bar", "bar");
 		Assert.assertEquals(0, new Alternative(input, "foo").vanishSymbol("bar").getExpansion().size());
-		Assert.assertEquals(0, new Alternative(input, "foo").vanishSymbol("bar").getEffectivePrecedenceTerminal().equals("foo"));
+		Assert.assertEquals("foo", new Alternative(input, "foo").vanishSymbol("bar").getEffectivePrecedenceTerminal());
 		Assert.assertEquals(0, new Alternative(input, "bar").vanishSymbol("bar").getExpansion().size());
-		Assert.assertEquals(0, new Alternative(input, "bar").vanishSymbol("bar").getEffectivePrecedenceTerminal().equals("bar"));
+		Assert.assertEquals("bar", new Alternative(input, "bar").vanishSymbol("bar").getEffectivePrecedenceTerminal());
 	}
 
 }
