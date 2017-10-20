@@ -1,17 +1,14 @@
-package name.martingeisse.mapag.grammar;
+package name.martingeisse.mapag.grammar.canonicalization;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
-import name.martingeisse.mapag.grammar.extended.Alternative;
 import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
-import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
-import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.grammar.extended.validation.GrammarValidator;
 import name.martingeisse.mapag.util.ParameterUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +20,6 @@ public final class GrammarCanonicalizer {
 
 	private final name.martingeisse.mapag.grammar.extended.Grammar inputGrammar;
 	private Map<String, TerminalDefinition> terminalDefinitions;
-	private Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
 	private Map<String, NonterminalDefinition> nonterminalDefinitions;
 	private name.martingeisse.mapag.grammar.canonical.Grammar outputGrammar;
 
@@ -57,22 +53,11 @@ public final class GrammarCanonicalizer {
 			precedenceIndex++;
 		}
 
-		// build nonterminal alternatives
-		this.nonterminalAlternatives = new HashMap<>();
-		for (Production production : inputGrammar.getProductions()) {
-			String leftHandSide = production.getLeftHandSide();
-			for (name.martingeisse.mapag.grammar.extended.Alternative inputAlternative : production.getAlternatives()) {
-				name.martingeisse.mapag.grammar.canonical.Alternative convertedAlternative = convertAlternative(leftHandSide, inputAlternative);
-				if (nonterminalAlternatives.get(leftHandSide) == null) {
-					nonterminalAlternatives.put(leftHandSide, new ArrayList<>());
-				}
-				nonterminalAlternatives.get(leftHandSide).add(convertedAlternative);
-			}
-		}
-
 		// build nonterminal definitions
+		ProductionCanonicalizer productionCanonicalizer = new ProductionCanonicalizer(inputGrammar.getProductions());
+		productionCanonicalizer.run();
 		nonterminalDefinitions = new HashMap<>();
-		for (Map.Entry<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternativesEntry : nonterminalAlternatives.entrySet()) {
+		for (Map.Entry<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternativesEntry : productionCanonicalizer.getNonterminalAlternatives().entrySet()) {
 			String nonterminalName = nonterminalAlternativesEntry.getKey();
 			ImmutableList<name.martingeisse.mapag.grammar.canonical.Alternative> alternatives = ImmutableList.copyOf(nonterminalAlternativesEntry.getValue());
 			NonterminalDefinition nonterminalDefinition = new NonterminalDefinition(nonterminalName, alternatives);
@@ -90,16 +75,7 @@ public final class GrammarCanonicalizer {
 
 	}
 
-	private name.martingeisse.mapag.grammar.canonical.Alternative convertAlternative(String nonterminalName, name.martingeisse.mapag.grammar.extended.Alternative inputAlternative) {
-		// TODO check
-//		List<Alternative> alternatives = nonterminalAlternatives.get(nonterminalName);
-//		if (alternatives == null) {
-//			alternatives = new ArrayList<>();
-//			nonterminalAlternatives.put(nonterminalName, alternatives);
-//		}
-//		alternatives.add(alternative);
-		throw new RuntimeException();
-	}
+
 
 	public name.martingeisse.mapag.grammar.canonical.Grammar getResult() {
 		return outputGrammar;

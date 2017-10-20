@@ -1,5 +1,6 @@
-package name.martingeisse.mapag.grammar;
+package name.martingeisse.mapag.grammar.canonicalization;
 
+import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import org.junit.Test;
 
 import static name.martingeisse.mapag.grammar.extended.TestGrammarObjects.*;

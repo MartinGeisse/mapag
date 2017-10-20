@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.grammar.extended.expression;
 
+import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 /**
@@ -28,6 +29,25 @@ public final class SequenceExpression extends Expression {
 	@Override
 	public String toString() {
 		return "(" + left.toString() + ' ' + right.toString() + ')';
+	}
+
+	@Override
+	public ImmutableList<Expression> determineOrOperands() {
+		ImmutableList<Expression> leftResult = left.determineOrOperands();
+		if (leftResult.size() != 1) {
+			return super.determineOrOperands();
+		}
+		ImmutableList<Expression> rightResult = right.determineOrOperands();
+		if (rightResult.size() != 1) {
+			return super.determineOrOperands();
+		}
+		Expression leftResultElement = leftResult.get(0);
+		Expression rightResultElement = rightResult.get(0);
+		if (leftResultElement == left && rightResultElement == right) {
+			return ImmutableList.of(this);
+		} else {
+			return ImmutableList.of(new SequenceExpression(leftResultElement, rightResultElement));
+		}
 	}
 
 }
