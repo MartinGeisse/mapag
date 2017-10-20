@@ -1,7 +1,5 @@
 package name.martingeisse.mapag.grammar.extended.validation;
 
-import com.google.common.collect.ImmutableSet;
-import name.martingeisse.mapag.grammar.extended.Alternative;
 import name.martingeisse.mapag.grammar.extended.Production;
 
 /**

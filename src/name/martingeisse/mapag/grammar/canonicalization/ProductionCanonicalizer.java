@@ -11,8 +11,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
- * TODO this class creates productions for synthetic nonterminals but doesn't provide definitions for those synthetic
- * nonterminals
+ *
  */
 public class ProductionCanonicalizer {
 
@@ -68,7 +67,7 @@ public class ProductionCanonicalizer {
 		if (expression instanceof EmptyExpression) {
 			// nothing to do
 		} else if (expression instanceof OneOrMoreExpression) {
-			OneOrMoreExpression oneOrMoreExpression = (OneOrMoreExpression)expression;
+			OneOrMoreExpression oneOrMoreExpression = (OneOrMoreExpression) expression;
 			expansion.add(extractRepetition(oneOrMoreExpression.getOperand(), false));
 		} else if (expression instanceof OptionalExpression) {
 			expansion.add(extractOptionalExpression((OptionalExpression) expression));
@@ -82,7 +81,7 @@ public class ProductionCanonicalizer {
 			SymbolReference symbolReference = (SymbolReference) expression;
 			expansion.add(symbolReference.getSymbolName());
 		} else if (expression instanceof ZeroOrMoreExpression) {
-			ZeroOrMoreExpression zeroOrMoreExpression = (ZeroOrMoreExpression)expression;
+			ZeroOrMoreExpression zeroOrMoreExpression = (ZeroOrMoreExpression) expression;
 			expansion.add(extractRepetition(zeroOrMoreExpression.getOperand(), true));
 		} else {
 			throw new RuntimeException("unknown expression type: " + expression);
@@ -117,7 +116,7 @@ public class ProductionCanonicalizer {
 	/**
 	 * Extracts the specified expression into a new synthetic nonterminal. This method asks the expression to generate
 	 * sub-expressions for toplevel alternatives, but does not otherwise treat any kind of expression specially. This
-	 * method should therefore not by used as the "normal" extraction method for optional and repetition, since it
+	 * method should therefore not by used as the "normal" extraction method for optionals and repetition, since it
 	 * would create an unnecessary nonterminal that just redirects to another one.
 	 */
 	private String extractOpaqueExpression(Expression expression) {

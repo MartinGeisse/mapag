@@ -1,11 +1,10 @@
 package name.martingeisse.mapag.grammar.canonical.validation;
 
-import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.util.ParameterUtil;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *

@@ -2,8 +2,8 @@ package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.MapagParserClassGenerator;
-import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
+import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.extended.*;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;

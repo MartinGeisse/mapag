@@ -13,15 +13,8 @@ import java.util.Set;
  */
 public final class GrammarValidator {
 
-	interface ProductionValidatorFactory {
-		ProductionValidator createProductionValidator(ImmutableSet<String> terminalNames,
-													  ImmutableSet<String> nonterminalNames,
-													  String startSymbol);
-	}
-
 	private final Grammar grammar;
 	private final ProductionValidatorFactory productionValidatorFactory;
-
 	public GrammarValidator(Grammar grammar) {
 		this(grammar, (terminalNames, nonterminalNames, startSymbol) -> {
 			ImmutableSet<String> allSymbolNames = ImmutableSet.<String>builder().addAll(terminalNames).addAll(nonterminalNames).build();
@@ -79,14 +72,20 @@ public final class GrammarValidator {
 		}
 
 		ProductionValidator productionValidator = productionValidatorFactory.createProductionValidator(
-				ImmutableSet.copyOf(terminalNames),
-				ImmutableSet.copyOf(nonterminalNames),
-				grammar.getStartNonterminalName());
+			ImmutableSet.copyOf(terminalNames),
+			ImmutableSet.copyOf(nonterminalNames),
+			grammar.getStartNonterminalName());
 		for (Production production : grammar.getProductions()) {
 			productionValidator.validateProduction(production);
 		}
 		productionValidator.finish();
 
+	}
+
+	interface ProductionValidatorFactory {
+		ProductionValidator createProductionValidator(ImmutableSet<String> terminalNames,
+													  ImmutableSet<String> nonterminalNames,
+													  String startSymbol);
 	}
 
 }

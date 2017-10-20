@@ -39,7 +39,7 @@ public final class GrammarCanonicalizer {
 		this.terminalDefinitions = new HashMap<>();
 		for (TerminalDeclaration terminalDeclaration : inputGrammar.getTerminalDeclarations()) {
 			TerminalDefinition terminalDefinition = new TerminalDefinition(
-					terminalDeclaration.getName(), null, Associativity.NONASSOC);
+				terminalDeclaration.getName(), null, Associativity.NONASSOC);
 			terminalDefinitions.put(terminalDeclaration.getName(), terminalDefinition);
 		}
 
@@ -66,16 +66,14 @@ public final class GrammarCanonicalizer {
 
 		// build the output grammar
 		this.outputGrammar = new name.martingeisse.mapag.grammar.canonical.Grammar(
-				inputGrammar.getPackageName(),
-				inputGrammar.getClassName(),
-				terminalDefinitions.values(),
-				nonterminalDefinitions.values(),
-				inputGrammar.getStartNonterminalName()
+			inputGrammar.getPackageName(),
+			inputGrammar.getClassName(),
+			terminalDefinitions.values(),
+			nonterminalDefinitions.values(),
+			inputGrammar.getStartNonterminalName()
 		);
 
 	}
-
-
 
 	public name.martingeisse.mapag.grammar.canonical.Grammar getResult() {
 		return outputGrammar;

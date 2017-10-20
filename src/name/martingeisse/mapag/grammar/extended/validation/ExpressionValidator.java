@@ -3,8 +3,8 @@ package name.martingeisse.mapag.grammar.extended.validation;
 import name.martingeisse.mapag.grammar.extended.expression.Expression;
 
 /**
- * This object can be re-used for all expressions based on the same set of known symbols -- usually all expressions
- * used in the same grammar.
+ * This object can be re-used for all expressions based on the same set of known symbols -- usually all expressions used
+ * in the same grammar.
  */
 interface ExpressionValidator {
 

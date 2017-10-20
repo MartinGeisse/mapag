@@ -35,7 +35,7 @@ class ProductionValidatorImpl implements ProductionValidator {
 			if (alternative.getPrecedenceDefiningTerminal() != null) {
 				if (!terminalNames.contains(alternative.getPrecedenceDefiningTerminal())) {
 					throw new IllegalStateException("unknown terminal name '" +
-							alternative.getPrecedenceDefiningTerminal() + " in rule precedence specification for nonterminal " + leftHandSide);
+						alternative.getPrecedenceDefiningTerminal() + " in rule precedence specification for nonterminal " + leftHandSide);
 				}
 			}
 		}

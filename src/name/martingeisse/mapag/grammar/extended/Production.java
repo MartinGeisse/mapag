@@ -1,7 +1,6 @@
 package name.martingeisse.mapag.grammar.extended;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 /**
