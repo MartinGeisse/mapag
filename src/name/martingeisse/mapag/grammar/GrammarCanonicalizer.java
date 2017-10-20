@@ -101,25 +101,6 @@ public final class GrammarCanonicalizer {
 		throw new RuntimeException();
 	}
 
-	private String determineEffectivePrecedenceTerminal(Alternative alternative) {
-		switch (alternative.getPrecedenceSpecificationType()) {
-
-			case UNDEFINED:
-				return null;
-
-			case EXPLICIT:
-				return alternative.getPrecedenceSpecification();
-
-			case IMPLICIT:
-				return determineImplicitPrecedenceTerminal(alternative.getExpression());
-
-			default:
-				throw new RuntimeException("unknown precedence specification type: " + alternative.getPrecedenceSpecificationType());
-
-		}
-
-	}
-
 	public name.martingeisse.mapag.grammar.canonical.Grammar getResult() {
 		return outputGrammar;
 	}

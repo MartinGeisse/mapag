@@ -5,11 +5,6 @@ import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.ParameterUtil;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Note: The effectivePrecedenceTerminal is the only thing that assigns precedence to this alternative. That is, if
- * it is set to null, then no implicit precedence will be assigned. That must be done prior to building this object by
- * the canonicalization process.
- */
 public final class Alternative {
 
 	private final ImmutableList<String> expansion;

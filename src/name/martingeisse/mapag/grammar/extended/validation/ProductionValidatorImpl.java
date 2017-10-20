@@ -32,10 +32,10 @@ class ProductionValidatorImpl implements ProductionValidator {
 		}
 		for (Alternative alternative : production.getAlternatives()) {
 			expressionValidator.validateExpression(alternative.getExpression());
-			if (alternative.getPrecedenceSpecificationType() == Alternative.PrecedenceSpecificationType.EXPLICIT) {
-				if (!terminalNames.contains(alternative.getPrecedenceSpecification())) {
+			if (alternative.getPrecedenceDefiningTerminal() != null) {
+				if (!terminalNames.contains(alternative.getPrecedenceDefiningTerminal())) {
 					throw new IllegalStateException("unknown terminal name '" +
-							alternative.getPrecedenceSpecification() + " in rule precedence specification for nonterminal " + leftHandSide);
+							alternative.getPrecedenceDefiningTerminal() + " in rule precedence specification for nonterminal " + leftHandSide);
 				}
 			}
 		}
