@@ -1,10 +1,10 @@
 package name.martingeisse.mapag.codegen;
 
-import name.martingeisse.mapag.codegen.templates.MapagTemplatesLoader;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.log.NullLogChute;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 import java.io.StringWriter;
 
@@ -21,7 +21,7 @@ public class TestMain {
 		engine.setProperty(VelocityEngine.OUTPUT_ENCODING, "UTF-8");
 		engine.setProperty(VelocityEngine.RESOURCE_LOADER, "classpath");
 		engine.setProperty("classpath.loader.description", "classpath-based resource loader");
-		engine.setProperty("classpath.resource.loader.class", MapagTemplatesLoader.class.getName());
+		engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 		engine.setProperty("classpath.resource.loader.cache", true);
 		engine.init();
 
