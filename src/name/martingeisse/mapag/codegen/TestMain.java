@@ -25,7 +25,7 @@ public class TestMain {
 		engine.setProperty("classpath.resource.loader.cache", true);
 		engine.init();
 
-		Template template = engine.getTemplate("TestTemplate.vm");
+		Template template = engine.getTemplate("Parser.vm");
 
 		VelocityContext context = new VelocityContext();
 		context.put("name", new String("Foobar"));

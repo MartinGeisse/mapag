@@ -1,31 +1,24 @@
 
-Meta-Grammar in Java-Code zusammenbauen. In CUP-Syntax ist diese 120 Zeilen lang, d.h. auch in Java wird das kein Riesending (Vermutung: < 1000 Zeilen). Ggf. abstrakte Basisklasse mit Hilfsfunktionen, um eine Grammatik in Java zu bauen.
+Meta-Grammar in Java-Code zusammenbauen. In CUP-Syntax ist diese 120 Zeilen lang, d.h. auch in Java wird das kein
+Riesending (Vermutung: < 1000 Zeilen). Ggf. abstrakte Basisklasse mit Hilfsfunktionen, um eine Grammatik in Java
+zu bauen.
 
-LR(1)-Generator drüberlaufen lassen. Erst mal keine Fehlerbehandlung. Code-Erzeugung mit Freemarker-Templates.
+LR(1)-Generator drüberlaufen lassen. Erst mal keine Fehlerbehandlung.
 
-Der generierte Code erzeugt erst einen Ableitungsbaum und gibt ihn dann an den PsiBuilder. Der Einfachheit halber sollte der generierte Code all das ohne Bibliohek tun, auch wenn man Dinge auslagern könnte. Ausnahme: Wenn das viel zu viel wird. Der Ableitungsbaum ist eine Struktur aus Object[]; das erste Element ist das reduzierte Nonterminal (IElementType), die restlichen Elemente sind entweder Terminale (IElementType) oder Ableitungen (Object[]). Im generierten Parser gibt es eine Standard-Routine, die diesen Ableitungsbaum an den PsiBuilder weitergibt (Diese ist nur reingepastet, nicht wirklich generiert).
+Der generierte Code erzeugt erst einen Ableitungsbaum und gibt ihn dann an den PsiBuilder. Der Einfachheit halber sollte
+der generierte Code all das ohne Bibliohek tun, auch wenn man Dinge auslagern könnte. Ausnahme: Wenn das viel zu viel
+wird. Der Ableitungsbaum ist eine Struktur aus Object[]; das erste Element ist das reduzierte Nonterminal
+(IElementType), die restlichen Elemente sind entweder Terminale (IElementType) oder Ableitungen (Object[]).
+Im generierten Parser gibt es eine Standard-Routine, die diesen Ableitungsbaum an den PsiBuilder weitergibt (Diese
+ist nur reingepastet, nicht wirklich generiert).
 
-POT dann sein lassen. Das Zusammenspiel mit CUP ist einfach zu kompliziert -- für den Aufwand kann ich auch meinen eigenen Parsergenerator schreiben. 
+Später dann Fehlerbehandlung nach dem Vorbild von CUP.
 
-Später dann Fehlerbehandlung nach dem Vorbild von CUP. 
-
-Scanner bleibt dauerhaft außen vor. Dafür gibt es JFlex und das funzt gut genug. Dokumentation, wie die JFlex-Datei zu schreiben ist:
+Scanner bleibt dauerhaft außen vor. Dafür gibt es JFlex und das funzt gut genug. Dokumentation, wie die JFlex-Datei
+zu schreiben ist:
 - Package und Klassenname frei wählbar
 - benötigte Imports
 - %implements FlexLexer, %function advance, %type IElementType, %eof{ return; %eof}
 - ggf. %public und %unicode
 - alle Zeichen müssen ein Token erzeugen, auch Whitespace / Comments / Bad Character
 - Auffangregel: [^] { return TokenType.BAD_CHARACTER; }
-
-Der Parsergenerator funktioniert nur im Kontext von IntelliJ.
-
-Textmapper wäre eine Alternative, aber das ist noch nicht fertig. Es ist außerdem sehr komplex, da möglichst generisch gehalten. Deshalb kann ich auch nicht auf die schnelle dran
-mitarbeiten. Lieber an einem eigenen Tool bauen und dadurch lernen, dann kann ich später das Tool benutzen, was als erstes fertig ist.
-
----------------------------------------------------------------------------------
-
-Umsetzung: Grammar-Package aus POT-Projekt übernehmen.
-
-normalize()-Methode in Klasse Grammar --> NormalizedProductions-Objekt mit Bezug auf die ursprüngliche Grammar. Löst Expressions zu alternative-sequences auf.
-Precedences bleiben -- die können direkt beim Bau der State-Machine verarbeitet werden.
-
