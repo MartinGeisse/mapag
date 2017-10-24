@@ -2,6 +2,8 @@ package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.util.ParameterUtil;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -95,6 +97,26 @@ public final class Grammar {
 
 	public String getStartNonterminalName() {
 		return startNonterminalName;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Grammar) {
+			Grammar other = (Grammar) obj;
+			return new EqualsBuilder().append(packageName, other.packageName)
+				.append(className, other.className)
+				.append(terminalDefinitions, other.terminalDefinitions)
+				.append(nonterminalDefinitions, other.nonterminalDefinitions)
+				.append(startNonterminalName, other.startNonterminalName)
+				.isEquals();
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(packageName).append(className).append(terminalDefinitions)
+			.append(nonterminalDefinitions).append(startNonterminalName).toHashCode();
 	}
 
 }

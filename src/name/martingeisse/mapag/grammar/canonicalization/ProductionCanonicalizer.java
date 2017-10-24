@@ -3,6 +3,7 @@ package name.martingeisse.mapag.grammar.canonicalization;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.expression.*;
+import name.martingeisse.mapag.util.ParameterUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,9 +21,12 @@ public class ProductionCanonicalizer {
 	private final Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
 
 	private String syntheticNamePrefix;
-	private int syntheticNameCounter;
+	private int syntheticNameCounter; // TODO problem: this counter resets to 0 when a nonterminal gets expanded in multiple productions,
+	// assigning the same synthetic names again
+
 
 	public ProductionCanonicalizer(ImmutableList<Production> inputProductions) {
+		ParameterUtil.ensureNotNull(inputProductions, "inputProductions");
 		this.todoProductions = new ArrayList<>(inputProductions);
 		this.nextTodoBatch = new ArrayList<>();
 		this.nonterminalAlternatives = new HashMap<>();
