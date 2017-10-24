@@ -412,6 +412,52 @@ public class ProductionCanonicalizerTest {
 
 
 			//
+			// merging multiple alternatives for the same nonterminal
+			//
+
+			{
+				ImmutableList.of(
+					new Production("nt1", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.extended.Alternative(
+							new OneOrMoreExpression(new SymbolReference("aaa")), "xxx"
+						),
+						new name.martingeisse.mapag.grammar.extended.Alternative(
+							new SequenceExpression(
+								new OptionalExpression(new SymbolReference("ccc")),
+								new SymbolReference("ddd")
+							),
+							"zzz"
+						)
+					)),
+					new Production("nt2", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.extended.Alternative(
+							new SymbolReference("bbb"), "yyy"
+						)
+					))
+				),
+				ImmutableMap.of(
+					"nt1", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("nt1_1"), "xxx"),
+						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("nt1_3", "ddd"), "zzz")
+					),
+					"nt1_1", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("nt1_2"), null),
+						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("nt1_1", "nt1_2"), null)
+					),
+					"nt1_2", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("aaa"), null)
+					),
+					"nt1_3", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of(), null),
+						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("ccc"), null)
+					),
+					"nt2", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("bbb"), "yyy")
+					)
+				)
+			},
+
+			//
 			// merging multiple productions for the same nonterminal
 			//
 
@@ -440,7 +486,7 @@ public class ProductionCanonicalizerTest {
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("nt1_1"), "xxx"),
-						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("nt1_3", "ddd"), "xxx")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("nt1_3", "ddd"), "zzz")
 					),
 					"nt1_1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.of("nt1_2"), null),

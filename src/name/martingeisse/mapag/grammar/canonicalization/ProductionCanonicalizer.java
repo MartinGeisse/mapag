@@ -19,17 +19,17 @@ public class ProductionCanonicalizer {
 	private final List<Production> todoProductions;
 	private final List<Production> nextTodoBatch;
 	private final Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
+	private final Map<String, Integer> savedSyntheticNameCounters;
 
 	private String syntheticNamePrefix;
-	private int syntheticNameCounter; // TODO problem: this counter resets to 0 when a nonterminal gets expanded in multiple productions,
-	// assigning the same synthetic names again
-
+	private int syntheticNameCounter;
 
 	public ProductionCanonicalizer(ImmutableList<Production> inputProductions) {
 		ParameterUtil.ensureNotNull(inputProductions, "inputProductions");
 		this.todoProductions = new ArrayList<>(inputProductions);
 		this.nextTodoBatch = new ArrayList<>();
 		this.nonterminalAlternatives = new HashMap<>();
+		this.savedSyntheticNameCounters = new HashMap<>();
 	}
 
 	public void run() {
@@ -47,13 +47,16 @@ public class ProductionCanonicalizer {
 		Production production = todoProductions.remove(0);
 		String leftHandSide = production.getLeftHandSide();
 		this.syntheticNamePrefix = leftHandSide;
-		this.syntheticNameCounter = 0;
+		this.syntheticNameCounter = savedSyntheticNameCounters.getOrDefault(leftHandSide, 0);
 		for (name.martingeisse.mapag.grammar.extended.Alternative inputAlternative : production.getAlternatives()) {
 			name.martingeisse.mapag.grammar.canonical.Alternative convertedAlternative = convertAlternative(inputAlternative);
 			if (nonterminalAlternatives.get(leftHandSide) == null) {
 				nonterminalAlternatives.put(leftHandSide, new ArrayList<>());
 			}
 			nonterminalAlternatives.get(leftHandSide).add(convertedAlternative);
+		}
+		if (syntheticNameCounter != 0) {
+			savedSyntheticNameCounters.put(leftHandSide, syntheticNameCounter);
 		}
 		if (!nextTodoBatch.isEmpty()) {
 			todoProductions.addAll(0, nextTodoBatch);
