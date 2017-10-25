@@ -513,7 +513,22 @@ public class ProductionCanonicalizerTest {
 	public void testCanonicalization(ImmutableList<Production> inputProductions, Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> expectedOutputAlternatives) {
 		ProductionCanonicalizer productionCanonicalizer = new ProductionCanonicalizer(inputProductions);
 		productionCanonicalizer.run();
-		Assert.assertEquals(expectedOutputAlternatives, productionCanonicalizer.getNonterminalAlternatives());
+
+		// cannot use equals() on the whole collection since we want to compare output alternatives by data, but their
+		// equals() compares identity
+		Assert.assertEquals(expectedOutputAlternatives.keySet(), productionCanonicalizer.getNonterminalAlternatives().keySet());
+		for (String key : expectedOutputAlternatives.keySet()) {
+			List<name.martingeisse.mapag.grammar.canonical.Alternative> expectedAlternativeList = expectedOutputAlternatives.get(key);
+			List<name.martingeisse.mapag.grammar.canonical.Alternative> actualAlternativeList = productionCanonicalizer.getNonterminalAlternatives().get(key);
+			Assert.assertEquals(expectedAlternativeList.size(), actualAlternativeList.size());
+			for (int i=0; i<expectedAlternativeList.size(); i++) {
+				name.martingeisse.mapag.grammar.canonical.Alternative expectedAlternative = expectedAlternativeList.get(i);
+				name.martingeisse.mapag.grammar.canonical.Alternative actualAlternative = actualAlternativeList.get(i);
+				Assert.assertEquals(expectedAlternative.getExpansion(), actualAlternative.getExpansion());
+				Assert.assertEquals(expectedAlternative.getEffectivePrecedenceTerminal(), actualAlternative.getEffectivePrecedenceTerminal());
+			}
+		}
+
 	}
 
 }

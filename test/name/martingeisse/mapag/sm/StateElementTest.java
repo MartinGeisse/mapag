@@ -65,17 +65,62 @@ public class StateElementTest {
 
 	@Test
 	public void testEqualsAndHashCode() {
-		// TODO
+
+		// compare two equal states
+		{
+			Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+			StateElement se1 = new StateElement("lll", alternative, 0, "foo");
+			StateElement se2 = new StateElement("lll", alternative, 0, "foo");
+			Assert.assertEquals(se1, se2);
+			Assert.assertEquals(se1.hashCode(), se2.hashCode());
+		}
+
+		// state elements with "equal" but distinct alternatives are different
+		{
+			Alternative a1 = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+			StateElement se1 = new StateElement("lll", a1, 0, "foo");
+			Alternative a2 = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+			StateElement se2 = new StateElement("lll", a2, 0, "foo");
+			Assert.assertNotEquals(se1, se2);
+		}
+
+		// other cases
+		{
+			Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+			StateElement[] stateElements = {
+				new StateElement("lll", alternative, 0, "foo"),
+				new StateElement("aaa", alternative, 0, "foo"),
+				new StateElement("lll", alternative, 1, "foo"),
+				new StateElement("lll", alternative, 0, "bar")
+			};
+			for (int i=0; i<stateElements.length; i++) {
+				for (int j=0; j<stateElements.length; j++) {
+					if (i == j) {
+						Assert.assertEquals(stateElements[i], stateElements[j]);
+						Assert.assertEquals(stateElements[i].hashCode(), stateElements[j].hashCode());
+					} else {
+						Assert.assertNotEquals(stateElements[i], stateElements[j]);
+					}
+				}
+			}
+		}
+
 	}
 
 	@Test
 	public void testToString() {
-		// TODO
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+		StateElement stateElement1 = new StateElement("lll", alternative, 0, "foo");
+		Assert.assertEquals("lll ::= . r1 r2 r3    [foo]", stateElement1.toString());
+		StateElement stateElement2 = new StateElement("lll", alternative, 1, "foo");
+		Assert.assertEquals("lll ::= r1 . r2 r3    [foo]", stateElement2.toString());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testDetermineActionTypeForTerminalNull() {
-		// TODO
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
+		stateElement.determineActionTypeForTerminal(null);
 	}
 
 	@Test
@@ -83,9 +128,11 @@ public class StateElementTest {
 		// TODO
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testDetermineNextRootElementForNonterminalNull() {
-		// TODO
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
+		stateElement.determineNextRootElementForNonterminal(null);
 	}
 
 	@Test
@@ -93,6 +140,23 @@ public class StateElementTest {
 		// TODO
 	}
 
-	// TODO
+	@Test
+	public void testGetShifted() {
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+		StateElement stateElement0 = new StateElement("lll", alternative, 0, "foo");
+		StateElement stateElement1 = stateElement0.getShifted();
+		Assert.assertEquals(new StateElement("lll", alternative, 1, "foo"), stateElement1);
+		StateElement stateElement2 = stateElement1.getShifted();
+		Assert.assertEquals(new StateElement("lll", alternative, 2, "foo"), stateElement2);
+		StateElement stateElement3 = stateElement2.getShifted();
+		Assert.assertEquals(new StateElement("lll", alternative, 3, "foo"), stateElement3);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testGetShiftedAtEnd() {
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+		StateElement stateElement = new StateElement("lll", alternative, 3, "foo");
+		stateElement.getShifted();
+	}
 
 }

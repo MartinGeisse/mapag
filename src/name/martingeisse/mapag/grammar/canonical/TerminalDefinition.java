@@ -6,7 +6,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- *
+ * Note: Even though this class is immutable, it does not define a value object. Especially, equals() and hashCode()
+ * are those of class Object, i.e. based on object identity. The reason is that even if this were a value object,
+ * different parts of the parser generator have different assumptions of what "equal" means. Furthermore, there isn't
+ * really a situation where two distinct but equal instances of this class would exist. Instances are created from
+ * the grammar file and anything that appears in different places in this file is not equal in any meaningful sense.
  */
 public final class TerminalDefinition extends SymbolDefinition {
 
@@ -28,24 +32,6 @@ public final class TerminalDefinition extends SymbolDefinition {
 
 	public Associativity getAssociativity() {
 		return associativity;
-	}
-
-	// TODO test equals / hashCode in this whole package
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof TerminalDefinition) {
-			TerminalDefinition other = (TerminalDefinition)obj;
-			return new EqualsBuilder().append(getName(), other.getName())
-				.append(precedenceIndex, other.precedenceIndex)
-				.append(associativity, other.associativity)
-				.isEquals();
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(getName()).append(precedenceIndex).append(associativity).toHashCode();
 	}
 
 }

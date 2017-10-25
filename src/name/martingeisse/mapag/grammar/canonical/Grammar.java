@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Note: Even though this class is immutable, it does not define a value object. Especially, equals() and hashCode()
+ * are those of class Object, i.e. based on object identity. The reason is that even if this were a value object,
+ * different parts of the parser generator have different assumptions of what "equal" means. Furthermore, there isn't
+ * really a situation where two distinct but equal instances of this class would exist. Instances are created from
+ * the grammar file and anything that appears in different places in this file is not equal in any meaningful sense.
  */
 public final class Grammar {
 
@@ -97,26 +101,6 @@ public final class Grammar {
 
 	public String getStartNonterminalName() {
 		return startNonterminalName;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Grammar) {
-			Grammar other = (Grammar) obj;
-			return new EqualsBuilder().append(packageName, other.packageName)
-				.append(className, other.className)
-				.append(terminalDefinitions, other.terminalDefinitions)
-				.append(nonterminalDefinitions, other.nonterminalDefinitions)
-				.append(startNonterminalName, other.startNonterminalName)
-				.isEquals();
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(packageName).append(className).append(terminalDefinitions)
-			.append(nonterminalDefinitions).append(startNonterminalName).toHashCode();
 	}
 
 }

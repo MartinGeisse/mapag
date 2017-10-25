@@ -84,7 +84,7 @@ public final class StateElement {
 		if (i == position) {
 			builder.append(". ");
 		}
-		builder.append(": ").append(followTerminal);
+		builder.append("   [").append(followTerminal).append(']');
 		return builder.toString();
 	}
 
