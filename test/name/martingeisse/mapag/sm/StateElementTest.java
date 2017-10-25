@@ -1,7 +1,6 @@
 package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import org.junit.Assert;
 import org.junit.Test;
@@ -125,7 +124,40 @@ public class StateElementTest {
 
 	@Test
 	public void testDetermineActionTypeForTerminal() {
-		// TODO
+
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
+		Assert.assertEquals(StateElement.ActionType.SHIFT, stateElement.determineActionTypeForTerminal("r1"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r2"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r3"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("prec1"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("foo"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("bar"));
+
+		stateElement = stateElement.getShifted();
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r1"));
+		Assert.assertEquals(StateElement.ActionType.SHIFT, stateElement.determineActionTypeForTerminal("r2"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r3"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("prec1"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("foo"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("bar"));
+
+		stateElement = stateElement.getShifted();
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r1"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r2"));
+		Assert.assertEquals(StateElement.ActionType.SHIFT, stateElement.determineActionTypeForTerminal("r3"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("prec1"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("foo"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("bar"));
+
+		stateElement = stateElement.getShifted();
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r1"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r2"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r3"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("prec1"));
+		Assert.assertEquals(StateElement.ActionType.REDUCE, stateElement.determineActionTypeForTerminal("foo"));
+		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("bar"));
+
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -137,7 +169,41 @@ public class StateElementTest {
 
 	@Test
 	public void testDetermineNextRootElementForNonterminal() {
-		// TODO
+
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1");
+		StateElement stateElement0 = new StateElement("lll", alternative, 0, "foo");
+		StateElement stateElement1 = new StateElement("lll", alternative, 1, "foo");
+		StateElement stateElement2 = new StateElement("lll", alternative, 2, "foo");
+		StateElement stateElement3 = new StateElement("lll", alternative, 3, "foo");
+
+		Assert.assertEquals(stateElement1, stateElement0.determineNextRootElementForNonterminal("r1"));
+		Assert.assertNull(stateElement0.determineNextRootElementForNonterminal("r2"));
+		Assert.assertNull(stateElement0.determineNextRootElementForNonterminal("r3"));
+		Assert.assertNull(stateElement0.determineNextRootElementForNonterminal("prec1"));
+		Assert.assertNull(stateElement0.determineNextRootElementForNonterminal("foo"));
+		Assert.assertNull(stateElement0.determineNextRootElementForNonterminal("bar"));
+
+		Assert.assertNull(stateElement1.determineNextRootElementForNonterminal("r1"));
+		Assert.assertEquals(stateElement2, stateElement1.determineNextRootElementForNonterminal("r2"));
+		Assert.assertNull(stateElement1.determineNextRootElementForNonterminal("r3"));
+		Assert.assertNull(stateElement1.determineNextRootElementForNonterminal("prec1"));
+		Assert.assertNull(stateElement1.determineNextRootElementForNonterminal("foo"));
+		Assert.assertNull(stateElement1.determineNextRootElementForNonterminal("bar"));
+
+		Assert.assertNull(stateElement2.determineNextRootElementForNonterminal("r1"));
+		Assert.assertNull(stateElement2.determineNextRootElementForNonterminal("r2"));
+		Assert.assertEquals(stateElement3, stateElement2.determineNextRootElementForNonterminal("r3"));
+		Assert.assertNull(stateElement2.determineNextRootElementForNonterminal("prec1"));
+		Assert.assertNull(stateElement2.determineNextRootElementForNonterminal("foo"));
+		Assert.assertNull(stateElement2.determineNextRootElementForNonterminal("bar"));
+
+		Assert.assertNull(stateElement3.determineNextRootElementForNonterminal("r1"));
+		Assert.assertNull(stateElement3.determineNextRootElementForNonterminal("r2"));
+		Assert.assertNull(stateElement3.determineNextRootElementForNonterminal("r3"));
+		Assert.assertNull(stateElement3.determineNextRootElementForNonterminal("prec1"));
+		Assert.assertNull(stateElement3.determineNextRootElementForNonterminal("foo"));
+		Assert.assertNull(stateElement3.determineNextRootElementForNonterminal("bar"));
+
 	}
 
 	@Test

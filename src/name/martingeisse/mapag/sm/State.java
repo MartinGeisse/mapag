@@ -2,6 +2,7 @@ package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
+import name.martingeisse.mapag.util.ParameterUtil;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +15,7 @@ public final class State {
 	private final ImmutableSet<StateElement> elements;
 
 	public State(ImmutableSet<StateElement> elements) {
-		this.elements = elements;
+		this.elements = ParameterUtil.ensureNotNullOrEmpty(elements, "elements");
 	}
 
 	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elements) {
