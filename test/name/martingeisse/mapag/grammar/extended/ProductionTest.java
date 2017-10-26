@@ -13,7 +13,6 @@ import java.util.List;
  */
 public class ProductionTest {
 
-	// TODO make test data static? probably faster
 	private static final Alternative ALTERNATIVE = new Alternative(new SymbolReference("foo"), null);
 	private static final ImmutableList<Alternative> ALTERNATIVES = ImmutableList.of(ALTERNATIVE);
 
