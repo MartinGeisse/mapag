@@ -18,14 +18,6 @@ public final class State {
 		this.elements = ParameterUtil.ensureNotNullOrEmpty(elements, "elements");
 	}
 
-	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elements) {
-		StateBuilder builder = new StateBuilder(grammarInfo);
-		for (StateElement element : elements) {
-			builder.addElementClosure(element.getShifted());
-		}
-		return new Action.Shift(builder.build());
-	}
-
 	public ImmutableSet<StateElement> getElements() {
 		return elements;
 	}
@@ -87,6 +79,14 @@ public final class State {
 				throw new StateMachineException("shift/reduce conflict in state " + this + " on terminal " + terminal);
 			}
 		}
+	}
+
+	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elements) {
+		StateBuilder builder = new StateBuilder(grammarInfo);
+		for (StateElement element : elements) {
+			builder.addElementClosure(element.getShifted());
+		}
+		return new Action.Shift(builder.build());
 	}
 
 	private Action.Reduce getReduce(String terminal, Set<StateElement> elements) {

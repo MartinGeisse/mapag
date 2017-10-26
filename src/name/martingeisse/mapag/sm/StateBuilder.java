@@ -22,7 +22,7 @@ final class StateBuilder {
 		this.grammarInfo = ParameterUtil.ensureNotNull(grammarInfo, "grammarInfo");
 	}
 
-	public void addElementClosure(StateElement rootElement) {
+	public StateBuilder addElementClosure(StateElement rootElement) {
 		ParameterUtil.ensureNotNull(rootElement, "rootElement");
 		if (elements.add(rootElement)) {
 			if (!rootElement.isAtEnd()) {
@@ -33,6 +33,7 @@ final class StateBuilder {
 				}
 			}
 		}
+		return this;
 	}
 
 	private ImmutableSet<String> computeLocalFollowSet(StateElement rootElement) {
