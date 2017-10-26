@@ -16,7 +16,7 @@ final class FirstSetHelper {
 
 	private final Grammar grammar;
 	private final ImmutableSet<String> vanishableNonterminals;
-	private final List<String> todoNonterminals = new ArrayList<>();
+	private final List<String> pendingNonterminals = new ArrayList<>();
 	private final Set<String> checkedNonterminals = new HashSet<>();
 	private final Set<String> result = new HashSet<>();
 	private boolean hasRun = false;
@@ -24,7 +24,7 @@ final class FirstSetHelper {
 	public FirstSetHelper(Grammar grammar, ImmutableSet<String> vanishableNonterminals, String targetNonterminal) {
 		this.grammar = ParameterUtil.ensureNotNull(grammar, "grammar");
 		this.vanishableNonterminals = vanishableNonterminals;
-		todoNonterminals.add(ParameterUtil.ensureNotNullOrEmpty(targetNonterminal, "targetNonterminal"));
+		pendingNonterminals.add(ParameterUtil.ensureNotNullOrEmpty(targetNonterminal, "targetNonterminal"));
 	}
 
 	static ImmutableMap<String, ImmutableSet<String>> runFor(Grammar grammar, ImmutableSet<String> vanishableNonterminals) {
@@ -50,14 +50,14 @@ final class FirstSetHelper {
 		if (hasRun) {
 			throw new IllegalStateException("This helper has already run");
 		}
-		while (!todoNonterminals.isEmpty()) {
+		while (!pendingNonterminals.isEmpty()) {
 			processNextTodo();
 		}
 		hasRun = true;
 	}
 
 	void processNextTodo() {
-		String nonterminalToExpand = todoNonterminals.remove(todoNonterminals.size() - 1);
+		String nonterminalToExpand = pendingNonterminals.remove(pendingNonterminals.size() - 1);
 		// don't include the same nonterminal's first-set twice recursively -- this can't add more terminals in any
 		// case, but would end up in an infinite loop.
 		if (!checkedNonterminals.contains(nonterminalToExpand)) {
@@ -94,7 +94,7 @@ final class FirstSetHelper {
 			result.add(symbol);
 			return false;
 		} else if (grammar.isNonterminal(symbol)) {
-			todoNonterminals.add(symbol);
+			pendingNonterminals.add(symbol);
 			return vanishableNonterminals.contains(symbol);
 		} else {
 			throw new RuntimeException("unknown symbol: " + symbol);
