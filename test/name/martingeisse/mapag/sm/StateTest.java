@@ -330,7 +330,159 @@ public class StateTest {
 		expectReduceOnTerminal(grammarInfo, state, "TIMES", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3));
 
 	}
-	// TODO test right-associative and non-associative
+
+	@Test
+	public void testRightAssociativePlusAfterPlus() {
+
+		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
+						builder.addTerminals("NUMBER")
+								.addTerminals(1, Associativity.RIGHT, "PLUS", "MINUS")
+								.addTerminals(2, Associativity.LEFT, "TIMES")
+								.createNonterminal("e")
+								.addAlternative("NUMBER")
+								.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+								.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+								.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+				"PLUS"
+		);
+		GrammarInfo grammarInfo = helper.getLeft();
+		Grammar grammar = grammarInfo.getGrammar();
+		State state = helper.getRight();
+
+		// this time, shift PLUS and MINUS because they're right-associative...
+		{
+			State actualState2 = expectShiftTerminal(grammarInfo, state, "PLUS");
+			State expectedState2 = new StateBuilder(grammarInfo)
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "PLUS"))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "MINUS"))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "TIMES"))
+					.build();
+			Assert.assertEquals(expectedState2, actualState2);
+		}
+		{
+			State actualState2 = expectShiftTerminal(grammarInfo, state, "MINUS");
+			State expectedState2 = new StateBuilder(grammarInfo)
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "PLUS"))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "MINUS"))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "TIMES"))
+					.build();
+			Assert.assertEquals(expectedState2, actualState2);
+		}
+
+		// ... and shift TIMES because it has higher precedence
+		{
+			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
+			State expectedState2 = new StateBuilder(grammarInfo)
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
+					.build();
+			Assert.assertEquals(expectedState2, actualState2);
+		}
+
+	}
+
+	@Test
+	public void testRightAssociativePlusAfterTimes() {
+
+		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
+						builder.addTerminals("NUMBER")
+								.addTerminals(1, Associativity.RIGHT, "PLUS", "MINUS")
+								.addTerminals(2, Associativity.LEFT, "TIMES")
+								.createNonterminal("e")
+								.addAlternative("NUMBER")
+								.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+								.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+								.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+				"TIMES"
+		);
+		GrammarInfo grammarInfo = helper.getLeft();
+		Grammar grammar = grammarInfo.getGrammar();
+		State state = helper.getRight();
+
+		// still reduce on PLUS and MINUS because they have lower precedence...
+		expectReduceOnTerminal(grammarInfo, state, "PLUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3));
+		expectReduceOnTerminal(grammarInfo, state, "MINUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3));
+
+		// ... and TIMES is still left-associative
+		expectReduceOnTerminal(grammarInfo, state, "TIMES", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3));
+
+	}
+
+	@Test
+	public void testRightAssociativeTimesAfterPlus() {
+
+		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
+						builder.addTerminals("NUMBER")
+								.addTerminals(1, Associativity.LEFT, "PLUS", "MINUS")
+								.addTerminals(2, Associativity.RIGHT, "TIMES")
+								.createNonterminal("e")
+								.addAlternative("NUMBER")
+								.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+								.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+								.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+				"PLUS"
+		);
+		GrammarInfo grammarInfo = helper.getLeft();
+		Grammar grammar = grammarInfo.getGrammar();
+		State state = helper.getRight();
+
+		// reduce on PLUS and MINUS because they're left-associative again...
+		expectReduceOnTerminal(grammarInfo, state, "PLUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1));
+		expectReduceOnTerminal(grammarInfo, state, "MINUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1));
+
+		// ... and shift TIMES because it has higher precedence
+		{
+			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
+			State expectedState2 = new StateBuilder(grammarInfo)
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
+					.build();
+			Assert.assertEquals(expectedState2, actualState2);
+		}
+
+	}
+
+	@Test
+	public void testRightAssociativeTimesAfterTimes() {
+
+		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
+						builder.addTerminals("NUMBER")
+								.addTerminals(1, Associativity.LEFT, "PLUS", "MINUS")
+								.addTerminals(2, Associativity.RIGHT, "TIMES")
+								.createNonterminal("e")
+								.addAlternative("NUMBER")
+								.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+								.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+								.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+				"TIMES"
+		);
+		GrammarInfo grammarInfo = helper.getLeft();
+		Grammar grammar = grammarInfo.getGrammar();
+		State state = helper.getRight();
+
+		// reduce on PLUS and MINUS because they have lower precedence...
+		expectReduceOnTerminal(grammarInfo, state, "PLUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1));
+		expectReduceOnTerminal(grammarInfo, state, "MINUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1));
+
+		// ... and shift TIMES because it is right-associative
+		{
+			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
+			State expectedState2 = new StateBuilder(grammarInfo)
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
+					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
+					.build();
+			Assert.assertEquals(expectedState2, actualState2);
+		}
+
+	}
 
 	private static Pair<GrammarInfo, State> conflictTestHelper(Consumer<GrammarBuilder> symbolContributor, String operatorTerminal) {
 		GrammarBuilder builder = new GrammarBuilder();
