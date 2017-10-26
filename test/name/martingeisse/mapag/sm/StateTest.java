@@ -255,25 +255,81 @@ public class StateTest {
 		expectReduceOnTerminal(grammarInfo, state, "MINUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1));
 
 		// ... and shift TIMES because it has higher precedence
-		// TODO doesn't work yet! stiff gives a conflict because precedence is not yet implemented!
-		// TODO is there any effect of the left-associativity on the local follow-set to consider?
-		// what about the input "N + N * N + N" -- this should allow reduction of (e ::= N * N) under "+", so that
-		// has to be in the local follow set, but when is it put there?
-		// answer: when the closure for (e ::= .e + e /%eof) is computed, because in that example, the top-level
-		// expression is the addition of (N + N * N) and (N). So the local follow-set is {+ - * %eof}.
 		{
-			State state2 = expectShiftTerminal(grammarInfo, state, "TIMES");
-			Assert.assertEquals(new State(ImmutableSet.of(
-				new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME),
-				new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"),
-				new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"),
-				new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES")
-			)), state2);
+			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
+			State expectedState2 = new StateBuilder(grammarInfo)
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
+				.build();
+			Assert.assertEquals(expectedState2, actualState2);
 		}
 
 	}
 
-	// TODO test conflict resolution after MINUS (same as PLUS) and TIMES
+	@Test
+	public void testShiftReduceConflictResolvedAfterMinus() {
+
+		// this test works like for PLUS since they have equal precedence, nothing new here
+
+		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
+				builder.addTerminals("NUMBER")
+					.addTerminals(1, Associativity.LEFT, "PLUS", "MINUS")
+					.addTerminals(2, Associativity.LEFT, "TIMES")
+					.createNonterminal("e")
+					.addAlternative("NUMBER")
+					.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+					.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+					.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+			"MINUS"
+		);
+		GrammarInfo grammarInfo = helper.getLeft();
+		Grammar grammar = grammarInfo.getGrammar();
+		State state = helper.getRight();
+
+		// now reduce on PLUS and MINUS because they're left-associative ...
+		expectReduceOnTerminal(grammarInfo, state, "PLUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2));
+		expectReduceOnTerminal(grammarInfo, state, "MINUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2));
+
+		// ... and shift TIMES because it has higher precedence
+		{
+			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
+			State expectedState2 = new StateBuilder(grammarInfo)
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
+				.build();
+			Assert.assertEquals(expectedState2, actualState2);
+		}
+
+	}
+
+	@Test
+	public void testShiftReduceConflictResolvedAfterTimes() {
+
+		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
+				builder.addTerminals("NUMBER")
+					.addTerminals(1, Associativity.LEFT, "PLUS", "MINUS")
+					.addTerminals(2, Associativity.LEFT, "TIMES")
+					.createNonterminal("e")
+					.addAlternative("NUMBER")
+					.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+					.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+					.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+			"TIMES"
+		);
+		GrammarInfo grammarInfo = helper.getLeft();
+		Grammar grammar = grammarInfo.getGrammar();
+		State state = helper.getRight();
+
+		// TIMES has higher precedence and is left-associative, so reduce in all cases
+		expectReduceOnTerminal(grammarInfo, state, "PLUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3));
+		expectReduceOnTerminal(grammarInfo, state, "MINUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3));
+		expectReduceOnTerminal(grammarInfo, state, "TIMES", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3));
+
+	}
 	// TODO test right-associative and non-associative
 
 	private static Pair<GrammarInfo, State> conflictTestHelper(Consumer<GrammarBuilder> symbolContributor, String operatorTerminal) {
