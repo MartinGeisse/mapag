@@ -27,7 +27,7 @@ public final class GrammarCanonicalizer {
 		this.inputGrammar = ParameterUtil.ensureNotNull(inputGrammar, "inputGrammar");
 	}
 
-	public void run() {
+	public GrammarCanonicalizer run() {
 		if (outputGrammar != null) {
 			throw new IllegalStateException("this canonicalizer has already run");
 		}
@@ -73,6 +73,7 @@ public final class GrammarCanonicalizer {
 			inputGrammar.getStartNonterminalName()
 		);
 
+		return this;
 	}
 
 	public name.martingeisse.mapag.grammar.canonical.Grammar getResult() {

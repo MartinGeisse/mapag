@@ -6,6 +6,7 @@ import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateMachine;
+import name.martingeisse.mapag.util.Comparators;
 import name.martingeisse.mapag.util.Pair;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public final class StateMachineEncoder {
 	public StateMachineEncoder(GrammarInfo grammarInfo, StateMachine stateMachine) {
 		this.terminals = list(grammarInfo.getGrammar().getTerminalDefinitions().keySet());
 		this.nonterminals = list(grammarInfo.getGrammar().getNonterminalDefinitions().keySet());
-		this.states = list(stateMachine.getStates(), EncoderComparators.stateComparator);
+		this.states = list(stateMachine.getStates(), Comparators.stateComparator);
 
 		List<Pair<String, Alternative>> reductions = new ArrayList<>();
 		for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {

@@ -100,7 +100,7 @@ public class MapagGrammarParserGenerationMain {
 			new Production("production", ImmutableList.of(
 				new Alternative(sequence(
 					symbol("IDENTIFIER"),
-					symbol("COLON_COLON_EQUALS"),
+					symbol("EXPANDS_TO"),
 					symbol("alternative"),
 					new ZeroOrMoreExpression(sequence(symbol("BAR"), symbol("alternative"))),
 					symbol("SEMICOLON")
@@ -123,7 +123,7 @@ public class MapagGrammarParserGenerationMain {
 				new Alternative(sequence(
 					symbol("OPENING_PARENTHESIS"),
 					new OneOrMoreExpression(symbol("nestedExpression")),
-					symbol("OPENING_PARENTHESIS"),
+					symbol("CLOSING_PARENTHESIS"),
 					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
 				), null)
 			)),
@@ -143,7 +143,7 @@ public class MapagGrammarParserGenerationMain {
 				new Alternative(sequence(
 					symbol("OPENING_PARENTHESIS"),
 					new OneOrMoreExpression(symbol("nestedExpression")),
-					symbol("OPENING_PARENTHESIS"),
+					symbol("CLOSING_PARENTHESIS"),
 					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
 				), null)
 			)),
@@ -155,7 +155,7 @@ public class MapagGrammarParserGenerationMain {
 		);
 
 		Grammar grammar = new Grammar(packageName, className, terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
-		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).getResult());
+		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
 
 		MapagParserClassGenerator mapagParserClassGenerator = new MapagParserClassGenerator(grammarInfo, stateMachine);

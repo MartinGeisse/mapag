@@ -4,9 +4,13 @@ import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
+import name.martingeisse.mapag.util.Comparators;
 import name.martingeisse.mapag.util.ParameterUtil;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -40,7 +44,9 @@ public final class State {
 
 	@Override
 	public String toString() {
-		return elements.toString();
+		List<StateElement> sortedElements = new ArrayList<>(elements);
+		sortedElements.sort(Comparators.stateElementComparator);
+		return "\n" + StringUtils.join(sortedElements, '\n') + "\n";
 	}
 
 	// Returns null to indicate a run-time syntax error
