@@ -89,8 +89,8 @@ public class StateMachineBuilder {
 				String nonterminal = nonterminalDefinition.getName();
 				State nextState = state.determineNextStateAfterShiftingNonterminal(grammarInfo, nonterminal);
 				if (nextState != null) {
-					addStates(nextState);
 					getOrCreateNonterminalActionMap(state).put(nonterminal, new Action.Shift(nextState));
+					addStates(nextState);
 				}
 			}
 

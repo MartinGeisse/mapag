@@ -467,8 +467,8 @@ public class StateTest {
 		State state = helper.getRight();
 
 		// reduce on PLUS and MINUS because they have lower precedence...
-		expectReduceOnTerminal(grammarInfo, state, "PLUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1));
-		expectReduceOnTerminal(grammarInfo, state, "MINUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1));
+		expectReduceOnTerminal(grammarInfo, state, "PLUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3));
+		expectReduceOnTerminal(grammarInfo, state, "MINUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3));
 
 		// ... and shift TIMES because it is right-associative
 		{
