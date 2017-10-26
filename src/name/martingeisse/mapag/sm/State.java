@@ -76,7 +76,7 @@ public final class State {
 			if (elementsThatWantToReduce.isEmpty()) {
 				return getShift(grammarInfo, elementsThatWantToShift);
 			} else {
-				throw new StateMachineException("shift/reduce conflict in state " + this + " on terminal " + terminal);
+				throw new StateMachineException.ShiftReduceConflict(this, terminal);
 			}
 		}
 	}
@@ -95,7 +95,7 @@ public final class State {
 		// duplicates have been filtered out since StateElement has proper hashCode()/equals() support and the elements
 		// are stored in a Set<>.
 		if (elements.size() > 1) {
-			throw new StateMachineException("reduce/reduce conflict in state " + this + " on terminal " + terminal);
+			throw new StateMachineException.ReduceReduceConflict(this, terminal);
 		}
 		StateElement element = elements.iterator().next();
 		return new Action.Reduce(element.getLeftSide(), element.getAlternative());

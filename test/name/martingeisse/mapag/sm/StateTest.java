@@ -2,12 +2,18 @@ package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.Associativity;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.GrammarBuilder;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
+import name.martingeisse.mapag.testutil.ExAssert;
+import name.martingeisse.mapag.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.function.Consumer;
 
 /**
  *
@@ -83,14 +89,14 @@ public class StateTest {
 
 		{
 			Alternative startAlternative = new Alternative(ImmutableList.of("s"), null);
-			StateElement startStateElement = new StateElement("dummy", startAlternative, 0, "%eof");
+			StateElement startStateElement = new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, startAlternative, 0, SpecialSymbols.EOF_SYMBOL_NAME);
 			State state0 = new StateBuilder(grammarInfo).addElementClosure(startStateElement).build();
 			Assert.assertEquals(new State(ImmutableSet.of(
 				startStateElement,
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0), 0, "%eof"),
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(1), 0, "%eof"),
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(2), 0, "%eof"),
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(3), 0, "%eof"),
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0), 0, SpecialSymbols.EOF_SYMBOL_NAME),
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(1), 0, SpecialSymbols.EOF_SYMBOL_NAME),
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(2), 0, SpecialSymbols.EOF_SYMBOL_NAME),
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(3), 0, SpecialSymbols.EOF_SYMBOL_NAME),
 				new StateElement("p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0), 0, "e"),
 				new StateElement("p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0), 0, "c"),
 				new StateElement("q", grammar.getNonterminalDefinitions().get("q").getAlternatives().get(0), 0, "c")
@@ -104,22 +110,22 @@ public class StateTest {
 
 			State state_a = expectShiftTerminal(grammarInfo, state0, "a");
 			Assert.assertEquals(new State(ImmutableSet.of(
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0), 1, "%eof")
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0), 1, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_a);
-			expectSyntaxError(grammarInfo, state_a, "a", "c", "d", "e", "%eof", "p", "q");
+			expectSyntaxError(grammarInfo, state_a, "a", "c", "d", "e", SpecialSymbols.EOF_SYMBOL_NAME, "p", "q");
 
 			State state_a_b = expectShiftTerminal(grammarInfo, state_a, "b");
 			Assert.assertEquals(new State(ImmutableSet.of(
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0), 2, "%eof")
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0), 2, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_a_b);
-			expectSyntaxError(grammarInfo, state_a_b, "a", "b", "d", "e", "%eof", "p", "q");
+			expectSyntaxError(grammarInfo, state_a_b, "a", "b", "d", "e", SpecialSymbols.EOF_SYMBOL_NAME, "p", "q");
 
 			State state_a_b_c = expectShiftTerminal(grammarInfo, state_a_b, "c");
 			Assert.assertEquals(new State(ImmutableSet.of(
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0), 3, "%eof")
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0), 3, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_a_b_c);
 			expectSyntaxError(grammarInfo, state_a_b_c, "a", "b", "c", "d", "e", "p", "q");
-			expectReduceOnTerminal(grammarInfo, state_a_b_c, "%eof", "s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0));
+			expectReduceOnTerminal(grammarInfo, state_a_b_c, SpecialSymbols.EOF_SYMBOL_NAME, "s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0));
 
 			//
 			// check the path through (s ::= p p, s ::= p c, p ::= e)
@@ -130,38 +136,38 @@ public class StateTest {
 				new StateElement("p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0), 1, "e"),
 				new StateElement("p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0), 1, "c")
 			)), state_e);
-			expectSyntaxError(grammarInfo, state_e, "a", "b", "d", "%eof", "p", "q");
+			expectSyntaxError(grammarInfo, state_e, "a", "b", "d", SpecialSymbols.EOF_SYMBOL_NAME, "p", "q");
 			expectReduceOnTerminal(grammarInfo, state_e, "e", "p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0));
 			expectReduceOnTerminal(grammarInfo, state_e, "c", "p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0));
 
 			State state_p = state0.determineNextStateAfterShiftingNonterminal(grammarInfo, "p");
 			Assert.assertEquals(new State(ImmutableSet.of(
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(1), 1, "%eof"),
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(2), 1, "%eof"),
-				new StateElement("p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0), 0, "%eof")
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(1), 1, SpecialSymbols.EOF_SYMBOL_NAME),
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(2), 1, SpecialSymbols.EOF_SYMBOL_NAME),
+				new StateElement("p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0), 0, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_p);
-			expectSyntaxError(grammarInfo, state_p, "a", "b", "d", "%eof", "q");
+			expectSyntaxError(grammarInfo, state_p, "a", "b", "d", SpecialSymbols.EOF_SYMBOL_NAME, "q");
 
 			State state_p_c = expectShiftTerminal(grammarInfo, state_p, "c");
 			Assert.assertEquals(new State(ImmutableSet.of(
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(2), 2, "%eof")
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(2), 2, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_p_c);
 			expectSyntaxError(grammarInfo, state_p_c, "a", "b", "c", "d", "e", "p", "q");
-			expectReduceOnTerminal(grammarInfo, state_p_c, "%eof", "s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(2));
+			expectReduceOnTerminal(grammarInfo, state_p_c, SpecialSymbols.EOF_SYMBOL_NAME, "s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(2));
 
 			State state_p_e = expectShiftTerminal(grammarInfo, state_p, "e");
 			Assert.assertEquals(new State(ImmutableSet.of(
-				new StateElement("p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0), 1, "%eof")
+				new StateElement("p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0), 1, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_p_e);
 			expectSyntaxError(grammarInfo, state_p_e, "a", "b", "c", "d", "e", "p", "q");
-			expectReduceOnTerminal(grammarInfo, state_p_e, "%eof", "p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0));
+			expectReduceOnTerminal(grammarInfo, state_p_e, SpecialSymbols.EOF_SYMBOL_NAME, "p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0));
 
 			State state_p_p = state_p.determineNextStateAfterShiftingNonterminal(grammarInfo, "p");
 			Assert.assertEquals(new State(ImmutableSet.of(
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(1), 2, "%eof")
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(1), 2, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_p_p);
 			expectSyntaxError(grammarInfo, state_p_p, "a", "b", "c", "d", "e", "p", "q");
-			expectReduceOnTerminal(grammarInfo, state_p_p, "%eof", "s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(1));
+			expectReduceOnTerminal(grammarInfo, state_p_p, SpecialSymbols.EOF_SYMBOL_NAME, "s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(1));
 
 			//
 			// check the path through (s ::= q c)
@@ -169,34 +175,31 @@ public class StateTest {
 
 			State state_q = state0.determineNextStateAfterShiftingNonterminal(grammarInfo, "q");
 			Assert.assertEquals(new State(ImmutableSet.of(
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(3), 1, "%eof")
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(3), 1, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_q);
-			expectSyntaxError(grammarInfo, state_q, "a", "b", "d", "e", "%eof", "p", "q");
+			expectSyntaxError(grammarInfo, state_q, "a", "b", "d", "e", SpecialSymbols.EOF_SYMBOL_NAME, "p", "q");
 
 			State state_q_c = expectShiftTerminal(grammarInfo, state_q, "c");
 			Assert.assertEquals(new State(ImmutableSet.of(
-				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(3), 2, "%eof")
+				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_q_c);
 			expectSyntaxError(grammarInfo, state_q_c, "a", "b", "c", "d", "e", "p", "q");
-			expectReduceOnTerminal(grammarInfo, state_q_c, "%eof", "s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(3));
+			expectReduceOnTerminal(grammarInfo, state_q_c, SpecialSymbols.EOF_SYMBOL_NAME, "s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(3));
 
 		}
 
-
 	}
-
-	// TODO with precedence
 
 	private static State expectShiftTerminal(GrammarInfo grammarInfo, State state, String terminal) {
 		Action action = state.determineActionForTerminal(grammarInfo, terminal);
 		Assert.assertTrue(action instanceof Action.Shift);
-		return ((Action.Shift)action).getNextState();
+		return ((Action.Shift) action).getNextState();
 	}
 
 	private static void expectReduceOnTerminal(GrammarInfo grammarInfo, State state, String terminal, String expectedNonterminal, Alternative expectedAlternative) {
 		Action action = state.determineActionForTerminal(grammarInfo, terminal);
 		Assert.assertTrue(action instanceof Action.Reduce);
-		Action.Reduce reduce = (Action.Reduce)action;
+		Action.Reduce reduce = (Action.Reduce) action;
 		Assert.assertEquals(expectedNonterminal, reduce.getNonterminal());
 		Assert.assertEquals(expectedAlternative, reduce.getAlternative());
 	}
@@ -209,4 +212,83 @@ public class StateTest {
 		}
 	}
 
+	@Test
+	public void testShiftReduceConflict() {
+
+		Pair<GrammarInfo, State> helper = conflictTestHelper(builder -> builder.addTerminals("PLUS", "MINUS", "TIMES", "NUMBER")
+				.createNonterminal("e")
+				.addAlternative("NUMBER")
+				.addAlternative("e", "PLUS", "e")
+				.addAlternative("e", "MINUS", "e")
+				.addAlternative("e", "TIMES", "e"),
+			"PLUS"
+		);
+		GrammarInfo grammarInfo = helper.getLeft();
+		State state = helper.getRight();
+
+		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminal(grammarInfo, "PLUS"));
+		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminal(grammarInfo, "MINUS"));
+		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminal(grammarInfo, "TIMES"));
+
+	}
+
+	@Test
+	public void testShiftReduceConflictResolvedAfterPlus() {
+
+		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
+				builder.addTerminals("NUMBER")
+					.addTerminals(1, Associativity.LEFT, "PLUS", "MINUS")
+					.addTerminals(2, Associativity.LEFT, "TIMES")
+					.createNonterminal("e")
+					.addAlternative("NUMBER")
+					.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+					.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+					.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+			"PLUS"
+		);
+		GrammarInfo grammarInfo = helper.getLeft();
+		Grammar grammar = grammarInfo.getGrammar();
+		State state = helper.getRight();
+
+		// now reduce on PLUS and MINUS because they're left-associative ...
+		expectReduceOnTerminal(grammarInfo, state, "PLUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1));
+		expectReduceOnTerminal(grammarInfo, state, "MINUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1));
+
+		// ... and shift TIMES because it has higher precedence
+		// TODO doesn't work yet! stiff gives a conflict because precedence is not yet implemented!
+		// TODO is there any effect of the left-associativity on the local follow-set to consider?
+		// what about the input "N + N * N + N" -- this should allow reduction of (e ::= N * N) under "+", so that
+		// has to be in the local follow set, but when is it put there?
+		// answer: when the closure for (e ::= .e + e /%eof) is computed, because in that example, the top-level
+		// expression is the addition of (N + N * N) and (N). So the local follow-set is {+ - * %eof}.
+		{
+			State state2 = expectShiftTerminal(grammarInfo, state, "TIMES");
+			Assert.assertEquals(new State(ImmutableSet.of(
+				new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME),
+				new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"),
+				new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"),
+				new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES")
+			)), state2);
+		}
+
+	}
+
+	// TODO test conflict resolution after MINUS (same as PLUS) and TIMES
+	// TODO test right-associative and non-associative
+
+	private static Pair<GrammarInfo, State> conflictTestHelper(Consumer<GrammarBuilder> symbolContributor, String operatorTerminal) {
+		GrammarBuilder builder = new GrammarBuilder();
+		builder.setPackageName("test");
+		builder.setClassName("Parser");
+		builder.setStartNonterminalName("e");
+		symbolContributor.accept(builder);
+		Grammar grammar = builder.build();
+		GrammarInfo grammarInfo = new GrammarInfo(grammar);
+		StateElement startStateElement = new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, new Alternative(ImmutableList.of("e"), null), 0, SpecialSymbols.EOF_SYMBOL_NAME);
+		State state = new StateBuilder(grammarInfo).addElementClosure(startStateElement).build();
+		state = state.determineNextStateAfterShiftingNonterminal(grammarInfo, "e");
+		state = expectShiftTerminal(grammarInfo, state, operatorTerminal);
+		state = state.determineNextStateAfterShiftingNonterminal(grammarInfo, "e");
+		return new Pair<>(grammarInfo, state);
+	}
 }
