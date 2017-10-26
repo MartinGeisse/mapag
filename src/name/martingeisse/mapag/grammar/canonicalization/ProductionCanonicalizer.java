@@ -16,8 +16,8 @@ import java.util.function.BiConsumer;
  */
 public class ProductionCanonicalizer {
 
-	private final List<Production> todoProductions;
-	private final List<Production> nextTodoBatch;
+	private final List<Production> pendingProductions;
+	private final List<Production> nextPendingBatch;
 	private final Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
 	private final Map<String, Integer> savedSyntheticNameCounters;
 
@@ -26,14 +26,14 @@ public class ProductionCanonicalizer {
 
 	public ProductionCanonicalizer(ImmutableList<Production> inputProductions) {
 		ParameterUtil.ensureNotNull(inputProductions, "inputProductions");
-		this.todoProductions = new ArrayList<>(inputProductions);
-		this.nextTodoBatch = new ArrayList<>();
+		this.pendingProductions = new ArrayList<>(inputProductions);
+		this.nextPendingBatch = new ArrayList<>();
 		this.nonterminalAlternatives = new HashMap<>();
 		this.savedSyntheticNameCounters = new HashMap<>();
 	}
 
 	public void run() {
-		while (!todoProductions.isEmpty()) {
+		while (!pendingProductions.isEmpty()) {
 			work();
 		}
 	}
@@ -44,7 +44,7 @@ public class ProductionCanonicalizer {
 
 	private void work() {
 		// try to keep the order of input productions and synthetic productions se it's easier to debug the canonical grammar
-		Production production = todoProductions.remove(0);
+		Production production = pendingProductions.remove(0);
 		String leftHandSide = production.getLeftHandSide();
 		this.syntheticNamePrefix = leftHandSide;
 		this.syntheticNameCounter = savedSyntheticNameCounters.getOrDefault(leftHandSide, 0);
@@ -58,9 +58,9 @@ public class ProductionCanonicalizer {
 		if (syntheticNameCounter != 0) {
 			savedSyntheticNameCounters.put(leftHandSide, syntheticNameCounter);
 		}
-		if (!nextTodoBatch.isEmpty()) {
-			todoProductions.addAll(0, nextTodoBatch);
-			nextTodoBatch.clear();
+		if (!nextPendingBatch.isEmpty()) {
+			pendingProductions.addAll(0, nextPendingBatch);
+			nextPendingBatch.clear();
 		}
 	}
 
@@ -144,7 +144,7 @@ public class ProductionCanonicalizer {
 		List<name.martingeisse.mapag.grammar.extended.Alternative> alternatives = new ArrayList<>();
 		alternativesAdder.accept(syntheticName, alternatives);
 		Production production = new Production(syntheticName, ImmutableList.copyOf(alternatives));
-		todoProductions.add(production);
+		pendingProductions.add(production);
 		return syntheticName;
 	}
 

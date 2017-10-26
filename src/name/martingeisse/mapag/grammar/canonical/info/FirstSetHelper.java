@@ -51,12 +51,12 @@ final class FirstSetHelper {
 			throw new IllegalStateException("This helper has already run");
 		}
 		while (!pendingNonterminals.isEmpty()) {
-			processNextTodo();
+			processNextPendingNonterminal();
 		}
 		hasRun = true;
 	}
 
-	void processNextTodo() {
+	void processNextPendingNonterminal() {
 		String nonterminalToExpand = pendingNonterminals.remove(pendingNonterminals.size() - 1);
 		// don't include the same nonterminal's first-set twice recursively -- this can't add more terminals in any
 		// case, but would end up in an infinite loop.
