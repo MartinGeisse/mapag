@@ -10,8 +10,9 @@
 }
 
 %nonterminals {
-    grammar, symbolDefinitions, symbolDefinition, precedenceList, precedenceDeclaration,
-	productionList, production, expression, hierarchicalIdentifier, nonemptyIdentifierList
+    grammar, precedenceDeclaration,
+	production, alternative, toplevelExpression, nestedExpression,
+	nonemptyIdentifierList
 }
 
 %start grammar;
@@ -27,7 +28,7 @@ grammar ::=
 	KW_TERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList CLOSING_CURLY_BRACE
 	KW_NONTERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList CLOSING_CURLY_BRACE
 	(KW_PRECEDENCE OPENING_CURLY_BRACE precedenceDeclaration* CLOSING_CURLY_BRACE)?
-	(KW_START IDENTIFIER:startSymbolName SEMICOLON)?
+	KW_START IDENTIFIER:startSymbolName SEMICOLON
 	production+
 	;
 
@@ -78,6 +79,5 @@ nestedExpression ::=
 //
 
 nonemptyIdentifierList ::=
-	IDENTIFIER
-	| nonemptyIdentifierList COMMA IDENTIFIER
+	IDENTIFIER (COMMA IDENTIFIER)*
 	;
