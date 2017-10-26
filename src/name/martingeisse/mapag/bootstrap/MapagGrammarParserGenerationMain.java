@@ -1,7 +1,9 @@
 package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.codegen.MapagParserClassGenerator;
+import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.extended.*;
@@ -56,6 +58,8 @@ public class MapagGrammarParserGenerationMain {
 		);
 
 		PrecedenceTable precedenceTable = new PrecedenceTable(ImmutableList.of(
+			new PrecedenceTable.Entry(ImmutableSet.of("BAR"), Associativity.LEFT),
+			new PrecedenceTable.Entry(ImmutableSet.of("ASTERISK", "PLUS", "QUESTION_MARK"), Associativity.NONASSOC)
 		));
 
 		String startNonterminalName = "grammar";
@@ -117,9 +121,9 @@ public class MapagGrammarParserGenerationMain {
 					symbol("IDENTIFIER"),
 					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
 				), null),
-				new Alternative(sequence(symbol("toplevelExpression"), symbol("ASTERISK")), null),
-				new Alternative(sequence(symbol("toplevelExpression"), symbol("PLUS")), null),
-				new Alternative(sequence(symbol("toplevelExpression"), symbol("QUESTION_MARK")), null),
+				new Alternative(sequence(symbol("toplevelExpression"), symbol("ASTERISK")), "ASTERISK"),
+				new Alternative(sequence(symbol("toplevelExpression"), symbol("PLUS")), "PLUS"),
+				new Alternative(sequence(symbol("toplevelExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK"),
 				new Alternative(sequence(
 					symbol("OPENING_PARENTHESIS"),
 					new OneOrMoreExpression(symbol("nestedExpression")),
@@ -136,10 +140,10 @@ public class MapagGrammarParserGenerationMain {
 					symbol("nestedExpression"),
 					symbol("BAR"),
 					symbol("toplevelExpression")
-				), null),
-				new Alternative(sequence(symbol("nestedExpression"), symbol("ASTERISK")), null),
-				new Alternative(sequence(symbol("nestedExpression"), symbol("PLUS")), null),
-				new Alternative(sequence(symbol("nestedExpression"), symbol("QUESTION_MARK")), null),
+				), "BAR"),
+				new Alternative(sequence(symbol("nestedExpression"), symbol("ASTERISK")), "ASTERISK"),
+				new Alternative(sequence(symbol("nestedExpression"), symbol("PLUS")), "PLUS"),
+				new Alternative(sequence(symbol("nestedExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK"),
 				new Alternative(sequence(
 					symbol("OPENING_PARENTHESIS"),
 					new OneOrMoreExpression(symbol("nestedExpression")),

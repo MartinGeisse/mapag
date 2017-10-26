@@ -23,6 +23,7 @@ public class GrammarCanonicalizerTest {
 		new GrammarCanonicalizer(inputGrammar).run();
 	}
 
-
+	// TODO
+	// especially that the precedence table works the way I expect, especially that higher up = lower precedence
 
 }
