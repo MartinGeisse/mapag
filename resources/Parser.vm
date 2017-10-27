@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen;
+package $packageName;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LightPsiParser;
@@ -12,7 +12,7 @@ import java.util.Arrays;
  * ## This class is used to get Java-oriented IntelliJ support while writing the template as part of the parser
  * ## generator. It is not directly used by the parser generator or the generated parser.
  */
-public class Parser implements PsiParser, LightPsiParser {
+public class $className implements PsiParser, LightPsiParser {
 
 	// ------------------------------------------------------------------------------------------------
 	// --- generated stuff
@@ -22,10 +22,10 @@ public class Parser implements PsiParser, LightPsiParser {
 	private static final int EOF_TOKEN_CODE = $eofTokenCode;
 	private static final IElementType[] TOKEN_CODE_TO_TOKEN = {
         #foreach($token in $tokensInTokenCodeOrder)
-            Tokens.$token,
+            Symbols.$token,
         #end
 	};
-	private static final IElementType START_SYMBOL = Tokens.$startSymbolName;
+	private static final IElementType START_SYMBOL = Symbols.$startSymbolName;
 
 	// state machine (general)
 	private static final int START_STATE = $startStateCode;
@@ -48,7 +48,7 @@ public class Parser implements PsiParser, LightPsiParser {
 	};
 	private static final IElementType[] ALTERNATIVE_CODE_TO_NONTERMINAL_ELEMENT_TYPE = {
         #foreach($alternative in $alternativesInAlternativeCodeOrder)
-            Tokens.$alternative.nonterminalName,
+            Symbols.$alternative.nonterminalName,
         #end
 	};
 	private static final int[] ALTERNATIVE_CODE_TO_NONTERMINAL_SYMBOL_CODE = {

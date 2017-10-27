@@ -2,6 +2,7 @@ package name.martingeisse.mapag.codegen;
 
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
+import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateMachine;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -10,6 +11,7 @@ import org.apache.velocity.runtime.log.NullLogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 import java.io.StringWriter;
+import java.util.List;
 
 /**
  *
@@ -40,14 +42,41 @@ public class MapagParserClassGenerator {
 	}
 
 	public void generate() {
-		Template template = engine.getTemplate("Parser.vm");
+
+		StateMachineEncoder stateMachineEncoder = new StateMachineEncoder(grammarInfo, stateMachine);
+		int numberOfStates = stateMachine.getStates().size();
+		int numberOfTerminals = grammar.getTerminalDefinitions().size();
+		int numberOfNonterminals = grammar.getNonterminalDefinitions().size();
 
 		VelocityContext context = new VelocityContext();
-		context.put("name", new String("Foobar"));
+		context.put("packageName", grammar.getPackageName());
+		context.put("className", grammar.getClassName());
+		{
+			String[] terminalNames = new String[numberOfTerminals];
+			for (String terminal : grammar.getTerminalDefinitions().keySet()) {
+				int index = stateMachineEncoder.getTerminalIndex(terminal);
+				terminalNames[index] = terminal;
+			}
+			context.put("tokensInTokenCodeOrder", terminalNames);
+		}
+		context.put("startSymbolName", grammar.getStartNonterminalName());
+		context.put("startStateCode", stateMachineEncoder.getStateIndex(stateMachine.getStartState()));
+		{
+			int actionTableWidth = numberOfTerminals + numberOfNonterminals;
+			int[] actionTable = new int[numberOfStates * actionTableWidth];
+			for (State state : stateMachine.getStates()) {
+				int stateIndex = stateMachineEncoder.getStateIndex(state);
+				for (String terminal : grammar.getTerminalDefinitions().keySet()) {
+					int symbolIndex = stateMachineEncoder.getSymbolIndex(terminal);
+					int actionCode = stateMachineEncoder.getac
+				}
+			}
+		}
 
 		StringWriter sw = new StringWriter();
-		template.merge(context, sw);
+		engine.getTemplate("Parser.vm").merge(context, sw);
 		System.out.println(sw);
+
 	}
 
 }

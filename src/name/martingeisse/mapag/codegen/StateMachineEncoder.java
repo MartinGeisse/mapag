@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
+import name.martingeisse.mapag.sm.Action;
 import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.util.Comparators;
@@ -18,6 +19,8 @@ import java.util.function.Function;
 /**
  * Note: this encoder ignores the original order of things in the grammar, so simple re-ordering does not change the
  * output. This excludes precedence, of course, since the order is significant here.
+ *
+ * TODO this class says "reduction index" -- is this the alternative index?
  */
 public final class StateMachineEncoder {
 
@@ -98,16 +101,16 @@ public final class StateMachineEncoder {
 		return index;
 	}
 
-	public int getShiftActionCode(State state) {
-		return getStateIndex(state) + 1;
+	public int getShiftActionCode(Action.Shift shift) {
+		return getStateIndex(shift.getNextState()) + 1;
 	}
 
 	public int getErrorActionCode() {
 		return 0;
 	}
 
-	public int getReduceActionCode(Pair<String, Alternative> reduction) {
-		return -1 - getReductionIndex(reduction);
+	public int getReduceActionCode(Action.Reduce reduce) {
+		return -1 - getReductionIndex(new Pair<>(reduce.getNonterminal(), reduce.getAlternative()));
 	}
 
 }
