@@ -7,8 +7,6 @@ import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
 
 import java.util.Arrays;
-import java.util.Stack;
-import java.util.function.Function;
 
 /**
  * ## This class is used to get Java-oriented IntelliJ support while writing the template as part of the parser
@@ -16,58 +14,67 @@ import java.util.function.Function;
  */
 public class Parser implements PsiParser, LightPsiParser {
 
-	/*
+	// ------------------------------------------------------------------------------------------------
+	// --- generated stuff TODO
+	// ------------------------------------------------------------------------------------------------
 
-	TODO:
-	- specify how token-to-tokencode-mapping works (generated "Tokens" class as in CUP, or user-written class)
-	- specify how token singleton definitions work (generated class as for GrammarKit, or user-written class)
-
-	 */
-
-
-	// TODO Generated stuff
+	// symbols (tokens and nonterminals)
 	private static final int EOF_TOKEN_CODE = 0;
-	private static final int[] actionTable = null;
-	private static final int actionTableWidth = 0;
-	private static final int[] alternativeCodeToRightHandSizeLength = null;
-	private static final IElementType[] alternativeCodeToNonterminalElementType = null;
-	private static final int[] alternativeCodeToNonterminalSymbolCode = null;
-	private static final int START_STATE = 0;
+	private static final IElementType[] TOKEN_CODE_TO_TOKEN = {
+		Tokens.IDENTIFIER,
+	};
 	private static final IElementType START_SYMBOL = null;
+
+	// state machine (general)
+	private static final int START_STATE = 0;
+
+	// state machine (action table)
+	private static final int[] ACTION_TABLE = {
+
+	};
+	private static final int ACTION_TABLE_WIDTH = 0;
+
+	// state machine (alternatives / reduction table)
+	private static final int[] ALTERNATIVE_CODE_TO_RIGHT_HAND_SIDE_LENGTH = {
+
+	};
+	private static final IElementType[] ALTERNATIVE_CODE_TO_NONTERMINAL_ELEMENT_TYPE = {
+
+	};
+	private static final int[] ALTERNATIVE_CODE_TO_NONTERMINAL_SYMBOL_CODE = {
+
+	};
+
+	// ------------------------------------------------------------------------------------------------
+	// --- non-generated stuff (initialization and static stuff)
+	// ------------------------------------------------------------------------------------------------
 
 	// static table, but has to be initialized at startup since element type indices aren't compile-time constants
 	private static int[] elementTypeIndexToTokenCode;
 
-	private boolean used = false;
-	private final Stack<Integer> stateStack = new Stack<>(); // TODO this class is synchronized and boxed Integers are also slow. Replace by array-based stack.
-	private final Stack<Object> parseTreeStack = new Stack<>(); // same here; the stacks always have the same size
-	private int state = START_STATE;
-
 	/**
-	 * This must be called at runtime initialization time (more exactly, before a parser is first created) to tell
-	 * this class which IElementTypes have been mapped to which token code in the parser state machine.
-	 * <p>
-	 * TODO the first argument can be determined at generation time, not runtime
-	 * TODO also initialize the start symbol -- can be determined at generation time too
-	 *
-	 * @param tokens          the tokens used by this parser
-	 * @param tokenCodeMapper a function that returns the token code for each of these tokens
+	 * This method initializes static tables on the first parse run -- we need element type
+	 * indices to be initialized before doing this.
 	 */
-	public static void initializeElementTypeIndexToTokenCode(IElementType[] tokens, Function<IElementType, Integer> tokenCodeMapper) {
+	private static void initializeStatic() {
+		if (elementTypeIndexToTokenCode != null) {
+			return;
+		}
 		int maxElementTypeIndex = 0;
-		for (IElementType token : tokens) {
+		for (IElementType token : TOKEN_CODE_TO_TOKEN) {
 			if (maxElementTypeIndex < token.getIndex()) {
 				maxElementTypeIndex = token.getIndex();
 			}
 		}
 		elementTypeIndexToTokenCode = new int[maxElementTypeIndex];
 		Arrays.fill(elementTypeIndexToTokenCode, -1);
-		for (IElementType token : tokens) {
-			elementTypeIndexToTokenCode[token.getIndex()] = tokenCodeMapper.apply(token);
+		for (int tokenCode = 0; tokenCode < TOKEN_CODE_TO_TOKEN.length; tokenCode++) {
+			IElementType token = TOKEN_CODE_TO_TOKEN[tokenCode];
+			elementTypeIndexToTokenCode[token.getIndex()] = tokenCode;
 		}
 	}
 
-	private static int gerTokenCodeForElementType(IElementType elementType) {
+	private static int getTokenCodeForElementType(IElementType elementType) {
 		int index = elementType.getIndex();
 		if (index >= 0 && index < elementTypeIndexToTokenCode.length) {
 			int tokenCode = elementTypeIndexToTokenCode[index];
@@ -77,6 +84,16 @@ public class Parser implements PsiParser, LightPsiParser {
 		}
 		throw new RuntimeException("unknown token: " + elementType);
 	}
+
+	// ------------------------------------------------------------------------------------------------
+	// --- non-generated stuff
+	// ------------------------------------------------------------------------------------------------
+
+	private boolean used = false;
+	private int[] stateStack = new int[256];
+	private Object[] parseTreeStack = new Object[256];
+	private int stackSize = 0;
+	private int state = START_STATE;
 
 	@Override
 	public ASTNode parse(IElementType type, PsiBuilder psiBuilder) {
@@ -93,75 +110,91 @@ public class Parser implements PsiParser, LightPsiParser {
 		if (type != START_SYMBOL) {
 			throw new IllegalArgumentException("unsupported top-level element type to parse: " + type);
 		}
-		if (elementTypeIndexToTokenCode == null) {
-			throw new IllegalStateException("initializeElementTypeIndexToTokenCode has not been called yet");
-		}
 		parse(builder);
 	}
 
 	private void parse(PsiBuilder psiBuilder) {
 
+		// initialize static parser information
+		initializeStatic();
+
 		// Parse the input using the generated machine to build a parse tree. The state machine cannot execute the
 		// accept action here since the input cannot contain EOF.
 		PsiBuilder.Marker preParseMarker = psiBuilder.mark();
 		while (!psiBuilder.eof()) {
-			consumeToken(gerTokenCodeForElementType(psiBuilder.getTokenType()), null);
+			consumeSymbol(getTokenCodeForElementType(psiBuilder.getTokenType()), null);
 		}
 		preParseMarker.rollbackTo();
 
 		// Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
 		// a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
-		consumeToken(EOF_TOKEN_CODE, null);
+		consumeSymbol(EOF_TOKEN_CODE, null);
 
 		// At this point, the state stack should contain single element (the start state) and the associated parse
 		// tree stack contains the root node as its single element. If anything in the input tried to prevent that,
 		// consuming the EOF token would have failed. Now we re-parse, based on the parse tree we build, in a way
 		// that the PsiBuilder likes.
-		feedPsiBuilder(psiBuilder, parseTreeStack.pop());
+		if (stackSize != 1) {
+			// either the Lexer returned an explicit EOF (which it shouldn't) or this is a bug in the parser generator
+			throw new RuntimeException("unexpected stack size after accepting start symbol");
+		}
+		feedPsiBuilder(psiBuilder, parseTreeStack[0]);
 
 	}
 
 	/**
-	 * Consumes a token. This performs one or several actions until the token gets shifted (or, in the case of EOF,
-	 * accepted).
+	 * Consumes a symbol (token or nonterminal). This performs one or several actions until the token gets shifted
+	 * (or, in the case of EOF, accepted).
 	 */
-	private void consumeToken(int symbolCode, Object symbolData) {
+	private void consumeSymbol(int symbolCode, Object symbolData) {
 		while (true) { // looped on reduce
-			int action = actionTable[state * actionTableWidth + symbolCode];
-			if (action == Integer.MIN_VALUE) {
-
-				// accept
+			int action = ACTION_TABLE[state * ACTION_TABLE_WIDTH + symbolCode];
+			if (action == Integer.MIN_VALUE) { // accept
 				break;
-
-			} else if (action > 0) {
-
-				// shift
-				stateStack.push(state);
-				parseTreeStack.push(symbolData);
-				state = action - 1;
+			} else if (action > 0) { // shift
+				shift(symbolData, action - 1);
 				break;
-
-			} else if (action < 0) {
-
-				// reduce
-				int alternativeCode = -action - 1;
-				int rightHandSideLength = alternativeCodeToRightHandSizeLength[alternativeCode];
-				Object[] reduction = new Object[rightHandSideLength + 1];
-				for (int i = rightHandSideLength; i > 0; i--) {
-					reduction[i] = parseTreeStack.pop();
-					state = stateStack.pop();
-				}
-				reduction[0] = alternativeCodeToNonterminalElementType[alternativeCode];
-				consumeToken(alternativeCodeToNonterminalSymbolCode[alternativeCode], reduction);
-				// continue consuming the original token
-
-			} else {
-
-				// syntax error
+			} else if (action < 0) { // reduce, then continue with the original symbol
+				reduce(-action - 1);
+			} else { // syntax error
 				throw new RuntimeException("syntax error in state " + state + " on symbolCode " + symbolCode);
-
 			}
 		}
+	}
+
+	private void shift(Object data, int newState) {
+		if (stackSize == stateStack.length) {
+			stackSize = stackSize * 2;
+			stateStack = Arrays.copyOf(stateStack, stackSize);
+			parseTreeStack = Arrays.copyOf(parseTreeStack, stackSize);
+		}
+		stateStack[stackSize] = state;
+		parseTreeStack[stackSize] = data;
+		stackSize++;
+		state = newState;
+	}
+
+	private void reduce(int alternativeCode) {
+
+		// determine the alternative to reduce
+		int rightHandSideLength = ALTERNATIVE_CODE_TO_RIGHT_HAND_SIDE_LENGTH[alternativeCode];
+		IElementType nonterminalElementType = ALTERNATIVE_CODE_TO_NONTERMINAL_ELEMENT_TYPE[alternativeCode];
+		int nonterminalSymbolCode = ALTERNATIVE_CODE_TO_NONTERMINAL_SYMBOL_CODE[alternativeCode];
+
+		// pop (rightHandSideLength) states off the state stack
+		if (rightHandSideLength > 0) {
+			stackSize -= rightHandSideLength;
+			state = stateStack[stackSize];
+		}
+
+		// build a parse tree node from the nonterminal element type and the subtrees in the parse tree stack
+		Object[] reduction = new Object[rightHandSideLength + 1];
+		reduction[0] = nonterminalElementType;
+		System.arraycopy(parseTreeStack, stackSize, reduction, 1, rightHandSideLength);
+
+		// shift the nonterminal
+		consumeSymbol(nonterminalSymbolCode, reduction);
+
 	}
 
 	private void feedPsiBuilder(PsiBuilder builder, Object what) {
