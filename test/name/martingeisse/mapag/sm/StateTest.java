@@ -191,13 +191,14 @@ public class StateTest {
 	}
 
 	private static State expectShiftTerminal(GrammarInfo grammarInfo, State state, String terminal) {
-		Action action = state.determineActionForTerminal(grammarInfo, terminal);
+		Action action = state.determineActionForTerminalOrEof(grammarInfo, terminal);
 		Assert.assertTrue(action instanceof Action.Shift);
 		return ((Action.Shift) action).getNextState();
 	}
 
+	// note: the 'terminal' argument may be EOF for this method
 	private static void expectReduceOnTerminal(GrammarInfo grammarInfo, State state, String terminal, String expectedNonterminal, Alternative expectedAlternative) {
-		Action action = state.determineActionForTerminal(grammarInfo, terminal);
+		Action action = state.determineActionForTerminalOrEof(grammarInfo, terminal);
 		Assert.assertTrue(action instanceof Action.Reduce);
 		Action.Reduce reduce = (Action.Reduce) action;
 		Assert.assertEquals(expectedNonterminal, reduce.getNonterminal());
@@ -207,7 +208,7 @@ public class StateTest {
 	// checks terminals and nonterminals
 	private static void expectSyntaxError(GrammarInfo grammarInfo, State state, String... symbols) {
 		for (String symbol : symbols) {
-			Assert.assertNull(state.determineActionForTerminal(grammarInfo, symbol));
+			Assert.assertNull(state.determineActionForTerminalOrEof(grammarInfo, symbol));
 			Assert.assertNull(state.determineNextStateAfterShiftingNonterminal(grammarInfo, symbol));
 		}
 	}
@@ -226,9 +227,9 @@ public class StateTest {
 		GrammarInfo grammarInfo = helper.getLeft();
 		State state = helper.getRight();
 
-		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminal(grammarInfo, "PLUS"));
-		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminal(grammarInfo, "MINUS"));
-		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminal(grammarInfo, "TIMES"));
+		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, "PLUS"));
+		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, "MINUS"));
+		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, "TIMES"));
 
 	}
 

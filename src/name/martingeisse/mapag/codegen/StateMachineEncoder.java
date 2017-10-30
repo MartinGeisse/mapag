@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.codegen;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
@@ -74,13 +75,16 @@ public final class StateMachineEncoder {
 	}
 
 	public int getSymbolIndex(String symbol) {
+		if (symbol.equals(SpecialSymbols.EOF_SYMBOL_NAME)) {
+			return 0;
+		}
 		int index = terminals.indexOf(symbol);
 		if (index >= 0) {
-			return index;
+			return 1 + index;
 		}
 		index = nonterminals.indexOf(symbol);
 		if (index >= 0) {
-			return terminals.size() + index;
+			return 1 + terminals.size() + index;
 		}
 		throw new IllegalArgumentException("unknown symbol: " + symbol);
 	}
@@ -105,12 +109,70 @@ public final class StateMachineEncoder {
 		return getStateIndex(shift.getNextState()) + 1;
 	}
 
+	public int getReduceActionCode(Action.Reduce reduce) {
+		return -1 - getReductionIndex(new Pair<>(reduce.getNonterminal(), reduce.getAlternative()));
+	}
+
+	public int getAcceptActionCode() {
+		return Integer.MIN_VALUE;
+	}
+
 	public int getErrorActionCode() {
 		return 0;
 	}
 
-	public int getReduceActionCode(Action.Reduce reduce) {
-		return -1 - getReductionIndex(new Pair<>(reduce.getNonterminal(), reduce.getAlternative()));
+	public int getActionCode(Action action) {
+		if (action == null) {
+			return getErrorActionCode();
+		} else if (action instanceof Action.Shift) {
+			return getShiftActionCode((Action.Shift) action);
+		} else if (action instanceof Action.Reduce) {
+			return getReduceActionCode((Action.Reduce) action);
+		} else if (action instanceof Action.Accept) {
+			return getAcceptActionCode();
+		} else {
+			throw new IllegalArgumentException("unknown action: " + action);
+		}
+	}
+
+	public void dump() {
+
+		System.out.println("special symbols: ");
+		System.out.println("0: " + SpecialSymbols.EOF_SYMBOL_NAME);
+		System.out.println();
+
+		int symbolCode = 1;
+		System.out.println("terminals: ");
+		for (String terminal : terminals) {
+			System.out.println(symbolCode + ": " + terminal);
+			symbolCode++;
+		}
+		System.out.println();
+
+		System.out.println("nonterminals: ");
+		for (String nonterminal : nonterminals) {
+			System.out.println(symbolCode + ": " + nonterminal);
+			symbolCode++;
+		}
+		System.out.println();
+
+		int alternativeCode = 0;
+		System.out.println("alternatives: ");
+		for (Pair<String, Alternative> entry : reductions) {
+			System.out.println(alternativeCode + ": " + entry.getLeft() + " ::= " + entry.getRight());
+			alternativeCode++;
+		}
+		System.out.println();
+
+		System.out.println("----------------------------------------------------------------------");
+		int stateCode = 0;
+		for (State state : states) {
+			System.out.println();
+			System.out.println("state " + stateCode + ": ");
+			System.out.println(state);
+			stateCode++;
+		}
+
 	}
 
 }

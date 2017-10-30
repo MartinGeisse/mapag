@@ -79,7 +79,7 @@ public class StateMachineTest {
 	public void testConstructorGetter() {
 		StateMachine stateMachine = new StateMachine(states, terminalActions, nonterminalActions, state3);
 		Assert.assertEquals(states, stateMachine.getStates());
-		Assert.assertEquals(terminalActions, stateMachine.getTerminalActions());
+		Assert.assertEquals(terminalActions, stateMachine.getTerminalOrEofActions());
 		Assert.assertEquals(nonterminalActions, stateMachine.getNonterminalActions());
 		Assert.assertEquals(state3, stateMachine.getStartState());
 	}

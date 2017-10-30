@@ -3,6 +3,7 @@ package name.martingeisse.mapag.grammar.extended;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 /**
@@ -31,6 +32,11 @@ public final class PrecedenceTable {
 			ParameterUtil.ensureNotNullOrEmpty(terminalNames, "terminalNames");
 			ParameterUtil.ensureNoNullOrEmptyElement(terminalNames, "terminalNames");
 			ParameterUtil.ensureNotNull(associativity, "associativity");
+			for (String terminalName : terminalNames) {
+				if (terminalName.startsWith("%")) { // TODO test this
+					throw new IllegalArgumentException("cannot define precedence for special symbol " + terminalName);
+				}
+			}
 			this.terminalNames = terminalNames;
 			this.associativity = associativity;
 		}

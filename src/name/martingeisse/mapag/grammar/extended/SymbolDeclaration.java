@@ -11,6 +11,9 @@ public abstract class SymbolDeclaration {
 
 	public SymbolDeclaration(String name) {
 		ParameterUtil.ensureNotNullOrEmpty(name, "name");
+		if (name.startsWith("%")) {
+			throw new IllegalArgumentException("cannot redefine special symbol " + name);
+		}
 		this.name = name;
 	}
 

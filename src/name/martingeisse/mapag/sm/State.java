@@ -50,12 +50,12 @@ public final class State {
 	}
 
 	// Returns null to indicate a run-time syntax error
-	public Action determineActionForTerminal(GrammarInfo grammarInfo, String terminal) {
+	public Action determineActionForTerminalOrEof(GrammarInfo grammarInfo, String terminalOrEof) {
 		Set<StateElement> elementsThatWantToShift = new HashSet<>();
 		Set<StateElement> elementsThatWantToReduce = new HashSet<>();
 		elementLoop:
 		for (StateElement element : elements) {
-			StateElement.ActionType actionType = element.determineActionTypeForTerminal(terminal);
+			StateElement.ActionType actionType = element.determineActionTypeForTerminal(terminalOrEof);
 			switch (actionType) {
 
 				case DROP_ELEMENT:
@@ -80,7 +80,7 @@ public final class State {
 		// duplicates have been filtered out since StateElement has proper hashCode()/equals() support and the elements
 		// are stored in a Set<>.
 		if (elementsThatWantToReduce.size() > 1) {
-			throw new StateMachineException.ReduceReduceConflict(this, terminal);
+			throw new StateMachineException.ReduceReduceConflict(this, terminalOrEof);
 		}
 		StateElement elementThatWantsToReduce = (elementsThatWantToReduce.isEmpty() ? null : elementsThatWantToReduce.iterator().next());
 
@@ -100,9 +100,9 @@ public final class State {
 		}
 
 		// handle shift/reduce conflicts by resolution
-		TerminalDefinition shiftPrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(terminal);
+		TerminalDefinition shiftPrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(terminalOrEof);
 		if (shiftPrecedenceDefinition == null) {
-			throw new RuntimeException("cannot determine terminal definition for terminal " + terminal);
+			throw new RuntimeException("cannot determine terminal definition for terminal " + terminalOrEof);
 		}
 		String reducePrecedenceTerminal = elementThatWantsToReduce.getAlternative().getEffectivePrecedenceTerminal();
 		TerminalDefinition reducePrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(reducePrecedenceTerminal);
@@ -121,7 +121,7 @@ public final class State {
 
 				// sanity check: same precedence implies same associativity
 				if (shiftPrecedenceDefinition.getAssociativity() != reducePrecedenceDefinition.getAssociativity()) {
-					throw new RuntimeException("terminals have same precedence but different associativity: " + terminal + " and " + reducePrecedenceTerminal);
+					throw new RuntimeException("terminals have same precedence but different associativity: " + terminalOrEof + " and " + reducePrecedenceTerminal);
 				}
 
 				// on same precedence and left-associativity, reduce
@@ -138,7 +138,7 @@ public final class State {
 		}
 
 		// resolution was not successful
-		throw new StateMachineException.ShiftReduceConflict(this, terminal);
+		throw new StateMachineException.ShiftReduceConflict(this, terminalOrEof);
 
 	}
 

@@ -22,7 +22,7 @@ public class StateMachineBuilder {
 
 	private final GrammarInfo grammarInfo;
 	private final Set<State> states = new HashSet<>();
-	private final Map<State, Map<String, Action>> terminalActions = new HashMap<>();
+	private final Map<State, Map<String, Action>> terminalOrEofActions = new HashMap<>();
 	private final Map<State, Map<String, Action.Shift>> nonterminalActions = new HashMap<>();
 
 	public StateMachineBuilder(GrammarInfo grammarInfo) {
@@ -44,14 +44,14 @@ public class StateMachineBuilder {
 		builder.addElementClosure(new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, implicitAlternative, 0, SpecialSymbols.EOF_SYMBOL_NAME));
 		State startState = builder.build();
 		addStates(startState);
-		return new StateMachine(ImmutableSet.copyOf(states), makeImmutable(terminalActions), makeImmutable(nonterminalActions), startState);
+		return new StateMachine(ImmutableSet.copyOf(states), makeImmutable(terminalOrEofActions), makeImmutable(nonterminalActions), startState);
 	}
 
-	private Map<String, Action> getOrCreateTerminalActionMap(State state) {
-		Map<String, Action> result = terminalActions.get(state);
+	private Map<String, Action> getOrCreateTerminalOrEofActionMap(State state) {
+		Map<String, Action> result = terminalOrEofActions.get(state);
 		if (result == null) {
 			result = new HashMap<>();
-			terminalActions.put(state, result);
+			terminalOrEofActions.put(state, result);
 		}
 		return result;
 	}
@@ -67,21 +67,16 @@ public class StateMachineBuilder {
 
 	private void addStates(State state) {
 		if (states.add(state)) {
-			getOrCreateTerminalActionMap(state);
+			getOrCreateTerminalOrEofActionMap(state);
 			getOrCreateNonterminalActionMap(state);
 
 			// Determine reaction to terminals in this state.
 			for (TerminalDefinition terminalDefinition : grammarInfo.getGrammar().getTerminalDefinitions().values()) {
-				String terminal = terminalDefinition.getName();
-				Action action = state.determineActionForTerminal(grammarInfo, terminal);
-				if (action == null) {
-					continue;
-				}
-				getOrCreateTerminalActionMap(state).put(terminal, action);
-				if (action instanceof Action.Shift) {
-					addStates(((Action.Shift) action).getNextState());
-				}
+				addTerminalOrEofActions(state, terminalDefinition.getName());
 			}
+
+			// Determine reaction to EOF in this state
+			addTerminalOrEofActions(state, SpecialSymbols.EOF_SYMBOL_NAME);
 
 			// Determine reaction to nonterminals in this state. This just tries all nonterminals for simplicity, and
 			// thus adds unnessecary states if the grammar contains alternatives that can never match. We don't care.
@@ -94,6 +89,17 @@ public class StateMachineBuilder {
 				}
 			}
 
+		}
+	}
+
+	private void addTerminalOrEofActions(State state, String terminalOrEof) {
+		Action action = state.determineActionForTerminalOrEof(grammarInfo, terminalOrEof);
+		if (action == null) {
+			return;
+		}
+		getOrCreateTerminalOrEofActionMap(state).put(terminalOrEof, action);
+		if (action instanceof Action.Shift) {
+			addStates(((Action.Shift) action).getNextState());
 		}
 	}
 

@@ -42,11 +42,11 @@ public class StateMachineBuilderTest {
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
 
 		for (State state : stateMachine.getStates()) {
-			Assert.assertNotNull(stateMachine.getTerminalActions().get(state));
+			Assert.assertNotNull(stateMachine.getTerminalOrEofActions().get(state));
 			Assert.assertNotNull(stateMachine.getNonterminalActions().get(state));
 		}
 
-		for (Map.Entry<State, ImmutableMap<String, Action>> stateEntry : stateMachine.getTerminalActions().entrySet()) {
+		for (Map.Entry<State, ImmutableMap<String, Action>> stateEntry : stateMachine.getTerminalOrEofActions().entrySet()) {
 			State state = stateEntry.getKey();
 			Assert.assertTrue(stateMachine.getStates().contains(state));
 			for (Map.Entry<String, Action> actionEntry : stateEntry.getValue().entrySet()) {
