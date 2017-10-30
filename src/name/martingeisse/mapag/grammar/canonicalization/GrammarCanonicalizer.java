@@ -66,8 +66,6 @@ public final class GrammarCanonicalizer {
 
 		// build the output grammar
 		this.outputGrammar = new name.martingeisse.mapag.grammar.canonical.Grammar(
-			inputGrammar.getPackageName(),
-			inputGrammar.getClassName(),
 			terminalDefinitions.values(),
 			nonterminalDefinitions.values(),
 			inputGrammar.getStartNonterminalName()

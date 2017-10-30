@@ -189,7 +189,7 @@ public class VanishableNonterminalsHelperTest {
 	@Test
 	@UseDataProvider("getTestData")
 	public void testWithTestData(ImmutableList<NonterminalDefinition> nonterminals, ImmutableSet<String> expectedResult) {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, nonterminals, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(TERMINALS, nonterminals, START_NONTERMINAL_NAME);
 		ImmutableSet<String> result = VanishableNonterminalsHelper.runFor(grammar);
 		Assert.assertEquals(expectedResult, result);
 	}

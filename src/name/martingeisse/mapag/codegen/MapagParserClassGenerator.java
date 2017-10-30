@@ -12,11 +12,15 @@ import org.apache.velocity.runtime.log.NullLogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 import java.io.StringWriter;
+import java.util.Properties;
 
 /**
  *
  */
 public class MapagParserClassGenerator {
+
+	public static final String PACKAGE_NAME_PROPERTY = "parser.package";
+	public static final String CLASS_NAME_PROPERTY = "parser.class";
 
 	private static final VelocityEngine engine;
 	static {
@@ -34,11 +38,13 @@ public class MapagParserClassGenerator {
 	private final GrammarInfo grammarInfo;
 	private final Grammar grammar;
 	private final StateMachine stateMachine;
+	private final Properties codeGenerationProperties;
 
-	public MapagParserClassGenerator(GrammarInfo grammarInfo, StateMachine stateMachine) {
+	public MapagParserClassGenerator(GrammarInfo grammarInfo, StateMachine stateMachine, Properties codeGenerationProperties) {
 		this.grammarInfo = grammarInfo;
 		this.grammar = grammarInfo.getGrammar();
 		this.stateMachine = stateMachine;
+		this.codeGenerationProperties = codeGenerationProperties;
 	}
 
 	public void generate() {
@@ -49,8 +55,8 @@ public class MapagParserClassGenerator {
 		int numberOfNonterminals = grammar.getNonterminalDefinitions().size();
 
 		VelocityContext context = new VelocityContext();
-		context.put("packageName", grammar.getPackageName());
-		context.put("className", grammar.getClassName());
+		context.put("packageName", codeGenerationProperties.get(PACKAGE_NAME_PROPERTY));
+		context.put("className", codeGenerationProperties.get(CLASS_NAME_PROPERTY));
 		{
 			String[] terminalNames = new String[numberOfTerminals];
 			for (String terminal : grammar.getTerminalDefinitions().keySet()) {

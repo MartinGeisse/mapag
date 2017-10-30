@@ -8,8 +8,6 @@ import name.martingeisse.mapag.grammar.Associativity;
  */
 public class TestGrammarObjects {
 
-	public static final String PACKAGE_NAME = "foo.bar";
-	public static final String CLASS_NAME = "MyClass";
 	public static final String START_NONTERMINAL_NAME = "dummyStart";
 
 	public static final TerminalDefinition TERMINAL_1 = new TerminalDefinition("foo", null, Associativity.NONASSOC);

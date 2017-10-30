@@ -26,8 +26,6 @@ public class StateMachineBuilderTest {
 	@Test
 	public void checkClosureUnderShiftingInNumberExpressionGrammar() {
 		GrammarBuilder builder = new GrammarBuilder();
-		builder.setPackageName("test");
-		builder.setClassName("Parser");
 		builder.setStartNonterminalName("e");
 		builder.addTerminals("NUMBER");
 		builder.addTerminals(1, Associativity.LEFT, "PLUS", "MINUS");

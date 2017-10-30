@@ -11,6 +11,8 @@ import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 
+import java.util.Properties;
+
 /**
  *
  */
@@ -18,12 +20,11 @@ public class MapagGrammarParserGenerationMain {
 
 	public static void main(String[] args) {
 
-		String packageName = "name.martingeisse.mapag.input";
-		String className = "MapagGeneratedMapagParser";
+		Properties codeGenerationProperties = new Properties();
+		codeGenerationProperties.setProperty("parser.package", "name.martingeisse.mapag.input");
+		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
 
 		ImmutableList terminalDeclarations = ImmutableList.of(
-			new TerminalDeclaration("KW_PACKAGE"),
-			new TerminalDeclaration("KW_CLASS"),
 			new TerminalDeclaration("KW_TERMINALS"),
 			new TerminalDeclaration("KW_NONTERMINALS"),
 			new TerminalDeclaration("KW_PRECEDENCE"),
@@ -67,13 +68,6 @@ public class MapagGrammarParserGenerationMain {
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("grammar", ImmutableList.of(
 				new Alternative(sequence(
-					symbol("KW_PACKAGE"),
-					new ZeroOrMoreExpression(new SequenceExpression(symbol("IDENTIFIER"), symbol("DOT"))),
-					symbol("IDENTIFIER"),
-					symbol("SEMICOLON"),
-					symbol("KW_CLASS"),
-					symbol("IDENTIFIER"),
-					symbol("SEMICOLON"),
 					symbol("KW_TERMINALS"),
 					symbol("OPENING_CURLY_BRACE"),
 					symbol("nonemptyIdentifierList"),
@@ -158,11 +152,11 @@ public class MapagGrammarParserGenerationMain {
 			))
 		);
 
-		Grammar grammar = new Grammar(packageName, className, terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
+		Grammar grammar = new Grammar(terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
 
-		MapagParserClassGenerator mapagParserClassGenerator = new MapagParserClassGenerator(grammarInfo, stateMachine);
+		MapagParserClassGenerator mapagParserClassGenerator = new MapagParserClassGenerator(grammarInfo, stateMachine, codeGenerationProperties);
 		mapagParserClassGenerator.generate();
 	}
 

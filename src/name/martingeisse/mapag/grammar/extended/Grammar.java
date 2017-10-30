@@ -8,17 +8,13 @@ import name.martingeisse.mapag.util.ParameterUtil;
  */
 public final class Grammar {
 
-	private final String packageName;
-	private final String className;
 	private final ImmutableList<TerminalDeclaration> terminalDeclarations;
 	private final ImmutableList<NonterminalDeclaration> nonterminalDeclarations;
 	private final PrecedenceTable precedenceTable;
 	private final String startNonterminalName;
 	private final ImmutableList<Production> productions;
 
-	public Grammar(String packageName, String className, ImmutableList<TerminalDeclaration> terminalDeclarations, ImmutableList<NonterminalDeclaration> nonterminalDeclarations, PrecedenceTable precedenceTable, String startNonterminalName, ImmutableList<Production> productions) {
-		this.packageName = ParameterUtil.ensureNotNull(packageName, "packageName");
-		this.className = ParameterUtil.ensureNotNullOrEmpty(className, "className");
+	public Grammar(ImmutableList<TerminalDeclaration> terminalDeclarations, ImmutableList<NonterminalDeclaration> nonterminalDeclarations, PrecedenceTable precedenceTable, String startNonterminalName, ImmutableList<Production> productions) {
 		this.terminalDeclarations = ParameterUtil.ensureNotNull(terminalDeclarations, "terminalDeclarations");
 		ParameterUtil.ensureNoNullElement(terminalDeclarations, "terminalDeclarations");
 		this.nonterminalDeclarations = ParameterUtil.ensureNotNull(nonterminalDeclarations, "nonterminalDeclarations");
@@ -27,14 +23,6 @@ public final class Grammar {
 		this.startNonterminalName = ParameterUtil.ensureNotNullOrEmpty(startNonterminalName, "startNonterminalName");
 		this.productions = ParameterUtil.ensureNotNull(productions, "productions");
 		ParameterUtil.ensureNoNullElement(productions, "productions");
-	}
-
-	public String getPackageName() {
-		return packageName;
-	}
-
-	public String getClassName() {
-		return className;
 	}
 
 	public ImmutableList<TerminalDeclaration> getTerminalDeclarations() {

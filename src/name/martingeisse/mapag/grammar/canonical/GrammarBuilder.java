@@ -14,29 +14,9 @@ import java.util.Map;
  */
 public final class GrammarBuilder {
 
-	private String packageName;
-	private String className;
 	private List<TerminalDefinition> terminalDefinitions = new ArrayList<>();
 	private Map<String, List<Alternative>> nonterminalDefinitions = new HashMap<>();
 	private String startNonterminalName;
-
-	public String getPackageName() {
-		return packageName;
-	}
-
-	public GrammarBuilder setPackageName(String packageName) {
-		this.packageName = packageName;
-		return this;
-	}
-
-	public String getClassName() {
-		return className;
-	}
-
-	public GrammarBuilder setClassName(String className) {
-		this.className = className;
-		return this;
-	}
 
 	public String getStartNonterminalName() {
 		return startNonterminalName;
@@ -90,6 +70,6 @@ public final class GrammarBuilder {
 		for (Map.Entry<String, List<Alternative>> entry : this.nonterminalDefinitions.entrySet()) {
 			nonterminalDefinitions.add(new NonterminalDefinition(entry.getKey(), ImmutableList.copyOf(entry.getValue())));
 		}
-		return new Grammar(packageName, className, terminalDefinitions, nonterminalDefinitions, startNonterminalName);
+		return new Grammar(terminalDefinitions, nonterminalDefinitions, startNonterminalName);
 	}
 }

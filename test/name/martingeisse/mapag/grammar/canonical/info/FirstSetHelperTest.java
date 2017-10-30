@@ -29,7 +29,7 @@ public class FirstSetHelperTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullVanishableNonterminals() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
 		FirstSetHelper.runFor(grammar, null);
 	}
 
@@ -369,7 +369,7 @@ public class FirstSetHelperTest {
 	public void testWithTestData(ImmutableList<NonterminalDefinition> nonterminals,
 								 ImmutableSet<String> vanishableNonterminals,
 								 ImmutableMap<String, ImmutableSet<String>> expectedResult) {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, nonterminals, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(TERMINALS, nonterminals, START_NONTERMINAL_NAME);
 		ImmutableMap<String, ImmutableSet<String>> result = FirstSetHelper.runFor(grammar, vanishableNonterminals);
 		Assert.assertEquals(expectedResult, result);
 	}

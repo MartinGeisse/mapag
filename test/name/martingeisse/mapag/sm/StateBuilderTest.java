@@ -21,8 +21,6 @@ import org.junit.runner.RunWith;
 @RunWith(DataProviderRunner.class)
 public class StateBuilderTest {
 
-	private static final String PACKAGE_NAME = "foo.bar";
-	private static final String CLASS_NAME = "MyClass";
 	private static final String START_NONTERMINAL_NAME = "startSymbol";
 
 	private static final TerminalDefinition TERMINAL_1 = new TerminalDefinition("t1", null, Associativity.NONASSOC);
@@ -74,7 +72,7 @@ public class StateBuilderTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testCantWorkWithoutRootElements() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, ImmutableSet.of(TERMINAL_1), ImmutableSet.of(START_SYMBOL_1), START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(ImmutableSet.of(TERMINAL_1), ImmutableSet.of(START_SYMBOL_1), START_NONTERMINAL_NAME);
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
 		new StateBuilder(grammarInfo).build();
 	}
@@ -172,7 +170,7 @@ public class StateBuilderTest {
 							 ImmutableSet<StateElement> rootElements,
 							 ImmutableSet<StateElement> additionalElements) {
 
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, terminals, nonterminals, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(terminals, nonterminals, START_NONTERMINAL_NAME);
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
 
 		StateBuilder builder = new StateBuilder(grammarInfo);

@@ -11,6 +11,8 @@ import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 
+import java.util.Properties;
+
 /**
  * This is the bootstrapper for the calculator grammar (test project). This should ultimately be defined in a mapag
  * specification file, but for now, we don't actually have a parser for these specification files.
@@ -19,8 +21,9 @@ public class CalculatorParserGenerationMain {
 
 	public static void main(String[] args) {
 
-		String packageName = "name.martingeisse.calculator";
-		String className = "MapagGeneratedCalculationParser";
+		Properties codeGenerationProperties = new Properties();
+		codeGenerationProperties.setProperty("parser.package", "name.martingeisse.calculator");
+		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedCalculationParser");
 
 		ImmutableList terminalDeclarations = ImmutableList.of(
 			new TerminalDeclaration("PLUS"),
@@ -63,11 +66,11 @@ public class CalculatorParserGenerationMain {
 			))
 		);
 
-		Grammar grammar = new Grammar(packageName, className, terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
+		Grammar grammar = new Grammar(terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
 
-		MapagParserClassGenerator mapagParserClassGenerator = new MapagParserClassGenerator(grammarInfo, stateMachine);
+		MapagParserClassGenerator mapagParserClassGenerator = new MapagParserClassGenerator(grammarInfo, stateMachine, codeGenerationProperties);
 		mapagParserClassGenerator.generate();
 	}
 

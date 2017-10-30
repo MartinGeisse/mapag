@@ -20,7 +20,7 @@ public class GrammarValidatorTest {
 
 	@Test
 	public void testValidAndSubValidatorCalls() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
 		MyGrammarValidator validator = new MyGrammarValidator(grammar);
 		validator.validate();
 		Assert.assertEquals(1, validator.validateAssociativityConsistencyCallCount);
@@ -31,13 +31,13 @@ public class GrammarValidatorTest {
 	public void testTerminalNonterminalNameIntersection() {
 		NonterminalDefinition conflictingNonterminal = new NonterminalDefinition(TERMINAL_1.getName(), NONTERMINAL_1.getAlternatives());
 		ImmutableList<NonterminalDefinition> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminal);
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, nonterminals, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(TERMINALS, nonterminals, START_NONTERMINAL_NAME);
 		new MyGrammarValidator(grammar).validate();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUndefinedStartSymbol() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, "anotherStart");
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, "anotherStart");
 		MyGrammarValidator validator = new MyGrammarValidator(grammar);
 		validator.validate();
 	}

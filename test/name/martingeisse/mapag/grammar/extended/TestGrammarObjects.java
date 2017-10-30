@@ -10,8 +10,6 @@ import name.martingeisse.mapag.grammar.extended.expression.SymbolReference;
  */
 public class TestGrammarObjects {
 
-	public static final String PACKAGE_NAME = "foo.bar";
-	public static final String CLASS_NAME = "MyClass";
 	public static final TerminalDeclaration TERMINAL_1 = new TerminalDeclaration("foo");
 	public static final TerminalDeclaration TERMINAL_2 = new TerminalDeclaration("bar");
 	public static final TerminalDeclaration TERMINAL_3 = new TerminalDeclaration("baz");

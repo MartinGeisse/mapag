@@ -21,7 +21,7 @@ public class GrammarInfoTest {
 
 	@Test
 	public void testNormalUsage() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
 		Assert.assertEquals(grammar, grammarInfo.getGrammar());
 

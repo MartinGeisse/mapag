@@ -14,9 +14,7 @@ public class GrammarTest {
 
 	@Test
 	public void testConstructorGetter() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
-		Assert.assertEquals(PACKAGE_NAME, grammar.getPackageName());
-		Assert.assertEquals(CLASS_NAME, grammar.getClassName());
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
 		Assert.assertEquals(START_NONTERMINAL_NAME, grammar.getStartNonterminalName());
 
 		Assert.assertEquals(3, grammar.getTerminalDefinitions().size());
@@ -32,69 +30,49 @@ public class GrammarTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullPackageName() {
-		new Grammar(null, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
-	}
-
-	@Test
-	public void testEmptyPackageName() {
-		new Grammar("", CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testNullClassName() {
-		new Grammar(PACKAGE_NAME, null, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testEmptyClassName() {
-		new Grammar(PACKAGE_NAME, "", TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
 	public void testNullTerminalDefinitions() {
-		new Grammar(PACKAGE_NAME, CLASS_NAME, null, NONTERMINALS, START_NONTERMINAL_NAME);
+		new Grammar(null, NONTERMINALS, START_NONTERMINAL_NAME);
 	}
 
 	@Test
 	public void testEmptyTerminalDefinitions() {
 		// allowed in constructor but caught during validation
-		new Grammar(PACKAGE_NAME, CLASS_NAME, ImmutableList.of(), NONTERMINALS, START_NONTERMINAL_NAME);
+		new Grammar(ImmutableList.of(), NONTERMINALS, START_NONTERMINAL_NAME);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullNonterminalDefinitions() {
-		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, null, START_NONTERMINAL_NAME);
+		new Grammar(TERMINALS, null, START_NONTERMINAL_NAME);
 	}
 
 	@Test
 	public void testEmptyNonterminalDefinitions() {
 		// allowed in constructor but caught during validation
-		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, ImmutableList.of(), START_NONTERMINAL_NAME);
+		new Grammar(TERMINALS, ImmutableList.of(), START_NONTERMINAL_NAME);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullStartNonterminalName() {
-		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, null);
+		new Grammar(TERMINALS, NONTERMINALS, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyStartNonterminalName() {
-		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, "");
+		new Grammar(TERMINALS, NONTERMINALS, "");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testTwoTerminalsNameCollisionEqual() {
 		TerminalDefinition conflictingTerminal = new TerminalDefinition("bar", null, Associativity.LEFT);
 		ImmutableList<TerminalDefinition> terminals = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3, conflictingTerminal);
-		new Grammar(PACKAGE_NAME, CLASS_NAME, terminals, NONTERMINALS, START_NONTERMINAL_NAME);
+		new Grammar(terminals, NONTERMINALS, START_NONTERMINAL_NAME);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testTwoTerminalsNameCollisionDifferent() {
 		TerminalDefinition conflictingTerminal = new TerminalDefinition("bar", 2, Associativity.RIGHT);
 		ImmutableList<TerminalDefinition> terminals = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3, conflictingTerminal);
-		new Grammar(PACKAGE_NAME, CLASS_NAME, terminals, NONTERMINALS, START_NONTERMINAL_NAME);
+		new Grammar(terminals, NONTERMINALS, START_NONTERMINAL_NAME);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -103,7 +81,7 @@ public class GrammarTest {
 			new Alternative(ImmutableList.of("nt3", "nt3"), null)
 		));
 		ImmutableList<NonterminalDefinition> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminal);
-		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, nonterminals, START_NONTERMINAL_NAME);
+		new Grammar(TERMINALS, nonterminals, START_NONTERMINAL_NAME);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -112,7 +90,7 @@ public class GrammarTest {
 			new Alternative(ImmutableList.of("nt1", "nt1"), null)
 		));
 		ImmutableList<NonterminalDefinition> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminal);
-		new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, nonterminals, START_NONTERMINAL_NAME);
+		new Grammar(TERMINALS, nonterminals, START_NONTERMINAL_NAME);
 	}
 
 	@Test
@@ -120,12 +98,12 @@ public class GrammarTest {
 		// this succeeds in building the grammar object but should fail validation (which is tested in the validator's test class)
 		TerminalDefinition conflictingTerminal = new TerminalDefinition("nt2", 2, Associativity.RIGHT);
 		ImmutableList<TerminalDefinition> terminals = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3, conflictingTerminal);
-		new Grammar(PACKAGE_NAME, CLASS_NAME, terminals, NONTERMINALS, START_NONTERMINAL_NAME);
+		new Grammar(terminals, NONTERMINALS, START_NONTERMINAL_NAME);
 	}
 
 	@Test
 	public void testIsTerminal() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
 
 		// terminals
 		Assert.assertTrue(grammar.isTerminal("foo"));
@@ -152,7 +130,7 @@ public class GrammarTest {
 
 	@Test
 	public void testSentenceContainsTerminals() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
 
 		Assert.assertFalse(grammar.sentenceContainsTerminals(ImmutableList.of()));
 		Assert.assertFalse(grammar.sentenceContainsTerminals(ImmutableList.of("undefinedSymbol")));
@@ -173,7 +151,7 @@ public class GrammarTest {
 
 	@Test
 	public void testIsNonterminal() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
 
 		// terminals
 		Assert.assertFalse(grammar.isNonterminal("foo"));
@@ -200,7 +178,7 @@ public class GrammarTest {
 
 	@Test
 	public void testSentenceContainsNonterminals() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, START_NONTERMINAL_NAME);
 
 		Assert.assertFalse(grammar.sentenceContainsNonterminals(ImmutableList.of()));
 		Assert.assertFalse(grammar.sentenceContainsNonterminals(ImmutableList.of("undefinedSymbol")));

@@ -19,7 +19,7 @@ public class GrammarValidatorTest {
 
 	@Test
 	public void testValid() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
@@ -27,7 +27,7 @@ public class GrammarValidatorTest {
 	public void testDuplicateTerminalName() {
 		TerminalDeclaration conflictingTerminalDeclaration = new TerminalDeclaration("foo");
 		ImmutableList<TerminalDeclaration> terminals = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3, conflictingTerminalDeclaration);
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, terminals, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(terminals, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
@@ -35,7 +35,7 @@ public class GrammarValidatorTest {
 	public void testDuplicateNonterminalName() {
 		NonterminalDeclaration conflictingNonterminalDeclaration = new NonterminalDeclaration("nt2");
 		ImmutableList<NonterminalDeclaration> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminalDeclaration);
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, nonterminals, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, nonterminals, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
@@ -43,7 +43,7 @@ public class GrammarValidatorTest {
 	public void testSameNameForTerminalAndNonterminal() {
 		NonterminalDeclaration conflictingNonterminalDeclaration = new NonterminalDeclaration("foo");
 		ImmutableList<NonterminalDeclaration> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminalDeclaration);
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, nonterminals, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, nonterminals, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
@@ -54,7 +54,7 @@ public class GrammarValidatorTest {
 				new PrecedenceTable.Entry(ImmutableSet.of("baz", "xyz"), Associativity.LEFT)
 		)
 		);
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
@@ -66,19 +66,19 @@ public class GrammarValidatorTest {
 				new PrecedenceTable.Entry(ImmutableSet.of("baz", "foo"), Associativity.LEFT)
 		)
 		);
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownStartNonterminal() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, "unknown", PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, "unknown", PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
 	@Test
 	public void testProductionValidatorGetsCalled() {
-		Grammar grammar = new Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 		GrammarValidator.ProductionValidatorFactory productionValidatorFactory = (terminalNames, nonterminalNames, startSymbol) -> {
 			Assert.assertEquals(ImmutableSet.of(TERMINAL_1.getName(), TERMINAL_2.getName(), TERMINAL_3.getName()), terminalNames);
 			Assert.assertEquals(ImmutableSet.of(NONTERMINAL_1.getName(), NONTERMINAL_2.getName(), NONTERMINAL_3.getName()), nonterminalNames);

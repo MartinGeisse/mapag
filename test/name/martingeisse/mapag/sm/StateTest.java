@@ -71,8 +71,6 @@ public class StateTest {
 	public void testActionsWithoutPrecedences() {
 
 		GrammarBuilder builder = new GrammarBuilder();
-		builder.setPackageName("test");
-		builder.setClassName("Parser");
 		builder.setStartNonterminalName("s");
 		builder.addTerminals("a", "b", "c", "d", "e");
 		builder.createNonterminal("s")
@@ -487,8 +485,6 @@ public class StateTest {
 
 	private static Pair<GrammarInfo, State> conflictTestHelper(Consumer<GrammarBuilder> symbolContributor, String operatorTerminal) {
 		GrammarBuilder builder = new GrammarBuilder();
-		builder.setPackageName("test");
-		builder.setClassName("Parser");
 		builder.setStartNonterminalName("e");
 		symbolContributor.accept(builder);
 		Grammar grammar = builder.build();

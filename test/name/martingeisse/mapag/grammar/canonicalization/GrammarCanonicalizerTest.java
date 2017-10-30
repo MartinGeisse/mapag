@@ -15,8 +15,6 @@ import static name.martingeisse.mapag.grammar.extended.TestGrammarObjects.*;
  */
 public class GrammarCanonicalizerTest {
 
-	private static final String PACKAGE_NAME = "foo.bar";
-	private static final String CLASS_NAME = "MyClass";
 	private static final String START_NONTERMINAL_NAME = "start";
 
 	private static final TerminalDeclaration TERMINAL_1 = new TerminalDeclaration("a");
@@ -52,7 +50,7 @@ public class GrammarCanonicalizerTest {
 	@Test(expected = IllegalStateException.class)
 	public void testConstructorWithInvalid() {
 		name.martingeisse.mapag.grammar.extended.Grammar inputGrammar =
-				new name.martingeisse.mapag.grammar.extended.Grammar(PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS,
+				new name.martingeisse.mapag.grammar.extended.Grammar(TERMINALS, NONTERMINALS,
 						PRECEDENCE_TABLE_EMPTY, "unknownStartNonterminal", PRODUCTIONS);
 		new GrammarCanonicalizer(inputGrammar).run();
 	}
@@ -60,7 +58,7 @@ public class GrammarCanonicalizerTest {
 	@Test
 	public void testCanonicalization() {
 		name.martingeisse.mapag.grammar.extended.Grammar grammar = new name.martingeisse.mapag.grammar.extended.Grammar(
-			PACKAGE_NAME, CLASS_NAME, TERMINALS, NONTERMINALS, PRECEDENCE_TABLE, START_NONTERMINAL_NAME, PRODUCTIONS);
+			TERMINALS, NONTERMINALS, PRECEDENCE_TABLE, START_NONTERMINAL_NAME, PRODUCTIONS);
 		// TODO
 	}
 

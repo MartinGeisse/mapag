@@ -19,16 +19,11 @@ import java.util.Map;
  */
 public final class Grammar {
 
-	private final String packageName;
-	private final String className;
 	private final ImmutableMap<String, TerminalDefinition> terminalDefinitions;
 	private final ImmutableMap<String, NonterminalDefinition> nonterminalDefinitions;
 	private final String startNonterminalName;
 
-	public Grammar(String packageName, String className, Collection<TerminalDefinition> terminalDefinitions, Collection<NonterminalDefinition> nonterminalDefinitions, String startNonterminalName) {
-
-		this.packageName = ParameterUtil.ensureNotNull(packageName, "packageName");
-		this.className = ParameterUtil.ensureNotNullOrEmpty(className, "className");
+	public Grammar(Collection<TerminalDefinition> terminalDefinitions, Collection<NonterminalDefinition> nonterminalDefinitions, String startNonterminalName) {
 
 		ParameterUtil.ensureNotNull(terminalDefinitions, "terminalDefinitions");
 		ParameterUtil.ensureNoNullElement(terminalDefinitions, "terminalDefinitions");
@@ -49,14 +44,6 @@ public final class Grammar {
 			}
 		}
 		return ImmutableMap.copyOf(result);
-	}
-
-	public String getPackageName() {
-		return packageName;
-	}
-
-	public String getClassName() {
-		return className;
 	}
 
 	public ImmutableMap<String, TerminalDefinition> getTerminalDefinitions() {
