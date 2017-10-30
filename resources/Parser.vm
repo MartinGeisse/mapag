@@ -19,7 +19,7 @@ public class $className implements PsiParser, LightPsiParser {
 	// ------------------------------------------------------------------------------------------------
 
 	// symbols (tokens and nonterminals)
-	private static final int EOF_TOKEN_CODE = $eofTokenCode;
+	private static final int EOF_TOKEN_CODE = 0;
 	private static final IElementType[] TOKEN_CODE_TO_TOKEN = {
         #foreach($token in $tokensInTokenCodeOrder)
             Symbols.$token,
