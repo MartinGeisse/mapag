@@ -8,10 +8,6 @@ import com.intellij.psi.tree.IElementType;
 
 import java.util.Arrays;
 
-/**
- * ## This class is used to get Java-oriented IntelliJ support while writing the template as part of the parser
- * ## generator. It is not directly used by the parser generator or the generated parser.
- */
 public class $className implements PsiParser, LightPsiParser {
 
 	// ------------------------------------------------------------------------------------------------

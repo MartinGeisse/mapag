@@ -2,7 +2,9 @@ package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import name.martingeisse.mapag.codegen.MapagParserClassGenerator;
+import name.martingeisse.mapag.codegen.Configuration;
+import name.martingeisse.mapag.codegen.ParserClassGenerator;
+import name.martingeisse.mapag.codegen.SymbolHolderClassGenerator;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
@@ -19,11 +21,14 @@ import java.util.Properties;
  */
 public class CalculatorParserGenerationMain {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		Properties codeGenerationProperties = new Properties();
 		codeGenerationProperties.setProperty("parser.package", "name.martingeisse.calculator");
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedCalculationParser");
+		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.calculator");
+		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");
+		Configuration configuration = new Configuration(codeGenerationProperties);
 
 		ImmutableList terminalDeclarations = ImmutableList.of(
 			new TerminalDeclaration("PLUS"),
@@ -70,8 +75,12 @@ public class CalculatorParserGenerationMain {
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
 
-		MapagParserClassGenerator mapagParserClassGenerator = new MapagParserClassGenerator(grammarInfo, stateMachine, codeGenerationProperties);
-		mapagParserClassGenerator.generate();
+		ParserClassGenerator parserClassGenerator = new ParserClassGenerator(grammarInfo, stateMachine, configuration);
+		parserClassGenerator.generate();
+
+		SymbolHolderClassGenerator symbolHolderClassGenerator = new SymbolHolderClassGenerator(grammarInfo, configuration);
+		symbolHolderClassGenerator.generate();
+
 	}
 
 	private static SymbolReference symbol(String name) {

@@ -1,0 +1,23 @@
+package $packageName;
+
+import com.intellij.psi.tree.IElementType;
+
+public class $className {
+
+	//
+	// terminals
+	//
+
+#foreach($terminal in $terminals)
+	public static final $terminalElementTypeClass $terminal = new $terminalElementTypeClass("$terminal");
+#end
+
+	//
+	// nonterminals
+	//
+
+#foreach($nonterminal in $nonterminals)
+	public static final $nonterminalElementTypeClass $nonterminal = new $nonterminalElementTypeClass("$nonterminal");
+#end
+
+}
