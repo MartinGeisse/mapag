@@ -143,11 +143,26 @@ public class $className implements PsiParser, LightPsiParser {
             consumeSymbol(EOF_TOKEN_CODE, null);
 
         } catch (UnrecoverableSyntaxException e) {
-           preParseMarker.drop();
-           psiBuilder.error("syntax error"); // TODO list accepted terminals in current state
-           wholeFileMarker.error("another syntax error"); // TODO which message gets shown?
-           // wholeFileMarker.done(FILE_ELEMENT_TYPE);
-           return;
+
+            // Build a "code fragment" node that contains the parsed and partially reduced part (i.e. the parse tree
+            // stack), then the exception to report the error properly, then the remaining tokens (unparsed).
+            List<Object> nodeBuilder = new ArrayList<>();
+            nodeBuilder.add(TokenType.CODE_FRAGMENT);
+            for (Object element : parseTreeStack) {
+                nodeBuilder.add(element);
+            }
+            nodeBuilder.add(e);
+            while (true) {
+                psiBuilder.advanceLexer();
+                IElementType tokenType = psiBuilder.getTokenType();
+                if (tokenType == null) {
+                    break;
+                }
+                nodeBuilder.add(null);
+            }
+            parseTreeStack[0] = nodeBuilder.toArray();
+            stackSize = 1;
+
         }
         preParseMarker.rollbackTo();
 
@@ -227,17 +242,26 @@ public class $className implements PsiParser, LightPsiParser {
 	}
 
 	private void feedPsiBuilder(PsiBuilder builder, Object what) {
-		if (what instanceof Object[]) {
+	    if (what == null) {
+            builder.advanceLexer();
+	    } else if (what instanceof Object[]) {
 			Object[] reduction = (Object[]) what;
 			PsiBuilder.Marker marker = builder.mark();
 			for (int i = 1; i < reduction.length; i++) {
 				feedPsiBuilder(builder, reduction[i]);
 			}
 			marker.done((IElementType) reduction[0]);
+		} else if (what instanceof UnrecoverableSyntaxException) {
+            builder.error(((UnrecoverableSyntaxException)what).getMessage());
 		}
 	}
 
     private static class UnrecoverableSyntaxException extends Exception {
+
+        public UnrecoverableSyntaxException() {
+            super("syntax error");
+        }
+
     }
 
 }
