@@ -128,6 +128,7 @@ public class $className implements PsiParser, LightPsiParser {
 		initializeStatic();
 
         // handle unrecoverable syntax errors
+        PsiBuilder.Marker wholeFileMarker = psiBuilder.mark();
         PsiBuilder.Marker preParseMarker = psiBuilder.mark();
         try {
 
@@ -136,17 +137,19 @@ public class $className implements PsiParser, LightPsiParser {
             while (!psiBuilder.eof()) {
                 consumeSymbol(getTokenCodeForElementType(psiBuilder.getTokenType()), null);
             }
-            preParseMarker.rollbackTo();
 
             // Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
             // a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
             consumeSymbol(EOF_TOKEN_CODE, null);
 
         } catch (UnrecoverableSyntaxException e) {
+           preParseMarker.drop();
            psiBuilder.error("syntax error"); // TODO list accepted terminals in current state
-           preParseMarker.rollbackTo();
+           wholeFileMarker.error("another syntax error"); // TODO which message gets shown?
+           // wholeFileMarker.done(FILE_ELEMENT_TYPE);
            return;
         }
+        preParseMarker.rollbackTo();
 
 		// At this point, the state stack should contain single element (the start state) and the associated parse
 		// tree stack contains the root node as its single element. If anything in the input tried to prevent that,
@@ -157,6 +160,7 @@ public class $className implements PsiParser, LightPsiParser {
 			throw new RuntimeException("unexpected stack size after accepting start symbol");
 		}
 		feedPsiBuilder(psiBuilder, parseTreeStack[0]);
+		wholeFileMarker.done(FILE_ELEMENT_TYPE);
 
 	}
 
@@ -180,6 +184,7 @@ public class $className implements PsiParser, LightPsiParser {
 			    // fails. I don't know yet how to tell that to IntelliJ.
 				// throw new RuntimeException("syntax error in state " + state + " on symbolCode " + symbolCode);
 
+                throw new UnrecoverableSyntaxException();
 
 
 			}
