@@ -2,6 +2,7 @@ package name.martingeisse.mapag.codegen;
 
 import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.util.ParameterUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -89,7 +90,7 @@ public final class Configuration {
 	public String getExactlyOne(String... keys) throws ConfigurationException {
 		String value = getAtMostOne(keys);
 		if (value == null) {
-			throw new ConfigurationException("missing at least one of these configuration properties: " + keys);
+			throw new ConfigurationException("missing at least one of these configuration properties: " + join(keys));
 		}
 		return value;
 	}
@@ -103,4 +104,7 @@ public final class Configuration {
 		}
 	}
 
+	private static String join(String[] strings) {
+		return StringUtils.join(strings, ", ");
+	}
 }

@@ -47,7 +47,8 @@ public class MapagGrammarParserGenerationMain {
 			new TerminalDeclaration("ASTERISK"),
 			new TerminalDeclaration("PLUS"),
 			new TerminalDeclaration("BAR"),
-			new TerminalDeclaration("IDENTIFIER")
+			new TerminalDeclaration("IDENTIFIER"),
+			new TerminalDeclaration("COMMENT") // never passed to the parser
 		);
 
 		ImmutableList nonterminalDeclarations = ImmutableList.of(

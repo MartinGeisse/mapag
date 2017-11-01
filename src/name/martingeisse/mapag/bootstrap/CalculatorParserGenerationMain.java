@@ -28,6 +28,7 @@ public class CalculatorParserGenerationMain {
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedCalculationParser");
 		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.calculator");
 		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");
+		codeGenerationProperties.setProperty("symbol.elementType.class", "CalculatorElementType");
 		Configuration configuration = new Configuration(codeGenerationProperties);
 
 		ImmutableList terminalDeclarations = ImmutableList.of(
@@ -39,7 +40,9 @@ public class CalculatorParserGenerationMain {
 			new TerminalDeclaration("CLOSING_PARENTHESIS"),
 			new TerminalDeclaration("SEMICOLON"),
 			new TerminalDeclaration("IDENTIFIER"),
-			new TerminalDeclaration("NUMBER")
+			new TerminalDeclaration("NUMBER"),
+			new TerminalDeclaration("BLOCK_COMMENT"), // never passed to the parser
+			new TerminalDeclaration("LINE_COMMENT") // never passed to the parser
 		);
 
 		ImmutableList nonterminalDeclarations = ImmutableList.of(

@@ -1,7 +1,5 @@
 package $packageName;
 
-import com.intellij.psi.tree.IElementType;
-
 public class $className {
 
 	//
