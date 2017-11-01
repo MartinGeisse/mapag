@@ -18,6 +18,7 @@ public class ParserClassGenerator {
 
 	public static final String PACKAGE_NAME_PROPERTY = "parser.package";
 	public static final String CLASS_NAME_PROPERTY = "parser.class";
+	public static final String FILE_ELEMENT_TYPE_PROPERTY = "parser.fileElementType";
 
 	private final GrammarInfo grammarInfo;
 	private final Grammar grammar;
@@ -49,7 +50,7 @@ public class ParserClassGenerator {
 			}
 			context.put("tokensInTokenCodeOrder", terminalNames);
 		}
-		context.put("startSymbolName", grammar.getStartNonterminalName());
+		context.put("fileElementType", configuration.getRequired(FILE_ELEMENT_TYPE_PROPERTY));
 		context.put("startStateCode", stateMachineEncoder.getStateIndex(stateMachine.getStartState()));
 		{
 			int actionTableWidth = 1 + numberOfTerminals + numberOfNonterminals;

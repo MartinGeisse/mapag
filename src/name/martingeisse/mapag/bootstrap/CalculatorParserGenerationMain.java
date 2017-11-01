@@ -26,6 +26,7 @@ public class CalculatorParserGenerationMain {
 		Properties codeGenerationProperties = new Properties();
 		codeGenerationProperties.setProperty("parser.package", "name.martingeisse.calculator");
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedCalculationParser");
+		codeGenerationProperties.setProperty("parser.fileElementType", "CalculatorParserDefinition.FILE_ELEMENT_TYPE");
 		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.calculator");
 		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");
 		codeGenerationProperties.setProperty("symbol.elementType.class", "CalculatorElementType");

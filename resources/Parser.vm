@@ -21,7 +21,6 @@ public class $className implements PsiParser, LightPsiParser {
             Symbols.$token,
         #end
 	};
-	private static final IElementType START_SYMBOL = Symbols.$startSymbolName;
 
 	// state machine (general)
 	private static final int START_STATE = $startStateCode;
@@ -51,6 +50,9 @@ public class $className implements PsiParser, LightPsiParser {
             $alternative.nonterminalSymbolCode,
         #end
 	};
+
+	// other
+	private static final IElementType FILE_ELEMENT_TYPE = $fileElementType;
 
 	// ------------------------------------------------------------------------------------------------
 	// --- non-generated stuff (initialization and static stuff)
@@ -114,7 +116,7 @@ public class $className implements PsiParser, LightPsiParser {
 			throw new IllegalStateException("cannot re-use this parser object");
 		}
 		used = true;
-		if (type != START_SYMBOL) {
+		if (type != FILE_ELEMENT_TYPE) {
 			throw new IllegalArgumentException("unsupported top-level element type to parse: " + type);
 		}
 		parse(builder);
