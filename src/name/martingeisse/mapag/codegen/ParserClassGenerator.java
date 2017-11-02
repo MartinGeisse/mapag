@@ -1,15 +1,19 @@
 package name.martingeisse.mapag.codegen;
 
 import name.martingeisse.mapag.grammar.SpecialSymbols;
+import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
+import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.Action;
 import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateMachine;
+import name.martingeisse.mapag.util.Pair;
 import org.apache.velocity.VelocityContext;
 
 import java.io.StringWriter;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -78,10 +82,59 @@ public class ParserClassGenerator {
 			context.put("actionTableRows", actionTable);
 			context.put("actionTableWidth", actionTableWidth);
 		}
+		{
+			int highestReductionCode = 0;
+			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
+				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
+					int reductionCode = stateMachineEncoder.getReductionIndex(new Pair<>(nonterminalDefinition.getName(), alternative));
+					highestReductionCode = Math.max(highestReductionCode, reductionCode);
+				}
+			}
+			Reduction[] reductions = new Reduction[highestReductionCode + 1];
+			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
+				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
+					int reductionCode = stateMachineEncoder.getReductionIndex(new Pair<>(nonterminalDefinition.getName(), alternative));
+					reductions[reductionCode] = new Reduction(
+						alternative.getExpansion().size(),
+						nonterminalDefinition.getName(),
+						stateMachineEncoder.getSymbolIndex(nonterminalDefinition.getName())
+					);
+				}
+			}
+			context.put("reductionsInReductionCodeOrder", reductions);
+		}
 
 		StringWriter sw = new StringWriter();
 		MapagVelocityEngine.engine.getTemplate("Parser.vm").merge(context, sw);
 		System.out.println(sw);
+
+//		stateMachineEncoder.dump();
+
+	}
+
+	public static class Reduction {
+
+		private final int rightHandSideLength;
+		private final String nonterminalName;
+		private final int nonterminalSymbolCode;
+
+		public Reduction(int rightHandSideLength, String nonterminalName, int nonterminalSymbolCode) {
+			this.rightHandSideLength = rightHandSideLength;
+			this.nonterminalName = nonterminalName;
+			this.nonterminalSymbolCode = nonterminalSymbolCode;
+		}
+
+		public int getRightHandSideLength() {
+			return rightHandSideLength;
+		}
+
+		public String getNonterminalName() {
+			return nonterminalName;
+		}
+
+		public int getNonterminalSymbolCode() {
+			return nonterminalSymbolCode;
+		}
 
 	}
 

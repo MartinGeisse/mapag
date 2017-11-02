@@ -10,6 +10,7 @@ public class $className {
 	public static final $terminalElementTypeClass $terminal = new $terminalElementTypeClass("$terminal");
 #end
 
+
 	//
 	// nonterminals
 	//
@@ -17,5 +18,13 @@ public class $className {
 #foreach($nonterminal in $nonterminals)
 	public static final $nonterminalElementTypeClass $nonterminal = new $nonterminalElementTypeClass("$nonterminal");
 #end
+
+
+	//
+	// special
+	//
+
+    // partially parsed input in case of an error
+	public static final $nonterminalElementTypeClass __PARSED_FRAGMENT = new $nonterminalElementTypeClass("__PARSED_FRAGMENT");
 
 }

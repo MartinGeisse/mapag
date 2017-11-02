@@ -4,9 +4,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class $className implements PsiParser, LightPsiParser {
 
@@ -17,6 +20,7 @@ public class $className implements PsiParser, LightPsiParser {
 	// symbols (tokens and nonterminals)
 	private static final int EOF_TOKEN_CODE = 0;
 	private static final IElementType[] TOKEN_CODE_TO_TOKEN = {
+    	null, // %eof -- doesn't have an IElementType
         #foreach($token in $tokensInTokenCodeOrder)
             Symbols.$token,
         #end
@@ -35,19 +39,19 @@ public class $className implements PsiParser, LightPsiParser {
 	private static final int ACTION_TABLE_WIDTH = $actionTableWidth;
 
 	// state machine (alternatives / reduction table)
-	private static final int[] ALTERNATIVE_CODE_TO_RIGHT_HAND_SIDE_LENGTH = {
-        #foreach($alternative in $alternativesInAlternativeCodeOrder)
-            $alternative.rightHandSideLength,
+	private static final int[] REDUCTION_CODE_TO_RIGHT_HAND_SIDE_LENGTH = {
+        #foreach($reduction in $reductionsInReductionCodeOrder)
+            $reduction.rightHandSideLength,
         #end
 	};
-	private static final IElementType[] ALTERNATIVE_CODE_TO_NONTERMINAL_ELEMENT_TYPE = {
-        #foreach($alternative in $alternativesInAlternativeCodeOrder)
-            Symbols.$alternative.nonterminalName,
+	private static final IElementType[] REDUCTION_CODE_TO_NONTERMINAL_ELEMENT_TYPE = {
+        #foreach($reduction in $reductionsInReductionCodeOrder)
+            Symbols.$reduction.nonterminalName,
         #end
 	};
-	private static final int[] ALTERNATIVE_CODE_TO_NONTERMINAL_SYMBOL_CODE = {
-        #foreach($alternative in $alternativesInAlternativeCodeOrder)
-            $alternative.nonterminalSymbolCode,
+	private static final int[] REDUCTION_CODE_TO_NONTERMINAL_SYMBOL_CODE = {
+        #foreach($reduction in $reductionsInReductionCodeOrder)
+            $reduction.nonterminalSymbolCode,
         #end
 	};
 
@@ -71,15 +75,19 @@ public class $className implements PsiParser, LightPsiParser {
 		}
 		int maxElementTypeIndex = 0;
 		for (IElementType token : TOKEN_CODE_TO_TOKEN) {
-			if (maxElementTypeIndex < token.getIndex()) {
-				maxElementTypeIndex = token.getIndex();
-			}
+		    if (token != null) {
+                if (maxElementTypeIndex < token.getIndex()) {
+                    maxElementTypeIndex = token.getIndex();
+                }
+		    }
 		}
 		elementTypeIndexToTokenCode = new int[maxElementTypeIndex + 1];
 		Arrays.fill(elementTypeIndexToTokenCode, -1);
 		for (int tokenCode = 0; tokenCode < TOKEN_CODE_TO_TOKEN.length; tokenCode++) {
 			IElementType token = TOKEN_CODE_TO_TOKEN[tokenCode];
-			elementTypeIndexToTokenCode[token.getIndex()] = tokenCode;
+			if (token != null) {
+    			elementTypeIndexToTokenCode[token.getIndex()] = tokenCode;
+			}
 		}
 	}
 
@@ -136,6 +144,7 @@ public class $className implements PsiParser, LightPsiParser {
             // accept action here since the input cannot contain EOF.
             while (!psiBuilder.eof()) {
                 consumeSymbol(getTokenCodeForElementType(psiBuilder.getTokenType()), null);
+                psiBuilder.advanceLexer();
             }
 
             // Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
@@ -147,18 +156,16 @@ public class $className implements PsiParser, LightPsiParser {
             // Build a "code fragment" node that contains the parsed and partially reduced part (i.e. the parse tree
             // stack), then the exception to report the error properly, then the remaining tokens (unparsed).
             List<Object> nodeBuilder = new ArrayList<>();
-            nodeBuilder.add(TokenType.CODE_FRAGMENT);
-            for (Object element : parseTreeStack) {
-                nodeBuilder.add(element);
+            nodeBuilder.add(Symbols.__PARSED_FRAGMENT);
+            for (int i=0; i<stackSize; i++) {
+                nodeBuilder.add(parseTreeStack[i]);
             }
             nodeBuilder.add(e);
-            while (true) {
-                psiBuilder.advanceLexer();
-                IElementType tokenType = psiBuilder.getTokenType();
-                if (tokenType == null) {
-                    break;
-                }
+            psiBuilder.advanceLexer(); // advance past the symbol that caused the error
+            while (!psiBuilder.eof()) {
+                psiBuilder.getTokenType();
                 nodeBuilder.add(null);
+                psiBuilder.advanceLexer();
             }
             parseTreeStack[0] = nodeBuilder.toArray();
             stackSize = 1;
@@ -175,6 +182,10 @@ public class $className implements PsiParser, LightPsiParser {
 			throw new RuntimeException("unexpected stack size after accepting start symbol");
 		}
 		feedPsiBuilder(psiBuilder, parseTreeStack[0]);
+
+		// Before we consider the file parsed, we must advance the lexer once more so it consumes end-of-file
+		// whitespace and comments as part of the root AST node.
+		psiBuilder.advanceLexer();
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
 
 	}
@@ -218,12 +229,12 @@ public class $className implements PsiParser, LightPsiParser {
 		state = newState;
 	}
 
-	private void reduce(int alternativeCode) throws UnrecoverableSyntaxException {
+	private void reduce(int reductionCode) throws UnrecoverableSyntaxException {
 
-		// determine the alternative to reduce
-		int rightHandSideLength = ALTERNATIVE_CODE_TO_RIGHT_HAND_SIDE_LENGTH[alternativeCode];
-		IElementType nonterminalElementType = ALTERNATIVE_CODE_TO_NONTERMINAL_ELEMENT_TYPE[alternativeCode];
-		int nonterminalSymbolCode = ALTERNATIVE_CODE_TO_NONTERMINAL_SYMBOL_CODE[alternativeCode];
+		// determine the reduction (nonterminal + alternative) to reduce
+		int rightHandSideLength = REDUCTION_CODE_TO_RIGHT_HAND_SIDE_LENGTH[reductionCode];
+		IElementType nonterminalElementType = REDUCTION_CODE_TO_NONTERMINAL_ELEMENT_TYPE[reductionCode];
+		int nonterminalSymbolCode = REDUCTION_CODE_TO_NONTERMINAL_SYMBOL_CODE[reductionCode];
 
 		// pop (rightHandSideLength) states off the state stack
 		if (rightHandSideLength > 0) {
@@ -253,6 +264,7 @@ public class $className implements PsiParser, LightPsiParser {
 			marker.done((IElementType) reduction[0]);
 		} else if (what instanceof UnrecoverableSyntaxException) {
             builder.error(((UnrecoverableSyntaxException)what).getMessage());
+            builder.advanceLexer();
 		}
 	}
 
