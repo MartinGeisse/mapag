@@ -143,30 +143,24 @@ public class $className implements PsiParser, LightPsiParser {
             // Parse the input using the generated machine to build a parse tree. The state machine cannot execute the
             // accept action here since the input cannot contain EOF.
             while (!psiBuilder.eof()) {
-                consumeSymbol(getTokenCodeForElementType(psiBuilder.getTokenType()), null);
+                consumeInputSymbol(getTokenCodeForElementType(psiBuilder.getTokenType()), psiBuilder);
                 psiBuilder.advanceLexer();
             }
 
             // Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
             // a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
-            consumeSymbol(EOF_TOKEN_CODE, null);
+            consumeInputSymbol(EOF_TOKEN_CODE, psiBuilder);
 
         } catch (UnrecoverableSyntaxException e) {
 
             // Build a "code fragment" node that contains the parsed and partially reduced part (i.e. the parse tree
-            // stack), then the exception to report the error properly, then the remaining tokens (unparsed).
+            // stack), then the exception. This will report the error properly and also consume the remaining tokens.
             List<Object> nodeBuilder = new ArrayList<>();
             nodeBuilder.add(Symbols.__PARSED_FRAGMENT);
             for (int i=0; i<stackSize; i++) {
                 nodeBuilder.add(parseTreeStack[i]);
             }
             nodeBuilder.add(e);
-            psiBuilder.advanceLexer(); // advance past the symbol that caused the error
-            while (!psiBuilder.eof()) {
-                psiBuilder.getTokenType();
-                nodeBuilder.add(null);
-                psiBuilder.advanceLexer();
-            }
             parseTreeStack[0] = nodeBuilder.toArray();
             stackSize = 1;
 
@@ -191,7 +185,16 @@ public class $className implements PsiParser, LightPsiParser {
 	}
 
 	/**
-	 * Consumes a symbol (token or nonterminal). This performs one or several actions until the token gets shifted
+	 * Consumes an input symbol (token or EOF). This performs one or several actions until the token gets shifted
+	 * (or, in the case of EOF, accepted).
+	 */
+	private void consumeInputSymbol(int symbolCode, PsiBuilder psiBuilder) throws UnrecoverableSyntaxException {
+		// TODO error recovery
+		consumeSymbol(symbolCode, null);
+	}
+
+	/**
+	 * Consumes a symbol (token, nonterminal or EOF). This performs one or several actions until the symbol gets shifted
 	 * (or, in the case of EOF, accepted).
 	 */
 	private void consumeSymbol(int symbolCode, Object symbolData) throws UnrecoverableSyntaxException {
@@ -276,7 +279,9 @@ public class $className implements PsiParser, LightPsiParser {
 		} else if (what instanceof UnrecoverableSyntaxException) {
 			// TODO get token type here to advance the lexer past whitespace? Does that even work?
             builder.error(((UnrecoverableSyntaxException)what).getMessage());
-            builder.advanceLexer();
+            while (!builder.eof()) {
+            	builder.advanceLexer();
+            }
 		}
 	}
 
