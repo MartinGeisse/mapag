@@ -210,6 +210,17 @@ public class $className implements PsiParser, LightPsiParser {
 			    // fails. I don't know yet how to tell that to IntelliJ.
 				// throw new RuntimeException("syntax error in state " + state + " on symbolCode " + symbolCode);
 
+                // error recovery: the terminal that caused the error should be pushed back as part of the
+                // next terminals that are speculatively read during error recovery. This handles the case
+                // of a missing symbol before the sync symbols, such as
+                //
+                //  x = ;
+                //
+                // Here the semicolon causes the error but is also the sync symbol for recovery.
+                // -->
+                // But that's handled automatically since the lexer is still positioned at that symbol and can ask
+                // for it again using psiBuilder.getTokenType(). So there is nothing to do, just don't advance the
+                // lexer, and after recovery, make sure that the current token could be the first to consume.
                 throw new UnrecoverableSyntaxException();
 
 
