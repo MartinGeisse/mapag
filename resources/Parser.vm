@@ -274,6 +274,7 @@ public class $className implements PsiParser, LightPsiParser {
 			}
 			marker.done((IElementType) reduction[0]);
 		} else if (what instanceof UnrecoverableSyntaxException) {
+			// TODO get token type here to advance the lexer past whitespace? Does that even work?
             builder.error(((UnrecoverableSyntaxException)what).getMessage());
             builder.advanceLexer();
 		}
