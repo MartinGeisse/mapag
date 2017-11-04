@@ -2,6 +2,7 @@ package name.martingeisse.mapag.grammar.canonical.info;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.util.ParameterUtil;
 
@@ -65,6 +66,11 @@ public final class GrammarInfo {
 				if (!getVanishableNonterminals().contains(symbol)) {
 					break;
 				}
+			} else if (symbol.equals(SpecialSymbols.ERROR_SYMBOL_NAME)) {
+				// The first-set of the error symbol is empty, which makes it useless to put the error symbol after
+				// a nonterminal on a right-hand side of a production -- that nonterminal can never be reduced
+				// since no possible follow-terminal, and thus no state elements, exist for it.
+				break;
 			} else {
 				throw new IllegalArgumentException("unknown symbol name in sentence: " + symbol);
 			}

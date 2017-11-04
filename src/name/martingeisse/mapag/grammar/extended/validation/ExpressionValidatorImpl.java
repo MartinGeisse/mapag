@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.extended.validation;
 
 import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;
 
@@ -31,7 +32,7 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 		} else if (expression instanceof SymbolReference) {
 			SymbolReference symbolReference = (SymbolReference) expression;
 			String symbolName = symbolReference.getSymbolName();
-			if (!knownSymbols.contains(symbolName)) {
+			if (!knownSymbols.contains(symbolName) && !symbolName.equals(SpecialSymbols.ERROR_SYMBOL_NAME)) {
 				throw new IllegalStateException("unknown symbol used on the right-hand side of a production: " + symbolReference.getSymbolName());
 			}
 		} else if (expression instanceof ZeroOrMoreExpression) {

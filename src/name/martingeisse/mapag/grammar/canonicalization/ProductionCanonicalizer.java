@@ -43,7 +43,7 @@ public class ProductionCanonicalizer {
 	}
 
 	private void work() {
-		// try to keep the order of input productions and synthetic productions se it's easier to debug the canonical grammar
+		// try to keep the order of input productions and synthetic productions so it's easier to debug the canonical grammar
 		Production production = pendingProductions.remove(0);
 		String leftHandSide = production.getLeftHandSide();
 		this.syntheticNamePrefix = leftHandSide;

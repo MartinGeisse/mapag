@@ -81,13 +81,11 @@ public class StateMachineBuilder {
 			// Determine reaction to nonterminals in this state. This just tries all nonterminals for simplicity, and
 			// thus adds unnessecary states if the grammar contains alternatives that can never match. We don't care.
 			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
-				String nonterminal = nonterminalDefinition.getName();
-				State nextState = state.determineNextStateAfterShiftingNonterminal(grammarInfo, nonterminal);
-				if (nextState != null) {
-					getOrCreateNonterminalActionMap(state).put(nonterminal, new Action.Shift(nextState));
-					addStates(nextState);
-				}
+				addNonterminalOrErrorActions(state, nonterminalDefinition.getName());
 			}
+
+			// Determine reaction to the error symbol in this state
+			addNonterminalOrErrorActions(state, SpecialSymbols.ERROR_SYMBOL_NAME);
 
 		}
 	}
@@ -100,6 +98,14 @@ public class StateMachineBuilder {
 		getOrCreateTerminalOrEofActionMap(state).put(terminalOrEof, action);
 		if (action instanceof Action.Shift) {
 			addStates(((Action.Shift) action).getNextState());
+		}
+	}
+
+	private void addNonterminalOrErrorActions(State state, String nonterminalOrError) {
+		State nextState = state.determineNextStateAfterShiftingNonterminal(grammarInfo, nonterminalOrError);
+		if (nextState != null) {
+			getOrCreateNonterminalActionMap(state).put(nonterminalOrError, new Action.Shift(nextState));
+			addStates(nextState);
 		}
 	}
 

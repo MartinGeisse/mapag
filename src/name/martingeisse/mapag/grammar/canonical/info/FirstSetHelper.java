@@ -2,6 +2,7 @@ package name.martingeisse.mapag.grammar.canonical.info;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
@@ -96,6 +97,8 @@ final class FirstSetHelper {
 		} else if (grammar.isNonterminal(symbol)) {
 			pendingNonterminals.add(symbol);
 			return vanishableNonterminals.contains(symbol);
+		} else if (symbol.equals(SpecialSymbols.ERROR_SYMBOL_NAME)) {
+			return false;
 		} else {
 			throw new RuntimeException("unknown symbol: " + symbol);
 		}

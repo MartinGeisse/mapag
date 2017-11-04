@@ -64,7 +64,8 @@ public class CalculatorParserGenerationMain {
 				new Alternative(new ZeroOrMoreExpression(symbol("statement")), null)
 			)),
 			new Production("statement", ImmutableList.of(
-				new Alternative(sequence(symbol("expression"), symbol("SEMICOLON")), null)
+				new Alternative(sequence(symbol("expression"), symbol("SEMICOLON")), null),
+				new Alternative(sequence(symbol("%error"), symbol("SEMICOLON")), null)
 			)),
 			new Production("expression", ImmutableList.of(
 				new Alternative(symbol("NUMBER"), null),
