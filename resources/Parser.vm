@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO uses the term "token code" wrong; the TC of the first token is 0, but this class actually uses symbol codes
+// and the SC of the first token is 2 (0 is %eof, 1 is %error). Behavior is correct, only the names are wrong.
 public class $className implements PsiParser, LightPsiParser {
 
 	// ------------------------------------------------------------------------------------------------
@@ -19,8 +21,10 @@ public class $className implements PsiParser, LightPsiParser {
 
 	// symbols (tokens and nonterminals)
 	private static final int EOF_TOKEN_CODE = 0;
+	private static final int ERROR_SYMBOL_CODE = 1;
 	private static final IElementType[] TOKEN_CODE_TO_TOKEN = {
     	null, // %eof -- doesn't have an IElementType
+    	null, // %error -- doesn't have an IElementType
         #foreach($token in $tokensInTokenCodeOrder)
             Symbols.$token,
         #end
@@ -193,7 +197,30 @@ public class $className implements PsiParser, LightPsiParser {
 			return;
 		}
 
-		// TODO error recovery
+		// Attempt error recovery. Note the edge cases: Both the current state (at the current stack size) and the
+		// start state (with an empty stack) could be able to consume the error symbol.
+		int originalStackSize = stackSize;
+		while (true) {
+			// TODO
+			if (ACTION_TABLE[state * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] != 0) {
+//				make a backup of the stack;
+//				parse without error recovery;
+//				if (success) {
+//					TODO;
+//				} else {
+//					restore stack backup;
+//				}
+			}
+			stackSize--;
+			if (stackSize < 0) {
+				break;
+			}
+			state = stateStack[stackSize];
+		}
+
+		// Error recovery failed, so we'll signal a "giving up" syntax error and wrap the remainder of the input in
+		// a dummy AST node. We don't bother restoring the original parser state since it's irrelevant now.
+		stackSize = originalStackSize;
 		throw new UnrecoverableSyntaxException();
 	}
 

@@ -78,13 +78,16 @@ public final class StateMachineEncoder {
 		if (symbol.equals(SpecialSymbols.EOF_SYMBOL_NAME)) {
 			return 0;
 		}
+		if (symbol.equals(SpecialSymbols.ERROR_SYMBOL_NAME)) {
+			return 1;
+		}
 		int index = terminals.indexOf(symbol);
 		if (index >= 0) {
-			return 1 + index;
+			return 2 + index;
 		}
 		index = nonterminals.indexOf(symbol);
 		if (index >= 0) {
-			return 1 + terminals.size() + index;
+			return 2 + terminals.size() + index;
 		}
 		throw new IllegalArgumentException("unknown symbol: " + symbol);
 	}
@@ -139,9 +142,10 @@ public final class StateMachineEncoder {
 
 		System.out.println("special symbols: ");
 		System.out.println("0: " + SpecialSymbols.EOF_SYMBOL_NAME);
+		System.out.println("1: " + SpecialSymbols.ERROR_SYMBOL_NAME);
 		System.out.println();
 
-		int symbolCode = 1;
+		int symbolCode = 2;
 		System.out.println("terminals: ");
 		for (String terminal : terminals) {
 			System.out.println(symbolCode + ": " + terminal);

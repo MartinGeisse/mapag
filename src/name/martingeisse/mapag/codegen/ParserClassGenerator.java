@@ -57,27 +57,41 @@ public class ParserClassGenerator {
 		context.put("fileElementType", configuration.getRequired(FILE_ELEMENT_TYPE_PROPERTY));
 		context.put("startStateCode", stateMachineEncoder.getStateIndex(stateMachine.getStartState()));
 		{
-			int actionTableWidth = 1 + numberOfTerminals + numberOfNonterminals;
+			int actionTableWidth = 2 + numberOfTerminals + numberOfNonterminals;
 			int[][] actionTable = new int[numberOfStates][actionTableWidth];
 			for (State state : stateMachine.getStates()) {
 				int stateIndex = stateMachineEncoder.getStateIndex(state);
+
+				// %eof
 				{
 					Action action = stateMachine.getTerminalOrEofActions().get(state).get(SpecialSymbols.EOF_SYMBOL_NAME);
 					int actionCode = stateMachineEncoder.getActionCode(action);
 					actionTable[stateIndex][0] = actionCode;
 				}
+
+				// %error
+				{
+					Action.Shift action = stateMachine.getNonterminalActions().get(state).get(SpecialSymbols.ERROR_SYMBOL_NAME);
+					int actionCode = stateMachineEncoder.getActionCode(action);
+					actionTable[stateIndex][1] = actionCode;
+				}
+
+				// terminals
 				for (String terminal : grammar.getTerminalDefinitions().keySet()) {
 					int symbolIndex = stateMachineEncoder.getSymbolIndex(terminal);
 					Action action = stateMachine.getTerminalOrEofActions().get(state).get(terminal);
 					int actionCode = stateMachineEncoder.getActionCode(action);
 					actionTable[stateIndex][symbolIndex] = actionCode;
 				}
+
+				// nonterminals
 				for (String nonterminal : grammar.getNonterminalDefinitions().keySet()) {
 					int symbolIndex = stateMachineEncoder.getSymbolIndex(nonterminal);
 					Action.Shift action = stateMachine.getNonterminalActions().get(state).get(nonterminal);
 					int actionCode = stateMachineEncoder.getActionCode(action);
 					actionTable[stateIndex][symbolIndex] = actionCode;
 				}
+
 			}
 			context.put("actionTableRows", actionTable);
 			context.put("actionTableWidth", actionTableWidth);
