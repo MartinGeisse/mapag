@@ -189,25 +189,32 @@ public class $className implements PsiParser, LightPsiParser {
 	 * (or, in the case of EOF, accepted).
 	 */
 	private void consumeInputSymbol(int symbolCode, PsiBuilder psiBuilder) throws UnrecoverableSyntaxException {
+		if (consumeSymbol(symbolCode, null)) {
+			return;
+		}
+
 		// TODO error recovery
-		consumeSymbol(symbolCode, null);
+		throw new UnrecoverableSyntaxException();
 	}
 
 	/**
 	 * Consumes a symbol (token, nonterminal or EOF). This performs one or several actions until the symbol gets shifted
 	 * (or, in the case of EOF, accepted).
+	 *
+	 * Returns true on success, false on syntax error. This method does not handle syntax errors itself.
 	 */
-	private void consumeSymbol(int symbolCode, Object symbolData) throws UnrecoverableSyntaxException {
+	private boolean consumeSymbol(int symbolCode, Object symbolData) throws UnrecoverableSyntaxException {
 		while (true) { // looped on reduce
 			int action = ACTION_TABLE[state * ACTION_TABLE_WIDTH + symbolCode];
 			if (action == Integer.MIN_VALUE) { // accept
-				break;
+				return true;
 			} else if (action > 0) { // shift
 				shift(symbolData, action - 1);
-				break;
+				return true;
 			} else if (action < 0) { // reduce, then continue with the original symbol
 				reduce(-action - 1);
 			} else { // syntax error
+				return false;
 
 			    // TODO -- implementing a "giving up" situation first since it's what happens when error recovery
 			    // fails. I don't know yet how to tell that to IntelliJ.
@@ -224,7 +231,7 @@ public class $className implements PsiParser, LightPsiParser {
                 // But that's handled automatically since the lexer is still positioned at that symbol and can ask
                 // for it again using psiBuilder.getTokenType(). So there is nothing to do, just don't advance the
                 // lexer, and after recovery, make sure that the current token could be the first to consume.
-                throw new UnrecoverableSyntaxException();
+
 
 
 			}
@@ -261,8 +268,10 @@ public class $className implements PsiParser, LightPsiParser {
 		reduction[0] = nonterminalElementType;
 		System.arraycopy(parseTreeStack, stackSize, reduction, 1, rightHandSideLength);
 
-		// shift the nonterminal
-		consumeSymbol(nonterminalSymbolCode, reduction);
+		// shift the nonterminal (errors cannot occur here in LR(1) parsing)
+		if (!consumeSymbol(nonterminalSymbolCode, reduction)) {
+			throw new RuntimeException("syntax error while shifting a nonterminal... WTF?");
+		}
 
 	}
 
