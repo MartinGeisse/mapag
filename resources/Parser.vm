@@ -61,6 +61,7 @@ public class $className implements PsiParser, LightPsiParser {
 
 	// other
 	private static final IElementType FILE_ELEMENT_TYPE = $fileElementType;
+	private static final int RECOVERY_SYNC_LENGTH = 3;
 
 	// ------------------------------------------------------------------------------------------------
 	// --- non-generated stuff (initialization and static stuff)
@@ -147,13 +148,21 @@ public class $className implements PsiParser, LightPsiParser {
             // Parse the input using the generated machine to build a parse tree. The state machine cannot execute the
             // accept action here since the input cannot contain EOF.
             while (!psiBuilder.eof()) {
-                consumeInputSymbol(getTokenCodeForElementType(psiBuilder.getTokenType()), psiBuilder);
-                psiBuilder.advanceLexer();
+           		if (consumeSymbol(getTokenCodeForElementType(psiBuilder.getTokenType()), null)) {
+                	psiBuilder.advanceLexer();
+           		} else {
+           			recoverFromError(psiBuilder);
+           		}
             }
 
             // Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
             // a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
-            consumeInputSymbol(EOF_TOKEN_CODE, psiBuilder);
+			if (!consumeSymbol(EOF_TOKEN_CODE, null)) {
+				recoverFromError(psiBuilder);
+				if (!consumeSymbol(EOF_TOKEN_CODE, null)) {
+					throw new UnrecoverableSyntaxException();
+				}
+			}
 
         } catch (UnrecoverableSyntaxException e) {
 
@@ -189,42 +198,6 @@ public class $className implements PsiParser, LightPsiParser {
 	}
 
 	/**
-	 * Consumes an input symbol (token or EOF). This performs one or several actions until the token gets shifted
-	 * (or, in the case of EOF, accepted).
-	 */
-	private void consumeInputSymbol(int symbolCode, PsiBuilder psiBuilder) throws UnrecoverableSyntaxException {
-		if (consumeSymbol(symbolCode, null)) {
-			return;
-		}
-
-		// Attempt error recovery. Note the edge cases: Both the current state (at the current stack size) and the
-		// start state (with an empty stack) could be able to consume the error symbol.
-		int originalStackSize = stackSize;
-		while (true) {
-			// TODO
-			if (ACTION_TABLE[state * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] != 0) {
-//				make a backup of the stack;
-//				parse without error recovery;
-//				if (success) {
-//					TODO;
-//				} else {
-//					restore stack backup;
-//				}
-			}
-			stackSize--;
-			if (stackSize < 0) {
-				break;
-			}
-			state = stateStack[stackSize];
-		}
-
-		// Error recovery failed, so we'll signal a "giving up" syntax error and wrap the remainder of the input in
-		// a dummy AST node. We don't bother restoring the original parser state since it's irrelevant now.
-		stackSize = originalStackSize;
-		throw new UnrecoverableSyntaxException();
-	}
-
-	/**
 	 * Consumes a symbol (token, nonterminal or EOF). This performs one or several actions until the symbol gets shifted
 	 * (or, in the case of EOF, accepted).
 	 *
@@ -242,25 +215,6 @@ public class $className implements PsiParser, LightPsiParser {
 				reduce(-action - 1);
 			} else { // syntax error
 				return false;
-
-			    // TODO -- implementing a "giving up" situation first since it's what happens when error recovery
-			    // fails. I don't know yet how to tell that to IntelliJ.
-				// throw new RuntimeException("syntax error in state " + state + " on symbolCode " + symbolCode);
-
-                // error recovery: the terminal that caused the error should be pushed back as part of the
-                // next terminals that are speculatively read during error recovery. This handles the case
-                // of a missing symbol before the sync symbols, such as
-                //
-                //  x = ;
-                //
-                // Here the semicolon causes the error but is also the sync symbol for recovery.
-                // -->
-                // But that's handled automatically since the lexer is still positioned at that symbol and can ask
-                // for it again using psiBuilder.getTokenType(). So there is nothing to do, just don't advance the
-                // lexer, and after recovery, make sure that the current token could be the first to consume.
-
-
-
 			}
 		}
 	}
@@ -318,6 +272,88 @@ public class $className implements PsiParser, LightPsiParser {
             	builder.advanceLexer();
             }
 		}
+	}
+
+	private void recoverFromError(PsiBuilder psiBuilder) throws UnrecoverableSyntaxException {
+
+		// Attempt error recovery. For now, this parser uses the same logic as Java CUP: find the first state from the
+		// stack that can shift an error symbol, then throw away input terminals until parsing succeeds for
+		// RECOVERY_SYNC_LENGTH terminals. This is okay-ish but it will never find recovery-capable states deeper in
+		// the stack. For example, in a C-like language, if we allow a statement to consist of an error symbol, but
+		// also allow a function to consist of an error symbol, then a syntax error in a statement will never try to
+		// reduce the whole broken function to %error -- it will always insist on reducing only the broken statement
+		// to %error.
+		//
+		// Note the edge cases: Both the current state (at the current stack size) and the start state (with an empty
+		// stack) could be able to consume the error symbol.
+
+		// dig up a recovery-capable state from the stack
+		int searchStackPointer = stackSize;
+		while (ACTION_TABLE[state * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] == 0) {
+			searchStackPointer--;
+			if (searchStackPointer < 0) {
+				// we didn't even find a recovery-capable state
+				throw new UnrecoverableSyntaxException();
+			}
+			state = stateStack[searchStackPointer];
+		}
+
+		// all symbols (terminals and nonterminals) we removed make up the first part of the erroneous content
+		List<Object> errorNodeBuilder = new ArrayList<>();
+		errorNodeBuilder.add(Symbols.__PARSED_FRAGMENT); // TODO use an error-indicating element type?
+		for (int i = searchStackPointer; i < stackSize; i++) {
+			errorNodeBuilder.add(parseTreeStack[i]);
+		}
+
+		// throw away further erroneous content until parsing works again for RECOVERY_SYNC_LENGTH steps
+		while (true) {
+
+			// make a backup of the stack
+			int backupStackSize = stackSize;
+			int[] backupStateStack = Arrays.copyOf(stateStack, stackSize);
+			Object[] backupParseTreeStack = Arrays.copyOf(parseTreeStack, stackSize);
+
+			// Attempt to parse for RECOVERY_SYNC_LENGTH steps (stop early if we hit EOF). If we reach EOF, then we
+			// must be able to consume that too
+			PsiBuilder.Marker marker = psiBuilder.mark();
+			boolean success = true;
+			for (int i = 0; i < RECOVERY_SYNC_LENGTH && !psiBuilder.eof(); i++) {
+           		if (consumeSymbol(getTokenCodeForElementType(psiBuilder.getTokenType()), null)) {
+                	psiBuilder.advanceLexer();
+           		} else {
+           			success = false;
+           			break;
+           		}
+			}
+			if (success && psiBuilder.eof()) {
+				success = consumeSymbol(EOF_TOKEN_CODE, null);
+			}
+			marker.rollbackTo();
+
+			// restore stack backup
+			System.arraycopy(backupStateStack, 0, stateStack, 0, backupStackSize);
+			System.arraycopy(backupParseTreeStack, 0, parseTreeStack, 0, backupStackSize);
+			stackSize = backupStackSize;
+
+			// Check if successful. If so, push the error symbol. If not, discard a token.
+			if (success) {
+				if (!consumeSymbol(ERROR_SYMBOL_CODE, errorNodeBuilder.toArray())) {
+					throw new RuntimeException("failed to push error symbol in state that should consume it");
+				}
+				return;
+			}
+			if (psiBuilder.eof()) {
+				// Error recovery failed, so we'll signal a "giving up" syntax error and wrap the remainder of the
+				// input in a dummy AST node. We don't bother restoring the original parser state since it's
+				// irrelevant now. The PSI builder need not be reset here -- that happens automatically after the
+				// catch block.
+				throw new UnrecoverableSyntaxException();
+			}
+			errorNodeBuilder.add(null);
+			psiBuilder.advanceLexer();
+
+		}
+
 	}
 
     private static class UnrecoverableSyntaxException extends Exception {
