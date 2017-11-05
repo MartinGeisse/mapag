@@ -3,6 +3,7 @@ package name.martingeisse.mapag.grammar.extended;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,6 +23,26 @@ public class PrecedenceTableTest {
 	@Test
 	public void testEmptyArgument() {
 		new PrecedenceTable(ImmutableList.of());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testArgumentContainsEofSymbol() {
+		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableSet.of(SpecialSymbols.EOF_SYMBOL_NAME), Associativity.LEFT)));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testArgumentContainsErrorSymbol() {
+		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableSet.of(SpecialSymbols.ERROR_SYMBOL_NAME), Associativity.LEFT)));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testArgumentContainsRootSymbol() {
+		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableSet.of(SpecialSymbols.ROOT_SYMBOL_NAME), Associativity.LEFT)));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testArgumentContainsOtherSpecialSymbol() {
+		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableSet.of("%whatever"), Associativity.LEFT)));
 	}
 
 	@Test

@@ -16,7 +16,7 @@ public final class Production {
 		this.alternatives = ParameterUtil.ensureNotNullOrEmpty(alternatives, "alternatives");
 		ParameterUtil.ensureNoNullElement(alternatives, "alternatives");
 		if (leftHandSide.startsWith("%")) {
-			throw new IllegalArgumentException("cannot define a production for special symbol " + leftHandSide); // TODO test this
+			throw new IllegalArgumentException("cannot define a production for special symbol " + leftHandSide);
 		}
 	}
 

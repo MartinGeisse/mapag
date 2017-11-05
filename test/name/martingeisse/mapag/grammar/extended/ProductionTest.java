@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.extended;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.grammar.extended.expression.SymbolReference;
 import org.junit.Assert;
@@ -24,6 +25,26 @@ public class ProductionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyLeftHandSide() {
 		new Production("", ALTERNATIVES);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testEofSymbolOnLeftHandSide() {
+		new Production(SpecialSymbols.EOF_SYMBOL_NAME, ALTERNATIVES);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testErrorSymbolOnLeftHandSide() {
+		new Production(SpecialSymbols.ERROR_SYMBOL_NAME, ALTERNATIVES);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRootSymbolOnLeftHandSide() {
+		new Production(SpecialSymbols.ROOT_SYMBOL_NAME, ALTERNATIVES);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testOtherSpecialSymbolOnLeftHandSide() {
+		new Production("%whatever", ALTERNATIVES);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

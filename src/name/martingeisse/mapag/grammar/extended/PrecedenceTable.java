@@ -33,7 +33,7 @@ public final class PrecedenceTable {
 			ParameterUtil.ensureNoNullOrEmptyElement(terminalNames, "terminalNames");
 			ParameterUtil.ensureNotNull(associativity, "associativity");
 			for (String terminalName : terminalNames) {
-				if (terminalName.startsWith("%")) { // TODO test this
+				if (terminalName.startsWith("%")) {
 					throw new IllegalArgumentException("cannot define precedence for special symbol " + terminalName);
 				}
 			}
