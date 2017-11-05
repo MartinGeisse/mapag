@@ -62,6 +62,7 @@ public class $className implements PsiParser, LightPsiParser {
 	// other
 	private static final IElementType FILE_ELEMENT_TYPE = $fileElementType;
 	private static final int RECOVERY_SYNC_LENGTH = 3;
+	private static final Object ERROR_LOCATION_INDICATOR = new Object();
 
 	// ------------------------------------------------------------------------------------------------
 	// --- non-generated stuff (initialization and static stuff)
@@ -266,13 +267,11 @@ public class $className implements PsiParser, LightPsiParser {
 				feedPsiBuilder(builder, reduction[i]);
 			}
 			marker.done((IElementType) reduction[0]);
-		} else if (what instanceof ErrorParseTree) {
-			ErrorParseTree tree = (ErrorParseTree)what;
-			PsiBuilder.Marker marker = builder.mark();
-			for (Object element : tree) {
-				feedPsiBuilder(builder, element);
-			}
-			marker.error("syntax error");
+		} else if (what instanceof List<?>) {
+			// an object list has the same meaning as an object array (needed for error symbols)
+			feedPsiBuilder(builder, ((List<?>)what).toArray());
+		} else if (what == ERROR_LOCATION_INDICATOR) {
+			builder.error("syntax error");
 		} else if (what instanceof UnrecoverableSyntaxException) {
             builder.error(((UnrecoverableSyntaxException)what).getMessage());
             while (!builder.eof()) {
@@ -307,13 +306,21 @@ public class $className implements PsiParser, LightPsiParser {
 		}
 
 		// all symbols (terminals and nonterminals) we removed make up the first part of the erroneous content
-		ErrorParseTree errorParseTree = new ErrorParseTree();
+		List<Object> errorNodeBuilder = new ArrayList<>();
+        errorNodeBuilder.add(Symbols.__PARSED_FRAGMENT); // not an error-indicating element type, see next paragraph
 		for (int i = stackSize; i < originalStackSize; i++) {
-			errorParseTree.add(parseTreeStack[i]);
+			errorNodeBuilder.add(parseTreeStack[i]);
 		}
 
+		// This special object is used to signal the exact location of the error to the PsiBuilder. We do not mark
+		// the whole error node as an error because IntelliJ would then underline that whole node, making it harder
+		// for the user to locate the error. For example, if the grammar allows to reduce the content for a whole
+		// broken statement to %error, IntelliJ would underline the whole broken statement as an error, not just the
+		// location where the error occurred.
+		errorNodeBuilder.add(ERROR_LOCATION_INDICATOR);
+
 		// shift the error symbol. The parse tree is the node builder, so we can add further discarded tokens below.
-		if (!consumeSymbol(ERROR_SYMBOL_CODE, errorParseTree)) {
+		if (!consumeSymbol(ERROR_SYMBOL_CODE, errorNodeBuilder)) {
 			throw new RuntimeException("failed to push error symbol in state that should consume it");
 		}
 
@@ -361,7 +368,7 @@ public class $className implements PsiParser, LightPsiParser {
 				stackSize = originalStackSize;
 				throw new UnrecoverableSyntaxException();
 			}
-			errorParseTree.add(null);
+			errorNodeBuilder.add(null);
 			psiBuilder.advanceLexer();
 
 		}
@@ -375,8 +382,5 @@ public class $className implements PsiParser, LightPsiParser {
         }
 
     }
-
-	private static class ErrorParseTree extends ArrayList<Object> {
-	}
 
 }
