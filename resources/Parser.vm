@@ -43,19 +43,19 @@ public class $className implements PsiParser, LightPsiParser {
 	private static final int ACTION_TABLE_WIDTH = $actionTableWidth;
 
 	// state machine (alternatives / reduction table)
-	private static final int[] REDUCTION_CODE_TO_RIGHT_HAND_SIDE_LENGTH = {
-        #foreach($reduction in $reductionsInReductionCodeOrder)
-            $reduction.rightHandSideLength,
+	private static final int[] ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH = {
+        #foreach($alternativeEntry in $alternativeEntries)
+            $alternativeEntry.rightHandSideLength,
         #end
 	};
-	private static final IElementType[] REDUCTION_CODE_TO_NONTERMINAL_ELEMENT_TYPE = {
-        #foreach($reduction in $reductionsInReductionCodeOrder)
-            Symbols.$reduction.nonterminalName,
+	private static final IElementType[] ALTERNATIVE_INDEX_TO_NONTERMINAL_ELEMENT_TYPE = {
+        #foreach($alternativeEntry in $alternativeEntries)
+            Symbols.$alternativeEntry.nonterminalName,
         #end
 	};
-	private static final int[] REDUCTION_CODE_TO_NONTERMINAL_SYMBOL_CODE = {
-        #foreach($reduction in $reductionsInReductionCodeOrder)
-            $reduction.nonterminalSymbolCode,
+	private static final int[] ALTERNATIVE_INDEX_TO_NONTERMINAL_SYMBOL_CODE = {
+        #foreach($alternativeEntry in $alternativeEntries)
+            $alternativeEntry.nonterminalSymbolCode,
         #end
 	};
 
@@ -232,12 +232,12 @@ public class $className implements PsiParser, LightPsiParser {
 		state = newState;
 	}
 
-	private void reduce(int reductionCode) throws UnrecoverableSyntaxException {
+	private void reduce(int alternativeIndex) throws UnrecoverableSyntaxException {
 
 		// determine the reduction (nonterminal + alternative) to reduce
-		int rightHandSideLength = REDUCTION_CODE_TO_RIGHT_HAND_SIDE_LENGTH[reductionCode];
-		IElementType nonterminalElementType = REDUCTION_CODE_TO_NONTERMINAL_ELEMENT_TYPE[reductionCode];
-		int nonterminalSymbolCode = REDUCTION_CODE_TO_NONTERMINAL_SYMBOL_CODE[reductionCode];
+		int rightHandSideLength = ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH[alternativeIndex];
+		IElementType nonterminalElementType = ALTERNATIVE_INDEX_TO_NONTERMINAL_ELEMENT_TYPE[alternativeIndex];
+		int nonterminalSymbolCode = ALTERNATIVE_INDEX_TO_NONTERMINAL_SYMBOL_CODE[alternativeIndex];
 
 		// pop (rightHandSideLength) states off the state stack
 		if (rightHandSideLength > 0) {

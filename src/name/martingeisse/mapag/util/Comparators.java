@@ -16,7 +16,7 @@ public final class Comparators {
 	public static final Comparator<Alternative> alternativeComparator = Comparator.comparing(a -> a.getExpansion(),
 		ListComparator.forComparableElements());
 
-	public static final Comparator<Pair<String, Alternative>> reductionComparator = (r1, r2) -> {
+	public static final Comparator<Pair<String, Alternative>> nonterminalAlternativeComparator = (r1, r2) -> {
 		int leftResult = r1.getLeft().compareTo(r2.getLeft());
 		if (leftResult != 0) {
 			return leftResult;

@@ -12,8 +12,6 @@ import name.martingeisse.mapag.util.Pair;
 import org.apache.velocity.VelocityContext;
 
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -97,25 +95,25 @@ public class ParserClassGenerator {
 			context.put("actionTableWidth", actionTableWidth);
 		}
 		{
-			int highestReductionCode = 0;
+			int highestAlternativeIndex = 0;
 			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
 				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
-					int reductionCode = stateMachineEncoder.getReductionIndex(new Pair<>(nonterminalDefinition.getName(), alternative));
-					highestReductionCode = Math.max(highestReductionCode, reductionCode);
+					int alternativeIndex = stateMachineEncoder.getAlternativeIndex(nonterminalDefinition.getName(), alternative);
+					highestAlternativeIndex = Math.max(highestAlternativeIndex, alternativeIndex);
 				}
 			}
-			Reduction[] reductions = new Reduction[highestReductionCode + 1];
+			AlternativeEntry[] alternativeEntries = new AlternativeEntry[highestAlternativeIndex + 1];
 			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
 				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
-					int reductionCode = stateMachineEncoder.getReductionIndex(new Pair<>(nonterminalDefinition.getName(), alternative));
-					reductions[reductionCode] = new Reduction(
+					int alternativeIndex = stateMachineEncoder.getAlternativeIndex(nonterminalDefinition.getName(), alternative);
+					alternativeEntries[alternativeIndex] = new AlternativeEntry(
 						alternative.getExpansion().size(),
 						nonterminalDefinition.getName(),
 						stateMachineEncoder.getSymbolIndex(nonterminalDefinition.getName())
 					);
 				}
 			}
-			context.put("reductionsInReductionCodeOrder", reductions);
+			context.put("alternativeEntries", alternativeEntries);
 		}
 
 		StringWriter sw = new StringWriter();
@@ -126,13 +124,13 @@ public class ParserClassGenerator {
 
 	}
 
-	public static class Reduction {
+	public static class AlternativeEntry {
 
 		private final int rightHandSideLength;
 		private final String nonterminalName;
 		private final int nonterminalSymbolCode;
 
-		public Reduction(int rightHandSideLength, String nonterminalName, int nonterminalSymbolCode) {
+		public AlternativeEntry(int rightHandSideLength, String nonterminalName, int nonterminalSymbolCode) {
 			this.rightHandSideLength = rightHandSideLength;
 			this.nonterminalName = nonterminalName;
 			this.nonterminalSymbolCode = nonterminalSymbolCode;

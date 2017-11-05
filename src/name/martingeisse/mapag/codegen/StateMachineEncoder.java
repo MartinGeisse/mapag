@@ -20,28 +20,26 @@ import java.util.function.Function;
 /**
  * Note: this encoder ignores the original order of things in the grammar, so simple re-ordering does not change the
  * output. This excludes precedence, of course, since the order is significant here.
- *
- * TODO this class says "reduction index" -- is this the alternative index?
  */
 public final class StateMachineEncoder {
 
 	private final ImmutableList<String> terminals;
 	private final ImmutableList<String> nonterminals;
 	private final ImmutableList<State> states;
-	private final ImmutableList<Pair<String, Alternative>> reductions;
+	private final ImmutableList<Pair<String, Alternative>> alternatives;
 
 	public StateMachineEncoder(GrammarInfo grammarInfo, StateMachine stateMachine) {
 		this.terminals = list(grammarInfo.getGrammar().getTerminalDefinitions().keySet());
 		this.nonterminals = list(grammarInfo.getGrammar().getNonterminalDefinitions().keySet());
 		this.states = list(stateMachine.getStates(), Comparators.stateComparator);
 
-		List<Pair<String, Alternative>> reductions = new ArrayList<>();
+		List<Pair<String, Alternative>> alternatives = new ArrayList<>();
 		for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
 			for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
-				reductions.add(new Pair<>(nonterminalDefinition.getName(), alternative));
+				alternatives.add(new Pair<>(nonterminalDefinition.getName(), alternative));
 			}
 		}
-		this.reductions = ImmutableList.copyOf(reductions);
+		this.alternatives = ImmutableList.copyOf(alternatives);
 	}
 
 	private <T> ImmutableList<T> list(Collection<T> input, Comparator<T> comparator) {
@@ -100,10 +98,10 @@ public final class StateMachineEncoder {
 		return index;
 	}
 
-	public int getReductionIndex(Pair<String, Alternative> reduction) {
-		int index = reductions.indexOf(reduction);
+	public int getAlternativeIndex(String nonterminal, Alternative alternative) {
+		int index = alternatives.indexOf(new Pair<>(nonterminal, alternative));
 		if (index < 0) {
-			throw new IllegalArgumentException("unknown reduction: " + reduction);
+			throw new IllegalArgumentException("unknown alternative for nonterminal " + nonterminal + ": " + alternative);
 		}
 		return index;
 	}
@@ -113,7 +111,7 @@ public final class StateMachineEncoder {
 	}
 
 	public int getReduceActionCode(Action.Reduce reduce) {
-		return -1 - getReductionIndex(new Pair<>(reduce.getNonterminal(), reduce.getAlternative()));
+		return -1 - getAlternativeIndex(reduce.getNonterminal(), reduce.getAlternative());
 	}
 
 	public int getAcceptActionCode() {
@@ -162,7 +160,7 @@ public final class StateMachineEncoder {
 
 		int alternativeCode = 0;
 		System.out.println("alternatives: ");
-		for (Pair<String, Alternative> entry : reductions) {
+		for (Pair<String, Alternative> entry : alternatives) {
 			System.out.println(alternativeCode + ": " + entry.getLeft() + " ::= " + entry.getRight());
 			alternativeCode++;
 		}
