@@ -266,6 +266,13 @@ public class $className implements PsiParser, LightPsiParser {
 				feedPsiBuilder(builder, reduction[i]);
 			}
 			marker.done((IElementType) reduction[0]);
+		} else if (what instanceof ErrorParseTree) {
+			ErrorParseTree tree = (ErrorParseTree)what;
+			PsiBuilder.Marker marker = builder.mark();
+			for (Object element : tree) {
+				feedPsiBuilder(builder, element);
+			}
+			marker.error("syntax error");
 		} else if (what instanceof UnrecoverableSyntaxException) {
             builder.error(((UnrecoverableSyntaxException)what).getMessage());
             while (!builder.eof()) {
@@ -288,27 +295,33 @@ public class $className implements PsiParser, LightPsiParser {
 		// stack) could be able to consume the error symbol.
 
 		// dig up a recovery-capable state from the stack
-		int searchStackPointer = stackSize;
+		int originalStackSize = stackSize;
 		while (ACTION_TABLE[state * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] == 0) {
-			searchStackPointer--;
-			if (searchStackPointer < 0) {
+			stackSize--;
+			if (stackSize < 0) {
 				// we didn't even find a recovery-capable state
+				stackSize = originalStackSize;
 				throw new UnrecoverableSyntaxException();
 			}
-			state = stateStack[searchStackPointer];
+			state = stateStack[stackSize];
 		}
 
 		// all symbols (terminals and nonterminals) we removed make up the first part of the erroneous content
-		List<Object> errorNodeBuilder = new ArrayList<>();
-		errorNodeBuilder.add(Symbols.__PARSED_FRAGMENT); // TODO use an error-indicating element type?
-		for (int i = searchStackPointer; i < stackSize; i++) {
-			errorNodeBuilder.add(parseTreeStack[i]);
+		ErrorParseTree errorParseTree = new ErrorParseTree();
+		for (int i = stackSize; i < originalStackSize; i++) {
+			errorParseTree.add(parseTreeStack[i]);
+		}
+
+		// shift the error symbol. The parse tree is the node builder, so we can add further discarded tokens below.
+		if (!consumeSymbol(ERROR_SYMBOL_CODE, errorParseTree)) {
+			throw new RuntimeException("failed to push error symbol in state that should consume it");
 		}
 
 		// throw away further erroneous content until parsing works again for RECOVERY_SYNC_LENGTH steps
 		while (true) {
 
-			// make a backup of the stack
+			// make a backup of the state and stack
+			int backupState = state;
 			int backupStackSize = stackSize;
 			int[] backupStateStack = Arrays.copyOf(stateStack, stackSize);
 			Object[] backupParseTreeStack = Arrays.copyOf(parseTreeStack, stackSize);
@@ -330,16 +343,14 @@ public class $className implements PsiParser, LightPsiParser {
 			}
 			marker.rollbackTo();
 
-			// restore stack backup
+			// restore state and stack backup
 			System.arraycopy(backupStateStack, 0, stateStack, 0, backupStackSize);
 			System.arraycopy(backupParseTreeStack, 0, parseTreeStack, 0, backupStackSize);
 			stackSize = backupStackSize;
+			state = backupState;
 
-			// Check if successful. If so, push the error symbol. If not, discard a token.
+			// Check if successful. If so, resume normal parsing. If not, discard a token.
 			if (success) {
-				if (!consumeSymbol(ERROR_SYMBOL_CODE, errorNodeBuilder.toArray())) {
-					throw new RuntimeException("failed to push error symbol in state that should consume it");
-				}
 				return;
 			}
 			if (psiBuilder.eof()) {
@@ -347,9 +358,10 @@ public class $className implements PsiParser, LightPsiParser {
 				// input in a dummy AST node. We don't bother restoring the original parser state since it's
 				// irrelevant now. The PSI builder need not be reset here -- that happens automatically after the
 				// catch block.
+				stackSize = originalStackSize;
 				throw new UnrecoverableSyntaxException();
 			}
-			errorNodeBuilder.add(null);
+			errorParseTree.add(null);
 			psiBuilder.advanceLexer();
 
 		}
@@ -363,5 +375,8 @@ public class $className implements PsiParser, LightPsiParser {
         }
 
     }
+
+	private static class ErrorParseTree extends ArrayList<Object> {
+	}
 
 }
