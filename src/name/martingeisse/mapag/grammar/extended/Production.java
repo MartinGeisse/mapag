@@ -12,12 +12,12 @@ public final class Production {
 	private final ImmutableList<Alternative> alternatives;
 
 	public Production(String leftHandSide, ImmutableList<Alternative> alternatives) {
-		if (leftHandSide.startsWith("%")) {
-			throw new IllegalArgumentException("cannot define a production for special symbol " + leftHandSide); // TODO test this
-		}
 		this.leftHandSide = ParameterUtil.ensureNotNullOrEmpty(leftHandSide, "leftHandSide");
 		this.alternatives = ParameterUtil.ensureNotNullOrEmpty(alternatives, "alternatives");
 		ParameterUtil.ensureNoNullElement(alternatives, "alternatives");
+		if (leftHandSide.startsWith("%")) {
+			throw new IllegalArgumentException("cannot define a production for special symbol " + leftHandSide); // TODO test this
+		}
 	}
 
 	public String getLeftHandSide() {
