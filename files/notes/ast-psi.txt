@@ -1,0 +1,43 @@
+
+More useful AST / PSI (to be used in later stages):
+
+Problems (incomplete):
+- repetitions are stored in an explicit head/tail list
+- information about the reduced alternative is lost
+
+Variant 1:
+- build a different AST
+	- e.g. build multiple sibling AST nodes for a repetition
+	- would only require simple changes to the marker generation in the LR parser
+
+Variant 2:
+- build a different PSI from the same AST
+	- would require to use another PSI class than the recommended base class
+			(cannot navigate the PSI by navigating the AST, then mapping to PSI)
+		- but it's unclear how "strict" that recommendation is
+	- custom PSI classes must still support PSI node traversal; would probably end
+		with a totally self-contained PSI that only links to AST nodes but does not
+		use the AST for traversal. Is there anything else in IntelliJ that does it
+		that way? Does this sound useful? Why does IntelliJ even separate AST and PSI?
+
+Variant 3:
+- provide higher-level access using methods in the PSI classes
+	- useful anyway, even with Variant 1 or 2, since even with a more useful PSI
+		structure, access is still complicated
+
+nest steps:
+- find pros / cons for variant 2, possibly ruling it out
+- check for variant 1 + corresponding PSI being built + accessors as in variant 3
+- check for variant 3 only
+- accessors, visitor support, or both?
+	- probably both.
+		- Visitor-only is cumbersome when specific parts shall be accessed
+			and to handle higher-level nodes differently than lower-level nodes
+		- accessor-only is cumbersome when all nodes shall be iterated
+		- also, because support for both *can* be generated, it *should be.
+			Anything that can be automated and helps with manually written code
+			is good.
+	- this also means that the decision between "variant 3 only" or "v 1+3" is
+		an implementation decision. Manually written code only uses the API presented
+		by the PSI nodes.
+
