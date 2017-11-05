@@ -50,7 +50,7 @@ public class ParserClassGenerator {
 				int index = stateMachineEncoder.getTerminalIndex(terminal);
 				terminalNames[index] = terminal;
 			}
-			context.put("tokensInTokenCodeOrder", terminalNames);
+			context.put("tokenCodeToToken", terminalNames);
 		}
 		context.put("fileElementType", configuration.getRequired(FILE_ELEMENT_TYPE_PROPERTY));
 		context.put("startStateCode", stateMachineEncoder.getStateIndex(stateMachine.getStartState()));

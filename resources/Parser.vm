@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO uses the term "token code" wrong; the TC of the first token is 0, but this class actually uses symbol codes
-// and the SC of the first token is 2 (0 is %eof, 1 is %error). Behavior is correct, only the names are wrong.
 public class $className implements PsiParser, LightPsiParser {
 
 	// ------------------------------------------------------------------------------------------------
@@ -20,12 +18,12 @@ public class $className implements PsiParser, LightPsiParser {
 	// ------------------------------------------------------------------------------------------------
 
 	// symbols (tokens and nonterminals)
-	private static final int EOF_TOKEN_CODE = 0;
+	private static final int EOF_SYMBOL_CODE = 0;
 	private static final int ERROR_SYMBOL_CODE = 1;
-	private static final IElementType[] TOKEN_CODE_TO_TOKEN = {
+	private static final IElementType[] SYMBOL_CODE_TO_ELEMENT_TYPE = {
     	null, // %eof -- doesn't have an IElementType
     	null, // %error -- doesn't have an IElementType
-        #foreach($token in $tokensInTokenCodeOrder)
+        #foreach($token in $tokenCodeToToken)
             Symbols.$token,
         #end
 	};
@@ -69,40 +67,40 @@ public class $className implements PsiParser, LightPsiParser {
 	// ------------------------------------------------------------------------------------------------
 
 	// static table, but has to be initialized at startup since element type indices aren't compile-time constants
-	private static int[] elementTypeIndexToTokenCode;
+	private static int[] elementTypeIndexToSymbolCode;
 
 	/**
 	 * This method initializes static tables on the first parse run -- we need element type
 	 * indices to be initialized before doing this.
 	 */
 	private static void initializeStatic() {
-		if (elementTypeIndexToTokenCode != null) {
+		if (elementTypeIndexToSymbolCode != null) {
 			return;
 		}
 		int maxElementTypeIndex = 0;
-		for (IElementType token : TOKEN_CODE_TO_TOKEN) {
+		for (IElementType token : SYMBOL_CODE_TO_ELEMENT_TYPE) {
 		    if (token != null) {
                 if (maxElementTypeIndex < token.getIndex()) {
                     maxElementTypeIndex = token.getIndex();
                 }
 		    }
 		}
-		elementTypeIndexToTokenCode = new int[maxElementTypeIndex + 1];
-		Arrays.fill(elementTypeIndexToTokenCode, -1);
-		for (int tokenCode = 0; tokenCode < TOKEN_CODE_TO_TOKEN.length; tokenCode++) {
-			IElementType token = TOKEN_CODE_TO_TOKEN[tokenCode];
+		elementTypeIndexToSymbolCode = new int[maxElementTypeIndex + 1];
+		Arrays.fill(elementTypeIndexToSymbolCode, -1);
+		for (int symbolCode = 0; symbolCode < SYMBOL_CODE_TO_ELEMENT_TYPE.length; symbolCode++) {
+			IElementType token = SYMBOL_CODE_TO_ELEMENT_TYPE[symbolCode];
 			if (token != null) {
-    			elementTypeIndexToTokenCode[token.getIndex()] = tokenCode;
+    			elementTypeIndexToSymbolCode[token.getIndex()] = symbolCode;
 			}
 		}
 	}
 
-	private static int getTokenCodeForElementType(IElementType elementType) {
+	private static int getSymbolCodeForElementType(IElementType elementType) {
 		int index = elementType.getIndex();
-		if (index >= 0 && index < elementTypeIndexToTokenCode.length) {
-			int tokenCode = elementTypeIndexToTokenCode[index];
-			if (tokenCode >= 0) {
-				return tokenCode;
+		if (index >= 0 && index < elementTypeIndexToSymbolCode.length) {
+			int symbolCode = elementTypeIndexToSymbolCode[index];
+			if (symbolCode >= 0) {
+				return symbolCode;
 			}
 		}
 		throw new RuntimeException("unknown token: " + elementType);
@@ -149,7 +147,7 @@ public class $className implements PsiParser, LightPsiParser {
             // Parse the input using the generated machine to build a parse tree. The state machine cannot execute the
             // accept action here since the input cannot contain EOF.
             while (!psiBuilder.eof()) {
-           		if (consumeSymbol(getTokenCodeForElementType(psiBuilder.getTokenType()), null)) {
+           		if (consumeSymbol(getSymbolCodeForElementType(psiBuilder.getTokenType()), null)) {
                 	psiBuilder.advanceLexer();
            		} else {
            			recoverFromError(psiBuilder);
@@ -158,9 +156,9 @@ public class $className implements PsiParser, LightPsiParser {
 
             // Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
             // a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
-			if (!consumeSymbol(EOF_TOKEN_CODE, null)) {
+			if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
 				recoverFromError(psiBuilder);
-				if (!consumeSymbol(EOF_TOKEN_CODE, null)) {
+				if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
 					throw new UnrecoverableSyntaxException();
 				}
 			}
@@ -338,7 +336,7 @@ public class $className implements PsiParser, LightPsiParser {
 			PsiBuilder.Marker marker = psiBuilder.mark();
 			boolean success = true;
 			for (int i = 0; i < RECOVERY_SYNC_LENGTH && !psiBuilder.eof(); i++) {
-           		if (consumeSymbol(getTokenCodeForElementType(psiBuilder.getTokenType()), null)) {
+           		if (consumeSymbol(getSymbolCodeForElementType(psiBuilder.getTokenType()), null)) {
                 	psiBuilder.advanceLexer();
            		} else {
            			success = false;
@@ -346,7 +344,7 @@ public class $className implements PsiParser, LightPsiParser {
            		}
 			}
 			if (success && psiBuilder.eof()) {
-				success = consumeSymbol(EOF_TOKEN_CODE, null);
+				success = consumeSymbol(EOF_SYMBOL_CODE, null);
 			}
 			marker.rollbackTo();
 
