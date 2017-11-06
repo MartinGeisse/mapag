@@ -70,9 +70,9 @@ public class CalculatorParserGenerationMain {
 			new Production("expression", ImmutableList.of(
 				new Alternative(null, symbol("NUMBER"), null),
 				new Alternative(null, symbol("IDENTIFIER"), null),
-				new Alternative(null, sequence(symbol("expression"), or(symbol("PLUS"), symbol("MINUS")), symbol("expression")), "PLUS"),
-				new Alternative(null, sequence(symbol("expression"), or(symbol("TIMES"), symbol("DIVIDED_BY")), symbol("expression")), "TIMES"),
-				new Alternative(null, sequence(symbol("OPENING_PARENTHESIS"), symbol("expression"), symbol("CLOSING_PARENTHESIS")), null)
+				new Alternative("additive", sequence(symbol("expression"), or(symbol("PLUS"), symbol("MINUS")), symbol("expression")), "PLUS"),
+				new Alternative("multiplicative", sequence(symbol("expression"), or(symbol("TIMES"), symbol("DIVIDED_BY")), symbol("expression")), "TIMES"),
+				new Alternative("parenthesized", sequence(symbol("OPENING_PARENTHESIS"), symbol("expression"), symbol("CLOSING_PARENTHESIS")), null)
 			))
 		);
 
