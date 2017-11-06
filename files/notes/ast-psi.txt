@@ -51,3 +51,122 @@ nest steps:
     So let's first try variant #3, and only include #1 if necessary. Support both accessors
     and visitors in #3.
 
+- Recognize specific grammar structures for the PSI
+    - from the extended grammar
+        - structures are explicit, e.g. repetition
+        - but possibly not all. If the literal syntax for the repetition is complex, it might be non-obvious
+        - even more so for optionals
+    - from the canonical grammar
+        - recognizes repetition that was written in the implicit form
+        - might recognize repetition that wasn't thought of as repetition by the grammar author
+- problem with both: If the grammar is changed, the PSI might be changed automatically even though it should stay the
+    same
+    --> let's see if this is really a problem
+-->
+First attempt is from the canonical grammar since it simplifies handling in the parser -- no need to add further
+meta-data to the canonical grammar.
+
+Problem: No easy way to name alternatives.
+    - anything using a colon as separator might be confused with naming a single sequence element
+    - wrapping the whole alternative (except the precedence specifier) in parentheses, appending colon-name should
+        work. It's ugly but probably the most useful thing since its meaning is obvious.
+    -->
+    - Problem: An alternative might consist of a single repetition, and the repetition has a different name than the
+        alternative. Such as:
+
+            statement ::=
+                {ListStatement} (listStatementElement*):elements
+                | {SingleStatement} singlestatementPrefix listStatementElement
+
+    - might use a common syntax for alternative names and precedences:
+
+        statement ::=
+            (listStatementElement*):elements {precedence: foo; name: ListStatement}
+            | singlestatementPrefix listStatementElement {precedence: bar; name: SingleStatement}
+
+        or
+
+        statement ::=
+            (listStatementElement*):elements %name ListStatement
+            singlestatementPrefix listStatementElement %name SingleStatement
+
+    - might use the expands-to symbol again
+
+        statement ::=
+            ListStatement ::= (listStatementElement*):elements
+            SingleStatement ::= singlestatementPrefix listStatementElement
+            ;
+    -->
+        looks nice, but problem: all alternatives have to be named, otherwise the syntax is ambiguous -- the last
+            symbol from the previous alternative could be the next alternative's name. This could be fixed with a
+            totally different syntax:
+
+        statement ::= {
+            ListStatement ::= (listStatementElement*):elements;
+            SingleStatement ::= singlestatementPrefix listStatementElement;
+        }
+
+        To keep things more uniform, this syntax could be the single syntax for alternatives. Whole concept:
+
+        The syntax
+
+            symbol ::= foo bar;
+
+        can only be used for single-alternative productions. The nonterminal can still have more than one right-hand
+        side since multiple productions can exist for it.
+
+        Multiple alternatives at once must be written this way:
+
+            symbol ::= {
+                foo bar;
+                fupp baz %precedence foo;
+            }
+
+        or
+
+            symbol ::= {
+                name1 ::= foo bar;
+                name2 ::= fupp baz %precedence foo;
+            }
+
+        (has to use expands-to, not colon, since the latter would be ambiguous again).
+
+        Another variant: There is no multiple-production syntax. Multiple productions must always be toplevel:
+
+        symbol ::= foo bar;
+        symbol ::= fupp baz %precedence foo;
+
+        symbol:name1 ::= foo bar;
+        symbol:name2 ::= fupp baz %precedence foo;
+
+        but this doesn't look nice since the name has to be repeated. This is also cumbersome for refactoring.
+
+
+    The syntax variant I like most is:
+
+        Multiple alternatives at once must be written this way:
+
+            symbol ::= {
+                foo bar;
+                fupp baz %precedence foo;
+            }
+
+        or
+
+            symbol ::= {
+                name1 ::= foo bar;
+                name2 ::= fupp baz %precedence foo;
+            }
+
+        Single alternatives can optionally be written in a shorter way:
+
+            symbol ::= foo bar;
+
+        But this doesn't allow naming, even though multiple single-alternative productions can build up a
+        multi-alternative nonterminal. Or maybe ot can allow naming:
+
+            symbol:name1 ::= foo bar;
+
+    --> that looks good. The only change necessary in the application classes is that an alternative has an optional
+        name that is used only for code generation. To simplify things, this name is optional until the end; the
+        code generator generates a name if none is defined.
