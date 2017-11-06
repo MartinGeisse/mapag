@@ -8,15 +8,24 @@ import name.martingeisse.mapag.util.ParameterUtil;
  */
 public final class Alternative {
 
+	private final String name;
 	private final Expression expression;
 	private final String precedenceDefiningTerminal;
 
-	public Alternative(Expression expression, String precedenceDefiningTerminal) {
+	public Alternative(String name, Expression expression, String precedenceDefiningTerminal) {
+		if (name != null && name.isEmpty()) {
+			throw new IllegalArgumentException("name cannot be empty"); // TODO test this
+		}
+		this.name = name;
 		this.expression = ParameterUtil.ensureNotNull(expression, "expression");
 		if (precedenceDefiningTerminal != null && precedenceDefiningTerminal.isEmpty()) {
 			throw new IllegalArgumentException("precedenceDefiningTerminal cannot be the empty string");
 		}
 		this.precedenceDefiningTerminal = precedenceDefiningTerminal;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public Expression getExpression() {

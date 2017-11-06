@@ -61,18 +61,18 @@ public class CalculatorParserGenerationMain {
 
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("calculation", ImmutableList.of(
-				new Alternative(new ZeroOrMoreExpression(symbol("statement")), null)
+				new Alternative(null, new ZeroOrMoreExpression(symbol("statement")), null)
 			)),
 			new Production("statement", ImmutableList.of(
-				new Alternative(sequence(symbol("expression"), symbol("SEMICOLON")), null),
-				new Alternative(sequence(symbol("%error"), symbol("SEMICOLON")), null)
+				new Alternative(null, sequence(symbol("expression"), symbol("SEMICOLON")), null),
+				new Alternative(null, sequence(symbol("%error"), symbol("SEMICOLON")), null)
 			)),
 			new Production("expression", ImmutableList.of(
-				new Alternative(symbol("NUMBER"), null),
-				new Alternative(symbol("IDENTIFIER"), null),
-				new Alternative(sequence(symbol("expression"), or(symbol("PLUS"), symbol("MINUS")), symbol("expression")), "PLUS"),
-				new Alternative(sequence(symbol("expression"), or(symbol("TIMES"), symbol("DIVIDED_BY")), symbol("expression")), "TIMES"),
-				new Alternative(sequence(symbol("OPENING_PARENTHESIS"), symbol("expression"), symbol("CLOSING_PARENTHESIS")), null)
+				new Alternative(null, symbol("NUMBER"), null),
+				new Alternative(null, symbol("IDENTIFIER"), null),
+				new Alternative(null, sequence(symbol("expression"), or(symbol("PLUS"), symbol("MINUS")), symbol("expression")), "PLUS"),
+				new Alternative(null, sequence(symbol("expression"), or(symbol("TIMES"), symbol("DIVIDED_BY")), symbol("expression")), "TIMES"),
+				new Alternative(null, sequence(symbol("OPENING_PARENTHESIS"), symbol("expression"), symbol("CLOSING_PARENTHESIS")), null)
 			))
 		);
 

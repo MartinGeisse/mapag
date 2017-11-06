@@ -16,10 +16,15 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public final class Alternative {
 
+	private final String name;
 	private final ImmutableList<String> expansion;
 	private final String effectivePrecedenceTerminal;
 
-	public Alternative(ImmutableList<String> expansion, String effectivePrecedenceTerminal) {
+	public Alternative(String name, ImmutableList<String> expansion, String effectivePrecedenceTerminal) {
+		if (name != null && name.isEmpty()) {
+			throw new IllegalArgumentException("name cannot be empty"); // TODO test this
+		}
+		this.name = name;
 		ParameterUtil.ensureNotNull(expansion, "expansion");
 		ParameterUtil.ensureNoNullOrEmptyElement(expansion, "expansion");
 		this.expansion = expansion;
@@ -27,6 +32,10 @@ public final class Alternative {
 			throw new IllegalArgumentException("effectivePrecedenceTerminal cannot be the empty string");
 		}
 		this.effectivePrecedenceTerminal = effectivePrecedenceTerminal;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public ImmutableList<String> getExpansion() {
@@ -38,8 +47,9 @@ public final class Alternative {
 	}
 
 	public Alternative vanishSymbol(String nonterminalToVanish) {
+		// TODO test name conservation
 		ParameterUtil.ensureNotNullOrEmpty(nonterminalToVanish, "nonterminalToVanish");
-		return new Alternative(ListUtil.withElementsRemoved(expansion, symbol -> symbol.equals(nonterminalToVanish)), effectivePrecedenceTerminal);
+		return new Alternative(name, ListUtil.withElementsRemoved(expansion, symbol -> symbol.equals(nonterminalToVanish)), effectivePrecedenceTerminal);
 	}
 
 	@Override

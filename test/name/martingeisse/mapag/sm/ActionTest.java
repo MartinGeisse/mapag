@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class ActionTest {
 
-	private static final Alternative alternative = new Alternative(ImmutableList.of("abc", "def"), null);
+	private static final Alternative alternative = new Alternative(null, ImmutableList.of("abc", "def"), null);
 
 	@Test
 	public void testShift() {

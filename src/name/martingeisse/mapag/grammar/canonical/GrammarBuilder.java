@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Note: This class is only used to support the unit tests. It doesn't support named alternatives since the tests
+ * don't need them (except the tests testing named alternatives specifically).
  *
+ * TODO test that the name is null
  */
 public final class GrammarBuilder {
 
@@ -54,12 +57,12 @@ public final class GrammarBuilder {
 		}
 
 		public ProductionBuilder addAlternative(String... expansion) {
-			alternatives.add(new Alternative(ImmutableList.copyOf(expansion), null));
+			alternatives.add(new Alternative(null, ImmutableList.copyOf(expansion), null));
 			return this;
 		}
 
 		public ProductionBuilder addAlternativeWithPrecedence(String effectivePrecedenceTerminal, String... expansion) {
-			alternatives.add(new Alternative(ImmutableList.copyOf(expansion), effectivePrecedenceTerminal));
+			alternatives.add(new Alternative(null, ImmutableList.copyOf(expansion), effectivePrecedenceTerminal));
 			return this;
 		}
 

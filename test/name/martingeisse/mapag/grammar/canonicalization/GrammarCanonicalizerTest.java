@@ -42,10 +42,10 @@ public class GrammarCanonicalizerTest {
 		new PrecedenceTable.Entry(ImmutableSet.of("c"), Associativity.NONASSOC)
 	));
 
-	private static final Alternative ALTERNATIVE_1 = new Alternative(new SymbolReference("a"), null);
-	private static final Alternative ALTERNATIVE_2 = new Alternative(new SymbolReference("p"), "f");
-	private static final Alternative ALTERNATIVE_3 = new Alternative(new SequenceExpression(new SymbolReference("f"), new SymbolReference("g")), null);
-	private static final Alternative ALTERNATIVE_4 = new Alternative(new SymbolReference("e"), null);
+	private static final Alternative ALTERNATIVE_1 = new Alternative(null, new SymbolReference("a"), null);
+	private static final Alternative ALTERNATIVE_2 = new Alternative(null, new SymbolReference("p"), "f");
+	private static final Alternative ALTERNATIVE_3 = new Alternative(null, new SequenceExpression(new SymbolReference("f"), new SymbolReference("g")), null);
+	private static final Alternative ALTERNATIVE_4 = new Alternative(null, new SymbolReference("e"), null);
 	private static final Production PRODUCTION_1 = new Production("p", ImmutableList.of(ALTERNATIVE_1, ALTERNATIVE_2));
 	private static final Production PRODUCTION_2 = new Production("q", ImmutableList.of(ALTERNATIVE_3));
 	private static final Production PRODUCTION_3 = new Production("start", ImmutableList.of(ALTERNATIVE_4));

@@ -23,60 +23,60 @@ public class AlternativeTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullExpansionNullPrecedence() {
-		new Alternative(null, null);
+		new Alternative(null, null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullExpansionNonNullPrecedence() {
-		new Alternative(null, "xyz");
+		new Alternative(null, null, "xyz");
 	}
 
 	@Test
 	public void testEmptyExpansionNullPrecedence() {
-		Alternative alternative = new Alternative(ImmutableList.of(), null);
+		Alternative alternative = new Alternative(null, ImmutableList.of(), null);
 		Assert.assertEquals(ImmutableList.of(), alternative.getExpansion());
 		Assert.assertNull(alternative.getEffectivePrecedenceTerminal());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyExpansionEmptyPrecedence() {
-		new Alternative(ImmutableList.of(), "");
+		new Alternative(null, ImmutableList.of(), "");
 	}
 
 	@Test
 	public void testEmptyExpansionNonNullPrecedence() {
-		Alternative alternative = new Alternative(ImmutableList.of(), "xyz");
+		Alternative alternative = new Alternative(null, ImmutableList.of(), "xyz");
 		Assert.assertEquals(ImmutableList.of(), alternative.getExpansion());
 		Assert.assertEquals("xyz", alternative.getEffectivePrecedenceTerminal());
 	}
 
 	@Test
 	public void testNonemptyExpansionNullPrecedence() {
-		Alternative alternative = new Alternative(EXPANSION, null);
+		Alternative alternative = new Alternative(null, EXPANSION, null);
 		Assert.assertEquals(EXPANSION, alternative.getExpansion());
 		Assert.assertNull(alternative.getEffectivePrecedenceTerminal());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNonemptyExpansionEmptyPrecedence() {
-		new Alternative(EXPANSION, "");
+		new Alternative(null, EXPANSION, "");
 	}
 
 	@Test
 	public void testNonemptyExpansionNonNullPrecedence() {
-		Alternative alternative = new Alternative(EXPANSION, "xyz");
+		Alternative alternative = new Alternative(null, EXPANSION, "xyz");
 		Assert.assertEquals(EXPANSION, alternative.getExpansion());
 		Assert.assertEquals("xyz", alternative.getEffectivePrecedenceTerminal());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testExpansionContainsEmptyWithNullPrecedence() {
-		new Alternative(EXPANSION_WITH_EMPTY, null);
+		new Alternative(null, EXPANSION_WITH_EMPTY, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testExpansionContainsEmptyWithNonNullPrecedence() {
-		new Alternative(EXPANSION_WITH_EMPTY, "xyz");
+		new Alternative(null, EXPANSION_WITH_EMPTY, "xyz");
 	}
 
 
@@ -87,10 +87,10 @@ public class AlternativeTest {
 	@DataProvider
 	public static Object[][] getValidAlternatives() {
 		return new Object[][]{
-				{new Alternative(ImmutableList.of(), null)},
-				{new Alternative(ImmutableList.of(), "xyz")},
-				{new Alternative(EXPANSION, null)},
-				{new Alternative(EXPANSION, "xyz")},
+				{new Alternative(null, ImmutableList.of(), null)},
+				{new Alternative(null, ImmutableList.of(), "xyz")},
+				{new Alternative(null, EXPANSION, null)},
+				{new Alternative(null, EXPANSION, "xyz")},
 		};
 	}
 
@@ -108,7 +108,7 @@ public class AlternativeTest {
 
 	@Test
 	public void testVanishSymbolInEmptyAlternative() {
-		Alternative alternative = new Alternative(ImmutableList.of(), "foo");
+		Alternative alternative = new Alternative(null, ImmutableList.of(), "foo");
 		Assert.assertTrue(alternative.vanishSymbol("foo").getExpansion().isEmpty());
 		Assert.assertTrue(alternative.vanishSymbol("foo").getEffectivePrecedenceTerminal().equals("foo"));
 		Assert.assertTrue(alternative.vanishSymbol("bar").getExpansion().isEmpty());
@@ -118,7 +118,7 @@ public class AlternativeTest {
 	@Test
 	public void testVanishSymbol() {
 		{
-			Alternative alternative = new Alternative(EXPANSION, "foo");
+			Alternative alternative = new Alternative(null, EXPANSION, "foo");
 
 			Assert.assertEquals(ImmutableList.of("bar", "baz", "abc"), alternative.vanishSymbol("foo").getExpansion());
 			Assert.assertTrue(alternative.vanishSymbol("foo").getEffectivePrecedenceTerminal().equals("foo"));
@@ -130,7 +130,7 @@ public class AlternativeTest {
 			Assert.assertTrue(alternative.vanishSymbol("xyz").getEffectivePrecedenceTerminal().equals("foo"));
 		}
 		{
-			Alternative alternative = new Alternative(EXPANSION, "xyz");
+			Alternative alternative = new Alternative(null, EXPANSION, "xyz");
 
 			Assert.assertEquals(ImmutableList.of("bar", "baz", "abc"), alternative.vanishSymbol("foo").getExpansion());
 			Assert.assertTrue(alternative.vanishSymbol("foo").getEffectivePrecedenceTerminal().equals("xyz"));
@@ -146,10 +146,10 @@ public class AlternativeTest {
 	@Test
 	public void testVanishSymbolToEmptyAlternative() {
 		ImmutableList<String> input = ImmutableList.of("bar", "bar");
-		Assert.assertEquals(0, new Alternative(input, "foo").vanishSymbol("bar").getExpansion().size());
-		Assert.assertEquals("foo", new Alternative(input, "foo").vanishSymbol("bar").getEffectivePrecedenceTerminal());
-		Assert.assertEquals(0, new Alternative(input, "bar").vanishSymbol("bar").getExpansion().size());
-		Assert.assertEquals("bar", new Alternative(input, "bar").vanishSymbol("bar").getEffectivePrecedenceTerminal());
+		Assert.assertEquals(0, new Alternative(null, input, "foo").vanishSymbol("bar").getExpansion().size());
+		Assert.assertEquals("foo", new Alternative(null, input, "foo").vanishSymbol("bar").getEffectivePrecedenceTerminal());
+		Assert.assertEquals(0, new Alternative(null, input, "bar").vanishSymbol("bar").getExpansion().size());
+		Assert.assertEquals("bar", new Alternative(null, input, "bar").vanishSymbol("bar").getEffectivePrecedenceTerminal());
 	}
 
 }

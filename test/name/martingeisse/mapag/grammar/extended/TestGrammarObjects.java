@@ -23,9 +23,9 @@ public class TestGrammarObjects {
 			new PrecedenceTable.Entry(ImmutableSet.of(TERMINAL_2.getName()), Associativity.LEFT)
 	));
 	public static final String START_NONTERMINAL_NAME = "dummyStart";
-	public static final Alternative ALTERNATIVE_1 = new Alternative(new SymbolReference(TERMINAL_1.getName()), null);
-	public static final Alternative ALTERNATIVE_2 = new Alternative(new SymbolReference(NONTERMINAL_2.getName()), TERMINAL_3.getName());
-	public static final Alternative ALTERNATIVE_3 = new Alternative(new SymbolReference(NONTERMINAL_1.getName()), null);
+	public static final Alternative ALTERNATIVE_1 = new Alternative(null, new SymbolReference(TERMINAL_1.getName()), null);
+	public static final Alternative ALTERNATIVE_2 = new Alternative(null, new SymbolReference(NONTERMINAL_2.getName()), TERMINAL_3.getName());
+	public static final Alternative ALTERNATIVE_3 = new Alternative(null, new SymbolReference(NONTERMINAL_1.getName()), null);
 	public static final Production PRODUCTION_1 = new Production(START_NONTERMINAL_NAME, ImmutableList.of(ALTERNATIVE_1, ALTERNATIVE_2));
 	public static final Production PRODUCTION_2 = new Production(NONTERMINAL_1.getName(), ImmutableList.of(ALTERNATIVE_3));
 	public static final ImmutableList<Production> PRODUCTIONS = ImmutableList.of(PRODUCTION_1, PRODUCTION_2);

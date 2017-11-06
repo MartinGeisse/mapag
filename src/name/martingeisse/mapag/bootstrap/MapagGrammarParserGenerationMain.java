@@ -70,7 +70,7 @@ public class MapagGrammarParserGenerationMain {
 
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("grammar", ImmutableList.of(
-				new Alternative(sequence(
+				new Alternative(null, sequence(
 					symbol("KW_TERMINALS"),
 					symbol("OPENING_CURLY_BRACE"),
 					symbol("nonemptyIdentifierList"),
@@ -92,14 +92,14 @@ public class MapagGrammarParserGenerationMain {
 				), null)
 			)),
 			new Production("precedenceDeclaration", ImmutableList.of(
-				new Alternative(sequence(
+				new Alternative(null, sequence(
 					or(symbol("KW_LEFT"), symbol("KW_RIGHT"), symbol("KW_NONASSOC")),
 					symbol("nonemptyIdentifierList"),
 					symbol("SEMICOLON")
 				), null)
 			)),
 			new Production("production", ImmutableList.of(
-				new Alternative(sequence(
+				new Alternative(null, sequence(
 					symbol("IDENTIFIER"),
 					symbol("EXPANDS_TO"),
 					symbol("alternative"),
@@ -108,20 +108,20 @@ public class MapagGrammarParserGenerationMain {
 				), null)
 			)),
 			new Production("alternative", ImmutableList.of(
-				new Alternative(sequence(
+				new Alternative(null, sequence(
 					new OneOrMoreExpression(symbol("toplevelExpression")),
 					new OptionalExpression(sequence(symbol("KW_PRECEDENCE"), symbol("IDENTIFIER")))
 				), null)
 			)),
 			new Production("toplevelExpression", ImmutableList.of(
-				new Alternative(sequence(
+				new Alternative(null, sequence(
 					symbol("IDENTIFIER"),
 					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
 				), null),
-				new Alternative(sequence(symbol("toplevelExpression"), symbol("ASTERISK")), "ASTERISK"),
-				new Alternative(sequence(symbol("toplevelExpression"), symbol("PLUS")), "PLUS"),
-				new Alternative(sequence(symbol("toplevelExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK"),
-				new Alternative(sequence(
+				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("ASTERISK")), "ASTERISK"),
+				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("PLUS")), "PLUS"),
+				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK"),
+				new Alternative(null, sequence(
 					symbol("OPENING_PARENTHESIS"),
 					new OneOrMoreExpression(symbol("nestedExpression")),
 					symbol("CLOSING_PARENTHESIS"),
@@ -129,19 +129,19 @@ public class MapagGrammarParserGenerationMain {
 				), null)
 			)),
 			new Production("nestedExpression", ImmutableList.of(
-				new Alternative(sequence(
+				new Alternative(null, sequence(
 					symbol("IDENTIFIER"),
 					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
 				), null),
-				new Alternative(sequence(
+				new Alternative(null, sequence(
 					symbol("nestedExpression"),
 					symbol("BAR"),
 					symbol("toplevelExpression")
 				), "BAR"),
-				new Alternative(sequence(symbol("nestedExpression"), symbol("ASTERISK")), "ASTERISK"),
-				new Alternative(sequence(symbol("nestedExpression"), symbol("PLUS")), "PLUS"),
-				new Alternative(sequence(symbol("nestedExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK"),
-				new Alternative(sequence(
+				new Alternative(null, sequence(symbol("nestedExpression"), symbol("ASTERISK")), "ASTERISK"),
+				new Alternative(null, sequence(symbol("nestedExpression"), symbol("PLUS")), "PLUS"),
+				new Alternative(null, sequence(symbol("nestedExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK"),
+				new Alternative(null, sequence(
 					symbol("OPENING_PARENTHESIS"),
 					new OneOrMoreExpression(symbol("nestedExpression")),
 					symbol("CLOSING_PARENTHESIS"),
@@ -149,7 +149,7 @@ public class MapagGrammarParserGenerationMain {
 				), null)
 			)),
 			new Production("nonemptyIdentifierList", ImmutableList.of(
-				new Alternative(
+				new Alternative(null,
 					sequence(symbol("IDENTIFIER"), new ZeroOrMoreExpression(sequence(symbol("COMMA"), symbol("IDENTIFIER"))))
 					, null)
 			))

@@ -19,8 +19,8 @@ public class ProductionValidatorImplTest {
 	};
 	private static final ImmutableSet<String> TERMINALS = ImmutableSet.of("foo", "bar");
 	private static final ImmutableSet<String> NONTERMINALS = ImmutableSet.of("abc", "def");
-	private static final Alternative ALTERNATIVE_1 = new Alternative(new SymbolReference("foo"), null);
-	private static final Alternative ALTERNATIVE_2 = new Alternative(new SequenceExpression(new SymbolReference("abc"), new SymbolReference("bar")), null);
+	private static final Alternative ALTERNATIVE_1 = new Alternative(null, new SymbolReference("foo"), null);
+	private static final Alternative ALTERNATIVE_2 = new Alternative(null, new SequenceExpression(new SymbolReference("abc"), new SymbolReference("bar")), null);
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullTerminals() {

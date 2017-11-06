@@ -44,7 +44,7 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of(), null)
+										new Alternative(null, ImmutableList.of(), null)
 								))
 						),
 						ImmutableSet.of("dummyStart"),
@@ -53,8 +53,8 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo", "bar"), null),
-										new Alternative(ImmutableList.of("baz", "bar"), null)
+									new Alternative(null, ImmutableList.of("foo", "bar"), null),
+									new Alternative(null, ImmutableList.of("baz", "bar"), null)
 								))
 						),
 						ImmutableSet.of(),
@@ -63,9 +63,9 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo", "bar"), null),
-										new Alternative(ImmutableList.of("baz", "bar"), null),
-										new Alternative(ImmutableList.of(), null)
+									new Alternative(null, ImmutableList.of("foo", "bar"), null),
+									new Alternative(null, ImmutableList.of("baz", "bar"), null),
+									new Alternative(null, ImmutableList.of(), null)
 								))
 						),
 						ImmutableSet.of("dummyStart"),
@@ -79,11 +79,11 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null),
-										new Alternative(ImmutableList.of("nt1"), null)
+									new Alternative(null, ImmutableList.of("foo"), null),
+									new Alternative(null, ImmutableList.of("nt1"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("bar"), null)
+									new Alternative(null, ImmutableList.of("bar"), null)
 								))
 						),
 						ImmutableSet.of(),
@@ -95,15 +95,15 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null),
-										new Alternative(ImmutableList.of("nt1"), null)
+									new Alternative(null, ImmutableList.of("foo"), null),
+									new Alternative(null, ImmutableList.of("nt1"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt2"), null),
-										new Alternative(ImmutableList.of("bar"), null)
+									new Alternative(null, ImmutableList.of("nt2"), null),
+									new Alternative(null, ImmutableList.of("bar"), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("baz"), null)
+									new Alternative(null, ImmutableList.of("baz"), null)
 								))
 						),
 						ImmutableSet.of(),
@@ -116,15 +116,15 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null),
-										new Alternative(ImmutableList.of("nt1"), null)
+									new Alternative(null, ImmutableList.of("foo"), null),
+									new Alternative(null, ImmutableList.of("nt1"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt2"), null),
-										new Alternative(ImmutableList.of("bar"), null)
+									new Alternative(null, ImmutableList.of("nt2"), null),
+									new Alternative(null, ImmutableList.of("bar"), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("baz"), null)
+									new Alternative(null, ImmutableList.of("baz"), null)
 								))
 						),
 						ImmutableSet.of(),
@@ -137,15 +137,15 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null),
-										new Alternative(ImmutableList.of("nt1"), null)
+									new Alternative(null, ImmutableList.of("foo"), null),
+									new Alternative(null, ImmutableList.of("nt1"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt2"), null),
-										new Alternative(ImmutableList.of("foo"), null)
+									new Alternative(null, ImmutableList.of("nt2"), null),
+									new Alternative(null, ImmutableList.of("foo"), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null)
+									new Alternative(null, ImmutableList.of("foo"), null)
 								))
 						),
 						ImmutableSet.of(),
@@ -163,13 +163,13 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt1", "nt2"), null)
+									new Alternative(null, ImmutableList.of("nt1", "nt2"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null)
+									new Alternative(null, ImmutableList.of("foo"), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("bar"), null)
+									new Alternative(null, ImmutableList.of("bar"), null)
 								))
 						),
 						ImmutableSet.of(),
@@ -188,14 +188,14 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt1", "nt2"), null)
+									new Alternative(null, ImmutableList.of("nt1", "nt2"), null)
 										)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null),
-										new Alternative(ImmutableList.of(), null)
+									new Alternative(null, ImmutableList.of("foo"), null),
+									new Alternative(null, ImmutableList.of(), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("bar"), null)
+									new Alternative(null, ImmutableList.of("bar"), null)
 								))
 						),
 						ImmutableSet.of("nt1"),
@@ -213,16 +213,16 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null)
+									new Alternative(null, ImmutableList.of("nt1", "nt2", "nt3"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null)
+									new Alternative(null, ImmutableList.of("foo"), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("bar"), null)
+									new Alternative(null, ImmutableList.of("bar"), null)
 								)),
 								new NonterminalDefinition("nt3", ImmutableList.of(
-										new Alternative(ImmutableList.of("baz"), null)
+									new Alternative(null, ImmutableList.of("baz"), null)
 								))
 						),
 						ImmutableSet.of(),
@@ -236,17 +236,17 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null)
+									new Alternative(null, ImmutableList.of("nt1", "nt2", "nt3"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null),
-										new Alternative(ImmutableList.of(), null)
+									new Alternative(null, ImmutableList.of("foo"), null),
+									new Alternative(null, ImmutableList.of(), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("bar"), null)
+									new Alternative(null, ImmutableList.of("bar"), null)
 								)),
 								new NonterminalDefinition("nt3", ImmutableList.of(
-										new Alternative(ImmutableList.of("baz"), null)
+									new Alternative(null, ImmutableList.of("baz"), null)
 								))
 						),
 						ImmutableSet.of("nt1"),
@@ -260,17 +260,17 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null)
+									new Alternative(null, ImmutableList.of("nt1", "nt2", "nt3"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null)
+									new Alternative(null, ImmutableList.of("foo"), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("bar"), null),
-										new Alternative(ImmutableList.of(), null)
+									new Alternative(null, ImmutableList.of("bar"), null),
+									new Alternative(null, ImmutableList.of(), null)
 								)),
 								new NonterminalDefinition("nt3", ImmutableList.of(
-										new Alternative(ImmutableList.of("baz"), null)
+									new Alternative(null, ImmutableList.of("baz"), null)
 								))
 						),
 						ImmutableSet.of("nt2"),
@@ -284,18 +284,18 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null)
+									new Alternative(null, ImmutableList.of("nt1", "nt2", "nt3"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null),
-										new Alternative(ImmutableList.of(), null)
+									new Alternative(null, ImmutableList.of("foo"), null),
+									new Alternative(null, ImmutableList.of(), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("bar"), null),
-										new Alternative(ImmutableList.of(), null)
+									new Alternative(null, ImmutableList.of("bar"), null),
+									new Alternative(null, ImmutableList.of(), null)
 								)),
 								new NonterminalDefinition("nt3", ImmutableList.of(
-										new Alternative(ImmutableList.of("baz"), null)
+									new Alternative(null, ImmutableList.of("baz"), null)
 								))
 						),
 						ImmutableSet.of("nt1", "nt2"),
@@ -315,16 +315,16 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt1", "nt2"), null)
+									new Alternative(null, ImmutableList.of("nt1", "nt2"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null)
+									new Alternative(null, ImmutableList.of("foo"), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt3"), null)
+									new Alternative(null, ImmutableList.of("nt3"), null)
 								)),
 								new NonterminalDefinition("nt3", ImmutableList.of(
-										new Alternative(ImmutableList.of("bar"), null)
+									new Alternative(null, ImmutableList.of("bar"), null)
 								))
 						),
 						ImmutableSet.of(),
@@ -338,17 +338,17 @@ public class FirstSetHelperTest {
 				{
 						ImmutableList.of(
 								new NonterminalDefinition("dummyStart", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt1", "nt2"), null)
+									new Alternative(null, ImmutableList.of("nt1", "nt2"), null)
 								)),
 								new NonterminalDefinition("nt1", ImmutableList.of(
-										new Alternative(ImmutableList.of("foo"), null),
-										new Alternative(ImmutableList.of(), null)
+									new Alternative(null, ImmutableList.of("foo"), null),
+									new Alternative(null, ImmutableList.of(), null)
 								)),
 								new NonterminalDefinition("nt2", ImmutableList.of(
-										new Alternative(ImmutableList.of("nt3"), null)
+									new Alternative(null, ImmutableList.of("nt3"), null)
 								)),
 								new NonterminalDefinition("nt3", ImmutableList.of(
-										new Alternative(ImmutableList.of("bar"), null)
+									new Alternative(null, ImmutableList.of("bar"), null)
 								))
 						),
 						ImmutableSet.of("nt1"),

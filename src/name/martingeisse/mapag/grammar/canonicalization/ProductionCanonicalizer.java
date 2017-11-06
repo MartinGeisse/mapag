@@ -9,7 +9,8 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
- *
+ * TODO test names of generated alternatives (name of converted alternative is that of the original one; name of
+ * synthetic alternatives is null; name of synthetic nonterminals includes the parent alternative name if any
  */
 public class ProductionCanonicalizer {
 
@@ -47,9 +48,13 @@ public class ProductionCanonicalizer {
 		// try to keep the order of input productions and synthetic productions so it's easier to debug the canonical grammar
 		Production production = pendingProductions.remove(0);
 		String leftHandSide = production.getLeftHandSide();
-		this.syntheticNamePrefix = leftHandSide;
 		this.syntheticNameCounter = savedSyntheticNameCounters.getOrDefault(leftHandSide, 0);
 		for (name.martingeisse.mapag.grammar.extended.Alternative inputAlternative : production.getAlternatives()) {
+			if (inputAlternative.getName() == null) {
+				this.syntheticNamePrefix = leftHandSide;
+			} else {
+				this.syntheticNamePrefix = leftHandSide + '_' + inputAlternative.getName();
+			}
 			name.martingeisse.mapag.grammar.canonical.Alternative convertedAlternative = convertAlternative(inputAlternative);
 			if (nonterminalAlternatives.get(leftHandSide) == null) {
 				nonterminalAlternatives.put(leftHandSide, new ArrayList<>());
@@ -68,7 +73,10 @@ public class ProductionCanonicalizer {
 	private name.martingeisse.mapag.grammar.canonical.Alternative convertAlternative(name.martingeisse.mapag.grammar.extended.Alternative inputAlternative) {
 		List<String> expansion = new ArrayList<>();
 		convertExpression(inputAlternative.getExpression(), expansion);
-		return new name.martingeisse.mapag.grammar.canonical.Alternative(ImmutableList.copyOf(expansion), inputAlternative.getPrecedenceDefiningTerminal());
+		return new name.martingeisse.mapag.grammar.canonical.Alternative(
+			inputAlternative.getName(),
+			ImmutableList.copyOf(expansion),
+			inputAlternative.getPrecedenceDefiningTerminal());
 	}
 
 	private void convertExpression(Expression expression, List<String> expansion) {
@@ -102,9 +110,9 @@ public class ProductionCanonicalizer {
 
 	private String extractOptionalExpression(OptionalExpression expression) {
 		return createSyntheticNonterminal((syntheticName, alternatives) -> {
-			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(new EmptyExpression(), null));
+			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, new EmptyExpression(), null));
 			for (Expression toplevelOrOperand : expression.getOperand().determineOrOperands()) {
-				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(toplevelOrOperand, null));
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, toplevelOrOperand, null));
 			}
 		});
 	}
@@ -113,9 +121,11 @@ public class ProductionCanonicalizer {
 		return createSyntheticNonterminal((repetitionSyntheticName, alternatives) -> {
 			String elementSyntheticName = extractOpaqueExpression(operand);
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
+				null,
 				zeroAllowed ? new EmptyExpression() : new SymbolReference(elementSyntheticName),
 				null));
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
+				null,
 				new SequenceExpression(new SymbolReference(repetitionSyntheticName), new SymbolReference(elementSyntheticName)),
 				null));
 		});
@@ -130,7 +140,7 @@ public class ProductionCanonicalizer {
 	private String extractOpaqueExpression(Expression expression) {
 		return createSyntheticNonterminal((syntheticName, alternatives) -> {
 			for (Expression toplevelOrOperand : expression.determineOrOperands()) {
-				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(toplevelOrOperand, null));
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, toplevelOrOperand, null));
 			}
 		});
 	}
