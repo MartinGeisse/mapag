@@ -41,3 +41,13 @@ nest steps:
 		an implementation decision. Manually written code only uses the API presented
 		by the PSI nodes.
 
+--->
+
+- result: there doesn't seem to be any significant PSI implementation outside the
+    ASTWrapperPsiElement hierarchy, except special cases that aren't normal PSI nodes.
+    --> rules out variant #2.
+
+- I don't really care about the AST and PSI structure as long as the PSI nodes have nice accessors.
+    So let's first try variant #3, and only include #1 if necessary. Support both accessors
+    and visitors in #3.
+
