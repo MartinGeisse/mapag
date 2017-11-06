@@ -11,6 +11,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * different parts of the parser generator have different assumptions of what "equal" means. Furthermore, there isn't
  * really a situation where two distinct but equal instances of this class would exist. Instances are created from
  * the grammar file and anything that appears in different places in this file is not equal in any meaningful sense.
+ *
+ * Higher precedenceIndex means higher precedence.
  */
 public final class TerminalDefinition extends SymbolDefinition {
 
