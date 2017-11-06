@@ -5,10 +5,7 @@ import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -20,6 +17,7 @@ public class ProductionCanonicalizer {
 	private final List<Production> nextPendingBatch;
 	private final Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
 	private final Map<String, Integer> savedSyntheticNameCounters;
+	private final Set<String> knownNonterminals = new HashSet<>();
 
 	private String syntheticNamePrefix;
 	private int syntheticNameCounter;
@@ -30,6 +28,9 @@ public class ProductionCanonicalizer {
 		this.nextPendingBatch = new ArrayList<>();
 		this.nonterminalAlternatives = new HashMap<>();
 		this.savedSyntheticNameCounters = new HashMap<>();
+		for (Production production : inputProductions) {
+			knownNonterminals.add(production.getLeftHandSide());
+		}
 	}
 
 	public void run() {
@@ -139,8 +140,11 @@ public class ProductionCanonicalizer {
 	 * All generated alternatives have undefined precedence.
 	 */
 	private String createSyntheticNonterminal(BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder) {
-		syntheticNameCounter++;
-		String syntheticName = syntheticNamePrefix + '_' + syntheticNameCounter;
+		String syntheticName;
+		do { // TODO test name collision resolution
+			syntheticNameCounter++;
+			syntheticName = syntheticNamePrefix + '_' + syntheticNameCounter;
+		} while (!knownNonterminals.add(syntheticName));
 		List<name.martingeisse.mapag.grammar.extended.Alternative> alternatives = new ArrayList<>();
 		alternativesAdder.accept(syntheticName, alternatives);
 		Production production = new Production(syntheticName, ImmutableList.copyOf(alternatives));
