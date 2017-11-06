@@ -42,8 +42,6 @@ public class GrammarCanonicalizerTest {
 		new PrecedenceTable.Entry(ImmutableSet.of("c"), Associativity.NONASSOC)
 	));
 
-	// --- start TODO
-
 	private static final Alternative ALTERNATIVE_1 = new Alternative(new SymbolReference("a"), null);
 	private static final Alternative ALTERNATIVE_2 = new Alternative(new SymbolReference("p"), "f");
 	private static final Alternative ALTERNATIVE_3 = new Alternative(new SequenceExpression(new SymbolReference("f"), new SymbolReference("g")), null);
@@ -52,8 +50,6 @@ public class GrammarCanonicalizerTest {
 	private static final Production PRODUCTION_2 = new Production("q", ImmutableList.of(ALTERNATIVE_3));
 	private static final Production PRODUCTION_3 = new Production("start", ImmutableList.of(ALTERNATIVE_4));
 	private static final ImmutableList<Production> PRODUCTIONS = ImmutableList.of(PRODUCTION_1, PRODUCTION_2, PRODUCTION_3);
-
-	// --- end TODO
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorWithNull() {
