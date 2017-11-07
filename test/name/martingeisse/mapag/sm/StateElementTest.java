@@ -2,6 +2,7 @@ package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +11,7 @@ import org.junit.Test;
  */
 public class StateElementTest {
 
-	private static final Alternative ALTERNATIVE_1 = new Alternative(null, ImmutableList.of("abc", "def", "ghi"), "zzz");
+	private static final Alternative ALTERNATIVE_1 = new Alternative(ImmutableList.of("abc", "def", "ghi"), "zzz", AlternativeAnnotation.EMPTY);
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorNullLeftSide() {
@@ -67,7 +68,7 @@ public class StateElementTest {
 
 		// compare two equal states
 		{
-			Alternative alternative = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+			Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 			StateElement se1 = new StateElement("lll", alternative, 0, "foo");
 			StateElement se2 = new StateElement("lll", alternative, 0, "foo");
 			Assert.assertEquals(se1, se2);
@@ -76,16 +77,16 @@ public class StateElementTest {
 
 		// state elements with "equal" but distinct alternatives are different
 		{
-			Alternative a1 = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+			Alternative a1 = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 			StateElement se1 = new StateElement("lll", a1, 0, "foo");
-			Alternative a2 = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+			Alternative a2 = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 			StateElement se2 = new StateElement("lll", a2, 0, "foo");
 			Assert.assertNotEquals(se1, se2);
 		}
 
 		// other cases
 		{
-			Alternative alternative = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+			Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 			StateElement[] stateElements = {
 				new StateElement("lll", alternative, 0, "foo"),
 				new StateElement("aaa", alternative, 0, "foo"),
@@ -108,7 +109,7 @@ public class StateElementTest {
 
 	@Test
 	public void testToString() {
-		Alternative alternative = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 		StateElement stateElement1 = new StateElement("lll", alternative, 0, "foo");
 		Assert.assertEquals("lll ::= . r1 r2 r3    [foo]", stateElement1.toString());
 		StateElement stateElement2 = new StateElement("lll", alternative, 1, "foo");
@@ -117,7 +118,7 @@ public class StateElementTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testDetermineActionTypeForTerminalNull() {
-		Alternative alternative = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
 		stateElement.determineActionTypeForTerminal(null);
 	}
@@ -125,7 +126,7 @@ public class StateElementTest {
 	@Test
 	public void testDetermineActionTypeForTerminal() {
 
-		Alternative alternative = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
 		Assert.assertEquals(StateElement.ActionType.SHIFT, stateElement.determineActionTypeForTerminal("r1"));
 		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r2"));
@@ -162,7 +163,7 @@ public class StateElementTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testDetermineNextRootElementForNonterminalNull() {
-		Alternative alternative = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
 		stateElement.determineNextRootElementForNonterminal(null);
 	}
@@ -170,7 +171,7 @@ public class StateElementTest {
 	@Test
 	public void testDetermineNextRootElementForNonterminal() {
 
-		Alternative alternative = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 		StateElement stateElement0 = new StateElement("lll", alternative, 0, "foo");
 		StateElement stateElement1 = new StateElement("lll", alternative, 1, "foo");
 		StateElement stateElement2 = new StateElement("lll", alternative, 2, "foo");
@@ -208,7 +209,7 @@ public class StateElementTest {
 
 	@Test
 	public void testGetShifted() {
-		Alternative alternative = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 		StateElement stateElement0 = new StateElement("lll", alternative, 0, "foo");
 		StateElement stateElement1 = stateElement0.getShifted();
 		Assert.assertEquals(new StateElement("lll", alternative, 1, "foo"), stateElement1);
@@ -220,7 +221,7 @@ public class StateElementTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testGetShiftedAtEnd() {
-		Alternative alternative = new Alternative(null, ImmutableList.of("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", AlternativeAnnotation.EMPTY);
 		StateElement stateElement = new StateElement("lll", alternative, 3, "foo");
 		stateElement.getShifted();
 	}

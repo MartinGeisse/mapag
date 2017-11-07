@@ -80,11 +80,13 @@ public class CalculatorParserGenerationMain {
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
 
-		ParserClassGenerator parserClassGenerator = new ParserClassGenerator(grammarInfo, stateMachine, configuration);
-		parserClassGenerator.generate();
-
-		SymbolHolderClassGenerator symbolHolderClassGenerator = new SymbolHolderClassGenerator(grammarInfo, configuration);
-		symbolHolderClassGenerator.generate();
+		grammarInfo.getGrammar().dump();
+//
+//		ParserClassGenerator parserClassGenerator = new ParserClassGenerator(grammarInfo, stateMachine, configuration);
+//		parserClassGenerator.generate();
+//
+//		SymbolHolderClassGenerator symbolHolderClassGenerator = new SymbolHolderClassGenerator(grammarInfo, configuration);
+//		symbolHolderClassGenerator.generate();
 
 	}
 

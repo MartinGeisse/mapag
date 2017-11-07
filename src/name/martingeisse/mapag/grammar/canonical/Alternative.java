@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
 import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.ParameterUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +19,9 @@ public final class Alternative {
 
 	private final ImmutableList<String> expansion;
 	private final String effectivePrecedenceTerminal;
+	private final AlternativeAnnotation annotation;
 
-	public Alternative(ImmutableList<String> expansion, String effectivePrecedenceTerminal) {
+	public Alternative(ImmutableList<String> expansion, String effectivePrecedenceTerminal, AlternativeAnnotation annotation) {
 		ParameterUtil.ensureNotNull(expansion, "expansion");
 		ParameterUtil.ensureNoNullOrEmptyElement(expansion, "expansion");
 		this.expansion = expansion;
@@ -27,10 +29,7 @@ public final class Alternative {
 			throw new IllegalArgumentException("effectivePrecedenceTerminal cannot be the empty string");
 		}
 		this.effectivePrecedenceTerminal = effectivePrecedenceTerminal;
-	}
-
-	public String getName() {
-		return name;
+		this.annotation = ParameterUtil.ensureNotNull(annotation, "annotation");
 	}
 
 	public ImmutableList<String> getExpansion() {
@@ -41,10 +40,17 @@ public final class Alternative {
 		return effectivePrecedenceTerminal;
 	}
 
+	public AlternativeAnnotation getAnnotation() {
+		return annotation;
+	}
+
 	public Alternative vanishSymbol(String nonterminalToVanish) {
-		// TODO test name conservation
+		// TODO test annotation handling
 		ParameterUtil.ensureNotNullOrEmpty(nonterminalToVanish, "nonterminalToVanish");
-		return new Alternative(name, ListUtil.withElementsRemoved(expansion, symbol -> symbol.equals(nonterminalToVanish)), effectivePrecedenceTerminal);
+		return new Alternative(
+			ListUtil.withElementsRemoved(expansion, symbol -> symbol.equals(nonterminalToVanish)),
+			effectivePrecedenceTerminal,
+			annotation.forModifiedRightHandSide());
 	}
 
 	@Override

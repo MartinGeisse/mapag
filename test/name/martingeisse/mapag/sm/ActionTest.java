@@ -3,6 +3,7 @@ package name.martingeisse.mapag.sm;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ import org.junit.Test;
  */
 public class ActionTest {
 
-	private static final Alternative alternative = new Alternative(null, ImmutableList.of("abc", "def"), null);
+	private static final Alternative alternative = new Alternative(ImmutableList.of("abc", "def"), null, AlternativeAnnotation.EMPTY);
 
 	@Test
 	public void testShift() {

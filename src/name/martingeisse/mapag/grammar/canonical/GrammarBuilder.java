@@ -3,6 +3,7 @@ package name.martingeisse.mapag.grammar.canonical;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.grammar.Associativity;
+import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Note: This class is only used to support the unit tests. It doesn't support named alternatives since the tests
- * don't need them (except the tests testing named alternatives specifically).
- *
- * TODO test that the name is null
+ * Note: This class is only used to support the unit tests. It doesn't support alternative annotations since the tests
+ * don't need them (except the tests testing alternative annotations specifically).
  */
 public final class GrammarBuilder {
 
@@ -57,12 +56,12 @@ public final class GrammarBuilder {
 		}
 
 		public ProductionBuilder addAlternative(String... expansion) {
-			alternatives.add(new Alternative(null, ImmutableList.copyOf(expansion), null));
+			alternatives.add(new Alternative(ImmutableList.copyOf(expansion), null, AlternativeAnnotation.EMPTY));
 			return this;
 		}
 
 		public ProductionBuilder addAlternativeWithPrecedence(String effectivePrecedenceTerminal, String... expansion) {
-			alternatives.add(new Alternative(null, ImmutableList.copyOf(expansion), effectivePrecedenceTerminal));
+			alternatives.add(new Alternative(ImmutableList.copyOf(expansion), effectivePrecedenceTerminal, AlternativeAnnotation.EMPTY));
 			return this;
 		}
 

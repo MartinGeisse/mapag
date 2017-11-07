@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.canonicalization;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;
@@ -66,9 +67,9 @@ public class ProductionCanonicalizer {
 		List<String> expansion = new ArrayList<>();
 		convertExpression(inputAlternative.getExpression(), expansion);
 		return new name.martingeisse.mapag.grammar.canonical.Alternative(
-			inputAlternative.getName(),
 			ImmutableList.copyOf(expansion),
-			inputAlternative.getPrecedenceDefiningTerminal());
+			inputAlternative.getPrecedenceDefiningTerminal(),
+			new AlternativeAnnotation(inputAlternative.getName()));
 	}
 
 	private void convertExpression(Expression expression, List<String> expansion) {
