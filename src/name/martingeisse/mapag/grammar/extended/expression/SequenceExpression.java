@@ -12,10 +12,21 @@ public final class SequenceExpression extends Expression {
 	private final Expression right;
 
 	public SequenceExpression(Expression left, Expression right) {
+		this(null, left, right);
+	}
+
+	private SequenceExpression(String name, Expression left, Expression right) {
+		super(name);
 		ParameterUtil.ensureNotNull(left, "left");
 		ParameterUtil.ensureNotNull(right, "right");
 		this.left = left;
 		this.right = right;
+	}
+
+	@Override
+	public Expression withName(String name) {
+		checkNoName(name);
+		return new SequenceExpression(name, left, right);
 	}
 
 	public Expression getLeft() {

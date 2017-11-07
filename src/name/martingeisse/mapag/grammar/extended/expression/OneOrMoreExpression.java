@@ -10,8 +10,19 @@ public final class OneOrMoreExpression extends Expression {
 	private final Expression operand;
 
 	public OneOrMoreExpression(Expression operand) {
+		this(null, operand);
+	}
+
+	private OneOrMoreExpression(String name, Expression operand) {
+		super(name);
 		ParameterUtil.ensureNotNull(operand, "operand");
 		this.operand = operand;
+	}
+
+	@Override
+	public Expression withName(String name) {
+		checkNoName(name);
+		return new OneOrMoreExpression(name, operand);
 	}
 
 	public Expression getOperand() {

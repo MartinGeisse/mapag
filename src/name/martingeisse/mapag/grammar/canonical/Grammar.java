@@ -2,13 +2,8 @@ package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.util.ParameterUtil;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Note: Even though this class is immutable, it does not define a value object. Especially, equals() and hashCode()
@@ -88,6 +83,44 @@ public final class Grammar {
 
 	public String getStartNonterminalName() {
 		return startNonterminalName;
+	}
+
+	public void dump() {
+
+		List<TerminalDefinition> terminals = new ArrayList<>(terminalDefinitions.values());
+		terminals.sort(Comparator.comparing(TerminalDefinition::getName));
+
+		System.out.println("terminals:");
+		for (TerminalDefinition terminal : terminals) {
+			System.out.println("* " + terminal.getName() + ", precedenceIndex: " +
+				terminal.getPrecedenceIndex() + ", associativity: " + terminal.getAssociativity());
+		}
+		System.out.println();
+
+		List<NonterminalDefinition> nonterminals = new ArrayList<>(nonterminalDefinitions.values());
+		nonterminals.sort(Comparator.comparing(NonterminalDefinition::getName));
+
+		System.out.println("nonterminals (start: " + startNonterminalName + "):");
+		for (NonterminalDefinition nonterminal : nonterminals) {
+			System.out.println("* " + nonterminal.getName() + ":");
+			for (Alternative alternative : nonterminal.getAlternatives()) {
+				System.out.print("  * ");
+				if (alternative.getName() != null) {
+					System.out.print(alternative.getName() + " ::=");
+				} else {
+					System.out.print("::=");
+				}
+				for (String symbol : alternative.getExpansion()) {
+					System.out.print(" " + symbol);
+				}
+				if (alternative.getEffectivePrecedenceTerminal() != null) {
+					System.out.print("    %precedence " + alternative.getEffectivePrecedenceTerminal());
+				}
+				System.out.println();
+			}
+		}
+		System.out.println();
+
 	}
 
 }

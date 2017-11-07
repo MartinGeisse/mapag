@@ -11,11 +11,22 @@ public final class SymbolReference extends Expression {
 	private final String symbolName;
 
 	public SymbolReference(String symbolName) {
+		this(null, symbolName);
+	}
+
+	private SymbolReference(String name, String symbolName) {
+		super(name);
 		ParameterUtil.ensureNotNullOrEmpty(symbolName, "symbolName");
 		if (symbolName.startsWith("%") && !symbolName.equals(SpecialSymbols.ERROR_SYMBOL_NAME)) {
 			throw new IllegalArgumentException("invalid symbol reference: " + symbolName);
 		}
 		this.symbolName = symbolName;
+	}
+
+	@Override
+	public Expression withName(String name) {
+		checkNoName(name);
+		return new SymbolReference(name, symbolName);
 	}
 
 	public String getSymbolName() {

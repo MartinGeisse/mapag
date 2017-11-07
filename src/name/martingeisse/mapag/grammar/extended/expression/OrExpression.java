@@ -12,10 +12,21 @@ public final class OrExpression extends Expression {
 	private final Expression rightOperand;
 
 	public OrExpression(Expression leftOperand, Expression rightOperand) {
+		this(null, leftOperand, rightOperand);
+	}
+
+	private OrExpression(String name, Expression leftOperand, Expression rightOperand) {
+		super(name);
 		ParameterUtil.ensureNotNull(leftOperand, "leftOperand");
 		ParameterUtil.ensureNotNull(rightOperand, "rightOperand");
 		this.leftOperand = leftOperand;
 		this.rightOperand = rightOperand;
+	}
+
+	@Override
+	public Expression withName(String name) {
+		checkNoName(name);
+		return new OrExpression(name, leftOperand, rightOperand);
 	}
 
 	public Expression getLeftOperand() {
