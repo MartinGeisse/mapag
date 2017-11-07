@@ -101,7 +101,7 @@ public class ProductionCanonicalizer {
 	}
 
 	private String extractOptionalExpression(OptionalExpression expression) {
-		return createSyntheticNonterminal((syntheticName, alternatives) -> {
+		return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, new EmptyExpression(), null));
 			for (Expression toplevelOrOperand : expression.getOperand().determineOrOperands()) {
 				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, toplevelOrOperand, null));
@@ -110,7 +110,7 @@ public class ProductionCanonicalizer {
 	}
 
 	private String extractRepetition(Expression operand, boolean zeroAllowed) {
-		return createSyntheticNonterminal((repetitionSyntheticName, alternatives) -> {
+		return createSyntheticNonterminal(operand, (repetitionSyntheticName, alternatives) -> {
 			String elementSyntheticName = extractOpaqueExpression(operand);
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
 				null,
@@ -130,7 +130,7 @@ public class ProductionCanonicalizer {
 	 * would create an unnecessary nonterminal that just redirects to another one.
 	 */
 	private String extractOpaqueExpression(Expression expression) {
-		return createSyntheticNonterminal((syntheticName, alternatives) -> {
+		return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 			for (Expression toplevelOrOperand : expression.determineOrOperands()) {
 				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, toplevelOrOperand, null));
 			}
@@ -140,20 +140,39 @@ public class ProductionCanonicalizer {
 	/**
 	 * Creates a synthetic nonterminal, using the specified callback to provide the expressions for its alternatives.
 	 * All generated alternatives have undefined precedence.
+	 *
+	 * The original expression is passed to use its name, if any, for the synthetic nonterminal.
 	 */
-	private String createSyntheticNonterminal(BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder) {
-		String syntheticName;
-		do { // TODO test name collision resolution
-			int syntheticNameCounter = syntheticNameCounters.getOrDefault(syntheticNamePrefix, 0);
-			syntheticNameCounter++;
-			syntheticName = syntheticNamePrefix + syntheticNameCounter;
-			syntheticNameCounters.put(syntheticNamePrefix, syntheticNameCounter);
-		} while (!knownNonterminals.add(syntheticName));
+	private String createSyntheticNonterminal(Expression expression, BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder) {
+		String syntheticName = createSyntheticName(expression);
 		List<name.martingeisse.mapag.grammar.extended.Alternative> alternatives = new ArrayList<>();
 		alternativesAdder.accept(syntheticName, alternatives);
 		Production production = new Production(syntheticName, ImmutableList.copyOf(alternatives));
 		pendingProductions.add(production);
 		return syntheticName;
+	}
+
+	// TODO test name collision resolution
+	private String createSyntheticName(Expression expression) {
+		if (expression.getName() != null) {
+			String syntheticName = syntheticNamePrefix + expression.getName();
+			if (knownNonterminals.add(syntheticName)) {
+				return syntheticName;
+			}
+		}
+		String prefix = syntheticNamePrefix;
+		if (expression.getName() != null) {
+			prefix = prefix + expression.getName() + '/';
+		}
+		while (true) {
+			int syntheticNameCounter = syntheticNameCounters.getOrDefault(prefix, 0);
+			syntheticNameCounter++;
+			syntheticNameCounters.put(prefix, syntheticNameCounter);
+			String syntheticName = prefix + syntheticNameCounter;
+			if (knownNonterminals.add(syntheticName)) {
+				return syntheticName;
+			}
+		}
 	}
 
 }
