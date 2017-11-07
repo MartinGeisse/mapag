@@ -82,10 +82,15 @@ public class ProductionCanonicalizer {
 		} else if (expression instanceof OrExpression) {
 			expansion.add(extractOrExpression((OrExpression) expression));
 		} else if (expression instanceof SequenceExpression) {
-			SequenceExpression sequenceExpression = (SequenceExpression) expression;
-			convertExpression(sequenceExpression.getLeft(), expansion);
-			convertExpression(sequenceExpression.getRight(), expansion);
+			if (expression.getName() == null) {
+				SequenceExpression sequenceExpression = (SequenceExpression) expression;
+				convertExpression(sequenceExpression.getLeft(), expansion);
+				convertExpression(sequenceExpression.getRight(), expansion);
+			} else {
+				expansion.add(extractOpaqueExpression(expression));
+			}
 		} else if (expression instanceof SymbolReference) {
+			// TODO transfer name
 			SymbolReference symbolReference = (SymbolReference) expression;
 			expansion.add(symbolReference.getSymbolName());
 		} else if (expression instanceof ZeroOrMoreExpression) {

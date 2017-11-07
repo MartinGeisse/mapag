@@ -16,15 +16,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public final class Alternative {
 
-	private final String name;
 	private final ImmutableList<String> expansion;
 	private final String effectivePrecedenceTerminal;
 
-	public Alternative(String name, ImmutableList<String> expansion, String effectivePrecedenceTerminal) {
-		if (name != null && name.isEmpty()) {
-			throw new IllegalArgumentException("name cannot be empty"); // TODO test this
-		}
-		this.name = name;
+	public Alternative(ImmutableList<String> expansion, String effectivePrecedenceTerminal) {
 		ParameterUtil.ensureNotNull(expansion, "expansion");
 		ParameterUtil.ensureNoNullOrEmptyElement(expansion, "expansion");
 		this.expansion = expansion;
