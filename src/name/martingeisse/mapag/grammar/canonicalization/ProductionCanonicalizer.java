@@ -65,38 +65,48 @@ public class ProductionCanonicalizer {
 
 	private name.martingeisse.mapag.grammar.canonical.Alternative convertAlternative(name.martingeisse.mapag.grammar.extended.Alternative inputAlternative) {
 		List<String> expansion = new ArrayList<>();
-		convertExpression(inputAlternative.getExpression(), expansion);
+		List<String> expressionNames = new ArrayList<>();
+		convertExpression(inputAlternative.getExpression(), expansion, expressionNames);
 		return new name.martingeisse.mapag.grammar.canonical.Alternative(
 			ImmutableList.copyOf(expansion),
 			inputAlternative.getPrecedenceDefiningTerminal(),
-			new AlternativeAnnotation(inputAlternative.getName()));
+			new AlternativeAnnotation(
+				inputAlternative.getName(),
+				ImmutableList.copyOf(expressionNames)
+			)
+		);
 	}
 
-	private void convertExpression(Expression expression, List<String> expansion) {
+	private void convertExpression(Expression expression, List<String> expansion, List<String> expressionNames) {
 		if (expression instanceof EmptyExpression) {
 			// nothing to do
 		} else if (expression instanceof OneOrMoreExpression) {
 			OneOrMoreExpression oneOrMoreExpression = (OneOrMoreExpression) expression;
 			expansion.add(extractRepetition(oneOrMoreExpression.getOperand(), false));
+			expressionNames.add(expression.getName());
 		} else if (expression instanceof OptionalExpression) {
 			expansion.add(extractOptionalExpression((OptionalExpression) expression));
+			expressionNames.add(expression.getName());
 		} else if (expression instanceof OrExpression) {
 			expansion.add(extractOrExpression((OrExpression) expression));
+			expressionNames.add(expression.getName());
 		} else if (expression instanceof SequenceExpression) {
 			if (expression.getName() == null) {
 				SequenceExpression sequenceExpression = (SequenceExpression) expression;
-				convertExpression(sequenceExpression.getLeft(), expansion);
-				convertExpression(sequenceExpression.getRight(), expansion);
+				convertExpression(sequenceExpression.getLeft(), expansion, expressionNames);
+				convertExpression(sequenceExpression.getRight(), expansion, expressionNames);
 			} else {
 				expansion.add(extractOpaqueExpression(expression));
+				expressionNames.add(expression.getName());
 			}
 		} else if (expression instanceof SymbolReference) {
-			// TODO transfer name
 			SymbolReference symbolReference = (SymbolReference) expression;
 			expansion.add(symbolReference.getSymbolName());
+			expressionNames.add(expression.getName());
 		} else if (expression instanceof ZeroOrMoreExpression) {
 			ZeroOrMoreExpression zeroOrMoreExpression = (ZeroOrMoreExpression) expression;
 			expansion.add(extractRepetition(zeroOrMoreExpression.getOperand(), true));
+			expressionNames.add(expression.getName());
 		} else {
 			throw new RuntimeException("unknown expression type: " + expression);
 		}

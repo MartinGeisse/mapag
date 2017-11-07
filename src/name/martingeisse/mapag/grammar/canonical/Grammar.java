@@ -105,8 +105,8 @@ public final class Grammar {
 			System.out.println("* " + nonterminal.getName() + ":");
 			for (Alternative alternative : nonterminal.getAlternatives()) {
 				System.out.print("  * ");
-				if (alternative.getAnnotation().getName() != null) {
-					System.out.print(alternative.getAnnotation().getName() + " ::=");
+				if (alternative.getAnnotation().getAlternativeName() != null) {
+					System.out.print(alternative.getAnnotation().getAlternativeName() + " ::=");
 				} else {
 					System.out.print("::=");
 				}

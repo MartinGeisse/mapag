@@ -5,6 +5,9 @@ import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.ParameterUtil;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Note: Even though this class is immutable, it does not define a value object. Especially, equals() and hashCode()
  * are those of class Object, i.e. based on object identity. The reason is that even if this were a value object,
@@ -27,6 +30,7 @@ public final class Alternative {
 		}
 		this.effectivePrecedenceTerminal = effectivePrecedenceTerminal;
 		this.annotation = ParameterUtil.ensureNotNull(annotation, "annotation");
+		annotation.validateConstruction(this);
 	}
 
 	public ImmutableList<String> getExpansion() {
@@ -43,11 +47,28 @@ public final class Alternative {
 
 	public Alternative vanishSymbol(String nonterminalToVanish) {
 		// TODO test annotation handling
+		ImmutableList<String> expressionNames = annotation.getExpressionNames();
+		List<String> remainingSymbols = new ArrayList<>();
+		List<String> remainingExpressionNames = new ArrayList<>();
+		for (int i = 0; i < expansion.size(); i++) {
+			String symbol = expansion.get(i);
+			if (symbol.equals(nonterminalToVanish)) {
+				continue;
+			}
+			remainingSymbols.add(symbol);
+			if (expressionNames != null) {
+				remainingExpressionNames.add(expressionNames.get(i));
+			}
+		}
 		ParameterUtil.ensureNotNullOrEmpty(nonterminalToVanish, "nonterminalToVanish");
 		return new Alternative(
-			ListUtil.withElementsRemoved(expansion, symbol -> symbol.equals(nonterminalToVanish)),
+			ImmutableList.copyOf(remainingSymbols),
 			effectivePrecedenceTerminal,
-			annotation.forModifiedRightHandSide());
+			new AlternativeAnnotation(
+				annotation.getAlternativeName(),
+				expressionNames == null ? null : ImmutableList.copyOf(remainingExpressionNames)
+			)
+		);
 	}
 
 	@Override
