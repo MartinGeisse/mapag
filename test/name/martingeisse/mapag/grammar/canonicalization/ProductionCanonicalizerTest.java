@@ -172,9 +172,9 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_1"), "xyz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//1"), "xyz")
 					),
-					"nt1_1", ImmutableList.of(
+					"nt1//1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of(), null),
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("foo"), null)
 					)
@@ -190,9 +190,9 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("foo", "nt1_1"), "xyz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("foo", "nt1//1"), "xyz")
 					),
-					"nt1_1", ImmutableList.of(
+					"nt1//1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of(), null),
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("bar"), null)
 					)
@@ -220,13 +220,13 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("foo", "nt1_1", "baz"), "xyz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("foo", "nt1//1", "baz"), "xyz")
 					),
-					"nt1_1", ImmutableList.of(
+					"nt1//1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of(), null),
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_1", "nt1_2"), null)
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//1", "nt1//2"), null)
 					),
-					"nt1_2", ImmutableList.of(
+					"nt1//2", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("bar"), null)
 					)
 				)
@@ -252,13 +252,13 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa", "nt1_1", "ddd"), "xyz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa", "nt1//1", "ddd"), "xyz")
 					),
-					"nt1_1", ImmutableList.of(
+					"nt1//1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of(), null),
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_1", "nt1_2"), null)
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//1", "nt1//2"), null)
 					),
-					"nt1_2", ImmutableList.of(
+					"nt1//2", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("bbb", "ccc"), null)
 					)
 				)
@@ -285,13 +285,13 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("foo", "nt1_1", "baz"), "xyz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("foo", "nt1//1", "baz"), "xyz")
 					),
-					"nt1_1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_2"), null),
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_1", "nt1_2"), null)
+					"nt1//1", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//2"), null),
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//1", "nt1//2"), null)
 					),
-					"nt1_2", ImmutableList.of(
+					"nt1//2", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("bar"), null)
 					)
 				)
@@ -317,13 +317,13 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa", "nt1_1", "ddd"), "xyz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa", "nt1//1", "ddd"), "xyz")
 					),
-					"nt1_1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_2"), null),
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_1", "nt1_2"), null)
+					"nt1//1", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//2"), null),
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//1", "nt1//2"), null)
 					),
-					"nt1_2", ImmutableList.of(
+					"nt1//2", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("bbb", "ccc"), null)
 					)
 				)
@@ -353,9 +353,9 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa", "nt1_1", "ddd"), "xyz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa", "nt1//1", "ddd"), "xyz")
 					),
-					"nt1_1", ImmutableList.of(
+					"nt1//1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("bbb"), null),
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("ccc"), null)
 					)
@@ -380,9 +380,9 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa", "nt1_1", "fff"), "xyz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa", "nt1//1", "fff"), "xyz")
 					),
-					"nt1_1", ImmutableList.of(
+					"nt1//1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("bbb", "ccc"), null),
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("ddd", "eee"), null)
 					)
@@ -401,9 +401,9 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_1"), "xyz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//1"), "xyz")
 					),
-					"nt1_1", ImmutableList.of(
+					"nt1//1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa", "bbb"), null),
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("ccc", "ddd"), null)
 					)
@@ -437,17 +437,17 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_1"), "xxx"),
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_3", "ddd"), "zzz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//1"), "xxx"),
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//3", "ddd"), "zzz")
 					),
-					"nt1_1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_2"), null),
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_1", "nt1_2"), null)
+					"nt1//1", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//2"), null),
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//1", "nt1//2"), null)
 					),
-					"nt1_2", ImmutableList.of(
+					"nt1//2", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa"), null)
 					),
-					"nt1_3", ImmutableList.of(
+					"nt1//3", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of(), null),
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("ccc"), null)
 					),
@@ -485,17 +485,17 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_1"), "xxx"),
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_3", "ddd"), "zzz")
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//1"), "xxx"),
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//3", "ddd"), "zzz")
 					),
-					"nt1_1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_2"), null),
-						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1_1", "nt1_2"), null)
+					"nt1//1", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//2"), null),
+						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("nt1//1", "nt1//2"), null)
 					),
-					"nt1_2", ImmutableList.of(
+					"nt1//2", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("aaa"), null)
 					),
-					"nt1_3", ImmutableList.of(
+					"nt1//3", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of(), null),
 						new name.martingeisse.mapag.grammar.canonical.Alternative(null, ImmutableList.of("ccc"), null)
 					),

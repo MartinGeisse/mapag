@@ -17,18 +17,17 @@ public class ProductionCanonicalizer {
 	private final List<Production> pendingProductions;
 	private final List<Production> nextPendingBatch;
 	private final Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
-	private final Map<String, Integer> savedSyntheticNameCounters;
+	private final Map<String, Integer> syntheticNameCounters;
 	private final Set<String> knownNonterminals = new HashSet<>();
 
 	private String syntheticNamePrefix;
-	private int syntheticNameCounter;
 
 	public ProductionCanonicalizer(ImmutableList<Production> inputProductions) {
 		ParameterUtil.ensureNotNull(inputProductions, "inputProductions");
 		this.pendingProductions = new ArrayList<>(inputProductions);
 		this.nextPendingBatch = new ArrayList<>();
 		this.nonterminalAlternatives = new HashMap<>();
-		this.savedSyntheticNameCounters = new HashMap<>();
+		this.syntheticNameCounters = new HashMap<>();
 		for (Production production : inputProductions) {
 			knownNonterminals.add(production.getLeftHandSide());
 		}
@@ -48,21 +47,14 @@ public class ProductionCanonicalizer {
 		// try to keep the order of input productions and synthetic productions so it's easier to debug the canonical grammar
 		Production production = pendingProductions.remove(0);
 		String leftHandSide = production.getLeftHandSide();
-		this.syntheticNameCounter = savedSyntheticNameCounters.getOrDefault(leftHandSide, 0);
 		for (name.martingeisse.mapag.grammar.extended.Alternative inputAlternative : production.getAlternatives()) {
-			if (inputAlternative.getName() == null) {
-				this.syntheticNamePrefix = leftHandSide;
-			} else {
-				this.syntheticNamePrefix = leftHandSide + '_' + inputAlternative.getName();
-			}
+			String alternativeName = (inputAlternative.getName() == null ? "" : inputAlternative.getName());
+			this.syntheticNamePrefix = leftHandSide + '/' + alternativeName + '/';
 			name.martingeisse.mapag.grammar.canonical.Alternative convertedAlternative = convertAlternative(inputAlternative);
 			if (nonterminalAlternatives.get(leftHandSide) == null) {
 				nonterminalAlternatives.put(leftHandSide, new ArrayList<>());
 			}
 			nonterminalAlternatives.get(leftHandSide).add(convertedAlternative);
-		}
-		if (syntheticNameCounter != 0) {
-			savedSyntheticNameCounters.put(leftHandSide, syntheticNameCounter);
 		}
 		if (!nextPendingBatch.isEmpty()) {
 			pendingProductions.addAll(0, nextPendingBatch);
@@ -152,8 +144,10 @@ public class ProductionCanonicalizer {
 	private String createSyntheticNonterminal(BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder) {
 		String syntheticName;
 		do { // TODO test name collision resolution
+			int syntheticNameCounter = syntheticNameCounters.getOrDefault(syntheticNamePrefix, 0);
 			syntheticNameCounter++;
-			syntheticName = syntheticNamePrefix + '_' + syntheticNameCounter;
+			syntheticName = syntheticNamePrefix + syntheticNameCounter;
+			syntheticNameCounters.put(syntheticNamePrefix, syntheticNameCounter);
 		} while (!knownNonterminals.add(syntheticName));
 		List<name.martingeisse.mapag.grammar.extended.Alternative> alternatives = new ArrayList<>();
 		alternativesAdder.accept(syntheticName, alternatives);
