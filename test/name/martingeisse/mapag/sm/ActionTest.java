@@ -3,7 +3,7 @@ package name.martingeisse.mapag.sm;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
 import org.junit.Assert;
 import org.junit.Test;
 

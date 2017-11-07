@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
-import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import org.junit.Assert;

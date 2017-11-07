@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.grammar.canonical.annotation;
+package name.martingeisse.mapag.grammar.canonical;
 
 /**
  *

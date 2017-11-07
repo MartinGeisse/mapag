@@ -1,7 +1,7 @@
 package name.martingeisse.mapag.grammar.canonicalization;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;

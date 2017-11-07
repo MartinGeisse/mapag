@@ -2,7 +2,6 @@ package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.Associativity;
-import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
 import org.junit.Assert;
 import org.junit.Test;
 

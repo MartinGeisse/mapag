@@ -10,7 +10,7 @@ import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import org.junit.Assert;
 import org.junit.Test;

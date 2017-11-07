@@ -1,9 +1,7 @@
 package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.grammar.Associativity;
-import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,12 +1,9 @@
 package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
 import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.ParameterUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Note: Even though this class is immutable, it does not define a value object. Especially, equals() and hashCode()

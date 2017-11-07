@@ -7,7 +7,7 @@ import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.GrammarBuilder;
-import name.martingeisse.mapag.grammar.canonical.annotation.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.testutil.ExAssert;
 import name.martingeisse.mapag.util.Pair;
