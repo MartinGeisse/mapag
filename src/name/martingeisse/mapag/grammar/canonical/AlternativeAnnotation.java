@@ -6,6 +6,10 @@ import name.martingeisse.mapag.util.ParameterUtil;
 /**
  * Note: the list of expression names (if present) contains an empty string for each unnamed expression since
  * {@link ImmutableList} cannot contain null.
+ *
+ * TODO: If, in the end, this class doesn't contain too much information, consider merging it back into {@link Alternative}.
+ * Possibly provide static factory methods in Alternative for more readable code and shorter parameter lists. Consider
+ * providing an AlternativeBuilder.
  */
 public final class AlternativeAnnotation {
 

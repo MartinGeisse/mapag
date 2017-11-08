@@ -170,3 +170,21 @@ Problem: No easy way to name alternatives.
     --> that looks good. The only change necessary in the application classes is that an alternative has an optional
         name that is used only for code generation. To simplify things, this name is optional until the end; the
         code generator generates a name if none is defined.
+
+------
+
+Just an idea: Why not demand that everything important has a name. This solves all name-changing problems and thus
+    all name generation problems:
+
+- if a nonterminal has multiple alternatives, then they must be named
+- if a nonterminal has only a single alternative, then it cannot be named
+- the input syntax enforces this. As a side effect, the input syntax cannot allow to split the production of a
+    nonterminal into multiple productions.
+- if a right-hand symbol should be accessible then it must be named (though generic PSI traversal is still possible)
+- (similar for named expressions)
+-->
+- solution: do not enforce naming, but use a simple generated naming scheme that is ugly enough to encourage naming.
+    Especially, do not build sophisticated naming generation.
+
+
+

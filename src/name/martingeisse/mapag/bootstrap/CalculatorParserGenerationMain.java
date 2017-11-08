@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.ParserClassGenerator;
+import name.martingeisse.mapag.codegen.PsiClassesGenerator;
 import name.martingeisse.mapag.codegen.SymbolHolderClassGenerator;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
@@ -30,6 +31,8 @@ public class CalculatorParserGenerationMain {
 		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.calculator");
 		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");
 		codeGenerationProperties.setProperty("symbol.elementType.class", "CalculatorElementType");
+		codeGenerationProperties.setProperty("psi.generate", "true");
+		codeGenerationProperties.setProperty("psi.package", "name.martingeisse.calculator.psi");
 		Configuration configuration = new Configuration(codeGenerationProperties);
 
 		ImmutableList terminalDeclarations = ImmutableList.of(
@@ -80,13 +83,17 @@ public class CalculatorParserGenerationMain {
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
 
-		grammarInfo.getGrammar().dump();
+//		grammarInfo.getGrammar().dump();
 //
 //		ParserClassGenerator parserClassGenerator = new ParserClassGenerator(grammarInfo, stateMachine, configuration);
 //		parserClassGenerator.generate();
 //
 //		SymbolHolderClassGenerator symbolHolderClassGenerator = new SymbolHolderClassGenerator(grammarInfo, configuration);
 //		symbolHolderClassGenerator.generate();
+
+		if (configuration.getRequired("psi.generate").equals("true")) {
+			new PsiClassesGenerator(grammarInfo, configuration).generate();
+		}
 
 	}
 
