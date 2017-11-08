@@ -64,18 +64,26 @@ public class CalculatorParserGenerationMain {
 
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("calculation", ImmutableList.of(
-				new Alternative(null, new ZeroOrMoreExpression(symbol("statement")), null)
+				new Alternative(null, new ZeroOrMoreExpression(symbol("statement")).withName("statements"), null)
 			)),
 			new Production("statement", ImmutableList.of(
-				new Alternative(null, sequence(symbol("expression"), symbol("SEMICOLON")), null),
-				new Alternative(null, sequence(symbol("%error"), symbol("SEMICOLON")), null)
+				new Alternative("expression", sequence(symbol("expression").withName("expression"), symbol("SEMICOLON")), null),
+				new Alternative("error", sequence(symbol("%error"), symbol("SEMICOLON")), null)
 			)),
 			new Production("expression", ImmutableList.of(
-				new Alternative(null, symbol("NUMBER").withName("value"), null),
-				new Alternative(null, symbol("IDENTIFIER"), null),
-				new Alternative("additive", sequence(symbol("expression"), or(symbol("PLUS"), symbol("MINUS")).withName("operator"), symbol("expression")), "PLUS"),
-				new Alternative("multiplicative", sequence(symbol("expression"), or(symbol("TIMES"), symbol("DIVIDED_BY")).withName("operator"), symbol("expression")), "TIMES"),
-				new Alternative("parenthesized", sequence(symbol("OPENING_PARENTHESIS"), symbol("expression"), symbol("CLOSING_PARENTHESIS")), null)
+				new Alternative("literal", symbol("NUMBER").withName("value"), null),
+				new Alternative("variable", symbol("IDENTIFIER").withName("variableName"), null),
+				new Alternative("additive", sequence(
+					symbol("expression").withName("left"),
+					or(symbol("PLUS"), symbol("MINUS")).withName("operator"),
+					symbol("expression").withName("right")
+				), "PLUS"),
+				new Alternative("multiplicative", sequence(
+					symbol("expression").withName("left"),
+					or(symbol("TIMES"), symbol("DIVIDED_BY")).withName("operator"),
+					symbol("expression").withName("right")
+				), "TIMES"),
+				new Alternative("parenthesized", sequence(symbol("OPENING_PARENTHESIS"), symbol("expression").withName("inner"), symbol("CLOSING_PARENTHESIS")), null)
 			))
 		);
 

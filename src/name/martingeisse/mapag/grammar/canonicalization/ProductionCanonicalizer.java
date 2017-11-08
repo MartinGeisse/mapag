@@ -117,25 +117,30 @@ public class ProductionCanonicalizer {
 	}
 
 	private String extractOptionalExpression(OptionalExpression expression) {
+		// Note: we could add the top-level OR operands from the optional's operand as alternatives of the synthetic
+		// nonterminal... but that would be too much "magic" that confuses the user and also makes code-generation
+		// very non-uniform just for the sake of being clever.
 		return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, new EmptyExpression(), null));
-			for (Expression toplevelOrOperand : expression.getOperand().determineOrOperands()) {
-				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, toplevelOrOperand, null));
-			}
+			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("absent", new EmptyExpression(), null));
+			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("present", expression.getOperand().withFallbackName("it"), null));
 		});
 	}
 
 	private String extractRepetition(Expression operand, boolean zeroAllowed) {
+		// Note: we just call the elements "elements" here and don't care about their expression name (if any) because
+		// we intent to store them in a List object anyway.
 		return createSyntheticNonterminal(operand, (repetitionSyntheticName, alternatives) -> {
 			String elementSyntheticName = extractOpaqueExpression(operand);
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
-				null,
-				zeroAllowed ? new EmptyExpression() : new SymbolReference(elementSyntheticName),
+				"start",
+				zeroAllowed ? new EmptyExpression() : new SymbolReference(elementSyntheticName).withName("element"),
 				null));
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
-				null,
-				new SequenceExpression(new SymbolReference(repetitionSyntheticName), new SymbolReference(elementSyntheticName)),
-				null));
+				"next",
+				new SequenceExpression(
+					new SymbolReference(repetitionSyntheticName).withName("previous"),
+					new SymbolReference(elementSyntheticName).withName("element")
+				), null));
 		});
 	}
 
@@ -148,7 +153,8 @@ public class ProductionCanonicalizer {
 	private String extractOpaqueExpression(Expression expression) {
 		return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 			for (Expression toplevelOrOperand : expression.determineOrOperands()) {
-				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, toplevelOrOperand, null));
+				// TODO this keeps the name of the toplevel OR operand which may push it out into yet another synthetic nonterminal
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(toplevelOrOperand.getName(), toplevelOrOperand, null));
 			}
 		});
 	}

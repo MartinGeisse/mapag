@@ -201,3 +201,18 @@ Questions:
     --> the repetition is only explicit in the extended grammar. Unless repetition detection is used, this can
         only happen in the explicit grammar.
     --> this has the added bonus of using the inferred name for the synthetic nonterminal too.
+
+DOWNSIDE:
+Since naming an expression also enables getter generation, this
+	- generates a getter without the user asking for it (even though in this case a getter is probably desirable)
+	- makes it non-obvious when getters get generated
+
+It's a bit like a Java variable that gets an implicit name from its type. There is a reason why Java the language
+doesn't do that.
+
+------
+
+The same also applies to inferred PSI node collections. It's non-obvious. What *IS* obvious is that a repetition gets
+turned into a list, but only if it happens every time. This should not happen with implicit repetitions. (Though it's
+OK when the user can turn an implicit repetition into a collection type by making it explicit in the code generation
+configuration). NO IMPLICIT STUFF!
