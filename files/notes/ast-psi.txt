@@ -186,5 +186,18 @@ Just an idea: Why not demand that everything important has a name. This solves a
 - solution: do not enforce naming, but use a simple generated naming scheme that is ugly enough to encourage naming.
     Especially, do not build sophisticated naming generation.
 
+------
 
+Implicit names:
 
+    calculation ::= statement*
+
+could be implicitly named:
+
+    calculation ::= (statement*):statements
+
+Questions:
+- should this happen on the basis of the extended grammar? Or the canonical grammar? Or afterwards?
+    --> the repetition is only explicit in the extended grammar. Unless repetition detection is used, this can
+        only happen in the explicit grammar.
+    --> this has the added bonus of using the inferred name for the synthetic nonterminal too.
