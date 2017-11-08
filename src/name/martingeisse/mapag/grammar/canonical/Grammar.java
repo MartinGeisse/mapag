@@ -110,8 +110,11 @@ public final class Grammar {
 				} else {
 					System.out.print("::=");
 				}
-				for (String symbol : alternative.getExpansion()) {
-					System.out.print(" " + symbol);
+				for (int i=0; i<alternative.getExpansion().size(); i++) {
+					System.out.print(" " + alternative.getExpansion().get(i));
+					if (alternative.getAnnotation().getExpressionNames() != null && !alternative.getAnnotation().getExpressionNames().get(i).isEmpty()) {
+						System.out.print(":" + alternative.getAnnotation().getExpressionNames().get(i));
+					}
 				}
 				if (alternative.getEffectivePrecedenceTerminal() != null) {
 					System.out.print("    %precedence " + alternative.getEffectivePrecedenceTerminal());

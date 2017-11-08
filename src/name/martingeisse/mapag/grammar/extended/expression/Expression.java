@@ -30,6 +30,10 @@ public abstract class Expression {
 		return name;
 	}
 
+	public String getNameOrEmpty() {
+		return name == null ? "" : name;
+	}
+
 	/**
 	 * Converts this expression into an expression at is, at its root, an n-ary OR expression. The resulting expression
 	 * is implicit; this method just returns the list of operands. Since this expression isn't impossible to match in

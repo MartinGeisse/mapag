@@ -83,13 +83,13 @@ public class ProductionCanonicalizer {
 		} else if (expression instanceof OneOrMoreExpression) {
 			OneOrMoreExpression oneOrMoreExpression = (OneOrMoreExpression) expression;
 			expansion.add(extractRepetition(oneOrMoreExpression.getOperand(), false));
-			expressionNames.add(expression.getName());
+			expressionNames.add(expression.getNameOrEmpty());
 		} else if (expression instanceof OptionalExpression) {
 			expansion.add(extractOptionalExpression((OptionalExpression) expression));
-			expressionNames.add(expression.getName());
+			expressionNames.add(expression.getNameOrEmpty());
 		} else if (expression instanceof OrExpression) {
 			expansion.add(extractOrExpression((OrExpression) expression));
-			expressionNames.add(expression.getName());
+			expressionNames.add(expression.getNameOrEmpty());
 		} else if (expression instanceof SequenceExpression) {
 			if (expression.getName() == null) {
 				SequenceExpression sequenceExpression = (SequenceExpression) expression;
@@ -97,16 +97,16 @@ public class ProductionCanonicalizer {
 				convertExpression(sequenceExpression.getRight(), expansion, expressionNames);
 			} else {
 				expansion.add(extractOpaqueExpression(expression));
-				expressionNames.add(expression.getName());
+				expressionNames.add(expression.getNameOrEmpty());
 			}
 		} else if (expression instanceof SymbolReference) {
 			SymbolReference symbolReference = (SymbolReference) expression;
 			expansion.add(symbolReference.getSymbolName());
-			expressionNames.add(expression.getName());
+			expressionNames.add(expression.getNameOrEmpty());
 		} else if (expression instanceof ZeroOrMoreExpression) {
 			ZeroOrMoreExpression zeroOrMoreExpression = (ZeroOrMoreExpression) expression;
 			expansion.add(extractRepetition(zeroOrMoreExpression.getOperand(), true));
-			expressionNames.add(expression.getName());
+			expressionNames.add(expression.getNameOrEmpty());
 		} else {
 			throw new RuntimeException("unknown expression type: " + expression);
 		}

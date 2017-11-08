@@ -73,7 +73,9 @@ public final class Alternative {
 
 	@Override
 	public String toString() {
-		return StringUtils.join(expansion, ' ') + " %precedence " + (effectivePrecedenceTerminal == null ? "%undefined" : effectivePrecedenceTerminal);
+		return StringUtils.join(expansion, ' ') +
+			" %precedence " + (effectivePrecedenceTerminal == null ? "%undefined" : effectivePrecedenceTerminal) +
+			' ' + annotation;
 	}
 
 }
