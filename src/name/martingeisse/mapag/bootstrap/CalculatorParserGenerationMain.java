@@ -71,7 +71,7 @@ public class CalculatorParserGenerationMain {
 				new Alternative(null, sequence(symbol("%error"), symbol("SEMICOLON")), null)
 			)),
 			new Production("expression", ImmutableList.of(
-				new Alternative(null, symbol("NUMBER"), null),
+				new Alternative(null, symbol("NUMBER").withName("value"), null),
 				new Alternative(null, symbol("IDENTIFIER"), null),
 				new Alternative("additive", sequence(symbol("expression"), or(symbol("PLUS"), symbol("MINUS")).withName("operator"), symbol("expression")), "PLUS"),
 				new Alternative("multiplicative", sequence(symbol("expression"), or(symbol("TIMES"), symbol("DIVIDED_BY")).withName("operator"), symbol("expression")), "TIMES"),

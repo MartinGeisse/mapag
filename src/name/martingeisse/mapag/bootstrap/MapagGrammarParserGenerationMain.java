@@ -100,7 +100,7 @@ public class MapagGrammarParserGenerationMain {
 			)),
 			new Production("production", ImmutableList.of(
 				new Alternative(null, sequence(
-					symbol("IDENTIFIER"),
+					symbol("IDENTIFIER").withName("nonterminal"),
 					symbol("EXPANDS_TO"),
 					symbol("alternative"),
 					new ZeroOrMoreExpression(sequence(symbol("BAR"), symbol("alternative"))),

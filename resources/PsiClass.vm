@@ -13,4 +13,10 @@ import java.util.List;
 
 public $classModifiers class $className extends $superclass {
 
+    #foreach($nodeGetter in $nodeGetters)
+    public $nodeGetter.nodeType ${nodeGetter.getterName}() {
+            return ($nodeGetter.nodeType)(getChildren()[$nodeGetter.childIndex]);
+        }
+    #end
+
 }
