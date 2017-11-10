@@ -1,6 +1,5 @@
 package name.martingeisse.mapag.grammar.extended.expression;
 
-import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 /**
@@ -39,14 +38,6 @@ public final class OrExpression extends Expression {
 	@Override
 	public String toString() {
 		return "(" + leftOperand + " | " + rightOperand + ')';
-	}
-
-	@Override
-	public ImmutableList<Expression> determineOrOperands() {
-		return ImmutableList.<Expression>builder()
-			.addAll(leftOperand.determineOrOperands())
-			.addAll(rightOperand.determineOrOperands())
-			.build();
 	}
 
 }
