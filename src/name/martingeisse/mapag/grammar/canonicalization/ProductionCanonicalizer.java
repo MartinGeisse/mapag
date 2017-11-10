@@ -88,7 +88,8 @@ public class ProductionCanonicalizer {
 			expansion.add(extractOptionalExpression((OptionalExpression) expression));
 			expressionNames.add(expression.getNameOrEmpty());
 		} else if (expression instanceof OrExpression) {
-			expansion.add(extractOrExpression((OrExpression) expression));
+			// TODO this turns expression names into alternative names and thus makes the expressions inaccessible!
+			expansion.add(extractOpaqueExpression(expression));
 			expressionNames.add(expression.getNameOrEmpty());
 		} else if (expression instanceof SequenceExpression) {
 			if (expression.getName() == null) {
@@ -110,11 +111,6 @@ public class ProductionCanonicalizer {
 		} else {
 			throw new RuntimeException("unknown expression type: " + expression);
 		}
-	}
-
-	private String extractOrExpression(OrExpression expression) {
-		// TODO this turns expression names into alternative names and thus makes the expressions inaccessible!
-		return extractOpaqueExpression(expression);
 	}
 
 	private String extractOptionalExpression(OptionalExpression expression) {
@@ -151,9 +147,9 @@ public class ProductionCanonicalizer {
 	}
 
 	/**
-	 * Turns the specified expression into a single-symbol expression, generating synthetic nonterminals if needed.
-	 * Returns that symbol. Usually, the expression's name should be used as the expression name for the single
-	 * symbol, too.
+	 * Turns the specified expression into a single-symbol expression, generating synthetic nonterminals if needed,
+	 * and returns that symbol. The caller should usually use the original expression's name for the returned
+	 * symbol.
 	 */
 	private String toSingleSymbol(Expression expression) {
 		if (expression instanceof SymbolReference) {
