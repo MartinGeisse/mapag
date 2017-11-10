@@ -6,7 +6,10 @@ import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
@@ -18,19 +21,17 @@ public class ProductionCanonicalizer {
 	private final List<Production> pendingProductions;
 	private final List<Production> nextPendingBatch;
 	private final Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
-	private final Map<String, Integer> syntheticNameCounters;
-	private final Set<String> knownNonterminals = new HashSet<>();
-
-	private String syntheticNamePrefix;
+	private final SyntheticNonterminalNameGenerator syntheticNonterminalNameGenerator;
 
 	public ProductionCanonicalizer(ImmutableList<Production> inputProductions) {
 		ParameterUtil.ensureNotNull(inputProductions, "inputProductions");
 		this.pendingProductions = new ArrayList<>(inputProductions);
 		this.nextPendingBatch = new ArrayList<>();
 		this.nonterminalAlternatives = new HashMap<>();
-		this.syntheticNameCounters = new HashMap<>();
+		this.syntheticNonterminalNameGenerator = new SyntheticNonterminalNameGenerator();
+		// TODO also register known nonterminals
 		for (Production production : inputProductions) {
-			knownNonterminals.add(production.getLeftHandSide());
+			syntheticNonterminalNameGenerator.registerKnownSymbol(production.getLeftHandSide());
 		}
 	}
 
@@ -49,8 +50,7 @@ public class ProductionCanonicalizer {
 		Production production = pendingProductions.remove(0);
 		String leftHandSide = production.getLeftHandSide();
 		for (name.martingeisse.mapag.grammar.extended.Alternative inputAlternative : production.getAlternatives()) {
-			String alternativeName = (inputAlternative.getName() == null ? "" : inputAlternative.getName());
-			this.syntheticNamePrefix = leftHandSide + '/' + alternativeName + '/';
+			syntheticNonterminalNameGenerator.prepare(leftHandSide, inputAlternative.getName());
 			name.martingeisse.mapag.grammar.canonical.Alternative convertedAlternative = convertAlternative(inputAlternative);
 			if (nonterminalAlternatives.get(leftHandSide) == null) {
 				nonterminalAlternatives.put(leftHandSide, new ArrayList<>());
@@ -82,7 +82,7 @@ public class ProductionCanonicalizer {
 			// nothing to do
 		} else if (expression instanceof OneOrMoreExpression) {
 			OneOrMoreExpression oneOrMoreExpression = (OneOrMoreExpression) expression;
-			expansion.add(extractRepetition(oneOrMoreExpression.getOperand(), false));
+			expansion.add(extractRepetition(oneOrMoreExpression, oneOrMoreExpression.getOperand(), false));
 			expressionNames.add(expression.getNameOrEmpty());
 		} else if (expression instanceof OptionalExpression) {
 			expansion.add(extractOptionalExpression((OptionalExpression) expression));
@@ -105,7 +105,7 @@ public class ProductionCanonicalizer {
 			expressionNames.add(expression.getNameOrEmpty());
 		} else if (expression instanceof ZeroOrMoreExpression) {
 			ZeroOrMoreExpression zeroOrMoreExpression = (ZeroOrMoreExpression) expression;
-			expansion.add(extractRepetition(zeroOrMoreExpression.getOperand(), true));
+			expansion.add(extractRepetition(zeroOrMoreExpression, zeroOrMoreExpression.getOperand(), true));
 			expressionNames.add(expression.getNameOrEmpty());
 		} else {
 			throw new RuntimeException("unknown expression type: " + expression);
@@ -113,6 +113,7 @@ public class ProductionCanonicalizer {
 	}
 
 	private String extractOrExpression(OrExpression expression) {
+		// TODO this turns expression names into alternative names and thus makes the expressions inaccessible!
 		return extractOpaqueExpression(expression);
 	}
 
@@ -121,80 +122,106 @@ public class ProductionCanonicalizer {
 		// nonterminal... but that would be too much "magic" that confuses the user and also makes code-generation
 		// very non-uniform just for the sake of being clever.
 		return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("absent", new EmptyExpression(), null));
-			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("present", expression.getOperand().withFallbackName("it"), null));
+			// TODO use the optional's name for the operand (unless the operand already has a name) so it becomes the name of the synth NT and the generated PSI class
+			String operandSymbol = toSingleSymbol(expression.getOperand());
+			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
+				"absent", new EmptyExpression(), null));
+			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
+				"present", expression.getOperand().withFallbackName("it"), null));
 		});
 	}
 
-	private String extractRepetition(Expression operand, boolean zeroAllowed) {
-		// Note: we just call the elements "elements" here and don't care about their expression name (if any) because
-		// we intent to store them in a List object anyway.
-		return createSyntheticNonterminal(operand, (repetitionSyntheticName, alternatives) -> {
-			String elementSyntheticName = extractOpaqueExpression(operand);
+	private String extractRepetition(Expression repetition, Expression operand, boolean zeroAllowed) {
+		// Note that we just call the elements "elements" here and don't care about their expression name (if any)
+		// because we intent to store them in a List object anyway.
+		return createSyntheticNonterminal(repetition, (repetitionSyntheticName, alternatives) -> {
+			String operandSymbol = toSingleSymbol(operand);
+			// TODO use the repetition's name for the operand (something like RepnameElement) (unless the operand already has a name) so it becomes the name of the synth NT and the generated PSI class
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
 				"start",
-				zeroAllowed ? new EmptyExpression() : new SymbolReference(elementSyntheticName).withName("element"),
+				zeroAllowed ? new EmptyExpression() : new SymbolReference(operandSymbol).withName("element"),
 				null));
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
 				"next",
 				new SequenceExpression(
 					new SymbolReference(repetitionSyntheticName).withName("previous"),
-					new SymbolReference(elementSyntheticName).withName("element")
+					new SymbolReference(operandSymbol).withName("element")
 				), null));
 		});
 	}
 
 	/**
-	 * Extracts the specified expression into a new synthetic nonterminal. This method asks the expression to generate
-	 * sub-expressions for toplevel alternatives, but does not otherwise treat any kind of expression specially. This
-	 * method should therefore not by used as the "normal" extraction method for optionals and repetition, since it
-	 * would create an unnecessary nonterminal that just redirects to another one.
+	 * Turns the specified expression into a single-symbol expression, generating synthetic nonterminals if needed.
+	 * Returns that symbol. Usually, the expression's name should be used as the expression name for the single
+	 * symbol, too.
+	 */
+	private String toSingleSymbol(Expression expression) {
+		if (expression instanceof SymbolReference) {
+			return ((SymbolReference) expression).getSymbolName();
+		} else {
+			return extractOpaqueExpression(expression);
+		}
+	}
+
+	/**
+	 * Extracts the specified expression into a new synthetic nonterminal:
+	 *
+	 * - the expression's name will be used for the synthetic nonterminal, and the expression becomes the "content"
+	 *   of the synthetic nonterminal.
+	 *
+	 * - if the expression is an OR expression, then its operands become alternatives. The OR's name gets lost at
+	 *   expression level. The operand's names become alternative names and are also attached to the alternatives'
+	 *   content to generate getters; the exception is if an operand is a sequence -- then a getter is useless and
+	 *   would generate another redundant nonterminal.
+	 *
+	 * - if the expression is not an OR expression, then the synthetic nonterminal as a single unnamed alternative
+	 *   whose content is the expression itself.
+	 *
+	 * - if the expression is a sequence, then its name gets dropped at expression level because keeping it would
+	 *   cause an infinite loop of newly created nonterminals. A getter for the whole sequence would be useless anyway.
+	 *
+	 * - for all other expressions, the name is kept.
 	 */
 	private String extractOpaqueExpression(Expression expression) {
 		return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-			for (Expression toplevelOrOperand : expression.determineOrOperands()) {
-				// TODO this keeps the name of the toplevel OR operand which may push it out into yet another synthetic nonterminal
-				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(toplevelOrOperand.getName(), toplevelOrOperand, null));
+
+			List<Expression> orOperands = new ArrayList<>();
+			collectOrOperands(expression, orOperands);
+
+			for (Expression orOperand : orOperands) {
+				String alternativeName = (expression instanceof OrExpression) ? orOperand.getName() : null;
+				if (orOperand instanceof SequenceExpression) {
+					orOperand = orOperand.withName(null);
+				}
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(alternativeName, orOperand, null));
 			}
+
 		});
+	}
+
+	private void collectOrOperands(Expression expression, List<Expression> operands) {
+		if (expression instanceof OrExpression) {
+			OrExpression orExpression = (OrExpression)expression;
+			collectOrOperands(orExpression.getLeftOperand(), operands);
+			collectOrOperands(orExpression.getRightOperand(), operands);
+		} else {
+			operands.add(expression);
+		}
 	}
 
 	/**
 	 * Creates a synthetic nonterminal, using the specified callback to provide the expressions for its alternatives.
 	 * All generated alternatives have undefined precedence.
-	 *
+	 * <p>
 	 * The original expression is passed to use its name, if any, for the synthetic nonterminal.
 	 */
 	private String createSyntheticNonterminal(Expression expression, BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder) {
-		String syntheticName = createSyntheticName(expression);
+		String syntheticName = syntheticNonterminalNameGenerator.createSyntheticName(expression);
 		List<name.martingeisse.mapag.grammar.extended.Alternative> alternatives = new ArrayList<>();
 		alternativesAdder.accept(syntheticName, alternatives);
 		Production production = new Production(syntheticName, ImmutableList.copyOf(alternatives));
 		pendingProductions.add(production);
 		return syntheticName;
-	}
-
-	// TODO test name collision resolution
-	private String createSyntheticName(Expression expression) {
-		if (expression.getName() != null) {
-			String syntheticName = syntheticNamePrefix + expression.getName();
-			if (knownNonterminals.add(syntheticName)) {
-				return syntheticName;
-			}
-		}
-		String prefix = syntheticNamePrefix;
-		if (expression.getName() != null) {
-			prefix = prefix + expression.getName() + '/';
-		}
-		while (true) {
-			int syntheticNameCounter = syntheticNameCounters.getOrDefault(prefix, 0);
-			syntheticNameCounter++;
-			syntheticNameCounters.put(prefix, syntheticNameCounter);
-			String syntheticName = prefix + syntheticNameCounter;
-			if (knownNonterminals.add(syntheticName)) {
-				return syntheticName;
-			}
-		}
 	}
 
 }
