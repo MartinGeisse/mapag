@@ -88,7 +88,6 @@ public class ProductionCanonicalizer {
 			expansion.add(extractOptionalExpression((OptionalExpression) expression));
 			expressionNames.add(expression.getNameOrEmpty());
 		} else if (expression instanceof OrExpression) {
-			// TODO this turns expression names into alternative names and thus makes the expressions inaccessible!
 			expansion.add(extractOpaqueExpression(expression));
 			expressionNames.add(expression.getNameOrEmpty());
 		} else if (expression instanceof SequenceExpression) {
@@ -114,34 +113,26 @@ public class ProductionCanonicalizer {
 	}
 
 	private String extractOptionalExpression(OptionalExpression expression) {
-		// Note: we could add the top-level OR operands from the optional's operand as alternatives of the synthetic
-		// nonterminal... but that would be too much "magic" that confuses the user and also makes code-generation
-		// very non-uniform just for the sake of being clever.
+		Expression operand = expression.getOperand();
+		Expression replacementOperand = new SymbolReference(toSingleSymbol(operand)).withName(operand.getName()).withFallbackName("it");
 		return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-			// TODO use the optional's name for the operand (unless the operand already has a name) so it becomes the name of the synth NT and the generated PSI class
-			String operandSymbol = toSingleSymbol(expression.getOperand());
-			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
-				"absent", new EmptyExpression(), null));
-			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
-				"present", expression.getOperand().withFallbackName("it"), null));
+			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("absent", new EmptyExpression(), null));
+			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("present", replacementOperand, null));
 		});
 	}
 
 	private String extractRepetition(Expression repetition, Expression operand, boolean zeroAllowed) {
-		// Note that we just call the elements "elements" here and don't care about their expression name (if any)
-		// because we intent to store them in a List object anyway.
+		Expression replacementOperand = new SymbolReference(toSingleSymbol(operand)).withName(operand.getName()).withFallbackName("element");
 		return createSyntheticNonterminal(repetition, (repetitionSyntheticName, alternatives) -> {
-			String operandSymbol = toSingleSymbol(operand);
-			// TODO use the repetition's name for the operand (something like RepnameElement) (unless the operand already has a name) so it becomes the name of the synth NT and the generated PSI class
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
 				"start",
-				zeroAllowed ? new EmptyExpression() : new SymbolReference(operandSymbol).withName("element"),
+				zeroAllowed ? new EmptyExpression() : replacementOperand,
 				null));
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
 				"next",
 				new SequenceExpression(
 					new SymbolReference(repetitionSyntheticName).withName("previous"),
-					new SymbolReference(operandSymbol).withName("element")
+					replacementOperand
 				), null));
 		});
 	}
