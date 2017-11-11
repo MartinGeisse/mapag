@@ -66,7 +66,7 @@ public class ProductionCanonicalizer {
 	private name.martingeisse.mapag.grammar.canonical.Alternative convertAlternative(name.martingeisse.mapag.grammar.extended.Alternative inputAlternative) {
 		List<String> expansion = new ArrayList<>();
 		List<String> expressionNames = new ArrayList<>();
-		convertExpression(inputAlternative.getExpression(), expansion, expressionNames);
+		convertExpressionToExpansion(inputAlternative.getExpression(), expansion, expressionNames);
 		return new name.martingeisse.mapag.grammar.canonical.Alternative(
 			ImmutableList.copyOf(expansion),
 			inputAlternative.getPrecedenceDefiningTerminal(),
@@ -77,52 +77,91 @@ public class ProductionCanonicalizer {
 		);
 	}
 
-	private void convertExpression(Expression expression, List<String> expansion, List<String> expressionNames) {
+	private void convertExpressionToExpansion(Expression expression, List<String> expansion, List<String> expressionNames) {
 		if (expression instanceof EmptyExpression) {
-			// nothing to do
-		} else if (expression instanceof OneOrMoreExpression) {
-			OneOrMoreExpression oneOrMoreExpression = (OneOrMoreExpression) expression;
-			expansion.add(extractRepetition(oneOrMoreExpression, oneOrMoreExpression.getOperand(), false));
+
+			// an empty expression becomes an empty expansion
+
+		} else if (expression instanceof SequenceExpression && expression.getName() == null) {
+
+			// an unnamed sequence gets "inlined" in the output expansion. (Named sequences get extracted in the
+			// else-case below.)
+			SequenceExpression sequenceExpression = (SequenceExpression) expression;
+			convertExpressionToExpansion(sequenceExpression.getLeft(), expansion, expressionNames);
+			convertExpressionToExpansion(sequenceExpression.getRight(), expansion, expressionNames);
+
+		} else {
+
+			// anything else must be converted to a single symbol that gets added to the expansion (this also handles
+			// SymbolReferences and named sequences).
+			expansion.add(convertExpressionToSymbol(expression));
 			expressionNames.add(expression.getNameOrEmpty());
-		} else if (expression instanceof OptionalExpression) {
-			expansion.add(extractOptionalExpression((OptionalExpression) expression));
-			expressionNames.add(expression.getNameOrEmpty());
-		} else if (expression instanceof OrExpression) {
-			expansion.add(extractOpaqueExpression(expression));
-			expressionNames.add(expression.getNameOrEmpty());
-		} else if (expression instanceof SequenceExpression) {
-			if (expression.getName() == null) {
-				SequenceExpression sequenceExpression = (SequenceExpression) expression;
-				convertExpression(sequenceExpression.getLeft(), expansion, expressionNames);
-				convertExpression(sequenceExpression.getRight(), expansion, expressionNames);
-			} else {
-				expansion.add(extractOpaqueExpression(expression));
-				expressionNames.add(expression.getNameOrEmpty());
-			}
+
+		}
+	}
+
+	private String convertExpressionToSymbol(Expression expression) {
+		if (expression instanceof EmptyExpression) {
+
+			// strange case, but if the caller really needs a symbol for an EmptyExpression,
+			// we must create a synthetic nonterminal with empty content
+			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, expression, null));
+			});
+
 		} else if (expression instanceof SymbolReference) {
-			SymbolReference symbolReference = (SymbolReference) expression;
-			expansion.add(symbolReference.getSymbolName());
-			expressionNames.add(expression.getNameOrEmpty());
+
+			// symbol references can be used as-is without extracting them
+			return ((SymbolReference) expression).getSymbolName();
+
+		} else if (expression instanceof OrExpression) {
+
+			// an OR-expression can be extracted into alternatives
+			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
+				for (Expression orOperand : getOrOperands(expression)) {
+					alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(orOperand.getName(), orOperand, null));
+				}
+			});
+
+		} else if (expression instanceof SequenceExpression) {
+
+			// A sequence gets extracted, but we must remove the expression's name so it gets inlined in the new
+			// nonterminal -- otherwise we'd push it out to an infinite loop of new nonterminals.
+			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, expression.withName(null), null));
+			});
+
+
+		} else if (expression instanceof OptionalExpression) {
+
+			// An OptionalExpression gets extracted into a two-alternative nonterminal
+			Expression operand = ((OptionalExpression) expression).getOperand();
+			Expression replacementOperand = new SymbolReference(convertExpressionToSymbol(operand)).withName(operand.getName()).withFallbackName("it");
+			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("absent", new EmptyExpression(), null));
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("present", replacementOperand, null));
+			});
+
 		} else if (expression instanceof ZeroOrMoreExpression) {
+
+			// a repetition gets extracted into a two-alternative nonterminal
 			ZeroOrMoreExpression zeroOrMoreExpression = (ZeroOrMoreExpression) expression;
-			expansion.add(extractRepetition(zeroOrMoreExpression, zeroOrMoreExpression.getOperand(), true));
-			expressionNames.add(expression.getNameOrEmpty());
+			return extractRepetition(zeroOrMoreExpression, zeroOrMoreExpression.getOperand(), true);
+
+		} else if (expression instanceof OneOrMoreExpression) {
+
+			// a repetition gets extracted into a two-alternative nonterminal
+			OneOrMoreExpression oneOrMoreExpression = (OneOrMoreExpression) expression;
+			return extractRepetition(oneOrMoreExpression, oneOrMoreExpression.getOperand(), false);
+
 		} else {
 			throw new RuntimeException("unknown expression type: " + expression);
 		}
 	}
 
-	private String extractOptionalExpression(OptionalExpression expression) {
-		Expression operand = expression.getOperand();
-		Expression replacementOperand = new SymbolReference(toSingleSymbol(operand)).withName(operand.getName()).withFallbackName("it");
-		return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("absent", new EmptyExpression(), null));
-			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("present", replacementOperand, null));
-		});
-	}
-
+	// common handling for ZeroOrMoreExpression and OneOrMoreExpression
 	private String extractRepetition(Expression repetition, Expression operand, boolean zeroAllowed) {
-		Expression replacementOperand = new SymbolReference(toSingleSymbol(operand)).withName(operand.getName()).withFallbackName("element");
+		Expression replacementOperand = new SymbolReference(convertExpressionToSymbol(operand)).withName(operand.getName()).withFallbackName("element");
 		return createSyntheticNonterminal(repetition, (repetitionSyntheticName, alternatives) -> {
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
 				"start",
@@ -137,62 +176,15 @@ public class ProductionCanonicalizer {
 		});
 	}
 
-	/**
-	 * Turns the specified expression into a single-symbol expression, generating synthetic nonterminals if needed,
-	 * and returns that symbol. The caller should usually use the original expression's name for the returned
-	 * symbol.
-	 */
-	private String toSingleSymbol(Expression expression) {
-		if (expression instanceof SymbolReference) {
-			return ((SymbolReference) expression).getSymbolName();
-		} else {
-			return extractOpaqueExpression(expression);
-		}
-	}
-
-	/**
-	 * Extracts the specified expression into a new synthetic nonterminal:
-	 *
-	 * - the expression's name will be used for the synthetic nonterminal, and the expression becomes the "content"
-	 *   of the synthetic nonterminal.
-	 *
-	 * - if the expression is an OR expression, then its operands become alternatives. The OR's name gets lost at
-	 *   expression level. The operand's names become alternative names and are also attached to the alternatives'
-	 *   content to generate getters; the exception is if an operand is a sequence -- then a getter is useless and
-	 *   would generate another redundant nonterminal.
-	 *
-	 * - if the expression is not an OR expression, then the synthetic nonterminal as a single unnamed alternative
-	 *   whose content is the expression itself.
-	 *
-	 * - if the expression is a sequence, then its name gets dropped at expression level because keeping it would
-	 *   cause an infinite loop of newly created nonterminals. A getter for the whole sequence would be useless anyway.
-	 *
-	 * - for all other expressions, the name is kept.
-	 */
-	private String extractOpaqueExpression(Expression expression) {
-		return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-
-			List<Expression> orOperands = new ArrayList<>();
-			collectOrOperands(expression, orOperands);
-
-			for (Expression orOperand : orOperands) {
-				String alternativeName = (expression instanceof OrExpression) ? orOperand.getName() : null;
-				if (orOperand instanceof SequenceExpression) {
-					orOperand = orOperand.withName(null);
-				}
-				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(alternativeName, orOperand, null));
-			}
-
-		});
-	}
-
-	private void collectOrOperands(Expression expression, List<Expression> operands) {
+	// flattens a top-level OrExpression tree (if any) into a list of OR operands
+	private ImmutableList<Expression> getOrOperands(Expression expression) {
 		if (expression instanceof OrExpression) {
-			OrExpression orExpression = (OrExpression)expression;
-			collectOrOperands(orExpression.getLeftOperand(), operands);
-			collectOrOperands(orExpression.getRightOperand(), operands);
+			OrExpression orExpression = (OrExpression) expression;
+			ImmutableList<Expression> leftOperands = getOrOperands(orExpression.getLeftOperand());
+			ImmutableList<Expression> rightOperands = getOrOperands(orExpression.getRightOperand());
+			return ImmutableList.<Expression>builder().addAll(leftOperands).addAll(rightOperands).build();
 		} else {
-			operands.add(expression);
+			return ImmutableList.of(expression);
 		}
 	}
 
