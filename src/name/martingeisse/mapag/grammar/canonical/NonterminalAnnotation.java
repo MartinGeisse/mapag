@@ -10,27 +10,28 @@ public final class NonterminalAnnotation {
 	/**
 	 * Empty annotation that can be used as a default so we don't have to deal with null everywhere.
 	 */
-	public static final NonterminalAnnotation EMPTY = new NonterminalAnnotation(ClassType.NORMAL);
+	public static final NonterminalAnnotation EMPTY = new NonterminalAnnotation(PsiStyle.NORMAL);
 
-	private final ClassType classType;
+	private final PsiStyle psiStyle;
 
-	public NonterminalAnnotation(ClassType classType) {
-		this.classType = ParameterUtil.ensureNotNull(classType, "classType");
+	public NonterminalAnnotation(PsiStyle psiStyle) {
+		this.psiStyle = ParameterUtil.ensureNotNull(psiStyle, "psiStyle");
 	}
 
-	public ClassType getClassType() {
-		return classType;
+	public PsiStyle getPsiStyle() {
+		return psiStyle;
 	}
 
 	@Override
 	public String toString() {
-		return "[" + classType + "]";
+		return "[" + psiStyle + "]";
 	}
 
-	public enum ClassType {
+	public enum PsiStyle {
 		NORMAL,
 		OPTIONAL,
-		COLLECTION
+		ZERO_OR_MORE,
+		ONE_OR_MORE
 	}
 
 }

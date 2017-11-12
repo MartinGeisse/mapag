@@ -114,7 +114,7 @@ public class ProductionCanonicalizer {
 			// we must create a synthetic nonterminal with empty content
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, expression, null));
-			});
+			}, NonterminalAnnotation.PsiStyle.NORMAL);
 
 		} else if (expression instanceof SymbolReference) {
 
@@ -128,7 +128,7 @@ public class ProductionCanonicalizer {
 				for (Expression orOperand : getOrOperands(expression)) {
 					alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(orOperand.getName(), orOperand, null));
 				}
-			});
+			}, NonterminalAnnotation.PsiStyle.NORMAL);
 
 		} else if (expression instanceof SequenceExpression) {
 
@@ -136,7 +136,7 @@ public class ProductionCanonicalizer {
 			// nonterminal -- otherwise we'd push it out to an infinite loop of new nonterminals.
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, expression.withName(null), null));
-			});
+			}, NonterminalAnnotation.PsiStyle.NORMAL);
 
 
 		} else if (expression instanceof OptionalExpression) {
@@ -147,7 +147,7 @@ public class ProductionCanonicalizer {
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("absent", new EmptyExpression(), null));
 				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("present", replacementOperand, null));
-			});
+			}, NonterminalAnnotation.PsiStyle.OPTIONAL);
 
 		} else if (expression instanceof ZeroOrMoreExpression) {
 
@@ -169,6 +169,7 @@ public class ProductionCanonicalizer {
 	// common handling for ZeroOrMoreExpression and OneOrMoreExpression
 	private String extractRepetition(Expression repetition, Expression operand, boolean zeroAllowed) {
 		Expression replacementOperand = new SymbolReference(convertExpressionToSymbol(operand)).withName(operand.getName()).withFallbackName("element");
+		NonterminalAnnotation.PsiStyle psiStyle = (zeroAllowed ? NonterminalAnnotation.PsiStyle.ZERO_OR_MORE : NonterminalAnnotation.PsiStyle.ONE_OR_MORE);
 		return createSyntheticNonterminal(repetition, (repetitionSyntheticName, alternatives) -> {
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
 				"start",
@@ -180,7 +181,7 @@ public class ProductionCanonicalizer {
 					new SymbolReference(repetitionSyntheticName).withName("previous"),
 					replacementOperand
 				), null));
-		});
+		}, psiStyle);
 	}
 
 	// flattens a top-level OrExpression tree (if any) into a list of OR operands
@@ -201,12 +202,17 @@ public class ProductionCanonicalizer {
 	 * <p>
 	 * The original expression is passed to use its name, if any, for the synthetic nonterminal.
 	 */
-	private String createSyntheticNonterminal(Expression expression, BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder) {
+	private String createSyntheticNonterminal(
+		Expression expression,
+		BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder,
+		NonterminalAnnotation.PsiStyle psiStyle) {
+
 		String syntheticName = syntheticNonterminalNameGenerator.createSyntheticName(expression);
 		List<name.martingeisse.mapag.grammar.extended.Alternative> alternatives = new ArrayList<>();
 		alternativesAdder.accept(syntheticName, alternatives);
 		Production production = new Production(syntheticName, ImmutableList.copyOf(alternatives));
 		pendingProductions.add(production);
+		nonterminalAnnotations.put(syntheticName, new NonterminalAnnotation(psiStyle));
 		return syntheticName;
 	}
 
