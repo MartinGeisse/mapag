@@ -23,7 +23,7 @@ public final class SyntheticNonterminalNameGenerator {
 
 	public void prepare(String nonterminalName, String alternativeName) {
 		if (alternativeName == null) {
-			this.syntheticNamePrefix = nonterminalName + "//";
+			this.syntheticNamePrefix = nonterminalName + "/";
 		} else {
 			this.syntheticNamePrefix = nonterminalName + '/' + alternativeName + '/';
 		}
