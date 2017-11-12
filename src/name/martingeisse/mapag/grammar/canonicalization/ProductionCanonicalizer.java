@@ -2,6 +2,7 @@ package name.martingeisse.mapag.grammar.canonicalization;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.NonterminalAnnotation;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;
@@ -21,6 +22,7 @@ public class ProductionCanonicalizer {
 	private final List<Production> pendingProductions;
 	private final List<Production> nextPendingBatch;
 	private final Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
+	private final Map<String, NonterminalAnnotation> nonterminalAnnotations;
 	private final SyntheticNonterminalNameGenerator syntheticNonterminalNameGenerator;
 
 	public ProductionCanonicalizer(ImmutableList<Production> inputProductions) {
@@ -28,6 +30,7 @@ public class ProductionCanonicalizer {
 		this.pendingProductions = new ArrayList<>(inputProductions);
 		this.nextPendingBatch = new ArrayList<>();
 		this.nonterminalAlternatives = new HashMap<>();
+		this.nonterminalAnnotations = new HashMap<>();
 		this.syntheticNonterminalNameGenerator = new SyntheticNonterminalNameGenerator();
 		// TODO also register known nonterminals
 		for (Production production : inputProductions) {
@@ -43,6 +46,10 @@ public class ProductionCanonicalizer {
 
 	public Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> getNonterminalAlternatives() {
 		return nonterminalAlternatives;
+	}
+
+	public Map<String, NonterminalAnnotation> getNonterminalAnnotations() {
+		return nonterminalAnnotations;
 	}
 
 	private void work() {

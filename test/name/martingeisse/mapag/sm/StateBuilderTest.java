@@ -6,11 +6,7 @@ import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import name.martingeisse.mapag.grammar.Associativity;
-import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.Grammar;
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,37 +26,37 @@ public class StateBuilderTest {
 
 	private static final NonterminalDefinition START_SYMBOL_1 = new NonterminalDefinition("startSymbol", ImmutableList.of(
 		new Alternative(ImmutableList.of("t1"), null, AlternativeAnnotation.EMPTY)
-	));
+	), NonterminalAnnotation.EMPTY);
 
 	private static final NonterminalDefinition START_SYMBOL_2 = new NonterminalDefinition("startSymbol", ImmutableList.of(
 		new Alternative(ImmutableList.of("t1"), null, AlternativeAnnotation.EMPTY),
 		new Alternative(ImmutableList.of("t2"), null, AlternativeAnnotation.EMPTY)
-	));
+	), NonterminalAnnotation.EMPTY);
 
 	private static final NonterminalDefinition START_SYMBOL_3 = new NonterminalDefinition("startSymbol", ImmutableList.of(
 		new Alternative(ImmutableList.of("t3"), null, AlternativeAnnotation.EMPTY),
 		new Alternative(ImmutableList.of("nt1"), null, AlternativeAnnotation.EMPTY)
-	));
+	), NonterminalAnnotation.EMPTY);
 
 	private static final NonterminalDefinition NONTERMINAL_1 = new NonterminalDefinition("nt1", ImmutableList.of(
 		new Alternative(ImmutableList.of("t1"), null, AlternativeAnnotation.EMPTY)
-	));
+	), NonterminalAnnotation.EMPTY);
 
 	private static final NonterminalDefinition NONTERMINAL_2 = new NonterminalDefinition("nt2", ImmutableList.of(
 		new Alternative(ImmutableList.of("t2"), null, AlternativeAnnotation.EMPTY)
-	));
+	), NonterminalAnnotation.EMPTY);
 
 	private static final NonterminalDefinition NONTERMINAL_3 = new NonterminalDefinition("nt3", ImmutableList.of(
 		new Alternative(ImmutableList.of("t1", "nt1", "t2", "t2"), null, AlternativeAnnotation.EMPTY)
-	));
+	), NonterminalAnnotation.EMPTY);
 
 	private static final NonterminalDefinition NONTERMINAL_4 = new NonterminalDefinition("nt4", ImmutableList.of(
 		new Alternative(ImmutableList.of("t1", "nt1", "t2", "t3"), null, AlternativeAnnotation.EMPTY)
-	));
+	), NonterminalAnnotation.EMPTY);
 
 	private static final NonterminalDefinition NONTERMINAL_5 = new NonterminalDefinition("nt5", ImmutableList.of(
 		new Alternative(ImmutableList.of("t1", "nt1", "t3", "t3"), null, AlternativeAnnotation.EMPTY)
-	));
+	), NonterminalAnnotation.EMPTY);
 
 	//
 	// ----------------------------------------------------------------------------------------------------------------

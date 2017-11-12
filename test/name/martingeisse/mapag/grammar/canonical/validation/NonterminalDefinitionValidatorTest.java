@@ -3,10 +3,7 @@ package name.martingeisse.mapag.grammar.canonical.validation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.grammar.Associativity;
-import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.*;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -31,8 +28,8 @@ public class NonterminalDefinitionValidatorTest {
 	}
 
 	private static final Map<String, NonterminalDefinition> SIMPLE_NONTERMINALS = ImmutableMap.of(
-		"x", new NonterminalDefinition("x", ImmutableList.of(new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY))),
-		"y", new NonterminalDefinition("y", ImmutableList.of(new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)))
+		"x", new NonterminalDefinition("x", ImmutableList.of(new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)), NonterminalAnnotation.EMPTY),
+		"y", new NonterminalDefinition("y", ImmutableList.of(new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)), NonterminalAnnotation.EMPTY)
 	);
 
 	@Test

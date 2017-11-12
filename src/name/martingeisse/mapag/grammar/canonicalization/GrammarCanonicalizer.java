@@ -2,6 +2,7 @@ package name.martingeisse.mapag.grammar.canonicalization;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.Associativity;
+import name.martingeisse.mapag.grammar.canonical.NonterminalAnnotation;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
@@ -60,7 +61,11 @@ public final class GrammarCanonicalizer {
 		for (Map.Entry<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternativesEntry : productionCanonicalizer.getNonterminalAlternatives().entrySet()) {
 			String nonterminalName = nonterminalAlternativesEntry.getKey();
 			ImmutableList<name.martingeisse.mapag.grammar.canonical.Alternative> alternatives = ImmutableList.copyOf(nonterminalAlternativesEntry.getValue());
-			NonterminalDefinition nonterminalDefinition = new NonterminalDefinition(nonterminalName, alternatives);
+			NonterminalAnnotation annotation = productionCanonicalizer.getNonterminalAnnotations().get(nonterminalName);
+			if (annotation == null) {
+				annotation = NonterminalAnnotation.EMPTY;
+			}
+			NonterminalDefinition nonterminalDefinition = new NonterminalDefinition(nonterminalName, alternatives, annotation);
 			nonterminalDefinitions.put(nonterminalName, nonterminalDefinition);
 		}
 

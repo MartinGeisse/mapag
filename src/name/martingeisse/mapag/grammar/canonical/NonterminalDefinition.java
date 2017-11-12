@@ -16,20 +16,26 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public final class NonterminalDefinition extends SymbolDefinition {
 
 	private final ImmutableList<Alternative> alternatives;
+	private final NonterminalAnnotation annotation;
 
-	public NonterminalDefinition(String name, ImmutableList<Alternative> alternatives) {
+	public NonterminalDefinition(String name, ImmutableList<Alternative> alternatives, NonterminalAnnotation annotation) {
 		super(name);
 		this.alternatives = ParameterUtil.ensureNotNullOrEmpty(alternatives, "alternatives");
 		ParameterUtil.ensureNoNullElement(alternatives, "alternatives");
+		this.annotation = ParameterUtil.ensureNotNull(annotation, "annotation");
 	}
 
 	public ImmutableList<Alternative> getAlternatives() {
 		return alternatives;
 	}
 
+	public NonterminalAnnotation getAnnotation() {
+		return annotation;
+	}
+
 	@Override
 	public String toString() {
-		return getName() + " ::= " + StringUtils.join(alternatives, " | ") + ';';
+		return getName() + " ::= " + StringUtils.join(alternatives, " | ") + ' ' + annotation + ';';
 	}
 
 }

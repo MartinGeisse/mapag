@@ -15,34 +15,34 @@ public class NonterminalDefinitionTest {
 
 	@Test
 	public void testConstructorGetter() {
-		NonterminalDefinition nonterminalDefinition = new NonterminalDefinition("nt", ALTERNATIVES);
+		NonterminalDefinition nonterminalDefinition = new NonterminalDefinition("nt", ALTERNATIVES, NonterminalAnnotation.EMPTY);
 		Assert.assertEquals("nt", nonterminalDefinition.getName());
 		Assert.assertEquals(ALTERNATIVES, nonterminalDefinition.getAlternatives());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullName() {
-		new NonterminalDefinition(null, ALTERNATIVES);
+		new NonterminalDefinition(null, ALTERNATIVES, NonterminalAnnotation.EMPTY);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyName() {
-		new NonterminalDefinition("", ALTERNATIVES);
+		new NonterminalDefinition("", ALTERNATIVES, NonterminalAnnotation.EMPTY);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullAlternatives() {
-		new NonterminalDefinition("nt", null);
+		new NonterminalDefinition("nt", null, NonterminalAnnotation.EMPTY);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyAlternatives() {
-		new NonterminalDefinition("nt", ImmutableList.of());
+		new NonterminalDefinition("nt", ImmutableList.of(), NonterminalAnnotation.EMPTY);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testPercentSignInNameNotAllowed() {
-		new NonterminalDefinition("%foo", ALTERNATIVES);
+		new NonterminalDefinition("%foo", ALTERNATIVES, NonterminalAnnotation.EMPTY);
 	}
 
 }

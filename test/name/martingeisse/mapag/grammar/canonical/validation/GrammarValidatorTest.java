@@ -2,6 +2,7 @@ package name.martingeisse.mapag.grammar.canonical.validation;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
+import name.martingeisse.mapag.grammar.canonical.NonterminalAnnotation;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,7 +30,10 @@ public class GrammarValidatorTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testTerminalNonterminalNameIntersection() {
-		NonterminalDefinition conflictingNonterminal = new NonterminalDefinition(TERMINAL_1.getName(), NONTERMINAL_1.getAlternatives());
+		NonterminalDefinition conflictingNonterminal = new NonterminalDefinition(
+			TERMINAL_1.getName(),
+			NONTERMINAL_1.getAlternatives(),
+			NonterminalAnnotation.EMPTY);
 		ImmutableList<NonterminalDefinition> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminal);
 		Grammar grammar = new Grammar(TERMINALS, nonterminals, START_NONTERMINAL_NAME);
 		new MyGrammarValidator(grammar).validate();
