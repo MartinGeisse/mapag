@@ -19,4 +19,59 @@ public $classModifiers class $className extends $superclass {
         }
     #end
 
+
+    ##
+    ## repetitions
+    ##
+
+    #if ($isRepetitionAbstract)
+
+        public abstract ImmutableList<$elementType> getAll();
+
+        public void addAllTo(List<$elementType> list);
+
+        public void addAllTo(ImmutableList.Builder<$elementType> builder);
+
+    #elseif ($isRepetitionBaseCase)
+
+        public ImmutableList<$elementType> getAll() {
+            #if ($isZeroBasedRepetition)
+                return ImmutableList.of();
+            #else
+                return ImmutableList.of(getElement());
+            #end
+        }
+
+        public void addAllTo(List<$elementType> list) {
+            #if (!$isZeroBasedRepetition)
+                list.add(getElement());
+            #end
+        }
+
+        public void addAllTo(ImmutableList.Builder<$elementType> builder) {
+            #if (!$isZeroBasedRepetition)
+                builder.add(getElement());
+            #end
+        }
+
+    #elseif ($isRepetitionNextCase)
+
+        public ImmutableList<$elementType> getAll() {
+            ImmutableList.Builder<$elementType> builder = ImmutableList.builder();
+            addAllTo(builder);
+            return builder.build();
+        }
+
+        public void addAllTo(List<$elementType> list) {
+            getPrevious().addAllTo(list);
+            list.add(getElement());
+        }
+
+        public void addAllTo(ImmutableList.Builder<$elementType> builder) {
+            getPrevious().addAllTo(builder);
+            builder.add(getElement());
+        }
+
+    #end
+
 }
