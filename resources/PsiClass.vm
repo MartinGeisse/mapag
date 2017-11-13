@@ -21,20 +21,41 @@ public $classModifiers class $className extends $superclass {
 
 
     ##
+    ## optionals
+    ##
+
+    #if ($isOptionalAbstract)
+
+        public abstract $operandType $optionalOperandGetterName();
+
+    #elseif ($isOptionalAbsentCase)
+
+        public $operandType $optionalOperandGetterName() {
+            return null;
+        }
+
+    #elseif ($isOptionalPresentCase)
+
+        ## the normal getter will override the abstract method form the parent class
+
+    #end
+
+
+    ##
     ## repetitions
     ##
 
     #if ($isRepetitionAbstract)
 
-        public abstract ImmutableList<$elementType> getAll();
+        public abstract ImmutableList<$operandType> getAll();
 
-        public void addAllTo(List<$elementType> list);
+        public void addAllTo(List<$operandType> list);
 
-        public void addAllTo(ImmutableList.Builder<$elementType> builder);
+        public void addAllTo(ImmutableList.Builder<$operandType> builder);
 
     #elseif ($isRepetitionBaseCase)
 
-        public ImmutableList<$elementType> getAll() {
+        public ImmutableList<$operandType> getAll() {
             #if ($isZeroBasedRepetition)
                 return ImmutableList.of();
             #else
@@ -42,13 +63,13 @@ public $classModifiers class $className extends $superclass {
             #end
         }
 
-        public void addAllTo(List<$elementType> list) {
+        public void addAllTo(List<$operandType> list) {
             #if (!$isZeroBasedRepetition)
                 list.add(getElement());
             #end
         }
 
-        public void addAllTo(ImmutableList.Builder<$elementType> builder) {
+        public void addAllTo(ImmutableList.Builder<$operandType> builder) {
             #if (!$isZeroBasedRepetition)
                 builder.add(getElement());
             #end
@@ -56,18 +77,18 @@ public $classModifiers class $className extends $superclass {
 
     #elseif ($isRepetitionNextCase)
 
-        public ImmutableList<$elementType> getAll() {
-            ImmutableList.Builder<$elementType> builder = ImmutableList.builder();
+        public ImmutableList<$operandType> getAll() {
+            ImmutableList.Builder<$operandType> builder = ImmutableList.builder();
             addAllTo(builder);
             return builder.build();
         }
 
-        public void addAllTo(List<$elementType> list) {
+        public void addAllTo(List<$operandType> list) {
             getPrevious().addAllTo(list);
             list.add(getElement());
         }
 
-        public void addAllTo(ImmutableList.Builder<$elementType> builder) {
+        public void addAllTo(ImmutableList.Builder<$operandType> builder) {
             getPrevious().addAllTo(builder);
             builder.add(getElement());
         }

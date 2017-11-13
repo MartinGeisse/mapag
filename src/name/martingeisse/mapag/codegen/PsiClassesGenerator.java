@@ -43,9 +43,11 @@ public class PsiClassesGenerator {
 		switch (nonterminalDefinition.getAnnotation().getPsiStyle()) {
 
 			case NORMAL:
-			case OPTIONAL:
-				// TODO optionals
 				handleNormalStyledNonterminal(nonterminalDefinition);
+				break;
+
+			case OPTIONAL:
+				handleOptionalStyledNonterminal(nonterminalDefinition);
 				break;
 
 			case ZERO_OR_MORE:
@@ -133,7 +135,7 @@ public class PsiClassesGenerator {
 		if (!zeroBased && !baseCaseAlternative.getExpansion().get(0).equals(elementSymbol)) {
 			throw new RuntimeException("base-case uses different element symbol than repetition case for nonterminal " + elementSymbol);
 		}
-		String elementType = psiTypeMapper.getEffectiveTypeForSymbol(elementSymbol);
+		String operandType = psiTypeMapper.getEffectiveTypeForSymbol(elementSymbol);
 
 		// generate abstract class
 		String abstractClassName = psiTypeMapper.getEffectiveTypeForNonterminal(nonterminalName);
@@ -144,7 +146,7 @@ public class PsiClassesGenerator {
 			classGenerator.isAbstract = true;
 			classGenerator.alternative = null;
 			classGenerator.isRepetitionAbstract = true;
-			classGenerator.elementType = elementType;
+			classGenerator.operandType = operandType;
 			classGenerator.isZeroBasedRepetition = zeroBased;
 			classGenerator.generate();
 		}
@@ -159,7 +161,7 @@ public class PsiClassesGenerator {
 			classGenerator.isAbstract = false;
 			classGenerator.alternative = baseCaseAlternative;
 			classGenerator.isRepetitionBaseCase = true;
-			classGenerator.elementType = elementType;
+			classGenerator.operandType = operandType;
 			classGenerator.isZeroBasedRepetition = zeroBased;
 			classGenerator.generate();
 		}
@@ -174,8 +176,83 @@ public class PsiClassesGenerator {
 			classGenerator.isAbstract = false;
 			classGenerator.alternative = repetitionCaseAlternative;
 			classGenerator.isRepetitionNextCase = true;
-			classGenerator.elementType = elementType;
+			classGenerator.operandType = operandType;
 			classGenerator.isZeroBasedRepetition = zeroBased;
+			classGenerator.generate();
+		}
+
+	}
+
+	private void handleOptionalStyledNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException {
+
+		// verify the nonterminal's structure and determine its element symbol and Java type
+		String nonterminalName = nonterminalDefinition.getName();
+		if (nonterminalDefinition.getAlternatives().size() != 2) {
+			throw new RuntimeException("optional-styled nonterminal " + nonterminalName + " has " +
+				nonterminalDefinition.getAlternatives().size() + " alternatives, expected 2");
+		}
+		Alternative absentCaseAlternative, presentCaseAlternative;
+		if (nonterminalDefinition.getAlternatives().get(0).getExpansion().size() == 0) {
+			absentCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
+			presentCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
+		} else if (nonterminalDefinition.getAlternatives().get(1).getExpansion().size() == 0) {
+			presentCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
+			absentCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
+		} else {
+			throw new RuntimeException("could not find alternative with expansion length 0 as absent case for optional-styled nonterminal " + nonterminalName);
+		}
+		if (presentCaseAlternative.getExpansion().size() != 1) {
+			throw new RuntimeException("could not recognize present case for optional-styled nonterminal " + nonterminalName);
+		}
+		String operandSymbol = presentCaseAlternative.getExpansion().get(0);
+		String operandType = psiTypeMapper.getEffectiveTypeForSymbol(operandSymbol);
+		String operandName = presentCaseAlternative.getAnnotation().getExpressionNames().get(0);
+		if (operandName == null) {
+			operandName = "it";
+		}
+		String operandGetterName = "get" + StringUtils.capitalize(operandName);
+
+		// generate abstract class
+		String abstractClassName = psiTypeMapper.getEffectiveTypeForNonterminal(nonterminalName);
+		{
+			PsiClassGenerator classGenerator = new PsiClassGenerator();
+			classGenerator.className = abstractClassName;
+			classGenerator.superclass = "ASTWrapperPsiElement";
+			classGenerator.isAbstract = true;
+			classGenerator.alternative = null;
+			classGenerator.operandType = operandType;
+			classGenerator.isOptionalAbstract = true;
+			classGenerator.optionalOperandGetterName = operandGetterName;
+			classGenerator.generate();
+		}
+
+		// generate "absent" case
+		{
+			// note: this fallback shouldn't be necessary since the alternatives of a repetition should always be named
+			String alternativeName = (absentCaseAlternative.getAnnotation().getAlternativeName() == null ? "baseCase" : absentCaseAlternative.getAnnotation().getAlternativeName());
+			PsiClassGenerator classGenerator = new PsiClassGenerator();
+			classGenerator.className = psiTypeMapper.toIdentifier(nonterminalName + '/' + alternativeName, true);
+			classGenerator.superclass = abstractClassName;
+			classGenerator.isAbstract = false;
+			classGenerator.alternative = absentCaseAlternative;
+			classGenerator.operandType = operandType;
+			classGenerator.isOptionalAbsentCase = true;
+			classGenerator.optionalOperandGetterName = operandGetterName;
+			classGenerator.generate();
+		}
+
+		// generate "present" case
+		{
+			// note: this fallback shouldn't be necessary since the alternatives of a repetition should always be named
+			String alternativeName = (presentCaseAlternative.getAnnotation().getAlternativeName() == null ? "repetitionCase" : presentCaseAlternative.getAnnotation().getAlternativeName());
+			PsiClassGenerator classGenerator = new PsiClassGenerator();
+			classGenerator.className = psiTypeMapper.toIdentifier(nonterminalName + '/' + alternativeName, true);
+			classGenerator.superclass = abstractClassName;
+			classGenerator.isAbstract = false;
+			classGenerator.alternative = presentCaseAlternative;
+			classGenerator.operandType = operandType;
+			classGenerator.isOptionalPresentCase = true;
+			classGenerator.optionalOperandGetterName = operandGetterName;
 			classGenerator.generate();
 		}
 
@@ -188,11 +265,16 @@ public class PsiClassesGenerator {
 		boolean isAbstract;
 		Alternative alternative;
 
+		String operandType;
 		boolean isRepetitionAbstract;
 		boolean isRepetitionBaseCase;
 		boolean isRepetitionNextCase;
-		String elementType;
 		boolean isZeroBasedRepetition;
+		boolean isOptionalAbstract;
+		boolean isOptionalAbsentCase;
+		boolean isOptionalPresentCase;
+		String optionalOperandGetterName;
+
 
 		void generate() throws ConfigurationException {
 
@@ -201,11 +283,15 @@ public class PsiClassesGenerator {
 			context.put("className", className);
 			context.put("superclass", superclass);
 			context.put("classModifiers", isAbstract ? "abstract" : "final");
+			context.put("operandType", operandType);
 			context.put("isRepetitionAbstract", isRepetitionAbstract);
 			context.put("isRepetitionBaseCase", isRepetitionBaseCase);
 			context.put("isRepetitionNextCase", isRepetitionNextCase);
-			context.put("elementType", elementType);
 			context.put("isZeroBasedRepetition", isZeroBasedRepetition);
+			context.put("isOptionalAbstract", isOptionalAbstract);
+			context.put("isOptionalAbsentCase", isOptionalAbsentCase);
+			context.put("isOptionalPresentCase", isOptionalPresentCase);
+			context.put("optionalOperandGetterName", optionalOperandGetterName);
 
 			List<NodeGetter> nodeGetters = new ArrayList<>();
 			if (alternative != null && alternative.getAnnotation().getExpressionNames() != null) {
