@@ -101,13 +101,7 @@ public class PsiClassesGenerator {
 					if (!expressionName.isEmpty()) {
 						NodeGetter nodeGetter = new NodeGetter();
 						nodeGetter.childIndex = i;
-						if (grammar.getTerminalDefinitions().get(symbol) != null) {
-							nodeGetter.nodeType = "LeafPsiElement";
-						} else if (grammar.getNonterminalDefinitions().get(symbol) != null) {
-							nodeGetter.nodeType = psiTypeMapper.getEffectiveTypeForNonterminal(symbol);
-						} else {
-							throw new RuntimeException("unknown symbol: " + symbol);
-						}
+						nodeGetter.nodeType = psiTypeMapper.getEffectiveTypeForSymbol(symbol);
 						nodeGetter.getterName = "get" + StringUtils.capitalize(expressionName);
 						nodeGetters.add(nodeGetter);
 					}

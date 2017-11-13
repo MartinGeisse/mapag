@@ -21,6 +21,16 @@ public class PsiTypeMapper {
 		this.configuration = configuration;
 	}
 
+	public String getEffectiveTypeForSymbol(String symbol) {
+		if (grammar.getTerminalDefinitions().get(symbol) != null) {
+			return "LeafPsiElement";
+		} else if (grammar.getNonterminalDefinitions().get(symbol) != null) {
+			return getEffectiveTypeForNonterminal(symbol);
+		} else {
+			throw new RuntimeException("unknown symbol: " + symbol);
+		}
+	}
+
 	public String getEffectiveTypeForNonterminal(String nonterminal) {
 		NonterminalDefinition nonterminalDefinition = grammar.getNonterminalDefinitions().get(nonterminal);
 		NonterminalAnnotation.PsiStyle psiStyle = nonterminalDefinition.getAnnotation().getPsiStyle();
@@ -71,15 +81,8 @@ public class PsiTypeMapper {
 		if (!zeroAllowed && !baseCaseAlternative.getExpansion().get(0).equals(elementSymbol)) {
 			throw new RuntimeException("base-case uses different element symbol than repetition case for nonterminal " + elementSymbol);
 		}
-		if (grammar.isTerminal(elementSymbol)) {
-			// TODO
-
-		} else if (grammar.isNonterminal(elementSymbol)) {
-			// TODO
-
-		} else {
-			throw new RuntimeException("repetition element is neither terminal nor nonterminal for nonterminal " + elementSymbol);
-		}
+		String elementType = getEffectiveTypeForSymbol(elementSymbol);
+		return "List<" + elementType + ">";
 	}
 
 	public String getGeneratedTypeForNonterminal(String nonterminal) {
