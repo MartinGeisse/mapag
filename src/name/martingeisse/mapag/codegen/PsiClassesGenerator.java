@@ -345,14 +345,16 @@ public class PsiClassesGenerator {
 
 	}
 
-	private void generateFactoryClass() throws ConfigurationException {
+	private void generateFactoryClass() throws ConfigurationException, IOException {
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 
-		StringWriter sw = new StringWriter();
-		MapagVelocityEngine.engine.getTemplate("PsiFactory.vm").merge(context, sw);
-		System.out.println(sw);
+		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "PsiFactory")) {
+			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+				MapagVelocityEngine.engine.getTemplate("PsiFactory.vm").merge(context, outputStreamWriter);
+			}
+		}
 
 	}
 
