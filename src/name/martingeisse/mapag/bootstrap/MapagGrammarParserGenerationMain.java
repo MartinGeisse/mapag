@@ -13,6 +13,7 @@ import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
@@ -160,9 +161,19 @@ public class MapagGrammarParserGenerationMain {
 		Grammar grammar = new Grammar(terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
-		OutputFileFactory outputFileFactory = (packageName, className) -> new FileOutputStream("grammar_gen_out/" + packageName + "/" + className + ".java");
+		OutputFileFactory outputFileFactory = (packageName, className) -> {
+			File baseFolder = new File("grammar_gen_out");
+			if (!baseFolder.isDirectory()) {
+				baseFolder.mkdir();
+			}
+			File packageFolder = new File(baseFolder, packageName);
+			if (!packageFolder.isDirectory()) {
+				packageFolder.mkdir();
+			}
+			return new FileOutputStream(new File(packageFolder, className + ".java"));
+		};
 		new ParserClassGenerator(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
-		
+
 	}
 
 	private static SymbolReference symbol(String name) {
