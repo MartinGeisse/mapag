@@ -8,7 +8,11 @@ import name.martingeisse.mapag.util.Comparators;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.VelocityContext;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,24 +26,26 @@ public class PsiClassesGenerator {
 	private final GrammarInfo grammarInfo;
 	private final Grammar grammar;
 	private final Configuration configuration;
+	private final OutputFileFactory outputFileFactory;
 	private final PsiTypeMapper psiTypeMapper;
 	private int alternativeCounter;
 
-	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration) {
+	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammarInfo = grammarInfo;
 		this.grammar = grammarInfo.getGrammar();
 		this.configuration = configuration;
 		this.psiTypeMapper = new PsiTypeMapper(grammarInfo, configuration);
+		this.outputFileFactory = outputFileFactory;
 	}
 
-	public void generate() throws ConfigurationException {
+	public void generate() throws ConfigurationException, IOException {
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			handleNonterminal(nonterminalDefinition);
 		}
 		generateFactoryClass();
 	}
 
-	private void handleNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException {
+	private void handleNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
 		switch (nonterminalDefinition.getAnnotation().getPsiStyle()) {
 
 			case NORMAL:
@@ -64,7 +70,7 @@ public class PsiClassesGenerator {
 		}
 	}
 
-	private void handleNormalStyledNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException {
+	private void handleNormalStyledNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
 		if (nonterminalDefinition.getAlternatives().size() == 1) {
 			generateSingleAlternativeClass(nonterminalDefinition.getName(), nonterminalDefinition.getAlternatives().get(0));
 		} else {
@@ -79,7 +85,7 @@ public class PsiClassesGenerator {
 		}
 	}
 
-	private void generateSingleAlternativeClass(String nonterminalName, Alternative alternative) throws ConfigurationException {
+	private void generateSingleAlternativeClass(String nonterminalName, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
 		classGenerator.className = psiTypeMapper.getEffectiveTypeForNonterminal(nonterminalName);
 		classGenerator.superclass = "ASTWrapperPsiElement";
@@ -88,7 +94,7 @@ public class PsiClassesGenerator {
 		classGenerator.generate();
 	}
 
-	private void generateMultiAlternativeBaseClass(String nonterminalName) throws ConfigurationException {
+	private void generateMultiAlternativeBaseClass(String nonterminalName) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
 		classGenerator.className = psiTypeMapper.getEffectiveTypeForNonterminal(nonterminalName);
 		classGenerator.superclass = "ASTWrapperPsiElement";
@@ -97,7 +103,7 @@ public class PsiClassesGenerator {
 		classGenerator.generate();
 	}
 
-	private void generateMultiAlternativeCaseClass(String nonterminalName, Alternative alternative) throws ConfigurationException {
+	private void generateMultiAlternativeCaseClass(String nonterminalName, Alternative alternative) throws ConfigurationException, IOException {
 		String alternativeName = (alternative.getAnnotation().getAlternativeName() == null ? Integer.toString(alternativeCounter) : alternative.getAnnotation().getAlternativeName());
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
 		classGenerator.className = psiTypeMapper.toIdentifier(nonterminalName + '/' + alternativeName, true);
@@ -107,7 +113,7 @@ public class PsiClassesGenerator {
 		classGenerator.generate();
 	}
 
-	private void handleRepetitionStyledNonterminal(NonterminalDefinition nonterminalDefinition, boolean zeroBased) throws ConfigurationException {
+	private void handleRepetitionStyledNonterminal(NonterminalDefinition nonterminalDefinition, boolean zeroBased) throws ConfigurationException, IOException {
 
 		// verify the nonterminal's structure and determine its element symbol and Java type
 		String nonterminalName = nonterminalDefinition.getName();
@@ -183,7 +189,7 @@ public class PsiClassesGenerator {
 
 	}
 
-	private void handleOptionalStyledNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException {
+	private void handleOptionalStyledNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
 
 		// verify the nonterminal's structure and determine its element symbol and Java type
 		String nonterminalName = nonterminalDefinition.getName();
@@ -276,7 +282,7 @@ public class PsiClassesGenerator {
 		String optionalOperandGetterName;
 
 
-		void generate() throws ConfigurationException {
+		void generate() throws ConfigurationException, IOException {
 
 			VelocityContext context = new VelocityContext();
 			context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
@@ -309,9 +315,11 @@ public class PsiClassesGenerator {
 			}
 			context.put("nodeGetters", nodeGetters);
 
-			StringWriter sw = new StringWriter();
-			MapagVelocityEngine.engine.getTemplate("PsiClass.vm").merge(context, sw);
-			System.out.println(sw);
+			try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
+				try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+					MapagVelocityEngine.engine.getTemplate("PsiClass.vm").merge(context, outputStreamWriter);
+				}
+			}
 
 		}
 

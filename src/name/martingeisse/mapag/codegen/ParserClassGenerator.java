@@ -11,7 +11,11 @@ import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.util.Pair;
 import org.apache.velocity.VelocityContext;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
  *
@@ -26,15 +30,17 @@ public class ParserClassGenerator {
 	private final Grammar grammar;
 	private final StateMachine stateMachine;
 	private final Configuration configuration;
+	private final OutputFileFactory outputFileFactory;
 
-	public ParserClassGenerator(GrammarInfo grammarInfo, StateMachine stateMachine, Configuration configuration) {
+	public ParserClassGenerator(GrammarInfo grammarInfo, StateMachine stateMachine, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammarInfo = grammarInfo;
 		this.grammar = grammarInfo.getGrammar();
 		this.stateMachine = stateMachine;
 		this.configuration = configuration;
+		this.outputFileFactory = outputFileFactory;
 	}
 
-	public void generate() throws ConfigurationException {
+	public void generate() throws ConfigurationException, IOException {
 
 		StateMachineEncoder stateMachineEncoder = new StateMachineEncoder(grammarInfo, stateMachine);
 		int numberOfStates = stateMachine.getStates().size();
@@ -116,11 +122,11 @@ public class ParserClassGenerator {
 			context.put("alternativeEntries", alternativeEntries);
 		}
 
-		StringWriter sw = new StringWriter();
-		MapagVelocityEngine.engine.getTemplate("Parser.vm").merge(context, sw);
-		System.out.println(sw);
-
-//		stateMachineEncoder.dump();
+		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
+			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+				MapagVelocityEngine.engine.getTemplate("Parser.vm").merge(context, outputStreamWriter);
+			}
+		}
 
 	}
 

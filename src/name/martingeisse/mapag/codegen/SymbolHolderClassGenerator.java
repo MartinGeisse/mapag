@@ -8,7 +8,11 @@ import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateMachine;
 import org.apache.velocity.VelocityContext;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -25,14 +29,16 @@ public class SymbolHolderClassGenerator {
 	private final GrammarInfo grammarInfo;
 	private final Grammar grammar;
 	private final Configuration configuration;
+	private final OutputFileFactory outputFileFactory;
 
-	public SymbolHolderClassGenerator(GrammarInfo grammarInfo, Configuration configuration) {
+	public SymbolHolderClassGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammarInfo = grammarInfo;
 		this.grammar = grammarInfo.getGrammar();
 		this.configuration = configuration;
+		this.outputFileFactory = outputFileFactory;
 	}
 
-	public void generate() throws ConfigurationException {
+	public void generate() throws ConfigurationException, IOException {
 
 		List<String> terminals = new ArrayList<>(grammar.getTerminalDefinitions().keySet());
 		Collections.sort(terminals);
@@ -47,9 +53,11 @@ public class SymbolHolderClassGenerator {
 		context.put("nonterminals", nonterminals);
 		context.put("nonterminalElementTypeClass", configuration.getExactlyOne(NONTERMINAL_ELEMENT_TYPE_CLASS, ELEMENT_TYPE_CLASS));
 
-		StringWriter sw = new StringWriter();
-		MapagVelocityEngine.engine.getTemplate("SymbolHolder.vm").merge(context, sw);
-		System.out.println(sw);
+		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
+			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+				MapagVelocityEngine.engine.getTemplate("SymbolHolder.vm").merge(context, outputStreamWriter);
+			}
+		}
 
 	}
 

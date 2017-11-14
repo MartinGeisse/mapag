@@ -2,10 +2,7 @@ package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.ParserClassGenerator;
-import name.martingeisse.mapag.codegen.PsiClassesGenerator;
-import name.martingeisse.mapag.codegen.SymbolHolderClassGenerator;
+import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
@@ -35,7 +32,7 @@ public class CalculatorParserGenerationMain {
 		codeGenerationProperties.setProperty("psi.package", "name.martingeisse.calculator.psi");
 		Configuration configuration = new Configuration(codeGenerationProperties);
 
-		ImmutableList terminalDeclarations = ImmutableList.of(
+		ImmutableList<TerminalDeclaration> terminalDeclarations = ImmutableList.of(
 			new TerminalDeclaration("PLUS"),
 			new TerminalDeclaration("MINUS"),
 			new TerminalDeclaration("TIMES"),
@@ -49,7 +46,7 @@ public class CalculatorParserGenerationMain {
 			new TerminalDeclaration("LINE_COMMENT") // never passed to the parser
 		);
 
-		ImmutableList nonterminalDeclarations = ImmutableList.of(
+		ImmutableList<NonterminalDeclaration> nonterminalDeclarations = ImmutableList.of(
 			new NonterminalDeclaration("calculation"),
 			new NonterminalDeclaration("statement"),
 			new NonterminalDeclaration("expression")
@@ -90,18 +87,7 @@ public class CalculatorParserGenerationMain {
 		Grammar grammar = new Grammar(terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
-
-//		grammarInfo.getGrammar().dump();
-//
-//		ParserClassGenerator parserClassGenerator = new ParserClassGenerator(grammarInfo, stateMachine, configuration);
-//		parserClassGenerator.generate();
-//
-//		SymbolHolderClassGenerator symbolHolderClassGenerator = new SymbolHolderClassGenerator(grammarInfo, configuration);
-//		symbolHolderClassGenerator.generate();
-
-		if (configuration.getRequired("psi.generate").equals("true")) {
-			new PsiClassesGenerator(grammarInfo, configuration).generate();
-		}
+		new CodeGenerationDriver(grammarInfo, stateMachine, configuration).generate();
 
 	}
 
