@@ -26,4 +26,10 @@
     -->
   </extensions>
 
+  <actions>
+    <action id="mapag.generate" class="name.martingeisse.mapag.ide.GenerateAction" text="generate classes" description="Runs the MaPaG code generator.">
+      <add-to-group group-id="ProjectViewPopupMenu" />
+    </action>
+  </actions>
+
 </idea-plugin>
