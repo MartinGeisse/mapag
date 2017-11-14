@@ -106,8 +106,8 @@ public class PsiClassesGenerator {
 	private void generateMultiAlternativeCaseClass(String nonterminalName, Alternative alternative) throws ConfigurationException, IOException {
 		String alternativeName = (alternative.getAnnotation().getAlternativeName() == null ? Integer.toString(alternativeCounter) : alternative.getAnnotation().getAlternativeName());
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = psiTypeMapper.toIdentifier(nonterminalName + '/' + alternativeName, true);
-		classGenerator.superclass = psiTypeMapper.toIdentifier(nonterminalName, true);
+		classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
+		classGenerator.superclass = IdentifierUtil.toIdentifier(nonterminalName, true);
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
 		classGenerator.generate();
@@ -162,7 +162,7 @@ public class PsiClassesGenerator {
 			// note: this fallback shouldn't be necessary since the alternatives of a repetition should always be named
 			String alternativeName = (baseCaseAlternative.getAnnotation().getAlternativeName() == null ? "baseCase" : baseCaseAlternative.getAnnotation().getAlternativeName());
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = psiTypeMapper.toIdentifier(nonterminalName + '/' + alternativeName, true);
+			classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
 			classGenerator.superclass = abstractClassName;
 			classGenerator.isAbstract = false;
 			classGenerator.alternative = baseCaseAlternative;
@@ -177,7 +177,7 @@ public class PsiClassesGenerator {
 			// note: this fallback shouldn't be necessary since the alternatives of a repetition should always be named
 			String alternativeName = (repetitionCaseAlternative.getAnnotation().getAlternativeName() == null ? "repetitionCase" : repetitionCaseAlternative.getAnnotation().getAlternativeName());
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = psiTypeMapper.toIdentifier(nonterminalName + '/' + alternativeName, true);
+			classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
 			classGenerator.superclass = abstractClassName;
 			classGenerator.isAbstract = false;
 			classGenerator.alternative = repetitionCaseAlternative;
@@ -237,7 +237,7 @@ public class PsiClassesGenerator {
 			// note: this fallback shouldn't be necessary since the alternatives of a repetition should always be named
 			String alternativeName = (absentCaseAlternative.getAnnotation().getAlternativeName() == null ? "baseCase" : absentCaseAlternative.getAnnotation().getAlternativeName());
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = psiTypeMapper.toIdentifier(nonterminalName + '/' + alternativeName, true);
+			classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
 			classGenerator.superclass = abstractClassName;
 			classGenerator.isAbstract = false;
 			classGenerator.alternative = absentCaseAlternative;
@@ -252,7 +252,7 @@ public class PsiClassesGenerator {
 			// note: this fallback shouldn't be necessary since the alternatives of a repetition should always be named
 			String alternativeName = (presentCaseAlternative.getAnnotation().getAlternativeName() == null ? "repetitionCase" : presentCaseAlternative.getAnnotation().getAlternativeName());
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = psiTypeMapper.toIdentifier(nonterminalName + '/' + alternativeName, true);
+			classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
 			classGenerator.superclass = abstractClassName;
 			classGenerator.isAbstract = false;
 			classGenerator.alternative = presentCaseAlternative;

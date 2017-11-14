@@ -42,7 +42,11 @@ public class SymbolHolderClassGenerator {
 
 		List<String> terminals = new ArrayList<>(grammar.getTerminalDefinitions().keySet());
 		Collections.sort(terminals);
-		List<String> nonterminals = new ArrayList<>(grammar.getNonterminalDefinitions().keySet());
+
+		List<String> nonterminals = new ArrayList<>();
+		for (String nonterminal : grammar.getNonterminalDefinitions().keySet()) {
+			nonterminals.add(IdentifierUtil.toIdentifier(nonterminal, false));
+		}
 		Collections.sort(nonterminals);
 
 		VelocityContext context = new VelocityContext();

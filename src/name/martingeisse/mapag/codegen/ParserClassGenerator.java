@@ -114,7 +114,7 @@ public class ParserClassGenerator {
 					int alternativeIndex = stateMachineEncoder.getAlternativeIndex(nonterminalDefinition.getName(), alternative);
 					alternativeEntries[alternativeIndex] = new AlternativeEntry(
 						alternative.getExpansion().size(),
-						nonterminalDefinition.getName(),
+						IdentifierUtil.toIdentifier(nonterminalDefinition.getName(), false),
 						stateMachineEncoder.getSymbolIndex(nonterminalDefinition.getName())
 					);
 				}
