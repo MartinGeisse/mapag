@@ -3,6 +3,7 @@ package name.martingeisse.mapag.bootstrap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.codegen.Configuration;
+import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.ParserClassGenerator;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
@@ -12,6 +13,7 @@ import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 
+import java.io.FileOutputStream;
 import java.util.Properties;
 
 /**
@@ -158,9 +160,9 @@ public class MapagGrammarParserGenerationMain {
 		Grammar grammar = new Grammar(terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
-
-		ParserClassGenerator parserClassGenerator = new ParserClassGenerator(grammarInfo, stateMachine, configuration);
-		parserClassGenerator.generate();
+		OutputFileFactory outputFileFactory = (packageName, className) -> new FileOutputStream("grammar_gen_out/" + packageName + "/" + className + ".java");
+		new ParserClassGenerator(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
+		
 	}
 
 	private static SymbolReference symbol(String name) {

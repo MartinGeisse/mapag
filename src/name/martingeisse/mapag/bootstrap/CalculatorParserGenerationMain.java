@@ -11,6 +11,8 @@ import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Properties;
 
 /**
@@ -87,7 +89,8 @@ public class CalculatorParserGenerationMain {
 		Grammar grammar = new Grammar(terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
-		new CodeGenerationDriver(grammarInfo, stateMachine, configuration).generate();
+		OutputFileFactory outputFileFactory = (packageName, className) -> new FileOutputStream("calc_gen_out/" + packageName + "/" + className + ".java");
+		new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
 
 	}
 
