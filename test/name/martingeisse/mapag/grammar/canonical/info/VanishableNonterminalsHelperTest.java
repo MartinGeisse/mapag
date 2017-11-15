@@ -34,7 +34,7 @@ public class VanishableNonterminalsHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null))
 					), NonterminalAnnotation.EMPTY)
 				),
 				ImmutableSet.of(),
@@ -42,14 +42,14 @@ public class VanishableNonterminalsHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo", "bar"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of("foo", "baz"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("foo", "bar"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of("foo", "baz"), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("baz"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("baz"), null, new AlternativeAnnotation("a1", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt1", "nt2", "foo"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("nt1", "nt2", "foo"), null, new AlternativeAnnotation("a1", null))
 					), NonterminalAnnotation.EMPTY)
 				),
 				ImmutableSet.of(),
@@ -62,7 +62,7 @@ public class VanishableNonterminalsHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a1", null))
 					), NonterminalAnnotation.EMPTY)
 				),
 				ImmutableSet.of("dummyStart"),
@@ -70,8 +70,8 @@ public class VanishableNonterminalsHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY)
 				),
 				ImmutableSet.of("dummyStart"),
@@ -79,12 +79,12 @@ public class VanishableNonterminalsHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of("baz"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of("baz"), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("abc", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY)
 				),
 				ImmutableSet.of("abc"),
@@ -97,12 +97,12 @@ public class VanishableNonterminalsHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of("abc"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of("abc"), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("abc", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY)
 				),
 				ImmutableSet.of("abc", "dummyStart"),
@@ -110,16 +110,16 @@ public class VanishableNonterminalsHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of("abc", "def", "abc", "def"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of("abc", "def", "abc", "def"), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("abc", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of("def", "def"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of("def", "def"), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("def", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY)
 				),
 				ImmutableSet.of("abc", "def", "dummyStart"),
@@ -132,12 +132,12 @@ public class VanishableNonterminalsHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of("abc"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of("abc"), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("abc", ImmutableList.of(
-						new Alternative(ImmutableList.of("abc"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("abc"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY)
 				),
 				ImmutableSet.of(),
@@ -145,16 +145,16 @@ public class VanishableNonterminalsHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of("abc"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of("abc"), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("abc", ImmutableList.of(
-						new Alternative(ImmutableList.of("def"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("def"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("def", ImmutableList.of(
-						new Alternative(ImmutableList.of("abc"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("abc"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY)
 				),
 				ImmutableSet.of(),
@@ -168,14 +168,14 @@ public class VanishableNonterminalsHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("def", "foo"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("def", "foo"), null, new AlternativeAnnotation("a1", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("abc", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo", "def"), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("foo", "def"), null, new AlternativeAnnotation("a1", null))
 					), NonterminalAnnotation.EMPTY),
 					new NonterminalDefinition("def", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, AlternativeAnnotation.EMPTY),
-						new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)
+						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
+						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
 					), NonterminalAnnotation.EMPTY)
 				),
 				ImmutableSet.of("def"),

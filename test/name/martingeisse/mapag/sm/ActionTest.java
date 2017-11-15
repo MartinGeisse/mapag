@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class ActionTest {
 
-	private static final Alternative alternative = new Alternative(ImmutableList.of("abc", "def"), null, AlternativeAnnotation.EMPTY);
+	private static final Alternative alternative = new Alternative(ImmutableList.of("abc", "def"), null, new AlternativeAnnotation("a1", null));
 
 	@Test
 	public void testShift() {

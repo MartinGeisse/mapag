@@ -28,8 +28,8 @@ public class NonterminalDefinitionValidatorTest {
 	}
 
 	private static final Map<String, NonterminalDefinition> SIMPLE_NONTERMINALS = ImmutableMap.of(
-		"x", new NonterminalDefinition("x", ImmutableList.of(new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)), NonterminalAnnotation.EMPTY),
-		"y", new NonterminalDefinition("y", ImmutableList.of(new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY)), NonterminalAnnotation.EMPTY)
+		"x", new NonterminalDefinition("x", ImmutableList.of(new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a1", null))), NonterminalAnnotation.EMPTY),
+		"y", new NonterminalDefinition("y", ImmutableList.of(new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))), NonterminalAnnotation.EMPTY)
 	);
 
 	@Test
@@ -60,39 +60,39 @@ public class NonterminalDefinitionValidatorTest {
 	@Test
 	public void testValidAlternatives() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative(ImmutableList.of(), null, AlternativeAnnotation.EMPTY));
-		validator.validate(new Alternative(ImmutableList.of(), "a", AlternativeAnnotation.EMPTY));
-		validator.validate(new Alternative(ImmutableList.of(), "d", AlternativeAnnotation.EMPTY));
-		validator.validate(new Alternative(ImmutableList.of("a", "b"), null, AlternativeAnnotation.EMPTY));
-		validator.validate(new Alternative(ImmutableList.of("a", "b"), "d", AlternativeAnnotation.EMPTY));
-		validator.validate(new Alternative(ImmutableList.of("a", "x"), null, AlternativeAnnotation.EMPTY));
-		validator.validate(new Alternative(ImmutableList.of("a", "x"), "d", AlternativeAnnotation.EMPTY));
-		validator.validate(new Alternative(ImmutableList.of("y"), null, AlternativeAnnotation.EMPTY));
-		validator.validate(new Alternative(ImmutableList.of("y"), "d", AlternativeAnnotation.EMPTY));
+		validator.validate(new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a1", null)));
+		validator.validate(new Alternative(ImmutableList.of(), "a", new AlternativeAnnotation("a1", null)));
+		validator.validate(new Alternative(ImmutableList.of(), "d", new AlternativeAnnotation("a1", null)));
+		validator.validate(new Alternative(ImmutableList.of("a", "b"), null, new AlternativeAnnotation("a1", null)));
+		validator.validate(new Alternative(ImmutableList.of("a", "b"), "d", new AlternativeAnnotation("a1", null)));
+		validator.validate(new Alternative(ImmutableList.of("a", "x"), null, new AlternativeAnnotation("a1", null)));
+		validator.validate(new Alternative(ImmutableList.of("a", "x"), "d", new AlternativeAnnotation("a1", null)));
+		validator.validate(new Alternative(ImmutableList.of("y"), null, new AlternativeAnnotation("a1", null)));
+		validator.validate(new Alternative(ImmutableList.of("y"), "d", new AlternativeAnnotation("a1", null)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownSymbolInExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative(ImmutableList.of("a", "u"), null, AlternativeAnnotation.EMPTY));
+		validator.validate(new Alternative(ImmutableList.of("a", "u"), null, new AlternativeAnnotation("a1", null)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownPrecedenceTerminalWithEmptyExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative(ImmutableList.of(), "u", AlternativeAnnotation.EMPTY));
+		validator.validate(new Alternative(ImmutableList.of(), "u", new AlternativeAnnotation("a1", null)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownPrecedenceTerminalWithNonemptyExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative(ImmutableList.of("a"), "u", AlternativeAnnotation.EMPTY));
+		validator.validate(new Alternative(ImmutableList.of("a"), "u", new AlternativeAnnotation("a1", null)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testNonterminalUsedForPrecedence() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative(ImmutableList.of("a"), "x", AlternativeAnnotation.EMPTY));
+		validator.validate(new Alternative(ImmutableList.of("a"), "x", new AlternativeAnnotation("a1", null)));
 	}
 
 }

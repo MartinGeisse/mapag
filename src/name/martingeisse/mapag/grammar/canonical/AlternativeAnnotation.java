@@ -13,16 +13,11 @@ import name.martingeisse.mapag.util.ParameterUtil;
  */
 public final class AlternativeAnnotation {
 
-	/**
-	 * Empty annotation that can be used as a default so we don't have to deal with null everywhere.
-	 */
-	public static final AlternativeAnnotation EMPTY = new AlternativeAnnotation(null, null);
-
 	private final String alternativeName;
 	private final ImmutableList<String> expressionNames;
 
 	public AlternativeAnnotation(String alternativeName, ImmutableList<String> expressionNames) {
-		this.alternativeName = alternativeName;
+		this.alternativeName = ParameterUtil.ensureNotNullOrEmpty(alternativeName, "alternativeName");
 		this.expressionNames = expressionNames;
 		ParameterUtil.ensureNoNullElement(expressionNames, "expressionNames");
 	}

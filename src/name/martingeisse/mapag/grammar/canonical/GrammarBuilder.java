@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Note: This class is only used to support the unit tests. It doesn't support alternative annotations since the tests
- * don't need them (except the tests testing alternative annotations specifically).
+ * Note: This class is only used to support the unit tests. It doesn't support custom alternative annotations since
+ * the tests don't need them (except the tests testing alternative annotations specifically).
  */
 public final class GrammarBuilder {
 
@@ -54,12 +54,12 @@ public final class GrammarBuilder {
 		}
 
 		public ProductionBuilder addAlternative(String... expansion) {
-			alternatives.add(new Alternative(ImmutableList.copyOf(expansion), null, AlternativeAnnotation.EMPTY));
+			alternatives.add(new Alternative(ImmutableList.copyOf(expansion), null, new AlternativeAnnotation("a" + alternatives.size(), null)));
 			return this;
 		}
 
 		public ProductionBuilder addAlternativeWithPrecedence(String effectivePrecedenceTerminal, String... expansion) {
-			alternatives.add(new Alternative(ImmutableList.copyOf(expansion), effectivePrecedenceTerminal, AlternativeAnnotation.EMPTY));
+			alternatives.add(new Alternative(ImmutableList.copyOf(expansion), effectivePrecedenceTerminal, new AlternativeAnnotation("a" + alternatives.size(), null)));
 			return this;
 		}
 

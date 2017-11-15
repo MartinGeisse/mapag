@@ -1,7 +1,9 @@
 package name.martingeisse.mapag.codegen;
 
 import name.martingeisse.mapag.grammar.SpecialSymbols;
+import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
+import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.Action;
 import name.martingeisse.mapag.sm.State;
@@ -43,18 +45,24 @@ public class SymbolHolderClassGenerator {
 		List<String> terminals = new ArrayList<>(grammar.getTerminalDefinitions().keySet());
 		Collections.sort(terminals);
 
-		List<String> nonterminals = new ArrayList<>();
-		for (String nonterminal : grammar.getNonterminalDefinitions().keySet()) {
-			nonterminals.add(IdentifierUtil.toIdentifier(nonterminal, false));
+		List<String> nonterminalAlternatives = new ArrayList<>();
+		for (NonterminalDefinition nonterminal : grammar.getNonterminalDefinitions().values()) {
+			if (nonterminal.getAlternatives().size() == 1) {
+				nonterminalAlternatives.add(IdentifierUtil.toIdentifier(nonterminal.getName(), false));
+			} else {
+				for (Alternative alternative : nonterminal.getAlternatives()) {
+					nonterminalAlternatives.add(IdentifierUtil.toIdentifier(nonterminal.getName(), false));
+				}
+			}
 		}
-		Collections.sort(nonterminals);
+		// TODO Collections.sort(nonterminals);
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
 		context.put("terminals", terminals);
 		context.put("terminalElementTypeClass", configuration.getExactlyOne(TERMINAL_ELEMENT_TYPE_CLASS, ELEMENT_TYPE_CLASS));
-		context.put("nonterminals", nonterminals);
+		// TODO context.put("nonterminals", nonterminals);
 		context.put("nonterminalElementTypeClass", configuration.getExactlyOne(NONTERMINAL_ELEMENT_TYPE_CLASS, ELEMENT_TYPE_CLASS));
 
 		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {

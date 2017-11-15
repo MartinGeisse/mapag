@@ -41,7 +41,7 @@ public class StateMachineBuilder {
 	public StateMachine build() {
 		// TODO test that name of the implicit root alternative is null
 		String startNonterminal = grammarInfo.getGrammar().getStartNonterminalName();
-		Alternative implicitAlternative = new Alternative(ImmutableList.of(startNonterminal), null, AlternativeAnnotation.EMPTY);
+		Alternative implicitAlternative = new Alternative(ImmutableList.of(startNonterminal), null, new AlternativeAnnotation("implicit", null));
 		StateBuilder builder = new StateBuilder(grammarInfo);
 		builder.addElementClosure(new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, implicitAlternative, 0, SpecialSymbols.EOF_SYMBOL_NAME));
 		State startState = builder.build();

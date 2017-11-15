@@ -383,7 +383,7 @@ public class PsiClassesGenerator {
 				}
 
 				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
-				caseEntry.elementType = ; // TODO we actually need an element type per alternative, not per nonterminal!
+				caseEntry.elementType = null; // TODO we actually need an element type per alternative, not per nonterminal!
 				caseEntry.psiClass = concreteClassName;
 				cases.add(caseEntry);
 

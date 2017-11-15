@@ -1,5 +1,8 @@
 package name.martingeisse.mapag.codegen;
 
+import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+
 /**
  *
  */
@@ -7,6 +10,38 @@ public final class IdentifierUtil {
 
 	// prevent instantiation
 	private IdentifierUtil() {
+	}
+
+	public static String getNonterminalClassIdentifier(NonterminalDefinition nonterminalDefinition) {
+		return getNonterminalClassIdentifier(nonterminalDefinition.getName());
+	}
+
+	public static String getNonterminalClassIdentifier(String nonterminalName) {
+		return toIdentifier(nonterminalName, true);
+	}
+
+	public static String getNonterminalVariableIdentifier(NonterminalDefinition nonterminalDefinition) {
+		return getNonterminalVariableIdentifier(nonterminalDefinition.getName());
+	}
+
+	public static String getNonterminalVariableIdentifier(String nonterminalName) {
+		return toIdentifier(nonterminalName, false);
+	}
+
+	public static String getAlternativeClassIdentifier(NonterminalDefinition nonterminalDefinition, Alternative alternative) {
+		return getAlternativeClassIdentifier(nonterminalDefinition, alternative);
+	}
+
+	public static String getAlternativeClassIdentifier(String nonterminalName, String alternativeName) {
+		return toIdentifier(nonterminalName + '/' + alternativeName, true);
+	}
+
+	public static String getAlternativeVariableIdentifier(NonterminalDefinition nonterminalDefinition, Alternative alternative) {
+		return getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
+	}
+
+	public static String getAlternativeVariableIdentifier(String nonterminalName, String alternativeName) {
+		return toIdentifier(nonterminalName + '/' + alternativeName, false);
 	}
 
 	public static String toIdentifier(String s, boolean firstCharacterUppercase) {
