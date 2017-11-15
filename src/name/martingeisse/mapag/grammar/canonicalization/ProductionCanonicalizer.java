@@ -56,13 +56,15 @@ public class ProductionCanonicalizer {
 		// try to keep the order of input productions and synthetic productions so it's easier to debug the canonical grammar
 		Production production = pendingProductions.remove(0);
 		String leftHandSide = production.getLeftHandSide();
+		int alternativeCounter = 0;
 		for (name.martingeisse.mapag.grammar.extended.Alternative inputAlternative : production.getAlternatives()) {
 			syntheticNonterminalNameGenerator.prepare(leftHandSide, inputAlternative.getName());
-			name.martingeisse.mapag.grammar.canonical.Alternative convertedAlternative = convertAlternative(inputAlternative);
+			name.martingeisse.mapag.grammar.canonical.Alternative convertedAlternative = convertAlternative(inputAlternative, alternativeCounter);
 			if (nonterminalAlternatives.get(leftHandSide) == null) {
 				nonterminalAlternatives.put(leftHandSide, new ArrayList<>());
 			}
 			nonterminalAlternatives.get(leftHandSide).add(convertedAlternative);
+			alternativeCounter++;
 		}
 		if (!nextPendingBatch.isEmpty()) {
 			pendingProductions.addAll(0, nextPendingBatch);
@@ -70,7 +72,7 @@ public class ProductionCanonicalizer {
 		}
 	}
 
-	private name.martingeisse.mapag.grammar.canonical.Alternative convertAlternative(name.martingeisse.mapag.grammar.extended.Alternative inputAlternative) {
+	private name.martingeisse.mapag.grammar.canonical.Alternative convertAlternative(name.martingeisse.mapag.grammar.extended.Alternative inputAlternative, int alternativeCounter) {
 		List<String> expansion = new ArrayList<>();
 		List<String> expressionNames = new ArrayList<>();
 		convertExpressionToExpansion(inputAlternative.getExpression(), expansion, expressionNames);
@@ -78,7 +80,7 @@ public class ProductionCanonicalizer {
 			ImmutableList.copyOf(expansion),
 			inputAlternative.getPrecedenceDefiningTerminal(),
 			new AlternativeAnnotation(
-				inputAlternative.getName(),
+				inputAlternative.getName() == null ? ("a" + alternativeCounter) : inputAlternative.getName(),
 				ImmutableList.copyOf(expressionNames)
 			)
 		);
