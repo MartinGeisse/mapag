@@ -29,8 +29,6 @@ public class PsiClassesGenerator {
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
-	private int alternativeCounter;
-	private Map<Alternative, String> effectiveAlternativeNames;
 
 	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammarInfo = grammarInfo;
@@ -40,7 +38,6 @@ public class PsiClassesGenerator {
 	}
 
 	public void generate() throws ConfigurationException, IOException {
-		effectiveAlternativeNames = new HashMap<>();
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			handleNonterminal(nonterminalDefinition);
 		}
@@ -74,43 +71,39 @@ public class PsiClassesGenerator {
 
 	private void handleNormalStyledNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
 		if (nonterminalDefinition.getAlternatives().size() == 1) {
-			generateSingleAlternativeClass(nonterminalDefinition.getName(), nonterminalDefinition.getAlternatives().get(0));
+			generateSingleAlternativeClass(nonterminalDefinition, nonterminalDefinition.getAlternatives().get(0));
 		} else {
-			generateMultiAlternativeBaseClass(nonterminalDefinition.getName());
+			generateMultiAlternativeBaseClass(nonterminalDefinition);
 			List<Alternative> sortedAlternatives = new ArrayList<>(nonterminalDefinition.getAlternatives());
 			sortedAlternatives.sort(Comparators.alternativeComparator);
-			alternativeCounter = 0;
 			for (Alternative alternative : sortedAlternatives) {
-				generateMultiAlternativeCaseClass(nonterminalDefinition.getName(), alternative);
-				alternativeCounter++;
+				generateMultiAlternativeCaseClass(nonterminalDefinition, alternative);
 			}
 		}
 	}
 
-	private void generateSingleAlternativeClass(String nonterminalName, Alternative alternative) throws ConfigurationException, IOException {
+	private void generateSingleAlternativeClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName, true);
+		classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
 		classGenerator.superclass = "ASTWrapperPsiElement";
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
 		classGenerator.generate();
 	}
 
-	private void generateMultiAlternativeBaseClass(String nonterminalName) throws ConfigurationException, IOException {
+	private void generateMultiAlternativeBaseClass(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName, true);
+		classGenerator.className = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
 		classGenerator.superclass = "ASTWrapperPsiElement";
 		classGenerator.isAbstract = true;
 		classGenerator.alternative = null;
 		classGenerator.generate();
 	}
 
-	private void generateMultiAlternativeCaseClass(String nonterminalName, Alternative alternative) throws ConfigurationException, IOException {
-		String alternativeName = (alternative.getAnnotation().getAlternativeName() == null ? Integer.toString(alternativeCounter) : alternative.getAnnotation().getAlternativeName());
-		effectiveAlternativeNames.put(alternative, alternativeName);
+	private void generateMultiAlternativeCaseClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
-		classGenerator.superclass = IdentifierUtil.toIdentifier(nonterminalName, true);
+		classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
+		classGenerator.superclass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
 		classGenerator.generate();
@@ -147,10 +140,9 @@ public class PsiClassesGenerator {
 		String operandType = getEffectiveTypeForSymbol(elementSymbol);
 
 		// generate abstract class
-		String abstractClassName = IdentifierUtil.toIdentifier(nonterminalName, true);
 		{
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = abstractClassName;
+			classGenerator.className = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
 			classGenerator.superclass = "ASTWrapperPsiElement";
 			classGenerator.isAbstract = true;
 			classGenerator.alternative = null;
@@ -162,11 +154,9 @@ public class PsiClassesGenerator {
 
 		// generate base case class
 		{
-			// note: this fallback shouldn't be necessary since the alternatives of a repetition should always be named
-			String alternativeName = (baseCaseAlternative.getAnnotation().getAlternativeName() == null ? "baseCase" : baseCaseAlternative.getAnnotation().getAlternativeName());
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
-			classGenerator.superclass = abstractClassName;
+			classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, baseCaseAlternative);
+			classGenerator.superclass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
 			classGenerator.isAbstract = false;
 			classGenerator.alternative = baseCaseAlternative;
 			classGenerator.isRepetitionBaseCase = true;
@@ -177,11 +167,9 @@ public class PsiClassesGenerator {
 
 		// generate repetition case class
 		{
-			// note: this fallback shouldn't be necessary since the alternatives of a repetition should always be named
-			String alternativeName = (repetitionCaseAlternative.getAnnotation().getAlternativeName() == null ? "repetitionCase" : repetitionCaseAlternative.getAnnotation().getAlternativeName());
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
-			classGenerator.superclass = abstractClassName;
+			classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, repetitionCaseAlternative);
+			classGenerator.superclass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
 			classGenerator.isAbstract = false;
 			classGenerator.alternative = repetitionCaseAlternative;
 			classGenerator.isRepetitionNextCase = true;
@@ -222,10 +210,9 @@ public class PsiClassesGenerator {
 		String operandGetterName = "get" + StringUtils.capitalize(operandName);
 
 		// generate abstract class
-		String abstractClassName = IdentifierUtil.toIdentifier(nonterminalName, true);
 		{
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = abstractClassName;
+			classGenerator.className = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
 			classGenerator.superclass = "ASTWrapperPsiElement";
 			classGenerator.isAbstract = true;
 			classGenerator.alternative = null;
@@ -237,11 +224,9 @@ public class PsiClassesGenerator {
 
 		// generate "absent" case
 		{
-			// note: this fallback shouldn't be necessary since the alternatives of a repetition should always be named
-			String alternativeName = (absentCaseAlternative.getAnnotation().getAlternativeName() == null ? "baseCase" : absentCaseAlternative.getAnnotation().getAlternativeName());
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
-			classGenerator.superclass = abstractClassName;
+			classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, absentCaseAlternative);
+			classGenerator.superclass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
 			classGenerator.isAbstract = false;
 			classGenerator.alternative = absentCaseAlternative;
 			classGenerator.operandType = operandType;
@@ -252,11 +237,9 @@ public class PsiClassesGenerator {
 
 		// generate "present" case
 		{
-			// note: this fallback shouldn't be necessary since the alternatives of a repetition should always be named
-			String alternativeName = (presentCaseAlternative.getAnnotation().getAlternativeName() == null ? "repetitionCase" : presentCaseAlternative.getAnnotation().getAlternativeName());
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
-			classGenerator.superclass = abstractClassName;
+			classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, presentCaseAlternative);
+			classGenerator.superclass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
 			classGenerator.isAbstract = false;
 			classGenerator.alternative = presentCaseAlternative;
 			classGenerator.operandType = operandType;
@@ -373,20 +356,10 @@ public class PsiClassesGenerator {
 		List<FactoryCaseEntry> cases = new ArrayList<>();
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
-
-				String concreteClassName;
-				if (nonterminalDefinition.getAlternatives().size() == 1) {
-					concreteClassName = IdentifierUtil.toIdentifier(nonterminalDefinition.getName(), true);
-				} else {
-					concreteClassName = IdentifierUtil.toIdentifier(nonterminalDefinition.getName() + '/' + effectiveAlternativeNames.get(alternative), true);
-					generateMultiAlternativeCaseClass(nonterminalDefinition.getName(), alternative);
-				}
-
 				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
-				caseEntry.elementType = null; // TODO we actually need an element type per alternative, not per nonterminal!
-				caseEntry.psiClass = concreteClassName;
+				caseEntry.elementType = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
+				caseEntry.psiClass = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
 				cases.add(caseEntry);
-
 			}
 		}
 		context.put("cases", cases);

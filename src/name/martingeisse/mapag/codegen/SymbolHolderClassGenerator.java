@@ -47,22 +47,18 @@ public class SymbolHolderClassGenerator {
 
 		List<String> nonterminalAlternatives = new ArrayList<>();
 		for (NonterminalDefinition nonterminal : grammar.getNonterminalDefinitions().values()) {
-			if (nonterminal.getAlternatives().size() == 1) {
-				nonterminalAlternatives.add(IdentifierUtil.toIdentifier(nonterminal.getName(), false));
-			} else {
-				for (Alternative alternative : nonterminal.getAlternatives()) {
-					nonterminalAlternatives.add(IdentifierUtil.toIdentifier(nonterminal.getName(), false));
-				}
+			for (Alternative alternative : nonterminal.getAlternatives()) {
+				nonterminalAlternatives.add(IdentifierUtil.getAlternativeVariableIdentifier(nonterminal, alternative));
 			}
 		}
-		// TODO Collections.sort(nonterminals);
+		Collections.sort(nonterminalAlternatives);
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
 		context.put("terminals", terminals);
 		context.put("terminalElementTypeClass", configuration.getExactlyOne(TERMINAL_ELEMENT_TYPE_CLASS, ELEMENT_TYPE_CLASS));
-		// TODO context.put("nonterminals", nonterminals);
+		context.put("nonterminalAlternatives", nonterminalAlternatives);
 		context.put("nonterminalElementTypeClass", configuration.getExactlyOne(NONTERMINAL_ELEMENT_TYPE_CLASS, ELEMENT_TYPE_CLASS));
 
 		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {

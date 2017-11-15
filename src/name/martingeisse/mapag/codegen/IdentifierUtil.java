@@ -29,19 +29,19 @@ public final class IdentifierUtil {
 	}
 
 	public static String getAlternativeClassIdentifier(NonterminalDefinition nonterminalDefinition, Alternative alternative) {
-		return getAlternativeClassIdentifier(nonterminalDefinition, alternative);
-	}
-
-	public static String getAlternativeClassIdentifier(String nonterminalName, String alternativeName) {
-		return toIdentifier(nonterminalName + '/' + alternativeName, true);
+		if (nonterminalDefinition.getAlternatives().size() == 1) {
+			return getNonterminalClassIdentifier(nonterminalDefinition);
+		} else {
+			return toIdentifier(nonterminalDefinition.getName() + '/' + alternative.getAnnotation().getAlternativeName(), true);
+		}
 	}
 
 	public static String getAlternativeVariableIdentifier(NonterminalDefinition nonterminalDefinition, Alternative alternative) {
-		return getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
-	}
-
-	public static String getAlternativeVariableIdentifier(String nonterminalName, String alternativeName) {
-		return toIdentifier(nonterminalName + '/' + alternativeName, false);
+		if (nonterminalDefinition.getAlternatives().size() == 1) {
+			return getNonterminalVariableIdentifier(nonterminalDefinition);
+		} else {
+			return toIdentifier(nonterminalDefinition.getName() + '/' + alternative.getAnnotation().getAlternativeName(), false);
+		}
 	}
 
 	public static String toIdentifier(String s, boolean firstCharacterUppercase) {

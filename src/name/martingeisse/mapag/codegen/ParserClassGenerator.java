@@ -114,9 +114,7 @@ public class ParserClassGenerator {
 					int alternativeIndex = stateMachineEncoder.getAlternativeIndex(nonterminalDefinition.getName(), alternative);
 					alternativeEntries[alternativeIndex] = new AlternativeEntry(
 						alternative.getExpansion().size(),
-						// TODO things would be way easier if alternatives in the canonical grammar were *ALWAYS* named
-						// (using a synthetic counter during canonicalization, not during code generation)
-						null,// IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition.getName(), alternative.getAnnotation().getAlternativeName(), false),
+						IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative),
 						stateMachineEncoder.getSymbolIndex(nonterminalDefinition.getName())
 					);
 				}
