@@ -14,7 +14,9 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -27,18 +29,18 @@ public class PsiClassesGenerator {
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
-	private final PsiTypeMapper psiTypeMapper;
 	private int alternativeCounter;
+	private Map<Alternative, String> effectiveAlternativeNames;
 
 	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammarInfo = grammarInfo;
 		this.grammar = grammarInfo.getGrammar();
 		this.configuration = configuration;
-		this.psiTypeMapper = new PsiTypeMapper(grammarInfo, configuration);
 		this.outputFileFactory = outputFileFactory;
 	}
 
 	public void generate() throws ConfigurationException, IOException {
+		effectiveAlternativeNames = new HashMap<>();
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			handleNonterminal(nonterminalDefinition);
 		}
@@ -87,7 +89,7 @@ public class PsiClassesGenerator {
 
 	private void generateSingleAlternativeClass(String nonterminalName, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = psiTypeMapper.getEffectiveTypeForNonterminal(nonterminalName);
+		classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName, true);
 		classGenerator.superclass = "ASTWrapperPsiElement";
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
@@ -96,7 +98,7 @@ public class PsiClassesGenerator {
 
 	private void generateMultiAlternativeBaseClass(String nonterminalName) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = psiTypeMapper.getEffectiveTypeForNonterminal(nonterminalName);
+		classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName, true);
 		classGenerator.superclass = "ASTWrapperPsiElement";
 		classGenerator.isAbstract = true;
 		classGenerator.alternative = null;
@@ -105,6 +107,7 @@ public class PsiClassesGenerator {
 
 	private void generateMultiAlternativeCaseClass(String nonterminalName, Alternative alternative) throws ConfigurationException, IOException {
 		String alternativeName = (alternative.getAnnotation().getAlternativeName() == null ? Integer.toString(alternativeCounter) : alternative.getAnnotation().getAlternativeName());
+		effectiveAlternativeNames.put(alternative, alternativeName);
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
 		classGenerator.className = IdentifierUtil.toIdentifier(nonterminalName + '/' + alternativeName, true);
 		classGenerator.superclass = IdentifierUtil.toIdentifier(nonterminalName, true);
@@ -141,10 +144,10 @@ public class PsiClassesGenerator {
 		if (!zeroBased && !baseCaseAlternative.getExpansion().get(0).equals(elementSymbol)) {
 			throw new RuntimeException("base-case uses different element symbol than repetition case for nonterminal " + elementSymbol);
 		}
-		String operandType = psiTypeMapper.getEffectiveTypeForSymbol(elementSymbol);
+		String operandType = getEffectiveTypeForSymbol(elementSymbol);
 
 		// generate abstract class
-		String abstractClassName = psiTypeMapper.getEffectiveTypeForNonterminal(nonterminalName);
+		String abstractClassName = IdentifierUtil.toIdentifier(nonterminalName, true);
 		{
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
 			classGenerator.className = abstractClassName;
@@ -211,7 +214,7 @@ public class PsiClassesGenerator {
 			throw new RuntimeException("could not recognize present case for optional-styled nonterminal " + nonterminalName);
 		}
 		String operandSymbol = presentCaseAlternative.getExpansion().get(0);
-		String operandType = psiTypeMapper.getEffectiveTypeForSymbol(operandSymbol);
+		String operandType = getEffectiveTypeForSymbol(operandSymbol);
 		String operandName = presentCaseAlternative.getAnnotation().getExpressionNames().get(0);
 		if (operandName == null) {
 			operandName = "it";
@@ -219,7 +222,7 @@ public class PsiClassesGenerator {
 		String operandGetterName = "get" + StringUtils.capitalize(operandName);
 
 		// generate abstract class
-		String abstractClassName = psiTypeMapper.getEffectiveTypeForNonterminal(nonterminalName);
+		String abstractClassName = IdentifierUtil.toIdentifier(nonterminalName, true);
 		{
 			PsiClassGenerator classGenerator = new PsiClassGenerator();
 			classGenerator.className = abstractClassName;
@@ -262,6 +265,15 @@ public class PsiClassesGenerator {
 			classGenerator.generate();
 		}
 
+	}
+	public String getEffectiveTypeForSymbol(String symbol) {
+		if (grammar.getTerminalDefinitions().get(symbol) != null) {
+			return "LeafPsiElement";
+		} else if (grammar.getNonterminalDefinitions().get(symbol) != null) {
+			return IdentifierUtil.toIdentifier(symbol, true);
+		} else {
+			throw new RuntimeException("unknown symbol: " + symbol);
+		}
 	}
 
 	private class PsiClassGenerator {
@@ -307,7 +319,7 @@ public class PsiClassesGenerator {
 					if (!expressionName.isEmpty()) {
 						NodeGetter nodeGetter = new NodeGetter();
 						nodeGetter.childIndex = i;
-						nodeGetter.nodeType = psiTypeMapper.getEffectiveTypeForSymbol(symbol);
+						nodeGetter.nodeType = getEffectiveTypeForSymbol(symbol);
 						nodeGetter.getterName = "get" + StringUtils.capitalize(expressionName);
 						nodeGetters.add(nodeGetter);
 					}
@@ -349,11 +361,55 @@ public class PsiClassesGenerator {
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+		if (!configuration.getRequired(SymbolHolderClassGenerator.PACKAGE_NAME_PROPERTY).equals(configuration.getRequired(PACKAGE_NAME_PROPERTY))) {
+			String symbolHolderPackage = configuration.getRequired(SymbolHolderClassGenerator.PACKAGE_NAME_PROPERTY);
+			String symbolHolderClass = configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY);
+			context.put("symbolHolderImport", "import " + symbolHolderPackage + '.' + symbolHolderClass + ';');
+		} else {
+			context.put("symbolHolderImport", "");
+		}
+		context.put("symbolHolder", configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY));
+
+		List<FactoryCaseEntry> cases = new ArrayList<>();
+		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
+			for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
+
+				String concreteClassName;
+				if (nonterminalDefinition.getAlternatives().size() == 1) {
+					concreteClassName = IdentifierUtil.toIdentifier(nonterminalDefinition.getName(), true);
+				} else {
+					concreteClassName = IdentifierUtil.toIdentifier(nonterminalDefinition.getName() + '/' + effectiveAlternativeNames.get(alternative), true);
+					generateMultiAlternativeCaseClass(nonterminalDefinition.getName(), alternative);
+				}
+
+				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
+				caseEntry.elementType = ; // TODO we actually need an element type per alternative, not per nonterminal!
+				caseEntry.psiClass = concreteClassName;
+				cases.add(caseEntry);
+
+			}
+		}
+		context.put("cases", cases);
 
 		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "PsiFactory")) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
 				MapagVelocityEngine.engine.getTemplate("PsiFactory.vm").merge(context, outputStreamWriter);
 			}
+		}
+
+	}
+
+	public static class FactoryCaseEntry {
+
+		String elementType;
+		String psiClass;
+
+		public String getElementType() {
+			return elementType;
+		}
+
+		public String getPsiClass() {
+			return psiClass;
 		}
 
 	}

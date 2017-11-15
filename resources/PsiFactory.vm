@@ -11,5 +11,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+${symbolHolderImport}
+
 public class PsiFactory {
+
+    public static PsiElement createPsiElement(ASTNode node) {
+        IElementType type = node.getElementType();
+
+        #foreach($case in $cases)
+            if (type == ${symbolHolder}.${case.elementType}) {
+                return new ${case.psiClass}(node);
+            }
+        #end
+
+        throw new RuntimeException("cannot create PSI element for AST node due to unknown element type: " + type);
+    }
+
 }
