@@ -19,11 +19,9 @@
   <depends>com.intellij.modules.platform</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <!--
-    <fileTypeFactory implementation="name.martingeisse.name.martingeisse.mapag.ide.MapagFileTypeFactory" />
-    <lang.syntaxHighlighterFactory language="JAVAPOT" implementationClass="name.martingeisse.name.martingeisse.mapag.ide.MapagSyntaxHighlighterFactory" />
-    <lang.parserDefinition language="JAVAPOT" implementationClass="name.martingeisse.name.martingeisse.mapag.ide.MapagParserDefinition" />
-    -->
+    <fileTypeFactory implementation="name.martingeisse.mapag.ide.MapagFileTypeFactory" />
+    <lang.syntaxHighlighterFactory language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagSyntaxHighlighterFactory" />
+    <lang.parserDefinition language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagParserDefinition" />
   </extensions>
 
   <actions>

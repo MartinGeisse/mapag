@@ -16,14 +16,9 @@ public class GenerateAction extends AnAction {
 
 	@Override
 	public void update(AnActionEvent event) {
-		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE);
-		if (psiFile == null) {
-			return;
-		}
-		if (psiFile.getLanguage() != MapagSpecificationLanguage.INSTANCE) {
-			return;
-		}
-		System.out.println("selected MaPaG specification file: " + psiFile);
+		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE); // TODO doesn't work -- this data key gets updated too late
+		boolean enabled = psiFile != null && psiFile.getLanguage() == MapagSpecificationLanguage.INSTANCE;
+		getTemplatePresentation().setEnabledAndVisible(enabled);
 	}
 
 	@Override
