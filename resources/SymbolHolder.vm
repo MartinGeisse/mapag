@@ -15,8 +15,8 @@ public class $className {
 	// nonterminals
 	//
 
-#foreach($nonterminal in $nonterminals)
-	public static final $nonterminalElementTypeClass $nonterminal = new $nonterminalElementTypeClass("$nonterminal");
+#foreach($nonterminalAlternative in $nonterminalAlternatives)
+	public static final $nonterminalElementTypeClass $nonterminalAlternative = new $nonterminalElementTypeClass("$nonterminalAlternative");
 #end
 
 
