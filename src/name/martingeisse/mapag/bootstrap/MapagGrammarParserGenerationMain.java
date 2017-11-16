@@ -27,6 +27,13 @@ public class MapagGrammarParserGenerationMain {
 		Properties codeGenerationProperties = new Properties();
 		codeGenerationProperties.setProperty("parser.package", "name.martingeisse.mapag.input");
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
+		codeGenerationProperties.setProperty("parser.fileElementType", "MapagParserDefinition.FILE_ELEMENT_TYPE");
+		codeGenerationProperties.setProperty("symbolHolder.generate", "true");
+		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.mapag.input");
+		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");
+		codeGenerationProperties.setProperty("symbol.elementType.class", "MapagElementType");
+		codeGenerationProperties.setProperty("psi.generate", "true");
+		codeGenerationProperties.setProperty("psi.package", "name.martingeisse.mapag.input.psi");
 		Configuration configuration = new Configuration(codeGenerationProperties);
 
 		ImmutableList terminalDeclarations = ImmutableList.of(

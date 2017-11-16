@@ -21,39 +21,52 @@ Newline = \r | \n | \r\n
 Whitespace = [ \t\f] | {Newline}
 
 // comments
-Comment = {TraditionalComment} | {EndOfLineComment}
-TraditionalComment = "/*" {CommentContent} \*+ "/"
-EndOfLineComment = "//" [^\r\n]* {Newline}
+BlockComment = "/*" {CommentContent} \*+ "/"
+LineComment = "//" [^\r\n]* {Newline}
 CommentContent = ( [^*] | \*+[^*/] )*
 
 // identifiers
-ident = ([:jletter:] | "_" ) ([:jletterdigit:] | [:jletter:] | "_" )*
+Identifier = ([:jletter:] | "_" ) ([:jletterdigit:] | [:jletter:] | "_" )*
 
 %%
 
 <YYINITIAL> {
+
+	// whitespace
 	{Whitespace} { return TokenType.WHITE_SPACE; }
-	"?" { return MapagSpecificationElementTypes.QUESTION_MARK; }
-	";" { return MapagSpecificationElementTypes.SEMICOLON; }
-	"," { return MapagSpecificationElementTypes.COMMA; }
-	"*" { return MapagSpecificationElementTypes.ASTERISK; }
-	"." { return MapagSpecificationElementTypes.DOT; }
-	"|" { return MapagSpecificationElementTypes.BAR; }
-	"+" { return MapagSpecificationElementTypes.PLUS; }
-	":" { return MapagSpecificationElementTypes.COLON; }
-	"::=" { return MapagSpecificationElementTypes.COLON_COLON_EQUALS; }
-	"%prec" { return MapagSpecificationElementTypes.PERCENT_PREC; }
-	{Comment} { return MapagSpecificationElementTypes.COMMENT; }
-	"package" { return MapagSpecificationElementTypes.PACKAGE; }
-	"class" { return MapagSpecificationElementTypes.CLASS; }
-	"terminal" { return MapagSpecificationElementTypes.TERMINAL; }
-	"nonterminal" { return MapagSpecificationElementTypes.NONTERMINAL; }
-	"start" { return MapagSpecificationElementTypes.START; }
-	"precedence" { return MapagSpecificationElementTypes.PRECEDENCE; }
-	"left" { return MapagSpecificationElementTypes.LEFT; }
-	"right" { return MapagSpecificationElementTypes.RIGHT; }
-	"nonassoc" { return MapagSpecificationElementTypes.NONASSOC; }
-	{ident} { return MapagSpecificationElementTypes.IDENTIFIER; }
+
+	// keywords
+	"%terminals" { return Symbols.KW_TERMINALS; }
+	"%nonterminals" { return Symbols.KW_NONTERMINALS; }
+	"%precedence" { return Symbols.KW_PRECEDENCE; }
+	"%left" { return Symbols.KW_LEFT; }
+	"%right" { return Symbols.KW_RIGHT; }
+	"%nonassoc" { return Symbols.KW_NONASSOC; }
+	"%start" { return Symbols.KW_START; }
+
+	// braces and parentheses
+	"{" { return Symbols.OPENING_CURLY_BRACE; }
+	"}" { return Symbols.CLOSING_CURLY_BRACE; }
+	"(" { return Symbols.OPENING_PARENTHESIS; }
+	")" { return Symbols.CLOSING_PARENTHESIS; }
+
+	// punctuation and operators
+	"," { return Symbols.COMMA; }
+	";" { return Symbols.SEMICOLON; }
+	":" { return Symbols.COLON; }
+	"::=" { return Symbols.EXPANDS_TO; }
+	"?" { return Symbols.QUESTION_MARK; }
+	"*" { return Symbols.ASTERISK; }
+	"+" { return Symbols.PLUS; }
+	"|" { return Symbols.BAR; }
+
+	// comments
+	{BlockComment} { return Symbols.BLOCK_COMMENT; }
+	{LineComment} { return Symbols.LINE_COMMENT; }
+
+	// identifiers
+	{Identifier} { return Symbols.IDENTIFIER; }
+
 }
 
 // error fallback

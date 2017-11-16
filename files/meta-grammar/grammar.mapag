@@ -1,13 +1,10 @@
 
-%package name.martingeisse.mapag.input;
-%class MapagGeneratedMapagParser;
-
 %terminals {
     KW_TERMINALS, KW_NONTERMINALS, KW_PRECEDENCE, KW_LEFT, KW_RIGHT, KW_NONASSOC, KW_START,
     OPENING_CURLY_BRACE, CLOSING_CURLY_BRACE, OPENING_PARENTHESIS, CLOSING_PARENTHESIS,
-    DOT, COMMA, SEMICOLON, COLON, EXPANDS_TO, QUESTION_MARK, ASTERISK, PLUS, BAR,
+    COMMA, SEMICOLON, COLON, EXPANDS_TO, QUESTION_MARK, ASTERISK, PLUS, BAR,
 	IDENTIFIER,
-	COMMENT // never passed to the parser
+	BLOCK_COMMENT, LINE_COMMENT // never passed to the parser
 }
 
 %nonterminals {
@@ -56,14 +53,16 @@ rightHandSide ::=
     ;
 
 expression ::=
-    IDENTIFIER (COLON IDENTIFIER)?
+    IDENTIFIER
     | expression BAR expression
     | expression ASTERISK
     | expression PLUS
     | expression QUESTION_MARK
-    | OPENING_PARENTHESIS expression+ CLOSING_PARENTHESIS (COLON IDENTIFIER)?
+    | OPENING_PARENTHESIS expression+ CLOSING_PARENTHESIS
+    | expression COLON IDENTIFIER
 	;
 
+TODO the above is ambiguous
 
 //
 // helpers
