@@ -16,13 +16,15 @@ public class GenerateAction extends AnAction {
 
 	@Override
 	public void update(AnActionEvent event) {
-		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE); // TODO doesn't work -- this data key gets updated too late
+		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE);
 		boolean enabled = psiFile != null && psiFile.getLanguage() == MapagSpecificationLanguage.INSTANCE;
-		getTemplatePresentation().setEnabledAndVisible(enabled);
+		// Note to myself: event.getPresentation() is correct here, not this.getTemplatePresentation()!
+		event.getPresentation().setEnabledAndVisible(enabled);
 	}
 
 	@Override
-	public void actionPerformed(AnActionEvent anActionEvent) {
+	public void actionPerformed(AnActionEvent event) {
+		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE);
 		System.out.println("generating... done!");
 	}
 
