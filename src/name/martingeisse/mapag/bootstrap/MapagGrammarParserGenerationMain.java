@@ -1,11 +1,9 @@
 package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.ParserClassGenerator;
-import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.extended.*;
@@ -161,7 +159,7 @@ public class MapagGrammarParserGenerationMain {
 			)),
 			new Production("resolveDeclaration", ImmutableList.of(
 				new Alternative("identifier", symbol("IDENTIFIER"), null, null),
-				new Alternative("eof", symbol("KW_EOF"), null, null),
+				new Alternative("eof", symbol("KW_EOF"), null, null)
 			)),
 			new Production("expression", ImmutableList.of(
 				new Alternative("identifier", symbol("IDENTIFIER"), null, null),
