@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.ParserClassGenerator;
@@ -246,7 +247,7 @@ public class MapagGrammarParserGenerationMain {
 			}
 			return new FileOutputStream(new File(packageFolder, className + ".java"));
 		};
-		new ParserClassGenerator(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
+		new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
 
 	}
 
