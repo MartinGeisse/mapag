@@ -44,11 +44,15 @@ public class MapagGrammarParserGenerationMain {
 			new TerminalDeclaration("KW_RIGHT"),
 			new TerminalDeclaration("KW_NONASSOC"),
 			new TerminalDeclaration("KW_START"),
+			new TerminalDeclaration("KW_RESOLVE"),
+			new TerminalDeclaration("KW_SHIFT"),
+			new TerminalDeclaration("KW_REDUCE"),
+			new TerminalDeclaration("KW_EOF"),
+			new TerminalDeclaration("KW_ERROR"),
 			new TerminalDeclaration("OPENING_CURLY_BRACE"),
 			new TerminalDeclaration("CLOSING_CURLY_BRACE"),
 			new TerminalDeclaration("OPENING_PARENTHESIS"),
 			new TerminalDeclaration("CLOSING_PARENTHESIS"),
-			new TerminalDeclaration("DOT"),
 			new TerminalDeclaration("COMMA"),
 			new TerminalDeclaration("SEMICOLON"),
 			new TerminalDeclaration("COLON"),
@@ -58,23 +62,23 @@ public class MapagGrammarParserGenerationMain {
 			new TerminalDeclaration("PLUS"),
 			new TerminalDeclaration("BAR"),
 			new TerminalDeclaration("IDENTIFIER"),
-			new TerminalDeclaration("COMMENT") // never passed to the parser
+			new TerminalDeclaration("BLOCK_COMMENT"), // never passed to the parser
+			new TerminalDeclaration("LINE_COMMENT") // never passed to the parser
 		);
 
 		ImmutableList nonterminalDeclarations = ImmutableList.of(
 			new NonterminalDeclaration("grammar"),
 			new NonterminalDeclaration("precedenceDeclaration"),
 			new NonterminalDeclaration("production"),
-			new NonterminalDeclaration("alternative"),
-			new NonterminalDeclaration("toplevelExpression"),
-			new NonterminalDeclaration("nestedExpression"),
+
+			new NonterminalDeclaration("rightHandSide"),
+			new NonterminalDeclaration("expression"),
+			new NonterminalDeclaration("resolveDeclaration"),
+			new NonterminalDeclaration("resolveDeclarationSymbol"),
 			new NonterminalDeclaration("nonemptyIdentifierList")
 		);
 
-		PrecedenceTable precedenceTable = new PrecedenceTable(ImmutableList.of(
-			new PrecedenceTable.Entry(ImmutableSet.of("BAR"), Associativity.LEFT),
-			new PrecedenceTable.Entry(ImmutableSet.of("ASTERISK", "PLUS", "QUESTION_MARK"), Associativity.NONASSOC)
-		));
+		PrecedenceTable precedenceTable = null;
 
 		String startNonterminalName = "grammar";
 
@@ -89,16 +93,16 @@ public class MapagGrammarParserGenerationMain {
 					symbol("OPENING_CURLY_BRACE"),
 					symbol("nonemptyIdentifierList"),
 					symbol("CLOSING_CURLY_BRACE"),
-					new OptionalExpression(sequence(
+					optional(
 						symbol("KW_PRECEDENCE"),
 						symbol("OPENING_CURLY_BRACE"),
-						new ZeroOrMoreExpression(symbol("precedenceDeclaration")),
+						zeroOrMore(symbol("precedenceDeclaration")),
 						symbol("CLOSING_CURLY_BRACE")
-					)),
+					),
 					symbol("KW_START"),
-					symbol("IDENTIFIER"),
+					symbol("IDENTIFIER").withName("startSymbolName"),
 					symbol("SEMICOLON"),
-					new OneOrMoreExpression(symbol("production"))
+					oneOrMore(symbol("production"))
 				), null, null)
 			)),
 			new Production("precedenceDeclaration", ImmutableList.of(
@@ -109,58 +113,93 @@ public class MapagGrammarParserGenerationMain {
 				), null, null)
 			)),
 			new Production("production", ImmutableList.of(
-				new Alternative(null, sequence(
-					symbol("IDENTIFIER").withName("nonterminal"),
+				new Alternative("single", sequence(
+					symbol("IDENTIFIER"),
+					optional(symbol("COLON"), symbol("IDENTIFIER")),
 					symbol("EXPANDS_TO"),
-					symbol("alternative"),
-					new ZeroOrMoreExpression(sequence(symbol("BAR"), symbol("alternative"))),
+					symbol("rightHandSide"),
+					symbol("SEMICOLON")
+				), null, null),
+				new Alternative("multi", sequence(
+					symbol("IDENTIFIER"),
+					symbol("EXPANDS_TO"),
+					symbol("OPENING_CURLY_BRACE"),
+					zeroOrMore(
+						optional(symbol("IDENTIFIER"), symbol("EXPANDS_TO")),
+						symbol("rightHandSide"),
+						symbol("SEMICOLON")
+					),
+					symbol("CLOSING_CURLY_BRACE")
+				), null, null),
+				new Alternative("error", sequence(
+					symbol("error"),
 					symbol("SEMICOLON")
 				), null, null)
 			)),
-			new Production("alternative", ImmutableList.of(
-				new Alternative(null, sequence(
-					new OneOrMoreExpression(symbol("toplevelExpression")),
-					new OptionalExpression(sequence(symbol("KW_PRECEDENCE"), symbol("IDENTIFIER")))
+			new Production("rightHandSide", ImmutableList.of(
+				new Alternative("withoutResolver", symbol("expression"), null, null),
+				new Alternative("withPrecedenceResolver", sequence(
+					symbol("expression"),
+					symbol("KW_PRECEDENCE"),
+					symbol("IDENTIFIER")
+				), null, null),
+				new Alternative("withExplicitResolver", sequence(
+					symbol("expression"),
+					symbol("KW_RESOLVE"),
+					symbol("OPENING_CURLY_BRACE"),
+					zeroOrMore(symbol("resolveDeclaration")),
+					symbol("CLOSING_CURLY_BRACE")
 				), null, null)
 			)),
-			new Production("toplevelExpression", ImmutableList.of(
+			new Production("resolveDeclaration", ImmutableList.of(
 				new Alternative(null, sequence(
-					symbol("IDENTIFIER"),
-					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
-				), null, null),
-				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("ASTERISK")), "ASTERISK", null),
-				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("PLUS")), "PLUS", null),
-				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK", null),
-				new Alternative(null, sequence(
-					symbol("OPENING_PARENTHESIS"),
-					new OneOrMoreExpression(symbol("nestedExpression")),
-					symbol("CLOSING_PARENTHESIS"),
-					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
+					or(symbol("KW_SHIFT"), symbol("KW_REDUCE")),
+					symbol("resolveDeclarationSymbol"),
+					zeroOrMore(symbol("COMMA"), symbol("resolveDeclarationSymbol")),
+					symbol("SEMICOLON")
 				), null, null)
 			)),
-			new Production("nestedExpression", ImmutableList.of(
-				new Alternative(null, sequence(
-					symbol("IDENTIFIER"),
-					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
+			new Production("resolveDeclaration", ImmutableList.of(
+				new Alternative("identifier", symbol("IDENTIFIER"), null, null),
+				new Alternative("eof", symbol("KW_EOF"), null, null),
+			)),
+			new Production("expression", ImmutableList.of(
+				new Alternative("identifier", symbol("IDENTIFIER"), null, null),
+				new Alternative("sequence", sequence(
+					symbol("expression"),
+					symbol("expression")
 				), null, null),
-				new Alternative(null, sequence(
-					symbol("nestedExpression"),
+				new Alternative("or", sequence(
+					symbol("expression"),
 					symbol("BAR"),
-					symbol("toplevelExpression")
-				), "BAR", null),
-				new Alternative(null, sequence(symbol("nestedExpression"), symbol("ASTERISK")), "ASTERISK", null),
-				new Alternative(null, sequence(symbol("nestedExpression"), symbol("PLUS")), "PLUS", null),
-				new Alternative(null, sequence(symbol("nestedExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK", null),
-				new Alternative(null, sequence(
+					symbol("expression")
+				), null, null),
+				new Alternative("zeroOrMore", sequence(
+					symbol("expression"),
+					symbol("ASTERISK")
+				), null, null),
+				new Alternative("oneOrMore", sequence(
+					symbol("expression"),
+					symbol("PLUS")
+				), null, null),
+				new Alternative("optional", sequence(
+					symbol("expression"),
+					symbol("QUESTION_MARK")
+				), null, null),
+				new Alternative("parenthesized", sequence(
 					symbol("OPENING_PARENTHESIS"),
-					new OneOrMoreExpression(symbol("nestedExpression")),
-					symbol("CLOSING_PARENTHESIS"),
-					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
+					oneOrMore(symbol("expression")),
+					symbol("CLOSING_PARENTHESIS")
+				), null, null),
+				new Alternative("named", sequence(
+					symbol("expression"),
+					symbol("COLON"),
+					symbol("IDENTIFIER")
 				), null, null)
 			)),
 			new Production("nonemptyIdentifierList", ImmutableList.of(
 				new Alternative(null,
-					sequence(symbol("IDENTIFIER"), new ZeroOrMoreExpression(sequence(symbol("COMMA"), symbol("IDENTIFIER"))))
+					sequence(symbol("IDENTIFIER"), zeroOrMore(symbol("COMMA"), symbol("IDENTIFIER")))
 					, null, null)
 			))
 		);
@@ -188,7 +227,13 @@ public class MapagGrammarParserGenerationMain {
 	}
 
 	private static Expression sequence(Expression... expressions) {
-		return sequence(0, expressions);
+		if (expressions.length == 0) {
+			return new EmptyExpression();
+		} else if (expressions.length == 1) {
+			return expressions[0];
+		} else {
+			return sequence(0, expressions);
+		}
 	}
 
 	private static Expression sequence(int i, Expression... expressions) {
@@ -213,6 +258,18 @@ public class MapagGrammarParserGenerationMain {
 		} else {
 			return new OrExpression(expressions[i], or(i + 1, expressions));
 		}
+	}
+
+	private static OptionalExpression optional(Expression... expressions) {
+		return new OptionalExpression(sequence(expressions));
+	}
+
+	private static ZeroOrMoreExpression zeroOrMore(Expression... expressions) {
+		return new ZeroOrMoreExpression(sequence(expressions));
+	}
+
+	private static OneOrMoreExpression oneOrMore(Expression... expressions) {
+		return new OneOrMoreExpression(sequence(expressions));
 	}
 
 }

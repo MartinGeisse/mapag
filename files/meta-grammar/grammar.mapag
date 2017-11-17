@@ -13,11 +13,6 @@
 	nonemptyIdentifierList
 }
 
-%precedence {
-	%left BAR;
-	%nonassoc QUESTION_MARK, ASTERISK, PLUS;
-}
-
 %start grammar;
 
 
@@ -41,8 +36,8 @@ precedenceDeclaration ::= (KW_LEFT | KW_RIGHT | KW_NONASSOC) nonemptyIdentifierL
 //
 
 production ::= {
-	single ::= IDENTIFIER (COLON IDENTIFIER)? COLON_COLON_EQUALS rightHandSide SEMICOLON
-	multi ::= IDENTIFIER COLON_COLON_EQUALS OPENING_CURLY_BRACE ((IDENTIFIER COLON_COLON_EQUALS)? rightHandSide SEMICOLON)* CLOSING_CURLY_BRACE
+	single ::= IDENTIFIER (COLON IDENTIFIER)? EXPANDS_TO rightHandSide SEMICOLON
+	multi ::= IDENTIFIER EXPANDS_TO OPENING_CURLY_BRACE ((IDENTIFIER EXPANDS_TO)? rightHandSide SEMICOLON)* CLOSING_CURLY_BRACE
 	error ::= error SEMICOLON
 }
 
@@ -60,16 +55,16 @@ resolveDeclarationSymbol ::= {
 }
 
 // TODO ambiguous; resolve using %resolve declarations
-expression ::=
-    IDENTIFIER
-    | expression expression
-    | expression BAR expression
-    | expression ASTERISK
-    | expression PLUS
-    | expression QUESTION_MARK
-    | OPENING_PARENTHESIS expression+ CLOSING_PARENTHESIS
-    | expression COLON IDENTIFIER
-	;
+expression ::= {
+    identifier ::= IDENTIFIER
+    sequence ::= expression expression
+    or ::= expression BAR expression
+    zeroOrMore ::= expression ASTERISK
+    oneOrMore ::= expression PLUS
+    optional ::= expression QUESTION_MARK
+    parenthesized ::= OPENING_PARENTHESIS expression+ CLOSING_PARENTHESIS
+    named ::= expression COLON IDENTIFIER
+}
 
 //
 // helpers
