@@ -14,7 +14,7 @@ public final class EmptyExpression extends Expression {
 	}
 
 	@Override
-	public Expression withNameInternal(String name) {
+	public Expression withName(String name) {
 		return new EmptyExpression(name);
 	}
 

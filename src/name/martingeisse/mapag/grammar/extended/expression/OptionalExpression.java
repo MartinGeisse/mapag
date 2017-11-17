@@ -20,7 +20,7 @@ public final class OptionalExpression extends Expression {
 	}
 
 	@Override
-	public Expression withNameInternal(String name) {
+	public Expression withName(String name) {
 		return new OptionalExpression(name, operand);
 	}
 

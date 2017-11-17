@@ -15,6 +15,9 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 	}
 
 	public void validateExpression(Expression expression) {
+		if (expression.getName() != null && expression.getName().equals("name")) {
+			throw new IllegalStateException("The name 'name' is forbidden for expressions since IntelliJ PSI classes already use that name for something different.");
+		}
 		if (expression instanceof EmptyExpression) {
 			// OK, nothing to do
 		} else if (expression instanceof OneOrMoreExpression) {

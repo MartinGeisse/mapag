@@ -20,7 +20,7 @@ public final class ZeroOrMoreExpression extends Expression {
 	}
 
 	@Override
-	public Expression withNameInternal(String name) {
+	public Expression withName(String name) {
 		return new ZeroOrMoreExpression(name, operand);
 	}
 

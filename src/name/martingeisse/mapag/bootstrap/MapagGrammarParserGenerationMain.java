@@ -226,7 +226,7 @@ public class MapagGrammarParserGenerationMain {
 				alternative("named", sequence(
 					symbol("expression").withName("expression"),
 					symbol("COLON"),
-					symbol("IDENTIFIER").withName("name")
+					symbol("IDENTIFIER").withName("expressionName")
 				))
 			)),
 			new Production("nonemptyIdentifierList", ImmutableList.of(

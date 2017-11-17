@@ -24,7 +24,7 @@ public final class SymbolReference extends Expression {
 	}
 
 	@Override
-	public Expression withNameInternal(String name) {
+	public Expression withName(String name) {
 		return new SymbolReference(name, symbolName);
 	}
 

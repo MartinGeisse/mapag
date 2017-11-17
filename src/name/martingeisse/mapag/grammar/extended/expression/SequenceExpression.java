@@ -23,7 +23,7 @@ public final class SequenceExpression extends Expression {
 	}
 
 	@Override
-	public Expression withNameInternal(String name) {
+	public Expression withName(String name) {
 		return new SequenceExpression(name, left, right);
 	}
 

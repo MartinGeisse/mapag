@@ -23,7 +23,7 @@ public final class OrExpression extends Expression {
 	}
 
 	@Override
-	public Expression withNameInternal(String name) {
+	public Expression withName(String name) {
 		return new OrExpression(name, leftOperand, rightOperand);
 	}
 
