@@ -96,28 +96,28 @@ public class MapagGrammarParserGenerationMain {
 				alternative(null, sequence(
 					symbol("KW_TERMINALS"),
 					symbol("OPENING_CURLY_BRACE"),
-					symbol("nonemptyIdentifierList"),
+					symbol("nonemptyIdentifierList").withName("terminals"),
 					symbol("CLOSING_CURLY_BRACE"),
 					symbol("KW_NONTERMINALS"),
 					symbol("OPENING_CURLY_BRACE"),
-					symbol("nonemptyIdentifierList"),
+					symbol("nonemptyIdentifierList").withName("nonterminals"),
 					symbol("CLOSING_CURLY_BRACE"),
 					optional(
 						symbol("KW_PRECEDENCE"),
 						symbol("OPENING_CURLY_BRACE"),
-						zeroOrMore(symbol("precedenceDeclaration")),
+						zeroOrMore(symbol("precedenceDeclaration")).withName("precedenceDeclarations"),
 						symbol("CLOSING_CURLY_BRACE")
-					),
+					).withName("precedenceTable"),
 					symbol("KW_START"),
 					symbol("IDENTIFIER").withName("startSymbolName"),
 					symbol("SEMICOLON"),
-					oneOrMore(symbol("production"))
+					oneOrMore(symbol("production")).withName("productions")
 				))
 			)),
 			new Production("precedenceDeclaration", ImmutableList.of(
 				alternative(null, sequence(
-					or(symbol("KW_LEFT"), symbol("KW_RIGHT"), symbol("KW_NONASSOC")),
-					symbol("nonemptyIdentifierList"),
+					or(symbol("KW_LEFT"), symbol("KW_RIGHT"), symbol("KW_NONASSOC")).withName("associativity"),
+					symbol("nonemptyIdentifierList").withName("terminals"),
 					symbol("SEMICOLON")
 				))
 			)),
@@ -125,41 +125,39 @@ public class MapagGrammarParserGenerationMain {
 
 				// single alternative. Note: an optional-expression for the name would make the grammar LR(>1)
 				alternative("singleUnnamed", sequence(
-					symbol("IDENTIFIER"),
+					symbol("IDENTIFIER").withName("nonterminalName"),
 					symbol("EXPANDS_TO"),
-					symbol("rightHandSide"),
+					symbol("rightHandSide").withName("rightHandSide"),
 					symbol("SEMICOLON")
 				)),
 				alternative("singleNamed", sequence(
-					symbol("IDENTIFIER"),
+					symbol("IDENTIFIER").withName("nonterminalName"),
 					symbol("COLON"),
-					symbol("IDENTIFIER"),
+					symbol("IDENTIFIER").withName("alternativeName"),
 					symbol("EXPANDS_TO"),
-					symbol("rightHandSide"),
+					symbol("rightHandSide").withName("rightHandSide"),
 					symbol("SEMICOLON")
 				)),
 
 				// multiple alternatives
 				alternative("multi", sequence(
-					symbol("IDENTIFIER"),
+					symbol("IDENTIFIER").withName("nonterminalName"),
 					symbol("EXPANDS_TO"),
 					symbol("OPENING_CURLY_BRACE"),
 					zeroOrMore(
 						or( // again, an optional-expression would make the grammar LR(>1)
 							sequence(
-								symbol("rightHandSide"),
+								symbol("rightHandSide").withName("rightHandSide"),
 								symbol("SEMICOLON")
 							),
 							sequence(
-								symbol("IDENTIFIER"),
+								symbol("IDENTIFIER").withName("alternativeName"),
 								symbol("EXPANDS_TO"),
-								// TODO a symbol annotation to make this getter available in the abstract base class would be cool,
-								// given that
-								symbol("rightHandSide"),
+								symbol("rightHandSide").withName("rightHandSide"),
 								symbol("SEMICOLON")
 							)
 						)
-					),
+					).withName("alternatives"),
 					symbol("CLOSING_CURLY_BRACE")
 				)),
 				alternative("error", sequence(
@@ -168,68 +166,77 @@ public class MapagGrammarParserGenerationMain {
 				))
 			)),
 			new Production("rightHandSide", ImmutableList.of(
-				alternative("withoutResolver", symbol("expression")),
+				alternative("withoutResolver", symbol("expression").withName("expression")),
 				alternative("withPrecedenceResolver", sequence(
-					symbol("expression"),
+					symbol("expression").withName("expression"),
 					symbol("KW_PRECEDENCE"),
-					symbol("IDENTIFIER")
+					symbol("IDENTIFIER").withName("precedenceDefiningTerminal")
 				)),
 				alternative("withExplicitResolver", sequence(
-					symbol("expression"),
+					symbol("expression").withName("expression"),
 					symbol("KW_RESOLVE"),
 					symbol("OPENING_CURLY_BRACE"),
-					zeroOrMore(symbol("resolveDeclaration")),
+					zeroOrMore(symbol("resolveDeclaration")).withName("resolveDeclarations"),
 					symbol("CLOSING_CURLY_BRACE")
 				))
 			)),
 			new Production("resolveDeclaration", ImmutableList.of(
 				alternative(null, sequence(
-					or(symbol("KW_SHIFT"), symbol("KW_REDUCE")),
-					symbol("resolveDeclarationSymbol"),
-					zeroOrMore(symbol("COMMA"), symbol("resolveDeclarationSymbol")),
+					or(symbol("KW_SHIFT"), symbol("KW_REDUCE")).withName("action"),
+					symbol("resolveDeclarationSymbol").withName("firstSymbol"),
+					zeroOrMore(
+						symbol("COMMA"),
+						symbol("resolveDeclarationSymbol").withName("symbol")
+					).withName("additionalSymbols"),
 					symbol("SEMICOLON")
 				))
 			)),
 			new Production("resolveDeclarationSymbol", ImmutableList.of(
-				alternative("identifier", symbol("IDENTIFIER")),
+				alternative("identifier", symbol("IDENTIFIER").withName("symbol")),
 				alternative("eof", symbol("KW_EOF"))
 			)),
 			new Production("expression", ImmutableList.of(
-				alternative("identifier", symbol("IDENTIFIER")),
+				alternative("identifier", symbol("IDENTIFIER").withName("identifier")),
 				alternativeWithResolution("sequence", sequence(
-					symbol("expression"),
-					symbol("expression")
+					symbol("expression").withName("left"),
+					symbol("expression").withName("right")
 				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON", "OPENING_PARENTHESIS"), ImmutableList.of("IDENTIFIER", "BAR")),
 				alternativeWithResolution("or", sequence(
-					symbol("expression"),
+					symbol("expression").withName("left"),
 					symbol("BAR"),
-					symbol("expression")
+					symbol("expression").withName("right")
 				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON", "OPENING_PARENTHESIS", "IDENTIFIER"), ImmutableList.of("BAR")),
 				alternative("zeroOrMore", sequence(
-					symbol("expression"),
+					symbol("expression").withName("operand"),
 					symbol("ASTERISK")
 				)),
 				alternative("oneOrMore", sequence(
-					symbol("expression"),
+					symbol("expression").withName("operand"),
 					symbol("PLUS")
 				)),
 				alternative("optional", sequence(
-					symbol("expression"),
+					symbol("expression").withName("operand"),
 					symbol("QUESTION_MARK")
 				)),
 				alternative("parenthesized", sequence(
 					symbol("OPENING_PARENTHESIS"),
-					symbol("expression"),
+					symbol("expression").withName("inner"),
 					symbol("CLOSING_PARENTHESIS")
 				)),
 				alternative("named", sequence(
-					symbol("expression"),
+					symbol("expression").withName("expression"),
 					symbol("COLON"),
-					symbol("IDENTIFIER")
+					symbol("IDENTIFIER").withName("name")
 				))
 			)),
 			new Production("nonemptyIdentifierList", ImmutableList.of(
-				alternative(null, sequence(symbol("IDENTIFIER"), zeroOrMore(symbol("COMMA"), symbol("IDENTIFIER"))))
+				alternative(null, sequence(
+					symbol("IDENTIFIER").withName("firstIdentifier"),
+					zeroOrMore(
+						symbol("COMMA"),
+						symbol("IDENTIFIER").withName("identifier")
+					).withName("moreIdentifiers")
+				))
 			))
 		);
 
