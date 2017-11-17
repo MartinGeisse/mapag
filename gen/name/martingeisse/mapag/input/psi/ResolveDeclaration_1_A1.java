@@ -5,15 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class ResolveDeclaration_1_A1 extends ResolveDeclaration_1 {
 
-    public ResolveDeclaration_1_A1(@NotNull ASTNode node) {
-        super(node);
-    }
+	public ResolveDeclaration_1_A1(@NotNull ASTNode node) {
+		super(node);
+	}
 
-    
-
-            
-    
-
-            
-    
 }

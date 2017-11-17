@@ -5,15 +5,12 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Expression_Optional extends Expression {
 
-    public Expression_Optional(@NotNull ASTNode node) {
-        super(node);
-    }
+	public Expression_Optional(@NotNull ASTNode node) {
+		super(node);
+	}
 
-    
+	public Expression getOperand() {
+		return (Expression) (getChildren()[0]);
+	}
 
-            
-    
-
-            
-    
 }

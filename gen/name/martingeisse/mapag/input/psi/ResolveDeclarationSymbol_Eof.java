@@ -5,15 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class ResolveDeclarationSymbol_Eof extends ResolveDeclarationSymbol {
 
-    public ResolveDeclarationSymbol_Eof(@NotNull ASTNode node) {
-        super(node);
-    }
+	public ResolveDeclarationSymbol_Eof(@NotNull ASTNode node) {
+		super(node);
+	}
 
-    
-
-            
-    
-
-            
-    
 }

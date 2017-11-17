@@ -34,7 +34,6 @@ public class Symbols {
 	public static final MapagElementType QUESTION_MARK = new MapagElementType("QUESTION_MARK");
 	public static final MapagElementType SEMICOLON = new MapagElementType("SEMICOLON");
 
-
 	//
 	// nonterminals
 	//
@@ -49,48 +48,47 @@ public class Symbols {
 	public static final MapagElementType expression_ZeroOrMore = new MapagElementType("expression_ZeroOrMore");
 	public static final MapagElementType grammar = new MapagElementType("grammar");
 	public static final MapagElementType grammar_1 = new MapagElementType("grammar_1");
-	public static final MapagElementType grammar_1_1_Next = new MapagElementType("grammar_1_1_Next");
-	public static final MapagElementType grammar_1_1_Start = new MapagElementType("grammar_1_1_Start");
-	public static final MapagElementType grammar_2_Absent = new MapagElementType("grammar_2_Absent");
-	public static final MapagElementType grammar_2_Present = new MapagElementType("grammar_2_Present");
-	public static final MapagElementType grammar_3_Next = new MapagElementType("grammar_3_Next");
-	public static final MapagElementType grammar_3_Start = new MapagElementType("grammar_3_Start");
+	public static final MapagElementType grammar_1_PrecedenceDeclarations_Next = new MapagElementType("grammar_1_PrecedenceDeclarations_Next");
+	public static final MapagElementType grammar_1_PrecedenceDeclarations_Start = new MapagElementType("grammar_1_PrecedenceDeclarations_Start");
+	public static final MapagElementType grammar_PrecedenceTable_Absent = new MapagElementType("grammar_PrecedenceTable_Absent");
+	public static final MapagElementType grammar_PrecedenceTable_Present = new MapagElementType("grammar_PrecedenceTable_Present");
+	public static final MapagElementType grammar_Productions_Next = new MapagElementType("grammar_Productions_Next");
+	public static final MapagElementType grammar_Productions_Start = new MapagElementType("grammar_Productions_Start");
 	public static final MapagElementType nonemptyIdentifierList = new MapagElementType("nonemptyIdentifierList");
 	public static final MapagElementType nonemptyIdentifierList_1 = new MapagElementType("nonemptyIdentifierList_1");
-	public static final MapagElementType nonemptyIdentifierList_2_Next = new MapagElementType("nonemptyIdentifierList_2_Next");
-	public static final MapagElementType nonemptyIdentifierList_2_Start = new MapagElementType("nonemptyIdentifierList_2_Start");
+	public static final MapagElementType nonemptyIdentifierList_MoreIdentifiers_Next = new MapagElementType("nonemptyIdentifierList_MoreIdentifiers_Next");
+	public static final MapagElementType nonemptyIdentifierList_MoreIdentifiers_Start = new MapagElementType("nonemptyIdentifierList_MoreIdentifiers_Start");
 	public static final MapagElementType precedenceDeclaration = new MapagElementType("precedenceDeclaration");
-	public static final MapagElementType precedenceDeclaration_1_A0 = new MapagElementType("precedenceDeclaration_1_A0");
-	public static final MapagElementType precedenceDeclaration_1_A1 = new MapagElementType("precedenceDeclaration_1_A1");
-	public static final MapagElementType precedenceDeclaration_1_A2 = new MapagElementType("precedenceDeclaration_1_A2");
+	public static final MapagElementType precedenceDeclaration_Associativity_A0 = new MapagElementType("precedenceDeclaration_Associativity_A0");
+	public static final MapagElementType precedenceDeclaration_Associativity_A1 = new MapagElementType("precedenceDeclaration_Associativity_A1");
+	public static final MapagElementType precedenceDeclaration_Associativity_A2 = new MapagElementType("precedenceDeclaration_Associativity_A2");
 	public static final MapagElementType production_Error = new MapagElementType("production_Error");
 	public static final MapagElementType production_Multi = new MapagElementType("production_Multi");
 	public static final MapagElementType production_Multi_1_A0 = new MapagElementType("production_Multi_1_A0");
 	public static final MapagElementType production_Multi_1_A1 = new MapagElementType("production_Multi_1_A1");
-	public static final MapagElementType production_Multi_2_Next = new MapagElementType("production_Multi_2_Next");
-	public static final MapagElementType production_Multi_2_Start = new MapagElementType("production_Multi_2_Start");
+	public static final MapagElementType production_Multi_Alternatives_Next = new MapagElementType("production_Multi_Alternatives_Next");
+	public static final MapagElementType production_Multi_Alternatives_Start = new MapagElementType("production_Multi_Alternatives_Start");
 	public static final MapagElementType production_SingleNamed = new MapagElementType("production_SingleNamed");
 	public static final MapagElementType production_SingleUnnamed = new MapagElementType("production_SingleUnnamed");
 	public static final MapagElementType resolveDeclaration = new MapagElementType("resolveDeclaration");
 	public static final MapagElementType resolveDeclarationSymbol_Eof = new MapagElementType("resolveDeclarationSymbol_Eof");
 	public static final MapagElementType resolveDeclarationSymbol_Identifier = new MapagElementType("resolveDeclarationSymbol_Identifier");
-	public static final MapagElementType resolveDeclaration_1_A0 = new MapagElementType("resolveDeclaration_1_A0");
-	public static final MapagElementType resolveDeclaration_1_A1 = new MapagElementType("resolveDeclaration_1_A1");
-	public static final MapagElementType resolveDeclaration_2 = new MapagElementType("resolveDeclaration_2");
-	public static final MapagElementType resolveDeclaration_3_Next = new MapagElementType("resolveDeclaration_3_Next");
-	public static final MapagElementType resolveDeclaration_3_Start = new MapagElementType("resolveDeclaration_3_Start");
+	public static final MapagElementType resolveDeclaration_1 = new MapagElementType("resolveDeclaration_1");
+	public static final MapagElementType resolveDeclaration_Action_A0 = new MapagElementType("resolveDeclaration_Action_A0");
+	public static final MapagElementType resolveDeclaration_Action_A1 = new MapagElementType("resolveDeclaration_Action_A1");
+	public static final MapagElementType resolveDeclaration_AdditionalSymbols_Next = new MapagElementType("resolveDeclaration_AdditionalSymbols_Next");
+	public static final MapagElementType resolveDeclaration_AdditionalSymbols_Start = new MapagElementType("resolveDeclaration_AdditionalSymbols_Start");
 	public static final MapagElementType rightHandSide_WithExplicitResolver = new MapagElementType("rightHandSide_WithExplicitResolver");
-	public static final MapagElementType rightHandSide_WithExplicitResolver_1_Next = new MapagElementType("rightHandSide_WithExplicitResolver_1_Next");
-	public static final MapagElementType rightHandSide_WithExplicitResolver_1_Start = new MapagElementType("rightHandSide_WithExplicitResolver_1_Start");
+	public static final MapagElementType rightHandSide_WithExplicitResolver_ResolveDeclarations_Next = new MapagElementType("rightHandSide_WithExplicitResolver_ResolveDeclarations_Next");
+	public static final MapagElementType rightHandSide_WithExplicitResolver_ResolveDeclarations_Start = new MapagElementType("rightHandSide_WithExplicitResolver_ResolveDeclarations_Start");
 	public static final MapagElementType rightHandSide_WithPrecedenceResolver = new MapagElementType("rightHandSide_WithPrecedenceResolver");
 	public static final MapagElementType rightHandSide_WithoutResolver = new MapagElementType("rightHandSide_WithoutResolver");
-
 
 	//
 	// special
 	//
 
-    // partially parsed input in case of an error
+	// partially parsed input in case of an error
 	public static final MapagElementType __PARSED_FRAGMENT = new MapagElementType("__PARSED_FRAGMENT");
 
 }

@@ -5,15 +5,12 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Production_Multi_1_A0 extends Production_Multi_1 {
 
-    public Production_Multi_1_A0(@NotNull ASTNode node) {
-        super(node);
-    }
+	public Production_Multi_1_A0(@NotNull ASTNode node) {
+		super(node);
+	}
 
-    
+	public RightHandSide getRightHandSide() {
+		return (RightHandSide) (getChildren()[0]);
+	}
 
-            
-    
-
-            
-    
 }

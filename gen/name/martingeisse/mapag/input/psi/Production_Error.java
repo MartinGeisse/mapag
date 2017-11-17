@@ -5,15 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Production_Error extends Production {
 
-    public Production_Error(@NotNull ASTNode node) {
-        super(node);
-    }
+	public Production_Error(@NotNull ASTNode node) {
+		super(node);
+	}
 
-    
-
-            
-    
-
-            
-    
 }

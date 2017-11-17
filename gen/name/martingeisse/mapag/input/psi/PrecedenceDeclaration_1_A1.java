@@ -5,15 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PrecedenceDeclaration_1_A1 extends PrecedenceDeclaration_1 {
 
-    public PrecedenceDeclaration_1_A1(@NotNull ASTNode node) {
-        super(node);
-    }
+	public PrecedenceDeclaration_1_A1(@NotNull ASTNode node) {
+		super(node);
+	}
 
-    
-
-            
-    
-
-            
-    
 }

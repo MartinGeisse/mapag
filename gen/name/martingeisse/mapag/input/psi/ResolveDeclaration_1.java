@@ -1,32 +1,17 @@
 package name.martingeisse.mapag.input.psi;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiParser;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+public final class ResolveDeclaration_1 extends ASTWrapperPsiElement {
 
-import com.google.common.collect.ImmutableList;
+	public ResolveDeclaration_1(@NotNull ASTNode node) {
+		super(node);
+	}
 
-public abstract class ResolveDeclaration_1 extends ASTWrapperPsiElement {
+	public ResolveDeclarationSymbol getSymbol() {
+		return (ResolveDeclarationSymbol) (getChildren()[1]);
+	}
 
-    public ResolveDeclaration_1(@NotNull ASTNode node) {
-        super(node);
-    }
-
-    
-
-            
-    
-
-            
-    
 }

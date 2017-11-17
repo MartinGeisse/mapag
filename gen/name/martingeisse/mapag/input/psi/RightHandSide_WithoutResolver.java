@@ -5,15 +5,12 @@ import org.jetbrains.annotations.NotNull;
 
 public final class RightHandSide_WithoutResolver extends RightHandSide {
 
-    public RightHandSide_WithoutResolver(@NotNull ASTNode node) {
-        super(node);
-    }
+	public RightHandSide_WithoutResolver(@NotNull ASTNode node) {
+		super(node);
+	}
 
-    
+	public Expression getExpression() {
+		return (Expression) (getChildren()[0]);
+	}
 
-            
-    
-
-            
-    
 }
