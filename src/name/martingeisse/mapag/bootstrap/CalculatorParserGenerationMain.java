@@ -64,26 +64,26 @@ public class CalculatorParserGenerationMain {
 
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("calculation", ImmutableList.of(
-				new Alternative(null, new ZeroOrMoreExpression(symbol("statement")).withName("statements"), null)
+				new Alternative(null, new ZeroOrMoreExpression(symbol("statement")).withName("statements"), null, null)
 			)),
 			new Production("statement", ImmutableList.of(
-				new Alternative("expression", sequence(symbol("expression").withName("expression"), symbol("SEMICOLON")), null),
-				new Alternative("error", sequence(symbol("%error"), symbol("SEMICOLON")), null)
+				new Alternative("expression", sequence(symbol("expression").withName("expression"), symbol("SEMICOLON")), null, null),
+				new Alternative("error", sequence(symbol("%error"), symbol("SEMICOLON")), null, null)
 			)),
 			new Production("expression", ImmutableList.of(
-				new Alternative("literal", symbol("NUMBER").withName("value"), null),
-				new Alternative("variable", symbol("IDENTIFIER").withName("variableName"), null),
+				new Alternative("literal", symbol("NUMBER").withName("value"), null, null),
+				new Alternative("variable", symbol("IDENTIFIER").withName("variableName"), null, null),
 				new Alternative("additive", sequence(
 					symbol("expression").withName("left"),
 					or(symbol("PLUS"), symbol("MINUS")).withName("operator"),
 					symbol("expression").withName("right")
-				), "PLUS"),
+				), "PLUS", null),
 				new Alternative("multiplicative", sequence(
 					symbol("expression").withName("left"),
 					or(symbol("TIMES"), symbol("DIVIDED_BY")).withName("operator"),
 					symbol("expression").withName("right")
-				), "TIMES"),
-				new Alternative("parenthesized", sequence(symbol("OPENING_PARENTHESIS"), symbol("expression").withName("inner"), symbol("CLOSING_PARENTHESIS")), null)
+				), "TIMES", null),
+				new Alternative("parenthesized", sequence(symbol("OPENING_PARENTHESIS"), symbol("expression").withName("inner"), symbol("CLOSING_PARENTHESIS")), null, null)
 			))
 		);
 

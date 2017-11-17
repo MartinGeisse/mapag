@@ -44,7 +44,7 @@ public class ProductionCanonicalizerTest {
 			{
 				ImmutableList.of(
 					new Production("nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.extended.Alternative(null, new EmptyExpression(), "xyz")
+						new name.martingeisse.mapag.grammar.extended.Alternative(null, new EmptyExpression(), "xyz", null)
 					))
 				),
 				ImmutableMap.of(

@@ -112,8 +112,8 @@ public final class Grammar {
 						System.out.print(":" + alternative.getAnnotation().getExpressionNames().get(i));
 					}
 				}
-				if (alternative.getEffectivePrecedenceTerminal() != null) {
-					System.out.print("    %precedence " + alternative.getEffectivePrecedenceTerminal());
+				if (alternative.getConflictResolver() != null) {
+					System.out.print("    " + alternative.getConflictResolver());
 				}
 				System.out.println();
 			}

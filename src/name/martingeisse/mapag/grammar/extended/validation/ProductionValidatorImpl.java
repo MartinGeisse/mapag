@@ -38,6 +38,7 @@ class ProductionValidatorImpl implements ProductionValidator {
 						alternative.getPrecedenceDefiningTerminal() + " in rule precedence specification for nonterminal " + leftHandSide);
 				}
 			}
+			// TODO validate resolve blocks -- only known terminals; no duplicate terminals
 		}
 	}
 

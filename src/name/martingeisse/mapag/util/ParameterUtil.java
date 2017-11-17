@@ -60,7 +60,7 @@ public class ParameterUtil {
 	 * @param name     the argument name (for error messages)
 	 * @return the argument value for convenience
 	 */
-	public static <T> List<T> ensureNoNullElement(final List<T> argument, final String name) {
+	public static <T, L extends List<T>> L ensureNoNullElement(final L argument, final String name) {
 		if (argument != null) {
 			int i = 0;
 			for (T element : argument) {
@@ -145,7 +145,7 @@ public class ParameterUtil {
 	 * @param name     the argument name (for error messages)
 	 * @return the argument value for convenience
 	 */
-	public static List<String> ensureNoNullOrEmptyElement(final List<String> argument, final String name) {
+	public static <L extends List<String>> L ensureNoNullOrEmptyElement(final L argument, final String name) {
 		if (argument != null) {
 			int i = 0;
 			for (String element : argument) {

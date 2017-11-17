@@ -59,10 +59,15 @@ public final class GrammarBuilder {
 		}
 
 		public ProductionBuilder addAlternativeWithPrecedence(String effectivePrecedenceTerminal, String... expansion) {
-			alternatives.add(new Alternative(ImmutableList.copyOf(expansion), effectivePrecedenceTerminal, new AlternativeAnnotation("a" + alternatives.size(), null)));
+			alternatives.add(new Alternative(
+				ImmutableList.copyOf(expansion),
+				new AlternativeConflictResolver(effectivePrecedenceTerminal, null),
+				new AlternativeAnnotation("a" + alternatives.size(), null))
+			);
 			return this;
 		}
 
+		// TODO alternative with conflict resolution map
 	}
 
 	public Grammar build() {

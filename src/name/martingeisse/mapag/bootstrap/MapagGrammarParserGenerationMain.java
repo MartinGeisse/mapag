@@ -99,14 +99,14 @@ public class MapagGrammarParserGenerationMain {
 					symbol("IDENTIFIER"),
 					symbol("SEMICOLON"),
 					new OneOrMoreExpression(symbol("production"))
-				), null)
+				), null, null)
 			)),
 			new Production("precedenceDeclaration", ImmutableList.of(
 				new Alternative(null, sequence(
 					or(symbol("KW_LEFT"), symbol("KW_RIGHT"), symbol("KW_NONASSOC")),
 					symbol("nonemptyIdentifierList"),
 					symbol("SEMICOLON")
-				), null)
+				), null, null)
 			)),
 			new Production("production", ImmutableList.of(
 				new Alternative(null, sequence(
@@ -115,53 +115,53 @@ public class MapagGrammarParserGenerationMain {
 					symbol("alternative"),
 					new ZeroOrMoreExpression(sequence(symbol("BAR"), symbol("alternative"))),
 					symbol("SEMICOLON")
-				), null)
+				), null, null)
 			)),
 			new Production("alternative", ImmutableList.of(
 				new Alternative(null, sequence(
 					new OneOrMoreExpression(symbol("toplevelExpression")),
 					new OptionalExpression(sequence(symbol("KW_PRECEDENCE"), symbol("IDENTIFIER")))
-				), null)
+				), null, null)
 			)),
 			new Production("toplevelExpression", ImmutableList.of(
 				new Alternative(null, sequence(
 					symbol("IDENTIFIER"),
 					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
-				), null),
-				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("ASTERISK")), "ASTERISK"),
-				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("PLUS")), "PLUS"),
-				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK"),
+				), null, null),
+				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("ASTERISK")), "ASTERISK", null),
+				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("PLUS")), "PLUS", null),
+				new Alternative(null, sequence(symbol("toplevelExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK", null),
 				new Alternative(null, sequence(
 					symbol("OPENING_PARENTHESIS"),
 					new OneOrMoreExpression(symbol("nestedExpression")),
 					symbol("CLOSING_PARENTHESIS"),
 					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
-				), null)
+				), null, null)
 			)),
 			new Production("nestedExpression", ImmutableList.of(
 				new Alternative(null, sequence(
 					symbol("IDENTIFIER"),
 					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
-				), null),
+				), null, null),
 				new Alternative(null, sequence(
 					symbol("nestedExpression"),
 					symbol("BAR"),
 					symbol("toplevelExpression")
-				), "BAR"),
-				new Alternative(null, sequence(symbol("nestedExpression"), symbol("ASTERISK")), "ASTERISK"),
-				new Alternative(null, sequence(symbol("nestedExpression"), symbol("PLUS")), "PLUS"),
-				new Alternative(null, sequence(symbol("nestedExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK"),
+				), "BAR", null),
+				new Alternative(null, sequence(symbol("nestedExpression"), symbol("ASTERISK")), "ASTERISK", null),
+				new Alternative(null, sequence(symbol("nestedExpression"), symbol("PLUS")), "PLUS", null),
+				new Alternative(null, sequence(symbol("nestedExpression"), symbol("QUESTION_MARK")), "QUESTION_MARK", null),
 				new Alternative(null, sequence(
 					symbol("OPENING_PARENTHESIS"),
 					new OneOrMoreExpression(symbol("nestedExpression")),
 					symbol("CLOSING_PARENTHESIS"),
 					new OptionalExpression(sequence(symbol("COLON"), symbol("IDENTIFIER")))
-				), null)
+				), null, null)
 			)),
 			new Production("nonemptyIdentifierList", ImmutableList.of(
 				new Alternative(null,
 					sequence(symbol("IDENTIFIER"), new ZeroOrMoreExpression(sequence(symbol("COMMA"), symbol("IDENTIFIER"))))
-					, null)
+					, null, null)
 			))
 		);
 

@@ -2,6 +2,7 @@ package name.martingeisse.mapag.grammar.canonical.validation;
 
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import name.martingeisse.mapag.util.ParameterUtil;
@@ -39,9 +40,19 @@ class NonterminalDefinitionValidator {
 				throw new IllegalStateException("unknown symbol in nonterminal expansion: " + symbol);
 			}
 		}
-		if (alternative.getEffectivePrecedenceTerminal() != null) {
-			if (!terminalDefinitions.containsKey(alternative.getEffectivePrecedenceTerminal())) {
-				throw new IllegalStateException("nonterminal defines precedence using unknown terminal " + alternative.getEffectivePrecedenceTerminal());
+		if (alternative.getConflictResolver() != null) {
+			AlternativeConflictResolver conflictResolver = alternative.getConflictResolver();
+			if (conflictResolver.getEffectivePrecedenceTerminal() != null) {
+				if (!terminalDefinitions.containsKey(conflictResolver.getEffectivePrecedenceTerminal())) {
+					throw new IllegalStateException("nonterminal defines precedence using unknown terminal " + conflictResolver.getEffectivePrecedenceTerminal());
+				}
+			}
+			if (conflictResolver.getTerminalToResolution() != null) {
+				for (String terminal : conflictResolver.getTerminalToResolution().keySet()) {
+					if (!terminalDefinitions.containsKey(terminal)) {
+						throw new IllegalStateException("nonterminal defines conflict resolution using unknown terminal " + terminal);
+					}
+				}
 			}
 		}
 	}

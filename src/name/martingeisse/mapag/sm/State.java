@@ -2,6 +2,8 @@ package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
+import name.martingeisse.mapag.grammar.ConflictResolution;
+import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.Comparators;
@@ -100,41 +102,66 @@ public final class State {
 		}
 
 		// handle shift/reduce conflicts by resolution
-		TerminalDefinition shiftPrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(terminalOrEof);
-		if (shiftPrecedenceDefinition == null) {
-			throw new RuntimeException("cannot determine terminal definition for terminal " + terminalOrEof);
-		}
-		String reducePrecedenceTerminal = elementThatWantsToReduce.getAlternative().getEffectivePrecedenceTerminal();
-		TerminalDefinition reducePrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(reducePrecedenceTerminal);
-		if (reducePrecedenceDefinition != null) {
-			if (shiftPrecedenceDefinition.getPrecedenceIndex() != null && reducePrecedenceDefinition.getPrecedenceIndex() != null) {
+		AlternativeConflictResolver conflictResolver = elementThatWantsToReduce.getAlternative().getConflictResolver();
+		if (conflictResolver != null) {
 
-				// if the incoming terminal has higher precedence, then shift
-				if (shiftPrecedenceDefinition.getPrecedenceIndex() > reducePrecedenceDefinition.getPrecedenceIndex()) {
-					return getShift(grammarInfo, elementsThatWantToShift);
+			if (conflictResolver.getEffectivePrecedenceTerminal() != null) {
+				TerminalDefinition shiftPrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(terminalOrEof);
+				if (shiftPrecedenceDefinition == null) {
+					throw new RuntimeException("cannot determine terminal definition for terminal " + terminalOrEof);
 				}
+				String reducePrecedenceTerminal = conflictResolver.getEffectivePrecedenceTerminal();
+				TerminalDefinition reducePrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(reducePrecedenceTerminal);
+				if (reducePrecedenceDefinition != null) {
+					if (shiftPrecedenceDefinition.getPrecedenceIndex() != null && reducePrecedenceDefinition.getPrecedenceIndex() != null) {
 
-				// if the incoming terminal has lower precedence, then reduce
-				if (shiftPrecedenceDefinition.getPrecedenceIndex() < reducePrecedenceDefinition.getPrecedenceIndex()) {
-					return getReduce(elementThatWantsToReduce);
+						// if the incoming terminal has higher precedence, then shift
+						if (shiftPrecedenceDefinition.getPrecedenceIndex() > reducePrecedenceDefinition.getPrecedenceIndex()) {
+							return getShift(grammarInfo, elementsThatWantToShift);
+						}
+
+						// if the incoming terminal has lower precedence, then reduce
+						if (shiftPrecedenceDefinition.getPrecedenceIndex() < reducePrecedenceDefinition.getPrecedenceIndex()) {
+							return getReduce(elementThatWantsToReduce);
+						}
+
+						// sanity check: same precedence implies same associativity
+						if (shiftPrecedenceDefinition.getAssociativity() != reducePrecedenceDefinition.getAssociativity()) {
+							throw new RuntimeException("terminals have same precedence but different associativity: " + terminalOrEof + " and " + reducePrecedenceTerminal);
+						}
+
+						// on same precedence and left-associativity, reduce
+						if (shiftPrecedenceDefinition.getAssociativity() == Associativity.LEFT) {
+							return getReduce(elementThatWantsToReduce);
+						}
+
+						// on same precedence and right-associativity, shift
+						if (shiftPrecedenceDefinition.getAssociativity() == Associativity.RIGHT) {
+							return getShift(grammarInfo, elementsThatWantToShift);
+						}
+
+					}
 				}
-
-				// sanity check: same precedence implies same associativity
-				if (shiftPrecedenceDefinition.getAssociativity() != reducePrecedenceDefinition.getAssociativity()) {
-					throw new RuntimeException("terminals have same precedence but different associativity: " + terminalOrEof + " and " + reducePrecedenceTerminal);
-				}
-
-				// on same precedence and left-associativity, reduce
-				if (shiftPrecedenceDefinition.getAssociativity() == Associativity.LEFT) {
-					return getReduce(elementThatWantsToReduce);
-				}
-
-				// on same precedence and right-associativity, shift
-				if (shiftPrecedenceDefinition.getAssociativity() == Associativity.RIGHT) {
-					return getShift(grammarInfo, elementsThatWantToShift);
-				}
-
 			}
+
+			if (conflictResolver.getTerminalToResolution() != null) {
+				ConflictResolution resolution = conflictResolver.getTerminalToResolution().get(terminalOrEof);
+				if (resolution != null) {
+					switch (resolution) {
+
+						case SHIFT:
+							return getShift(grammarInfo, elementsThatWantToShift);
+
+						case REDUCE:
+							return getReduce(elementThatWantsToReduce);
+
+						default:
+							throw new RuntimeException("unknown conflict resolution: " + resolution);
+
+					}
+				}
+			}
+
 		}
 
 		// resolution was not successful

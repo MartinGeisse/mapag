@@ -1,9 +1,14 @@
 package name.martingeisse.mapag.grammar.canonicalization;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
 import name.martingeisse.mapag.grammar.canonical.NonterminalAnnotation;
 import name.martingeisse.mapag.grammar.extended.Production;
+import name.martingeisse.mapag.grammar.extended.ResolveBlock;
+import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;
 
@@ -78,12 +83,23 @@ public class ProductionCanonicalizer {
 		convertExpressionToExpansion(inputAlternative.getExpression(), expansion, expressionNames);
 		return new name.martingeisse.mapag.grammar.canonical.Alternative(
 			ImmutableList.copyOf(expansion),
-			inputAlternative.getPrecedenceDefiningTerminal(),
+			convertConflictResolver(inputAlternative.getPrecedenceDefiningTerminal(), inputAlternative.getResolveBlock()),
 			new AlternativeAnnotation(
 				inputAlternative.getName() == null ? ("a" + alternativeCounter) : inputAlternative.getName(),
 				ImmutableList.copyOf(expressionNames)
 			)
 		);
+	}
+
+	private AlternativeConflictResolver convertConflictResolver(String precedenceDefiningTerminal, ResolveBlock resolveBlock) {
+		Map<String, ConflictResolution> terminalToConflictResolution = new HashMap<>();
+		for (ResolveDeclaration resolveDeclaration : resolveBlock.getResolveDeclarations()) {
+			ConflictResolution resolution = resolveDeclaration.getConflictResolution();
+			for (String terminal : resolveDeclaration.getTerminals()) {
+				terminalToConflictResolution.put(terminal, resolution);
+			}
+		}
+		return new AlternativeConflictResolver(precedenceDefiningTerminal, ImmutableMap.copyOf(terminalToConflictResolution));
 	}
 
 	private void convertExpressionToExpansion(Expression expression, List<String> expansion, List<String> expressionNames) {
@@ -115,7 +131,7 @@ public class ProductionCanonicalizer {
 			// strange case, but if the caller really needs a symbol for an EmptyExpression,
 			// we must create a synthetic nonterminal with empty content
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, expression, null));
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, expression, null, null));
 			}, NonterminalAnnotation.PsiStyle.NORMAL);
 
 		} else if (expression instanceof SymbolReference) {
@@ -128,7 +144,7 @@ public class ProductionCanonicalizer {
 			// an OR-expression can be extracted into alternatives
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				for (Expression orOperand : getOrOperands(expression)) {
-					alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(orOperand.getName(), orOperand, null));
+					alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(orOperand.getName(), orOperand, null, null));
 				}
 			}, NonterminalAnnotation.PsiStyle.NORMAL);
 
@@ -137,9 +153,8 @@ public class ProductionCanonicalizer {
 			// A sequence gets extracted, but we must remove the expression's name so it gets inlined in the new
 			// nonterminal -- otherwise we'd push it out to an infinite loop of new nonterminals.
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, expression.withName(null), null));
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, expression.withName(null), null, null));
 			}, NonterminalAnnotation.PsiStyle.NORMAL);
-
 
 		} else if (expression instanceof OptionalExpression) {
 
@@ -147,8 +162,8 @@ public class ProductionCanonicalizer {
 			Expression operand = ((OptionalExpression) expression).getOperand();
 			Expression replacementOperand = new SymbolReference(convertExpressionToSymbol(operand)).withName(operand.getName()).withFallbackName("it");
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("absent", new EmptyExpression(), null));
-				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("present", replacementOperand, null));
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("absent", new EmptyExpression(), null, null));
+				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("present", replacementOperand, null, null));
 			}, NonterminalAnnotation.PsiStyle.OPTIONAL);
 
 		} else if (expression instanceof ZeroOrMoreExpression) {
@@ -176,13 +191,13 @@ public class ProductionCanonicalizer {
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
 				"start",
 				zeroAllowed ? new EmptyExpression() : replacementOperand,
-				null));
+				null, null));
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
 				"next",
 				new SequenceExpression(
 					new SymbolReference(repetitionSyntheticName).withName("previous"),
 					replacementOperand
-				), null));
+				), null, null));
 		}, psiStyle);
 	}
 
