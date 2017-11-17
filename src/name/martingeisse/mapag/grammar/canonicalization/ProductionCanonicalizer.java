@@ -92,14 +92,20 @@ public class ProductionCanonicalizer {
 	}
 
 	private AlternativeConflictResolver convertConflictResolver(String precedenceDefiningTerminal, ResolveBlock resolveBlock) {
-		Map<String, ConflictResolution> terminalToConflictResolution = new HashMap<>();
-		for (ResolveDeclaration resolveDeclaration : resolveBlock.getResolveDeclarations()) {
-			ConflictResolution resolution = resolveDeclaration.getConflictResolution();
-			for (String terminal : resolveDeclaration.getTerminals()) {
-				terminalToConflictResolution.put(terminal, resolution);
+		if (resolveBlock == null) {
+			return null;
+		} else if (resolveBlock.getResolveDeclarations() == null) {
+			return new AlternativeConflictResolver(precedenceDefiningTerminal, null);
+		} else {
+			Map<String, ConflictResolution> terminalToConflictResolution = new HashMap<>();
+			for (ResolveDeclaration resolveDeclaration : resolveBlock.getResolveDeclarations()) {
+				ConflictResolution resolution = resolveDeclaration.getConflictResolution();
+				for (String terminal : resolveDeclaration.getTerminals()) {
+					terminalToConflictResolution.put(terminal, resolution);
+				}
 			}
+			return new AlternativeConflictResolver(precedenceDefiningTerminal, ImmutableMap.copyOf(terminalToConflictResolution));
 		}
-		return new AlternativeConflictResolver(precedenceDefiningTerminal, ImmutableMap.copyOf(terminalToConflictResolution));
 	}
 
 	private void convertExpressionToExpansion(Expression expression, List<String> expansion, List<String> expressionNames) {

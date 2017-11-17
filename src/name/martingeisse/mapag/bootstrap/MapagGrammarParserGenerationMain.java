@@ -80,6 +80,12 @@ public class MapagGrammarParserGenerationMain {
 
 		String startNonterminalName = "grammar";
 
+		// TODO this grammar only allows single unnamed alternatives or multiple named alternatives because
+		// // due to missing punctuation it would be LR(>1) otherwise. This is stupid
+		// as long as spreading a production over several partial productions is allowed. Fix:
+		// - only allow one production per nonterminal
+		// - do not require declaration of the nonterminal -- the production declares it
+
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("grammar", ImmutableList.of(
 				new Alternative(null, sequence(
@@ -113,7 +119,6 @@ public class MapagGrammarParserGenerationMain {
 			new Production("production", ImmutableList.of(
 				new Alternative("single", sequence(
 					symbol("IDENTIFIER"),
-					optional(symbol("COLON"), symbol("IDENTIFIER")),
 					symbol("EXPANDS_TO"),
 					symbol("rightHandSide"),
 					symbol("SEMICOLON")
@@ -123,14 +128,15 @@ public class MapagGrammarParserGenerationMain {
 					symbol("EXPANDS_TO"),
 					symbol("OPENING_CURLY_BRACE"),
 					zeroOrMore(
-						optional(symbol("IDENTIFIER"), symbol("EXPANDS_TO")),
+						symbol("IDENTIFIER"),
+						symbol("EXPANDS_TO"),
 						symbol("rightHandSide"),
 						symbol("SEMICOLON")
 					),
 					symbol("CLOSING_CURLY_BRACE")
 				), null, null),
 				new Alternative("error", sequence(
-					symbol("error"),
+					symbol("%error"),
 					symbol("SEMICOLON")
 				), null, null)
 			)),
