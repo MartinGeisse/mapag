@@ -5,6 +5,10 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  *
  */
@@ -25,7 +29,40 @@ public class GenerateAction extends AnAction {
 	@Override
 	public void actionPerformed(AnActionEvent event) {
 		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE);
+		if (psiFile == null) {
+			return;
+		}
+		Properties properties = readAssociatedProperties(psiFile);
+		if (properties == null) {
+			return;
+		}
+
+		// TODO
+
 		System.out.println("generating... done!");
+	}
+
+	private Properties readAssociatedProperties(PsiFile grammarPsiFile) {
+		try (InputStream inputStream = findPropertiesFile(grammarPsiFile).getInputStream()) {
+			Properties properties = new Properties();
+			properties.load(inputStream);
+			return properties;
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	private VirtualFile findPropertiesFile(PsiFile grammarPsiFile) {
+		VirtualFile grammarFile = grammarPsiFile.getVirtualFile();
+		if (grammarFile == null) {
+			return null;
+		}
+		String grammarFileName = grammarFile.getName();
+		if (!grammarFileName.endsWith(".mapag")) {
+			return null;
+		}
+		String propertiesFileName = grammarFileName.substring(0, grammarFileName.length() - ".mapag".length()) + ".properties";
+		return grammarFile.getParent().findChild(propertiesFileName);
 	}
 
 }
