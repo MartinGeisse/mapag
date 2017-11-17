@@ -1,6 +1,6 @@
 
 %terminals {
-    KW_TERMINALS, KW_NONTERMINALS, KW_PRECEDENCE, KW_LEFT, KW_RIGHT, KW_NONASSOC, KW_START,
+    KW_TERMINALS, KW_NONTERMINALS, KW_PRECEDENCE, KW_LEFT, KW_RIGHT, KW_NONASSOC, KW_START, KW_RESOLVE, KW_SHIFT, KW_REDUCE,
     OPENING_CURLY_BRACE, CLOSING_CURLY_BRACE, OPENING_PARENTHESIS, CLOSING_PARENTHESIS,
     COMMA, SEMICOLON, COLON, EXPANDS_TO, QUESTION_MARK, ASTERISK, PLUS, BAR,
 	IDENTIFIER,
@@ -9,7 +9,7 @@
 
 %nonterminals {
     grammar, precedenceDeclaration,
-	production, rightHandSide, expression,
+	production, rightHandSide, expression, resolveDeclaration,
 	nonemptyIdentifierList
 }
 
@@ -49,9 +49,15 @@ production ::=
 	;
 
 rightHandSide ::=
-    expression (KW_PRECEDENCE IDENTIFIER)?
+    expression
+    | expression KW_PRECEDENCE IDENTIFIER
+    | expression KW_RESOLVE OPENING_CURLY_BRACE resolveDeclaration* CLOSING_CURLY_BRACE
     ;
 
+resolveDeclaration ::=
+    (KW_SHIFT | KW_REDUCE) nonemptyIdentifierList SEMICOLON
+
+// TODO ambiguous; resolve using %resolve declarations
 expression ::=
     IDENTIFIER
     | expression expression
@@ -62,8 +68,6 @@ expression ::=
     | OPENING_PARENTHESIS expression+ CLOSING_PARENTHESIS
     | expression COLON IDENTIFIER
 	;
-
-TODO the above is ambiguous
 
 //
 // helpers
