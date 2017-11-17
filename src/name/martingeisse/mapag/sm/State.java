@@ -82,7 +82,7 @@ public final class State {
 		// duplicates have been filtered out since StateElement has proper hashCode()/equals() support and the elements
 		// are stored in a Set<>.
 		if (elementsThatWantToReduce.size() > 1) {
-			throw new StateMachineException.ReduceReduceConflict(this, terminalOrEof);
+			throw new StateMachineException.ReduceReduceConflict(this, terminalOrEof, ImmutableSet.copyOf(elementsThatWantToReduce));
 		}
 		StateElement elementThatWantsToReduce = (elementsThatWantToReduce.isEmpty() ? null : elementsThatWantToReduce.iterator().next());
 
@@ -165,7 +165,8 @@ public final class State {
 		}
 
 		// resolution was not successful
-		throw new StateMachineException.ShiftReduceConflict(this, terminalOrEof);
+		throw new StateMachineException.ShiftReduceConflict(this, terminalOrEof,
+			ImmutableSet.copyOf(elementsThatWantToShift), ImmutableSet.copyOf(elementsThatWantToReduce));
 
 	}
 

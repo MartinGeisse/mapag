@@ -62,7 +62,7 @@ expression ::= {
     zeroOrMore ::= expression ASTERISK
     oneOrMore ::= expression PLUS
     optional ::= expression QUESTION_MARK
-    parenthesized ::= OPENING_PARENTHESIS expression+ CLOSING_PARENTHESIS
+    parenthesized ::= OPENING_PARENTHESIS expression CLOSING_PARENTHESIS
     named ::= expression COLON IDENTIFIER
 }
 

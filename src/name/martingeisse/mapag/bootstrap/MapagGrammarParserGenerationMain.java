@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.ParserClassGenerator;
+import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.extended.*;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
+import name.martingeisse.mapag.sm.StateMachineException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +23,14 @@ import java.util.Properties;
 public class MapagGrammarParserGenerationMain {
 
 	public static void main(String[] args) throws Exception {
+		try {
+			run();
+		} catch (StateMachineException.Conflict e) {
+			e.describe();
+		}
+	}
+
+	private static void run() throws Exception {
 
 		Properties codeGenerationProperties = new Properties();
 		codeGenerationProperties.setProperty("parser.package", "name.martingeisse.mapag.input");
@@ -80,15 +90,9 @@ public class MapagGrammarParserGenerationMain {
 
 		String startNonterminalName = "grammar";
 
-		// TODO this grammar only allows single unnamed alternatives or multiple named alternatives because
-		// // due to missing punctuation it would be LR(>1) otherwise. This is stupid
-		// as long as spreading a production over several partial productions is allowed. Fix:
-		// - only allow one production per nonterminal
-		// - do not require declaration of the nonterminal -- the production declares it
-
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("grammar", ImmutableList.of(
-				new Alternative(null, sequence(
+				alternative(null, sequence(
 					symbol("KW_TERMINALS"),
 					symbol("OPENING_CURLY_BRACE"),
 					symbol("nonemptyIdentifierList"),
@@ -107,104 +111,124 @@ public class MapagGrammarParserGenerationMain {
 					symbol("IDENTIFIER").withName("startSymbolName"),
 					symbol("SEMICOLON"),
 					oneOrMore(symbol("production"))
-				), null, null)
+				))
 			)),
 			new Production("precedenceDeclaration", ImmutableList.of(
-				new Alternative(null, sequence(
+				alternative(null, sequence(
 					or(symbol("KW_LEFT"), symbol("KW_RIGHT"), symbol("KW_NONASSOC")),
 					symbol("nonemptyIdentifierList"),
 					symbol("SEMICOLON")
-				), null, null)
+				))
 			)),
 			new Production("production", ImmutableList.of(
-				new Alternative("single", sequence(
+
+				// single alternative. Note: an optional-expression for the name would make the grammar LR(>1)
+				alternative("singleUnnamed", sequence(
 					symbol("IDENTIFIER"),
 					symbol("EXPANDS_TO"),
 					symbol("rightHandSide"),
 					symbol("SEMICOLON")
-				), null, null),
-				new Alternative("multi", sequence(
+				)),
+				alternative("singleNamed", sequence(
+					symbol("IDENTIFIER"),
+					symbol("COLON"),
+					symbol("IDENTIFIER"),
+					symbol("EXPANDS_TO"),
+					symbol("rightHandSide"),
+					symbol("SEMICOLON")
+				)),
+
+				// multiple alternatives
+				alternative("multi", sequence(
 					symbol("IDENTIFIER"),
 					symbol("EXPANDS_TO"),
 					symbol("OPENING_CURLY_BRACE"),
 					zeroOrMore(
-						symbol("IDENTIFIER"),
-						symbol("EXPANDS_TO"),
-						symbol("rightHandSide"),
-						symbol("SEMICOLON")
+						or( // again, an optional-expression would make the grammar LR(>1)
+							sequence(
+								symbol("rightHandSide"),
+								symbol("SEMICOLON")
+							),
+							sequence(
+								symbol("IDENTIFIER"),
+								symbol("EXPANDS_TO"),
+								// TODO a symbol annotation to make this getter available in the abstract base class would be cool,
+								// given that
+								symbol("rightHandSide"),
+								symbol("SEMICOLON")
+							)
+						)
 					),
 					symbol("CLOSING_CURLY_BRACE")
-				), null, null),
-				new Alternative("error", sequence(
+				)),
+				alternative("error", sequence(
 					symbol("%error"),
 					symbol("SEMICOLON")
-				), null, null)
+				))
 			)),
 			new Production("rightHandSide", ImmutableList.of(
-				new Alternative("withoutResolver", symbol("expression"), null, null),
-				new Alternative("withPrecedenceResolver", sequence(
+				alternative("withoutResolver", symbol("expression")),
+				alternative("withPrecedenceResolver", sequence(
 					symbol("expression"),
 					symbol("KW_PRECEDENCE"),
 					symbol("IDENTIFIER")
-				), null, null),
-				new Alternative("withExplicitResolver", sequence(
+				)),
+				alternative("withExplicitResolver", sequence(
 					symbol("expression"),
 					symbol("KW_RESOLVE"),
 					symbol("OPENING_CURLY_BRACE"),
 					zeroOrMore(symbol("resolveDeclaration")),
 					symbol("CLOSING_CURLY_BRACE")
-				), null, null)
+				))
 			)),
 			new Production("resolveDeclaration", ImmutableList.of(
-				new Alternative(null, sequence(
+				alternative(null, sequence(
 					or(symbol("KW_SHIFT"), symbol("KW_REDUCE")),
 					symbol("resolveDeclarationSymbol"),
 					zeroOrMore(symbol("COMMA"), symbol("resolveDeclarationSymbol")),
 					symbol("SEMICOLON")
-				), null, null)
+				))
 			)),
 			new Production("resolveDeclaration", ImmutableList.of(
-				new Alternative("identifier", symbol("IDENTIFIER"), null, null),
-				new Alternative("eof", symbol("KW_EOF"), null, null)
+				alternative("identifier", symbol("IDENTIFIER")),
+				alternative("eof", symbol("KW_EOF"))
 			)),
 			new Production("expression", ImmutableList.of(
-				new Alternative("identifier", symbol("IDENTIFIER"), null, null),
-				new Alternative("sequence", sequence(
+				alternative("identifier", symbol("IDENTIFIER")),
+				alternativeWithResolution("sequence", sequence(
 					symbol("expression"),
 					symbol("expression")
-				), null, null),
-				new Alternative("or", sequence(
+				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON", "OPENING_PARENTHESIS"), ImmutableList.of("IDENTIFIER", "BAR")),
+				alternativeWithResolution("or", sequence(
 					symbol("expression"),
 					symbol("BAR"),
 					symbol("expression")
-				), null, null),
-				new Alternative("zeroOrMore", sequence(
+				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON", "OPENING_PARENTHESIS", "IDENTIFIER"), ImmutableList.of("BAR")),
+				alternative("zeroOrMore", sequence(
 					symbol("expression"),
 					symbol("ASTERISK")
-				), null, null),
-				new Alternative("oneOrMore", sequence(
+				)),
+				alternative("oneOrMore", sequence(
 					symbol("expression"),
 					symbol("PLUS")
-				), null, null),
-				new Alternative("optional", sequence(
+				)),
+				alternative("optional", sequence(
 					symbol("expression"),
 					symbol("QUESTION_MARK")
-				), null, null),
-				new Alternative("parenthesized", sequence(
+				)),
+				alternative("parenthesized", sequence(
 					symbol("OPENING_PARENTHESIS"),
-					oneOrMore(symbol("expression")),
+					symbol("expression"),
 					symbol("CLOSING_PARENTHESIS")
-				), null, null),
-				new Alternative("named", sequence(
+				)),
+				alternative("named", sequence(
 					symbol("expression"),
 					symbol("COLON"),
 					symbol("IDENTIFIER")
-				), null, null)
+				))
 			)),
 			new Production("nonemptyIdentifierList", ImmutableList.of(
-				new Alternative(null,
-					sequence(symbol("IDENTIFIER"), zeroOrMore(symbol("COMMA"), symbol("IDENTIFIER")))
-					, null, null)
+				alternative(null, sequence(symbol("IDENTIFIER"), zeroOrMore(symbol("COMMA"), symbol("IDENTIFIER"))))
 			))
 		);
 
@@ -274,6 +298,17 @@ public class MapagGrammarParserGenerationMain {
 
 	private static OneOrMoreExpression oneOrMore(Expression... expressions) {
 		return new OneOrMoreExpression(sequence(expressions));
+	}
+
+	private static Alternative alternative(String name, Expression expression) {
+		return new Alternative(name, expression, null, null);
+	}
+
+	private static Alternative alternativeWithResolution(String name, Expression expression, ImmutableList<String> shiftTerminals, ImmutableList<String> reduceTerminals) {
+		ResolveDeclaration shiftDeclaration = new ResolveDeclaration(ConflictResolution.SHIFT, shiftTerminals);
+		ResolveDeclaration reduceDeclaration = new ResolveDeclaration(ConflictResolution.REDUCE, reduceTerminals);
+		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of(shiftDeclaration, reduceDeclaration));
+		return new Alternative(name, expression, null, resolveBlock);
 	}
 
 }
