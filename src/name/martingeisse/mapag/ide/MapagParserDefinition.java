@@ -12,7 +12,10 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
+import name.martingeisse.mapag.input.MapagElementType;
+import name.martingeisse.mapag.input.MapagGeneratedMapagParser;
 import name.martingeisse.mapag.input.MapagLexer;
+import name.martingeisse.mapag.input.Symbols;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,8 +33,7 @@ public class MapagParserDefinition implements ParserDefinition {
 
 	@Override
 	public PsiParser createParser(Project project) {
-		throw new UnsupportedOperationException(); // TODO
-//		return new MapagParser();
+		return new MapagGeneratedMapagParser();
 	}
 
 	@Override
@@ -48,8 +50,7 @@ public class MapagParserDefinition implements ParserDefinition {
 	@NotNull
 	@Override
 	public TokenSet getCommentTokens() {
-		throw new UnsupportedOperationException(); // TODO
-		// return TokenSet.create(MapagSpecificationElementTypes.COMMENT);
+		return TokenSet.create(Symbols.BLOCK_COMMENT, Symbols.LINE_COMMENT);
 	}
 
 	@NotNull

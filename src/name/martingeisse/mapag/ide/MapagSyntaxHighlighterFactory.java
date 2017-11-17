@@ -7,8 +7,11 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import name.martingeisse.mapag.input.MapagElementType;
 import name.martingeisse.mapag.input.MapagLexer;
+import name.martingeisse.mapag.input.Symbols;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,56 +37,66 @@ public class MapagSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
 			@NotNull
 			@Override
 			public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-				throw new UnsupportedOperationException(); // TODO
-				/*
-				if (tokenType instanceof MapagSpecificationToken) {
-					if (tokenType == MapagSpecificationElementTypes.IDENTIFIER) {
+				if (tokenType instanceof MapagElementType) {
+					if (tokenType == Symbols.IDENTIFIER) {
 						return MapagTextAttributeKeys.IDENTIFIER;
-					} else if (tokenType == MapagSpecificationElementTypes.PACKAGE) {
+					} else if (tokenType == Symbols.KW_TERMINALS) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == MapagSpecificationElementTypes.CLASS) {
+					} else if (tokenType == Symbols.KW_NONTERMINALS) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == MapagSpecificationElementTypes.LEFT) {
+					} else if (tokenType == Symbols.KW_PRECEDENCE) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == MapagSpecificationElementTypes.RIGHT) {
+					} else if (tokenType == Symbols.KW_LEFT) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == MapagSpecificationElementTypes.NONASSOC) {
+					} else if (tokenType == Symbols.KW_RIGHT) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == MapagSpecificationElementTypes.TERMINAL) {
+					} else if (tokenType == Symbols.KW_NONASSOC) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == MapagSpecificationElementTypes.NONTERMINAL) {
+					} else if (tokenType == Symbols.KW_START) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == MapagSpecificationElementTypes.PRECEDENCE) {
+					} else if (tokenType == Symbols.KW_RESOLVE) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == MapagSpecificationElementTypes.PERCENT_PREC) {
+					} else if (tokenType == Symbols.KW_SHIFT) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == MapagSpecificationElementTypes.START) {
+					} else if (tokenType == Symbols.KW_REDUCE) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == MapagSpecificationElementTypes.DOT) {
-						return MapagTextAttributeKeys.DOT;
-					} else if (tokenType == MapagSpecificationElementTypes.COMMA) {
+					} else if (tokenType == Symbols.KW_EOF) {
+						return MapagTextAttributeKeys.KEYWORD;
+					} else if (tokenType == Symbols.KW_ERROR) {
+						return MapagTextAttributeKeys.KEYWORD;
+					} else if (tokenType == Symbols.OPENING_CURLY_BRACE) {
+						return MapagTextAttributeKeys.PARENTHESES;
+					} else if (tokenType == Symbols.CLOSING_CURLY_BRACE) {
+						return MapagTextAttributeKeys.PARENTHESES;
+					} else if (tokenType == Symbols.OPENING_PARENTHESIS) {
+						return MapagTextAttributeKeys.PARENTHESES;
+					} else if (tokenType == Symbols.CLOSING_PARENTHESIS) {
+						return MapagTextAttributeKeys.PARENTHESES;
+					} else if (tokenType == Symbols.COMMA) {
 						return MapagTextAttributeKeys.COMMA;
-					} else if (tokenType == MapagSpecificationElementTypes.QUESTION_MARK) {
-						return MapagTextAttributeKeys.QUESTION_MARK;
-					} else if (tokenType == MapagSpecificationElementTypes.ASTERISK) {
-						return MapagTextAttributeKeys.ASTERISK;
-					} else if (tokenType == MapagSpecificationElementTypes.PLUS) {
-						return MapagTextAttributeKeys.PLUS;
-					} else if (tokenType == MapagSpecificationElementTypes.BAR) {
-						return MapagTextAttributeKeys.BAR;
-					} else if (tokenType == MapagSpecificationElementTypes.COLON) {
-						return MapagTextAttributeKeys.COLON;
-					} else if (tokenType == MapagSpecificationElementTypes.COLON_COLON_EQUALS) {
-						return MapagTextAttributeKeys.COLON_COLON_EQUALS;
-					} else if (tokenType == MapagSpecificationElementTypes.SEMICOLON) {
+					} else if (tokenType == Symbols.SEMICOLON) {
 						return MapagTextAttributeKeys.SEMICOLON;
+					} else if (tokenType == Symbols.COLON) {
+						return MapagTextAttributeKeys.COLON;
+					} else if (tokenType == Symbols.EXPANDS_TO) {
+						return MapagTextAttributeKeys.EXPANDS_TO;
+					} else if (tokenType == Symbols.QUESTION_MARK) {
+						return MapagTextAttributeKeys.QUESTION_MARK;
+					} else if (tokenType == Symbols.ASTERISK) {
+						return MapagTextAttributeKeys.ASTERISK;
+					} else if (tokenType == Symbols.PLUS) {
+						return MapagTextAttributeKeys.PLUS;
+					} else if (tokenType == Symbols.BAR) {
+						return MapagTextAttributeKeys.BAR;
+					} else if (tokenType == Symbols.BLOCK_COMMENT) {
+						return MapagTextAttributeKeys.BLOCK_COMMENT;
+					} else if (tokenType == Symbols.LINE_COMMENT) {
+						return MapagTextAttributeKeys.LINE_COMMENT;
 					} else if (tokenType == TokenType.BAD_CHARACTER) {
 						return MapagTextAttributeKeys.BAD_CHARACTER;
 					}
 				}
 				return EMPTY;
-				*/
-				// TODO comments
 			}
 
 		};
