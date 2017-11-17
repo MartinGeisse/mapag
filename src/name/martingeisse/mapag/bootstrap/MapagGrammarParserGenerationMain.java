@@ -189,7 +189,7 @@ public class MapagGrammarParserGenerationMain {
 					symbol("SEMICOLON")
 				))
 			)),
-			new Production("resolveDeclaration", ImmutableList.of(
+			new Production("resolveDeclarationSymbol", ImmutableList.of(
 				alternative("identifier", symbol("IDENTIFIER")),
 				alternative("eof", symbol("KW_EOF"))
 			)),
