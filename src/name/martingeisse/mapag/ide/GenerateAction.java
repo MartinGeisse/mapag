@@ -4,6 +4,7 @@ import com.intellij.ide.projectView.impl.AbstractProjectViewPane;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import name.martingeisse.mapag.input.PsiToGrammarConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,13 +30,14 @@ public class GenerateAction extends AnAction {
 	@Override
 	public void actionPerformed(AnActionEvent event) {
 		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE);
-		if (psiFile == null) {
+		if (!(psiFile instanceof MapagSourceFile)) {
 			return;
 		}
 		Properties properties = readAssociatedProperties(psiFile);
 		if (properties == null) {
 			return;
 		}
+		new PsiToGrammarConverter().convert((MapagSourceFile)psiFile);
 
 		// TODO
 
@@ -43,7 +45,11 @@ public class GenerateAction extends AnAction {
 	}
 
 	private Properties readAssociatedProperties(PsiFile grammarPsiFile) {
-		try (InputStream inputStream = findPropertiesFile(grammarPsiFile).getInputStream()) {
+		VirtualFile propertiesFile = findPropertiesFile(grammarPsiFile);
+		if (propertiesFile == null) {
+			return null;
+		}
+		try (InputStream inputStream = propertiesFile.getInputStream()) {
 			Properties properties = new Properties();
 			properties.load(inputStream);
 			return properties;
