@@ -16,6 +16,7 @@ import name.martingeisse.mapag.input.MapagElementType;
 import name.martingeisse.mapag.input.MapagGeneratedMapagParser;
 import name.martingeisse.mapag.input.MapagLexer;
 import name.martingeisse.mapag.input.Symbols;
+import name.martingeisse.mapag.input.psi.PsiFactory;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -62,7 +63,7 @@ public class MapagParserDefinition implements ParserDefinition {
 	@NotNull
 	@Override
 	public PsiElement createElement(ASTNode node) {
-		return new ASTWrapperPsiElement(node);
+		return PsiFactory.createPsiElement(node);
 	}
 
 	@Override
