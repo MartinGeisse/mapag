@@ -2,6 +2,7 @@ package name.martingeisse.mapag.input.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.impl.source.tree.CompositeElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +13,8 @@ public final class Grammar extends ASTWrapperPsiElement {
 	}
 
 	public NonemptyIdentifierList getTerminals() {
+		getChildren() liefert explizit keine leaf nodes!
+			--> Zeile: psiChild.getNode() instanceof CompositeElement
 		return (NonemptyIdentifierList) (getChildren()[2]);
 	}
 
