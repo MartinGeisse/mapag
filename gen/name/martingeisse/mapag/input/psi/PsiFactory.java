@@ -10,6 +10,9 @@ public class PsiFactory {
 	public static PsiElement createPsiElement(ASTNode node) {
 		IElementType type = node.getElementType();
 
+		if (type == Symbols.production_Multi_1_Named_Named) {
+			return new Production_Multi_1_Named_Named(node);
+		}
 		if (type == Symbols.rightHandSide_WithoutResolver) {
 			return new RightHandSide_WithoutResolver(node);
 		}
@@ -76,11 +79,11 @@ public class PsiFactory {
 		if (type == Symbols.resolveDeclarationSymbol_Eof) {
 			return new ResolveDeclarationSymbol_Eof(node);
 		}
-		if (type == Symbols.production_Multi_1_A0) {
-			return new Production_Multi_1_A0(node);
+		if (type == Symbols.production_Multi_1_Unnamed) {
+			return new Production_Multi_1_Unnamed(node);
 		}
-		if (type == Symbols.production_Multi_1_A1) {
-			return new Production_Multi_1_A1(node);
+		if (type == Symbols.production_Multi_1_Named) {
+			return new Production_Multi_1_Named(node);
 		}
 		if (type == Symbols.rightHandSide_WithExplicitResolver_ResolveDeclarations_Start) {
 			return new RightHandSide_WithExplicitResolver_ResolveDeclarations_Start(node);
@@ -106,23 +109,26 @@ public class PsiFactory {
 		if (type == Symbols.grammar_1_PrecedenceDeclarations_Next) {
 			return new Grammar_1_PrecedenceDeclarations_Next(node);
 		}
+		if (type == Symbols.production_Multi_1_Unnamed_Unnamed) {
+			return new Production_Multi_1_Unnamed_Unnamed(node);
+		}
 		if (type == Symbols.nonemptyIdentifierList) {
 			return new NonemptyIdentifierList(node);
 		}
-		if (type == Symbols.precedenceDeclaration_Associativity_A0) {
-			return new PrecedenceDeclaration_Associativity_A0(node);
+		if (type == Symbols.precedenceDeclaration_Associativity_Left) {
+			return new PrecedenceDeclaration_Associativity_Left(node);
 		}
-		if (type == Symbols.precedenceDeclaration_Associativity_A1) {
-			return new PrecedenceDeclaration_Associativity_A1(node);
+		if (type == Symbols.precedenceDeclaration_Associativity_Right) {
+			return new PrecedenceDeclaration_Associativity_Right(node);
 		}
-		if (type == Symbols.precedenceDeclaration_Associativity_A2) {
-			return new PrecedenceDeclaration_Associativity_A2(node);
+		if (type == Symbols.precedenceDeclaration_Associativity_Nonassoc) {
+			return new PrecedenceDeclaration_Associativity_Nonassoc(node);
 		}
-		if (type == Symbols.resolveDeclaration_Action_A0) {
-			return new ResolveDeclaration_Action_A0(node);
+		if (type == Symbols.resolveDeclaration_Action_Shift) {
+			return new ResolveDeclaration_Action_Shift(node);
 		}
-		if (type == Symbols.resolveDeclaration_Action_A1) {
-			return new ResolveDeclaration_Action_A1(node);
+		if (type == Symbols.resolveDeclaration_Action_Reduce) {
+			return new ResolveDeclaration_Action_Reduce(node);
 		}
 		if (type == Symbols.grammar_Productions_Start) {
 			return new Grammar_Productions_Start(node);
