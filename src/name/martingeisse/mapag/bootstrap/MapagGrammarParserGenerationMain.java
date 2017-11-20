@@ -116,7 +116,7 @@ public class MapagGrammarParserGenerationMain {
 			)),
 			new Production("precedenceDeclaration", ImmutableList.of(
 				alternative(null, sequence(
-					or(symbol("KW_LEFT"), symbol("KW_RIGHT"), symbol("KW_NONASSOC")).withName("associativity"),
+					or(symbol("KW_LEFT").withName("left"), symbol("KW_RIGHT").withName("right"), symbol("KW_NONASSOC").withName("nonassoc")).withName("associativity"),
 					symbol("nonemptyIdentifierList").withName("terminals"),
 					symbol("SEMICOLON")
 				))
@@ -149,13 +149,13 @@ public class MapagGrammarParserGenerationMain {
 							sequence(
 								symbol("rightHandSide").withName("rightHandSide"),
 								symbol("SEMICOLON")
-							),
+							).withName("unnamed"),
 							sequence(
 								symbol("IDENTIFIER").withName("alternativeName"),
 								symbol("EXPANDS_TO"),
 								symbol("rightHandSide").withName("rightHandSide"),
 								symbol("SEMICOLON")
-							)
+							).withName("named")
 						)
 					).withName("alternatives"),
 					symbol("CLOSING_CURLY_BRACE")
@@ -182,7 +182,7 @@ public class MapagGrammarParserGenerationMain {
 			)),
 			new Production("resolveDeclaration", ImmutableList.of(
 				alternative(null, sequence(
-					or(symbol("KW_SHIFT"), symbol("KW_REDUCE")).withName("action"),
+					or(symbol("KW_SHIFT").withName("shift"), symbol("KW_REDUCE").withName("reduce")).withName("action"),
 					symbol("resolveDeclarationSymbol").withName("firstSymbol"),
 					zeroOrMore(
 						symbol("COMMA"),
