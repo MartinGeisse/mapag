@@ -43,7 +43,7 @@ Identifier = ([:jletter:] | "_" ) ([:jletterdigit:] | [:jletter:] | "_" )*
 	"%right" { return Symbols.KW_RIGHT; }
 	"%nonassoc" { return Symbols.KW_NONASSOC; }
 	"%start" { return Symbols.KW_START; }
-	"%start" { return Symbols.KW_RESOLVE; }
+	"%resolve" { return Symbols.KW_RESOLVE; }
 	"%shift" { return Symbols.KW_SHIFT; }
 	"%reduce" { return Symbols.KW_REDUCE; }
 	"%eof" { return Symbols.KW_EOF; }
