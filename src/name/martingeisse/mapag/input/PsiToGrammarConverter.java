@@ -10,6 +10,7 @@ import name.martingeisse.mapag.grammar.extended.*;
 import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
+import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.ide.MapagSourceFile;
 import name.martingeisse.mapag.input.psi.*;
@@ -187,21 +188,54 @@ public class PsiToGrammarConverter {
 
 	private Expression convertExpression(name.martingeisse.mapag.input.psi.Expression psiExpression) {
 		if (psiExpression instanceof Expression_Named) {
-			TODO
+
+			Expression_Named typedExpression = (Expression_Named)psiExpression;
+			String name = getText(typedExpression.getExpressionName());
+			return convertExpression(typedExpression.getExpression()).withName(name);
+
 		} else if (psiExpression instanceof Expression_OneOrMore) {
-			TODO
+
+			Expression_OneOrMore typedExpression = (Expression_OneOrMore)psiExpression;
+			Expression operand = convertExpression(typedExpression.getOperand());
+			return new OneOrMoreExpression(operand);
+
+
 		} else if (psiExpression instanceof Expression_Sequence) {
-			TODO
+
+			Expression_Sequence typedExpression = (Expression_Sequence)psiExpression;
+			Expression left = convertExpression(typedExpression.getLeft());
+			Expression right = convertExpression(typedExpression.getRight());
+			return new SequenceExpression(left, right);
+
 		} else if (psiExpression instanceof Expression_Identifier) {
-			TODO
+
+			Expression_Identifier typedExpression = (Expression_Identifier)psiExpression;
+			return new SymbolReference(getText(typedExpression.getIdentifier()));
+
 		} else if (psiExpression instanceof Expression_Parenthesized) {
-			TODO
+
+			Expression_Parenthesized typedExpression = (Expression_Parenthesized)psiExpression;
+			return convertExpression(typedExpression.getInner());
+
 		} else if (psiExpression instanceof Expression_ZeroOrMore) {
-			TODO
+
+			Expression_ZeroOrMore typedExpression = (Expression_ZeroOrMore)psiExpression;
+			Expression operand = convertExpression(typedExpression.getOperand());
+			return new ZeroOrMoreExpression(operand);
+
 		} else if (psiExpression instanceof Expression_Or) {
-			TODO
+
+			Expression_Or typedExpression = (Expression_Or)psiExpression;
+			Expression left = convertExpression(typedExpression.getLeft());
+			Expression right = convertExpression(typedExpression.getRight());
+			return new OrExpression(left, right);
+
 		} else if (psiExpression instanceof Expression_Optional) {
-			TODO
+
+			Expression_Optional typedExpression = (Expression_Optional)psiExpression;
+			Expression operand = convertExpression(typedExpression.getOperand());
+			return new OptionalExpression(operand);
+
 		} else {
 			throw new RuntimeException("unknown expression PSI node: " + psiExpression);
 		}
