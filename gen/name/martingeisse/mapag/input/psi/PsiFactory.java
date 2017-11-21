@@ -151,6 +151,9 @@ public class PsiFactory {
 		if (type == Symbols.nonemptyIdentifierList_MoreIdentifiers_Next) {
 			return new NonemptyIdentifierList_MoreIdentifiers_Next(node);
 		}
+		if (type == Symbols.__PARSED_FRAGMENT) {
+			return null;
+		}
 
 		throw new RuntimeException("cannot create PSI element for AST node due to unknown element type: " + type);
 	}
