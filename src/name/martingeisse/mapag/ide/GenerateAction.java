@@ -11,6 +11,7 @@ import com.intellij.execution.ui.RunContentDescriptor;
 import com.intellij.execution.ui.actions.CloseAction;
 import com.intellij.ide.actions.PinActiveTabAction;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -78,20 +79,20 @@ public class GenerateAction extends AnAction {
 		}
 		Configuration configuration = new Configuration(properties);
 
-		// we need a module to place output files in
+		// we need a module to place output files in (TODO use ModuleRootManager?)
 		Module module = event.getDataContext().getData(LangDataKeys.MODULE);
 		if (module == null) {
 			console.print("No module available to place output files in", ConsoleViewContentType.ERROR_OUTPUT);
 			return;
 		}
-		VirtualFile moduleFolder = module.getModuleFile();
+		VirtualFile moduleFolder = module.getModuleFile().getParent();
 		final VirtualFile existingOutputFolder = moduleFolder.findChild("gen");
 		final VirtualFile outputFolder;
 		if (existingOutputFolder == null) {
 			try {
 				outputFolder = moduleFolder.createChildDirectory(this, "gen");
 			} catch (IOException e) {
-				console.print("Could not create 'gen' folder.", ConsoleViewContentType.ERROR_OUTPUT);
+				console.print("Could not create 'gen' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
 				return;
 			}
 		} else {
@@ -110,6 +111,18 @@ public class GenerateAction extends AnAction {
 			VirtualFile javaFile = packageFolder.createChildData(this, className + ".java");
 			return javaFile.getOutputStream(this);
 		};
+
+TODO
+		com.intellij.openapi.application.Application.runWriteAction();
+		ApplicationManager.getApplication().runWriteAction(() -> {
+			try {
+				result[0] = handler.createFromTemplate(project, directory, fileName, template, templateText, propsMap);
+			} catch (Exception var10) {
+				commandException[0] = var10;
+			}
+		});
+TODO
+
 		try {
 			new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
 		} catch (ConfigurationException e) {
