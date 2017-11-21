@@ -1,5 +1,8 @@
 package name.martingeisse.mapag.input.psi;
 
+import com.intellij.extapi.psi.ASTDelegatePsiElement;
+import com.intellij.psi.PsiElement;
+
 public final class InternalPsiUtil {
 
 	// prevent instantiation
