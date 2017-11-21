@@ -57,6 +57,7 @@ resolveDeclarationSymbol ::= {
 // TODO ambiguous; resolve using %resolve declarations
 expression ::= {
     identifier ::= IDENTIFIER;
+    error ::= KW_ERROR;
     sequence ::= expression expression;
     or ::= expression BAR expression;
     zeroOrMore ::= expression ASTERISK;

@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.input.psi;
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -24,6 +25,9 @@ public class PsiFactory {
 		}
 		if (type == Symbols.expression_Identifier) {
 			return new Expression_Identifier(node);
+		}
+		if (type == Symbols.expression_Error) {
+			return new Expression_Error(node);
 		}
 		if (type == Symbols.expression_Sequence) {
 			return new Expression_Sequence(node);
@@ -152,7 +156,7 @@ public class PsiFactory {
 			return new NonemptyIdentifierList_MoreIdentifiers_Next(node);
 		}
 		if (type == Symbols.__PARSED_FRAGMENT) {
-			return null;
+			return new ASTWrapperPsiElement(node);
 		}
 
 		throw new RuntimeException("cannot create PSI element for AST node due to unknown element type: " + type);
