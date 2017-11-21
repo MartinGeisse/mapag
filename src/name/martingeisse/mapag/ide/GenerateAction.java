@@ -11,14 +11,26 @@ import com.intellij.execution.ui.RunContentDescriptor;
 import com.intellij.execution.ui.actions.CloseAction;
 import com.intellij.ide.actions.PinActiveTabAction;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import name.martingeisse.mapag.codegen.CodeGenerationDriver;
+import name.martingeisse.mapag.codegen.Configuration;
+import name.martingeisse.mapag.codegen.ConfigurationException;
+import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
+import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
+import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.input.PsiToGrammarConverter;
+import name.martingeisse.mapag.sm.StateMachine;
+import name.martingeisse.mapag.sm.StateMachineBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -64,12 +76,63 @@ public class GenerateAction extends AnAction {
 		if (properties == null) {
 			return;
 		}
+		Configuration configuration = new Configuration(properties);
+
+		// we need a module to place output files in
+		Module module = event.getDataContext().getData(LangDataKeys.MODULE);
+		if (module == null) {
+			console.print("No module available to place output files in", ConsoleViewContentType.ERROR_OUTPUT);
+			return;
+		}
+		VirtualFile moduleFolder = module.getModuleFile();
+		final VirtualFile existingOutputFolder = moduleFolder.findChild("gen");
+		final VirtualFile outputFolder;
+		if (existingOutputFolder == null) {
+			try {
+				outputFolder = moduleFolder.createChildDirectory(this, "gen");
+			} catch (IOException e) {
+				console.print("Could not create 'gen' folder.", ConsoleViewContentType.ERROR_OUTPUT);
+				return;
+			}
+		} else {
+			outputFolder = existingOutputFolder;
+		}
 
 		// do it!
-		new PsiToGrammarConverter().convert((MapagSourceFile) psiFile);
-		// TODO
+		name.martingeisse.mapag.grammar.extended.Grammar extendedGrammar =
+			new PsiToGrammarConverter().convert((MapagSourceFile) psiFile);
+		name.martingeisse.mapag.grammar.canonical.Grammar canonicalGrammar =
+			new GrammarCanonicalizer(extendedGrammar).run().getResult();
+		GrammarInfo grammarInfo = new GrammarInfo(canonicalGrammar);
+		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
+		OutputFileFactory outputFileFactory = (packageName, className) -> {
+			VirtualFile packageFolder = createPackageFolder(outputFolder, packageName);
+			VirtualFile javaFile = packageFolder.createChildData(this, className + ".java");
+			return javaFile.getOutputStream(this);
+		};
+		try {
+			new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
+		} catch (ConfigurationException e) {
+			console.print(e.getMessage(), ConsoleViewContentType.ERROR_OUTPUT);
+			return;
+		} catch (IOException e) {
+			console.print("IOException during code generation: " + e, ConsoleViewContentType.ERROR_OUTPUT);
+			return;
+		}
 
 		console.print("Done.", ConsoleViewContentType.NORMAL_OUTPUT);
+	}
+
+	private VirtualFile createPackageFolder(VirtualFile parent, String packageName) throws IOException {
+		if (packageName == null || packageName.isEmpty()) {
+			return parent;
+		}
+		int index = packageName.indexOf('.');
+		if (index != -1) {
+			parent = createPackageFolder(parent, packageName.substring(0, index));
+			packageName = packageName.substring(index + 1);
+		}
+		return parent.createChildDirectory(this, packageName);
 	}
 
 	private Properties readAssociatedProperties(PsiFile grammarPsiFile, ConsoleViewImpl console) {
