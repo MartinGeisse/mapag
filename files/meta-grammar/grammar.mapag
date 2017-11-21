@@ -21,14 +21,14 @@
 //
 
 grammar ::=
-	KW_TERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList CLOSING_CURLY_BRACE
-	KW_NONTERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList CLOSING_CURLY_BRACE
-	(KW_PRECEDENCE OPENING_CURLY_BRACE precedenceDeclaration* CLOSING_CURLY_BRACE)?
+	KW_TERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList:terminals CLOSING_CURLY_BRACE
+	KW_NONTERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList:nonterminal CLOSING_CURLY_BRACE
+	(KW_PRECEDENCE OPENING_CURLY_BRACE precedenceDeclaration*:precedenceDeclarations CLOSING_CURLY_BRACE)?:precedenceTable
 	KW_START IDENTIFIER:startSymbolName SEMICOLON
-	production+
+	production+:productions
 	;
 
-precedenceDeclaration ::= (KW_LEFT | KW_RIGHT | KW_NONASSOC) nonemptyIdentifierList SEMICOLON;
+precedenceDeclaration ::= (KW_LEFT:left | KW_RIGHT:right | KW_NONASSOC:nonassoc):associativity nonemptyIdentifierList:terminals SEMICOLON;
 
 
 //
@@ -36,39 +36,47 @@ precedenceDeclaration ::= (KW_LEFT | KW_RIGHT | KW_NONASSOC) nonemptyIdentifierL
 //
 
 production ::= {
-	single ::= IDENTIFIER EXPANDS_TO rightHandSide SEMICOLON;
-	multi ::= IDENTIFIER EXPANDS_TO OPENING_CURLY_BRACE (IDENTIFIER EXPANDS_TO rightHandSide SEMICOLON)* CLOSING_CURLY_BRACE;
+	singleUnnamed ::= IDENTIFIER:nonterminalName EXPANDS_TO rightHandSide:rightHandSide SEMICOLON;
+	singleNamed ::= IDENTIFIER:nonterminalName COLON IDENTIFIER:alternativeName EXPANDS_TO rightHandSide:rightHandSide SEMICOLON;
+	multi ::= IDENTIFIER:nonterminalName EXPANDS_TO OPENING_CURLY_BRACE
+		((rightHandSide:rightHandSide SEMICOLON):unnamed | (IDENTIFIER:alternativeName EXPANDS_TO rightHandSide:rightHandSide SEMICOLON):named)*:alternatives
+		CLOSING_CURLY_BRACE;
 	error ::= %error SEMICOLON;
 }
 
 rightHandSide ::= {
-    withoutResolver ::= expression;
-    withPrecedenceResolver ::= expression KW_PRECEDENCE IDENTIFIER;
-    withExplicitResolver ::= expression KW_RESOLVE OPENING_CURLY_BRACE resolveDeclaration* CLOSING_CURLY_BRACE;
+    withoutResolver ::= expression:expression;
+    withPrecedenceResolver ::= expression:expression KW_PRECEDENCE IDENTIFIER:precedenceDefiningTerminal;
+    withExplicitResolver ::= expression:expression KW_RESOLVE OPENING_CURLY_BRACE resolveDeclaration*:resolveDeclarations CLOSING_CURLY_BRACE;
 }
 
-resolveDeclaration ::= (KW_SHIFT | KW_REDUCE) resolveDeclarationSymbol (COMMA resolveDeclarationSymbol)* SEMICOLON;
+resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce) resolveDeclarationSymbol:firstSymbol (COMMA resolveDeclarationSymbol:symbol)*:additionalSymbols SEMICOLON;
 
 resolveDeclarationSymbol ::= {
-    identifier ::= IDENTIFIER;
+    identifier ::= IDENTIFIER:symbol;
     eof ::= KW_EOF;
 }
 
-// TODO ambiguous; resolve using %resolve declarations
 expression ::= {
-    identifier ::= IDENTIFIER;
+    identifier ::= IDENTIFIER:identifier;
     error ::= KW_ERROR;
-    sequence ::= expression expression;
-    or ::= expression BAR expression;
-    zeroOrMore ::= expression ASTERISK;
-    oneOrMore ::= expression PLUS;
-    optional ::= expression QUESTION_MARK;
-    parenthesized ::= OPENING_PARENTHESIS expression CLOSING_PARENTHESIS;
-    named ::= expression COLON IDENTIFIER;
+    sequence ::= expression:left expression:right %resolve {
+		%shift QUESTION_MARK, ASTERISK, PLUS, COLON;
+		%reduce OPENING_PARENTHESIS, IDENTIFIER, KW_ERROR, BAR;
+    };
+    or ::= expression:eft BAR expression:right %resolve {
+		%shift QUESTION_MARK, ASTERISK, PLUS, COLON, OPENING_PARENTHESIS, IDENTIFIER, KW_ERROR;
+		%reduce BAR;
+    };
+    zeroOrMore ::= expression:operand ASTERISK;
+    oneOrMore ::= expression:operand PLUS;
+    optional ::= expression:operand QUESTION_MARK;
+    parenthesized ::= OPENING_PARENTHESIS expression:inner CLOSING_PARENTHESIS;
+    named ::= expression:expression COLON IDENTIFIER:expressionName;
 }
 
 //
 // helpers
 //
 
-nonemptyIdentifierList ::= IDENTIFIER (COMMA IDENTIFIER)*;
+nonemptyIdentifierList ::= IDENTIFIER:firstIdentifier (COMMA IDENTIFIER:identifier)*:moreIdentifiers;

@@ -26,15 +26,13 @@ import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.input.PsiToGrammarConverter;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
+import name.martingeisse.mapag.sm.StateMachineException;
 import name.martingeisse.mapag.util.UserMessageException;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -125,6 +123,12 @@ public class GenerateAction extends AnAction {
 		} catch (UserMessageException e) {
 			console.print(e.getMessage(), ConsoleViewContentType.ERROR_OUTPUT);
 			return;
+		} catch (StateMachineException.Conflict e) {
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(stringWriter);
+			e.describe(printWriter);
+			printWriter.flush();
+			console.print(stringWriter.toString(), ConsoleViewContentType.ERROR_OUTPUT);
 		} catch (Exception e) {
 			console.print("unexpected exception: " + e, ConsoleViewContentType.ERROR_OUTPUT);
 			return;

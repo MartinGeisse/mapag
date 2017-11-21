@@ -2,6 +2,8 @@ package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableSet;
 
+import java.io.PrintWriter;
+
 /**
  *
  */
@@ -41,7 +43,7 @@ public class StateMachineException extends RuntimeException {
 			return terminal;
 		}
 
-		public abstract void describe();
+		public abstract void describe(PrintWriter out);
 
 	}
 
@@ -64,23 +66,23 @@ public class StateMachineException extends RuntimeException {
 			return elementsThatWantToReduce;
 		}
 
-		public void describe() {
-			System.out.println("shift/reduce conflict on terminal " + getTerminal());
-			System.out.println();
-			System.out.println("state elements that want to shift:");
+		public void describe(PrintWriter out) {
+			out.println("shift/reduce conflict on terminal " + getTerminal());
+			out.println();
+			out.println("state elements that want to shift:");
 			for (StateElement stateElement : elementsThatWantToShift) {
-				System.out.println("    " + stateElement);
+				out.println("    " + stateElement);
 			}
-			System.out.println();
-			System.out.println("state elements that want to reduce:");
+			out.println();
+			out.println("state elements that want to reduce:");
 			for (StateElement stateElement : elementsThatWantToReduce) {
-				System.out.println("    " + stateElement);
+				out.println("    " + stateElement);
 			}
-			System.out.println();
-			System.out.println("---------------------------------------------------------------------------------");
-			System.out.println("complete state:");
-			System.out.println(getState());
-			System.out.println();
+			out.println();
+			out.println("---------------------------------------------------------------------------------");
+			out.println("complete state:");
+			out.println(getState());
+			out.println();
 		}
 
 	}
@@ -98,18 +100,18 @@ public class StateMachineException extends RuntimeException {
 			return elementsThatWantToReduce;
 		}
 
-		public void describe() {
-			System.out.println("reduce/reduce conflict on terminal " + getTerminal());
-			System.out.println();
-			System.out.println("state elements that want to reduce:");
+		public void describe(PrintWriter out) {
+			out.println("reduce/reduce conflict on terminal " + getTerminal());
+			out.println();
+			out.println("state elements that want to reduce:");
 			for (StateElement stateElement : elementsThatWantToReduce) {
-				System.out.println("    " + stateElement);
+				out.println("    " + stateElement);
 			}
-			System.out.println();
-			System.out.println("---------------------------------------------------------------------------------");
-			System.out.println("complete state:");
-			System.out.println(getState());
-			System.out.println();
+			out.println();
+			out.println("---------------------------------------------------------------------------------");
+			out.println("complete state:");
+			out.println(getState());
+			out.println();
 		}
 
 	}

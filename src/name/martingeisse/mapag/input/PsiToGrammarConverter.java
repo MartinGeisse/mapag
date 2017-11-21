@@ -212,6 +212,10 @@ public class PsiToGrammarConverter {
 			Expression_Identifier typedExpression = (Expression_Identifier)psiExpression;
 			return new SymbolReference(getText(typedExpression.getIdentifier()));
 
+		} else if (psiExpression instanceof Expression_Error) {
+
+			return new SymbolReference(SpecialSymbols.ERROR_SYMBOL_NAME);
+
 		} else if (psiExpression instanceof Expression_Parenthesized) {
 
 			Expression_Parenthesized typedExpression = (Expression_Parenthesized)psiExpression;

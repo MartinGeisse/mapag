@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
+import com.intellij.execution.ui.ConsoleViewContentType;
 import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
@@ -15,6 +16,8 @@ import name.martingeisse.mapag.sm.StateMachineException;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Properties;
 
 /**
@@ -26,7 +29,9 @@ public class MapagGrammarParserGenerationMain {
 		try {
 			run();
 		} catch (StateMachineException.Conflict e) {
-			e.describe();
+			PrintWriter printWriter = new PrintWriter(System.out);
+			e.describe(printWriter);
+			printWriter.flush();
 		}
 	}
 
@@ -79,7 +84,6 @@ public class MapagGrammarParserGenerationMain {
 			new NonterminalDeclaration("grammar"),
 			new NonterminalDeclaration("precedenceDeclaration"),
 			new NonterminalDeclaration("production"),
-
 			new NonterminalDeclaration("rightHandSide"),
 			new NonterminalDeclaration("expression"),
 			new NonterminalDeclaration("resolveDeclaration"),
@@ -201,7 +205,7 @@ public class MapagGrammarParserGenerationMain {
 				alternativeWithResolution("sequence", sequence(
 					symbol("expression").withName("left"),
 					symbol("expression").withName("right")
-				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON", "OPENING_PARENTHESIS"), ImmutableList.of("IDENTIFIER", "KW_ERROR", "BAR")),
+				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON"), ImmutableList.of("OPENING_PARENTHESIS", "IDENTIFIER", "KW_ERROR", "BAR")),
 				alternativeWithResolution("or", sequence(
 					symbol("expression").withName("left"),
 					symbol("BAR"),
