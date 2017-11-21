@@ -8,13 +8,11 @@ import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.Action;
 import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateMachine;
-import name.martingeisse.mapag.util.Pair;
 import org.apache.velocity.VelocityContext;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 /**

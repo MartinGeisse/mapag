@@ -12,11 +12,11 @@ public final class NonemptyIdentifierList extends ASTWrapperPsiElement {
 	}
 
 	public LeafPsiElement getFirstIdentifier() {
-		return (LeafPsiElement) (getChildren()[0]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public NonemptyIdentifierList_MoreIdentifiers getMoreIdentifiers() {
-		return (NonemptyIdentifierList_MoreIdentifiers) (getChildren()[1]);
+		return (NonemptyIdentifierList_MoreIdentifiers) InternalPsiUtil.getChild(this, 1);
 	}
 
 }

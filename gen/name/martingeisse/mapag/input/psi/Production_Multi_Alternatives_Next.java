@@ -13,11 +13,11 @@ public final class Production_Multi_Alternatives_Next extends Production_Multi_A
 	}
 
 	public Production_Multi_Alternatives getPrevious() {
-		return (Production_Multi_Alternatives) (getChildren()[0]);
+		return (Production_Multi_Alternatives) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public Production_Multi_1 getElement() {
-		return (Production_Multi_1) (getChildren()[1]);
+		return (Production_Multi_1) InternalPsiUtil.getChild(this, 1);
 	}
 
 	public ImmutableList<Production_Multi_1> getAll() {

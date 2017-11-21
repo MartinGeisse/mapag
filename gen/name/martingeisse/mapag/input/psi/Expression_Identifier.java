@@ -11,7 +11,7 @@ public final class Expression_Identifier extends Expression {
 	}
 
 	public LeafPsiElement getIdentifier() {
-		return (LeafPsiElement) (getChildren()[0]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

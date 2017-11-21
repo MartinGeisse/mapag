@@ -5,7 +5,6 @@ import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
-import name.martingeisse.mapag.ide.MapagParserDefinition;
 
 import java.util.ArrayList;
 import java.util.Arrays;

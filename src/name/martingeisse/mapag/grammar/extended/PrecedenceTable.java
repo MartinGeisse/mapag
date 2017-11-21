@@ -3,7 +3,6 @@ package name.martingeisse.mapag.grammar.extended;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
-import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 /**

@@ -10,11 +10,11 @@ public final class Expression_Or extends Expression {
 	}
 
 	public Expression getLeft() {
-		return (Expression) (getChildren()[0]);
+		return (Expression) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public Expression getRight() {
-		return (Expression) (getChildren()[2]);
+		return (Expression) InternalPsiUtil.getChild(this, 2);
 	}
 
 }

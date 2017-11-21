@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
-import name.martingeisse.mapag.codegen.ParserClassGenerator;
 import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;

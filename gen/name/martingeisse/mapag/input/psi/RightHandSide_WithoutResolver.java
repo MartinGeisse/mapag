@@ -10,7 +10,7 @@ public final class RightHandSide_WithoutResolver extends RightHandSide {
 	}
 
 	public Expression getExpression() {
-		return (Expression) (getChildren()[0]);
+		return (Expression) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

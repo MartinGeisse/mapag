@@ -10,8 +10,8 @@ import name.martingeisse.mapag.grammar.extended.*;
 import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
-import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.grammar.extended.expression.Expression;
+import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.ide.MapagSourceFile;
 import name.martingeisse.mapag.input.psi.*;
 

@@ -11,11 +11,11 @@ public final class Production_Multi extends Production {
 	}
 
 	public LeafPsiElement getNonterminalName() {
-		return (LeafPsiElement) (getChildren()[0]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public Production_Multi_Alternatives getAlternatives() {
-		return (Production_Multi_Alternatives) (getChildren()[3]);
+		return (Production_Multi_Alternatives) InternalPsiUtil.getChild(this, 3);
 	}
 
 }

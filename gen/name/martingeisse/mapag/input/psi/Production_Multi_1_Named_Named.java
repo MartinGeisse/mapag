@@ -12,11 +12,11 @@ public final class Production_Multi_1_Named_Named extends ASTWrapperPsiElement {
 	}
 
 	public LeafPsiElement getAlternativeName() {
-		return (LeafPsiElement) (getChildren()[0]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public RightHandSide getRightHandSide() {
-		return (RightHandSide) (getChildren()[2]);
+		return (RightHandSide) InternalPsiUtil.getChild(this, 2);
 	}
 
 }

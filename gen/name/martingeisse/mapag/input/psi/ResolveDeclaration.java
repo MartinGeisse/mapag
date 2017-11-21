@@ -11,15 +11,15 @@ public final class ResolveDeclaration extends ASTWrapperPsiElement {
 	}
 
 	public ResolveDeclaration_Action getAction() {
-		return (ResolveDeclaration_Action) (getChildren()[0]);
+		return (ResolveDeclaration_Action) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public ResolveDeclarationSymbol getFirstSymbol() {
-		return (ResolveDeclarationSymbol) (getChildren()[1]);
+		return (ResolveDeclarationSymbol) InternalPsiUtil.getChild(this, 1);
 	}
 
 	public ResolveDeclaration_AdditionalSymbols getAdditionalSymbols() {
-		return (ResolveDeclaration_AdditionalSymbols) (getChildren()[2]);
+		return (ResolveDeclaration_AdditionalSymbols) InternalPsiUtil.getChild(this, 2);
 	}
 
 }

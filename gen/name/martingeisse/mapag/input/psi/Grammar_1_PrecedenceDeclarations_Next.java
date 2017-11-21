@@ -13,11 +13,11 @@ public final class Grammar_1_PrecedenceDeclarations_Next extends Grammar_1_Prece
 	}
 
 	public Grammar_1_PrecedenceDeclarations getPrevious() {
-		return (Grammar_1_PrecedenceDeclarations) (getChildren()[0]);
+		return (Grammar_1_PrecedenceDeclarations) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public PrecedenceDeclaration getElement() {
-		return (PrecedenceDeclaration) (getChildren()[1]);
+		return (PrecedenceDeclaration) InternalPsiUtil.getChild(this, 1);
 	}
 
 	public ImmutableList<PrecedenceDeclaration> getAll() {

@@ -11,7 +11,7 @@ public final class ResolveDeclaration_Action_Reduce extends ResolveDeclaration_A
 	}
 
 	public LeafPsiElement getReduce() {
-		return (LeafPsiElement) (getChildren()[0]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

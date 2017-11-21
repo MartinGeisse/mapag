@@ -11,11 +11,11 @@ public final class RightHandSide_WithPrecedenceResolver extends RightHandSide {
 	}
 
 	public Expression getExpression() {
-		return (Expression) (getChildren()[0]);
+		return (Expression) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public LeafPsiElement getPrecedenceDefiningTerminal() {
-		return (LeafPsiElement) (getChildren()[2]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 2);
 	}
 
 }

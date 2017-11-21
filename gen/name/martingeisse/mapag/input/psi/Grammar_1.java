@@ -11,7 +11,7 @@ public final class Grammar_1 extends ASTWrapperPsiElement {
 	}
 
 	public Grammar_1_PrecedenceDeclarations getPrecedenceDeclarations() {
-		return (Grammar_1_PrecedenceDeclarations) (getChildren()[2]);
+		return (Grammar_1_PrecedenceDeclarations) InternalPsiUtil.getChild(this, 2);
 	}
 
 }

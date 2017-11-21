@@ -13,11 +13,11 @@ public final class ResolveDeclaration_AdditionalSymbols_Next extends ResolveDecl
 	}
 
 	public ResolveDeclaration_AdditionalSymbols getPrevious() {
-		return (ResolveDeclaration_AdditionalSymbols) (getChildren()[0]);
+		return (ResolveDeclaration_AdditionalSymbols) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public ResolveDeclaration_1 getElement() {
-		return (ResolveDeclaration_1) (getChildren()[1]);
+		return (ResolveDeclaration_1) InternalPsiUtil.getChild(this, 1);
 	}
 
 	public ImmutableList<ResolveDeclaration_1> getAll() {

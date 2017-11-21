@@ -11,7 +11,7 @@ public final class Production_Multi_1_Unnamed_Unnamed extends ASTWrapperPsiEleme
 	}
 
 	public RightHandSide getRightHandSide() {
-		return (RightHandSide) (getChildren()[0]);
+		return (RightHandSide) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

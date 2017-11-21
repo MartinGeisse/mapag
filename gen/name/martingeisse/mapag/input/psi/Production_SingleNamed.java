@@ -11,15 +11,15 @@ public final class Production_SingleNamed extends Production {
 	}
 
 	public LeafPsiElement getNonterminalName() {
-		return (LeafPsiElement) (getChildren()[0]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public LeafPsiElement getAlternativeName() {
-		return (LeafPsiElement) (getChildren()[2]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 2);
 	}
 
 	public RightHandSide getRightHandSide() {
-		return (RightHandSide) (getChildren()[4]);
+		return (RightHandSide) InternalPsiUtil.getChild(this, 4);
 	}
 
 }

@@ -13,11 +13,11 @@ public final class RightHandSide_WithExplicitResolver_ResolveDeclarations_Next e
 	}
 
 	public RightHandSide_WithExplicitResolver_ResolveDeclarations getPrevious() {
-		return (RightHandSide_WithExplicitResolver_ResolveDeclarations) (getChildren()[0]);
+		return (RightHandSide_WithExplicitResolver_ResolveDeclarations) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public ResolveDeclaration getElement() {
-		return (ResolveDeclaration) (getChildren()[1]);
+		return (ResolveDeclaration) InternalPsiUtil.getChild(this, 1);
 	}
 
 	public ImmutableList<ResolveDeclaration> getAll() {

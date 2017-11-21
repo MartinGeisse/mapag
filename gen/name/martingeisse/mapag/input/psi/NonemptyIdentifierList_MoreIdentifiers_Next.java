@@ -13,11 +13,11 @@ public final class NonemptyIdentifierList_MoreIdentifiers_Next extends NonemptyI
 	}
 
 	public NonemptyIdentifierList_MoreIdentifiers getPrevious() {
-		return (NonemptyIdentifierList_MoreIdentifiers) (getChildren()[0]);
+		return (NonemptyIdentifierList_MoreIdentifiers) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public NonemptyIdentifierList_1 getElement() {
-		return (NonemptyIdentifierList_1) (getChildren()[1]);
+		return (NonemptyIdentifierList_1) InternalPsiUtil.getChild(this, 1);
 	}
 
 	public ImmutableList<NonemptyIdentifierList_1> getAll() {

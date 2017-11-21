@@ -10,7 +10,7 @@ public final class Expression_Optional extends Expression {
 	}
 
 	public Expression getOperand() {
-		return (Expression) (getChildren()[0]);
+		return (Expression) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

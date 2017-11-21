@@ -11,7 +11,7 @@ public final class PrecedenceDeclaration_Associativity_Left extends PrecedenceDe
 	}
 
 	public LeafPsiElement getLeft() {
-		return (LeafPsiElement) (getChildren()[0]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

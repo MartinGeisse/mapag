@@ -10,11 +10,11 @@ public final class RightHandSide_WithExplicitResolver extends RightHandSide {
 	}
 
 	public Expression getExpression() {
-		return (Expression) (getChildren()[0]);
+		return (Expression) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public RightHandSide_WithExplicitResolver_ResolveDeclarations getResolveDeclarations() {
-		return (RightHandSide_WithExplicitResolver_ResolveDeclarations) (getChildren()[3]);
+		return (RightHandSide_WithExplicitResolver_ResolveDeclarations) InternalPsiUtil.getChild(this, 3);
 	}
 
 }

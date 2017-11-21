@@ -12,7 +12,7 @@ public final class NonemptyIdentifierList_1 extends ASTWrapperPsiElement {
 	}
 
 	public LeafPsiElement getIdentifier() {
-		return (LeafPsiElement) (getChildren()[1]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 1);
 	}
 
 }

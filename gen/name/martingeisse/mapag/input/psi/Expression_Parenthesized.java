@@ -10,7 +10,7 @@ public final class Expression_Parenthesized extends Expression {
 	}
 
 	public Expression getInner() {
-		return (Expression) (getChildren()[1]);
+		return (Expression) InternalPsiUtil.getChild(this, 1);
 	}
 
 }

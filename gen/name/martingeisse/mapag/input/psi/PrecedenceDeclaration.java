@@ -11,11 +11,11 @@ public final class PrecedenceDeclaration extends ASTWrapperPsiElement {
 	}
 
 	public PrecedenceDeclaration_Associativity getAssociativity() {
-		return (PrecedenceDeclaration_Associativity) (getChildren()[0]);
+		return (PrecedenceDeclaration_Associativity) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public NonemptyIdentifierList getTerminals() {
-		return (NonemptyIdentifierList) (getChildren()[1]);
+		return (NonemptyIdentifierList) InternalPsiUtil.getChild(this, 1);
 	}
 
 }

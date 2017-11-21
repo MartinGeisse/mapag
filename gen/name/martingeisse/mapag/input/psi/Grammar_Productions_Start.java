@@ -13,7 +13,7 @@ public final class Grammar_Productions_Start extends Grammar_Productions {
 	}
 
 	public Production getElement() {
-		return (Production) (getChildren()[0]);
+		return (Production) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public ImmutableList<Production> getAll() {

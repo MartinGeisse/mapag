@@ -11,7 +11,7 @@ public final class ResolveDeclarationSymbol_Identifier extends ResolveDeclaratio
 	}
 
 	public LeafPsiElement getSymbol() {
-		return (LeafPsiElement) (getChildren()[0]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

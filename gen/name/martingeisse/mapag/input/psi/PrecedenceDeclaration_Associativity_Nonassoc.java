@@ -11,7 +11,7 @@ public final class PrecedenceDeclaration_Associativity_Nonassoc extends Preceden
 	}
 
 	public LeafPsiElement getNonassoc() {
-		return (LeafPsiElement) (getChildren()[0]);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

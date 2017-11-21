@@ -13,11 +13,11 @@ public final class Grammar_Productions_Next extends Grammar_Productions {
 	}
 
 	public Grammar_Productions getPrevious() {
-		return (Grammar_Productions) (getChildren()[0]);
+		return (Grammar_Productions) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public Production getElement() {
-		return (Production) (getChildren()[1]);
+		return (Production) InternalPsiUtil.getChild(this, 1);
 	}
 
 	public ImmutableList<Production> getAll() {

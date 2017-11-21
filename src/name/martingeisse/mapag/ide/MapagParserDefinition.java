@@ -1,6 +1,5 @@
 package name.martingeisse.mapag.ide;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
@@ -12,7 +11,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import name.martingeisse.mapag.input.MapagElementType;
 import name.martingeisse.mapag.input.MapagGeneratedMapagParser;
 import name.martingeisse.mapag.input.MapagLexer;
 import name.martingeisse.mapag.input.Symbols;

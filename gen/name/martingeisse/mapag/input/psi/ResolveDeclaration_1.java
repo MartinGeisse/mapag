@@ -11,7 +11,7 @@ public final class ResolveDeclaration_1 extends ASTWrapperPsiElement {
 	}
 
 	public ResolveDeclarationSymbol getSymbol() {
-		return (ResolveDeclarationSymbol) (getChildren()[1]);
+		return (ResolveDeclarationSymbol) InternalPsiUtil.getChild(this, 1);
 	}
 
 }

@@ -10,7 +10,7 @@ public final class Production_Multi_1_Unnamed extends Production_Multi_1 {
 	}
 
 	public Production_Multi_1_Unnamed_Unnamed getUnnamed() {
-		return (Production_Multi_1_Unnamed_Unnamed) (getChildren()[0]);
+		return (Production_Multi_1_Unnamed_Unnamed) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

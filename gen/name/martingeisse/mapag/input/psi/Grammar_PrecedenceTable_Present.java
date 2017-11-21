@@ -10,7 +10,7 @@ public final class Grammar_PrecedenceTable_Present extends Grammar_PrecedenceTab
 	}
 
 	public Grammar_1 getIt() {
-		return (Grammar_1) (getChildren()[0]);
+		return (Grammar_1) InternalPsiUtil.getChild(this, 0);
 	}
 
 }
