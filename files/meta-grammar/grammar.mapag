@@ -38,7 +38,7 @@ precedenceDeclaration ::= (KW_LEFT | KW_RIGHT | KW_NONASSOC) nonemptyIdentifierL
 production ::= {
 	single ::= IDENTIFIER EXPANDS_TO rightHandSide SEMICOLON;
 	multi ::= IDENTIFIER EXPANDS_TO OPENING_CURLY_BRACE (IDENTIFIER EXPANDS_TO rightHandSide SEMICOLON)* CLOSING_CURLY_BRACE;
-	error ::= error SEMICOLON;
+	error ::= %error SEMICOLON;
 }
 
 rightHandSide ::= {

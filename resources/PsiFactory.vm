@@ -24,6 +24,9 @@ public class PsiFactory {
                 return new ${case.psiClass}(node);
             }
         #end
+		if (type == ${symbolHolder}.__PARSED_FRAGMENT) {
+			return null;
+        }
 
         throw new RuntimeException("cannot create PSI element for AST node due to unknown element type: " + type);
     }

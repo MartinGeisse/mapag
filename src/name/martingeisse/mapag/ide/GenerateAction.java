@@ -26,6 +26,7 @@ import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.input.PsiToGrammarConverter;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
+import name.martingeisse.mapag.util.UserMessageException;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -100,36 +101,32 @@ public class GenerateAction extends AnAction {
 		}
 
 		// do it!
-		name.martingeisse.mapag.grammar.extended.Grammar extendedGrammar =
-			new PsiToGrammarConverter().convert((MapagSourceFile) psiFile);
-		name.martingeisse.mapag.grammar.canonical.Grammar canonicalGrammar =
-			new GrammarCanonicalizer(extendedGrammar).run().getResult();
-		GrammarInfo grammarInfo = new GrammarInfo(canonicalGrammar);
-		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
-		OutputFileFactory outputFileFactory = (packageName, className) -> {
-			VirtualFile packageFolder = createPackageFolder(outputFolder, packageName);
-			VirtualFile javaFile = packageFolder.createChildData(this, className + ".java");
-			return javaFile.getOutputStream(this);
-		};
-
-TODO
-		com.intellij.openapi.application.Application.runWriteAction();
-		ApplicationManager.getApplication().runWriteAction(() -> {
-			try {
-				result[0] = handler.createFromTemplate(project, directory, fileName, template, templateText, propsMap);
-			} catch (Exception var10) {
-				commandException[0] = var10;
-			}
-		});
-TODO
-
 		try {
-			new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
-		} catch (ConfigurationException e) {
+			name.martingeisse.mapag.grammar.extended.Grammar extendedGrammar =
+				new PsiToGrammarConverter().convert((MapagSourceFile) psiFile);
+			name.martingeisse.mapag.grammar.canonical.Grammar canonicalGrammar =
+				new GrammarCanonicalizer(extendedGrammar).run().getResult();
+			GrammarInfo grammarInfo = new GrammarInfo(canonicalGrammar);
+			StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
+			OutputFileFactory outputFileFactory = (packageName, className) -> {
+				VirtualFile packageFolder = createPackageFolder(outputFolder, packageName);
+				VirtualFile javaFile = packageFolder.createChildData(this, className + ".java");
+				return javaFile.getOutputStream(this);
+			};
+			// TODO make sure that runWriteAction is synchronous with the calling thread (it seems to be)
+			ApplicationManager.getApplication().runWriteAction(() -> {
+				try {
+					new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
+				} catch (IOException e) {
+					throw new RuntimeException("unexpected IOException", e);
+				}
+				console.print("Write action done.", ConsoleViewContentType.NORMAL_OUTPUT);
+			});
+		} catch (UserMessageException e) {
 			console.print(e.getMessage(), ConsoleViewContentType.ERROR_OUTPUT);
 			return;
-		} catch (IOException e) {
-			console.print("IOException during code generation: " + e, ConsoleViewContentType.ERROR_OUTPUT);
+		} catch (Exception e) {
+			console.print("unexpected exception: " + e, ConsoleViewContentType.ERROR_OUTPUT);
 			return;
 		}
 
