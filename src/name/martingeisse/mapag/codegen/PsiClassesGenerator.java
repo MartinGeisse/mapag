@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.codegen;
 
+import com.intellij.lang.ParserDefinition;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
@@ -21,6 +22,7 @@ import java.util.List;
 public class PsiClassesGenerator {
 
 	public static final String PACKAGE_NAME_PROPERTY = "psi.package";
+	public static final String PARSER_DEFINITION_CLASS_PROPERTY = "context.parserDefinitionClass";
 
 	private final GrammarInfo grammarInfo;
 	private final Grammar grammar;
@@ -247,6 +249,7 @@ public class PsiClassesGenerator {
 		}
 
 	}
+
 	public String getEffectiveTypeForSymbol(String symbol) {
 		if (grammar.getTerminalDefinitions().get(symbol) != null) {
 			return "LeafPsiElement";
@@ -273,7 +276,6 @@ public class PsiClassesGenerator {
 		boolean isOptionalAbsentCase;
 		boolean isOptionalPresentCase;
 		String optionalOperandGetterName;
-
 
 		void generate() throws ConfigurationException, IOException {
 
@@ -389,6 +391,7 @@ public class PsiClassesGenerator {
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+		context.put("parserDefinitionClass", configuration.getRequired(PARSER_DEFINITION_CLASS_PROPERTY));
 
 		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "InternalPsiUtil")) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {

@@ -2,8 +2,11 @@ package name.martingeisse.mapag.input.psi;
 
 import com.intellij.extapi.psi.ASTDelegatePsiElement;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.TokenSet;
 
 public final class InternalPsiUtil {
+
+	private static TokenSet ignoredElementTypes;
 
 	// prevent instantiation
 	private InternalPsiUtil() {
@@ -14,11 +17,22 @@ public final class InternalPsiUtil {
 	 * subclasses of CompositeElement.
 	 */
 	public static PsiElement getChild(ASTDelegatePsiElement parent, int childIndex) {
-		PsiElement child = parent.getFirstChild();
+		if (ignoredElementTypes == null) {
+			name.martingeisse.mapag.ide.MapagParserDefinition parserDefinition = new name.martingeisse.mapag.ide.MapagParserDefinition();
+			ignoredElementTypes = TokenSet.orSet(parserDefinition.getWhitespaceTokens(), parserDefinition.getCommentTokens());
+		}
+		PsiElement child = skipWhitespace(parent.getFirstChild());
 		for (int i = 0; i < childIndex; i++) {
-			child = child.getNextSibling();
+			child = skipWhitespace(child.getNextSibling());
 		}
 		return child;
+	}
+
+	private static PsiElement skipWhitespace(PsiElement element) {
+		while (ignoredElementTypes.contains(element.getNode().getElementType())) {
+			element = element.getNextSibling();
+		}
+		return element;
 	}
 
 }

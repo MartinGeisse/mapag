@@ -5,7 +5,6 @@ import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
-import name.martingeisse.mapag.ide.MapagParserDefinition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -315,7 +314,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 	};
 
 	// other
-	private static final IElementType FILE_ELEMENT_TYPE = MapagParserDefinition.FILE_ELEMENT_TYPE;
+	private static final IElementType FILE_ELEMENT_TYPE = name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE;
 	private static final int RECOVERY_SYNC_LENGTH = 3;
 	private static final Object ERROR_LOCATION_INDICATOR = new Object();
 
