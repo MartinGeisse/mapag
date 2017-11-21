@@ -24,7 +24,7 @@ public $classModifiers class $className extends $superclass {
 
     #foreach($nodeGetter in $nodeGetters)
     public $nodeGetter.nodeType ${nodeGetter.getterName}() {
-            return ($nodeGetter.nodeType)(getChildren()[$nodeGetter.childIndex]);
+            return ($nodeGetter.nodeType)InternalPsiUtil.getChild(this, $nodeGetter.childIndex);
         }
     #end
 

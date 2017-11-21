@@ -42,6 +42,7 @@ public class PsiClassesGenerator {
 			handleNonterminal(nonterminalDefinition);
 		}
 		generateFactoryClass();
+		generateInternalPsiUtilClass();
 	}
 
 	private void handleNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
@@ -387,4 +388,16 @@ public class PsiClassesGenerator {
 
 	}
 
+	private void generateInternalPsiUtilClass() throws ConfigurationException, IOException {
+
+		VelocityContext context = new VelocityContext();
+		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+
+		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "InternalPsiUtil")) {
+			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+				MapagVelocityEngine.engine.getTemplate("InternalPsiUtil.vm").merge(context, outputStreamWriter);
+			}
+		}
+
+	}
 }
