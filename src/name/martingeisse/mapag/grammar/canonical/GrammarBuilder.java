@@ -67,13 +67,12 @@ public final class GrammarBuilder {
 			return this;
 		}
 
-		// TODO alternative with conflict resolution map
 	}
 
 	public Grammar build() {
 		List<NonterminalDefinition> nonterminalDefinitions = new ArrayList<>();
 		for (Map.Entry<String, List<Alternative>> entry : this.nonterminalDefinitions.entrySet()) {
-			nonterminalDefinitions.add(new NonterminalDefinition(entry.getKey(), ImmutableList.copyOf(entry.getValue()), NonterminalAnnotation.EMPTY));
+			nonterminalDefinitions.add(new NonterminalDefinition(entry.getKey(), ImmutableList.copyOf(entry.getValue()), NonterminalDefinition.PsiStyle.NORMAL));
 		}
 		return new Grammar(terminalDefinitions, nonterminalDefinitions, startNonterminalName);
 	}

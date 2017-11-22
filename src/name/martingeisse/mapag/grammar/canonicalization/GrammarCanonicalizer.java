@@ -2,7 +2,6 @@ package name.martingeisse.mapag.grammar.canonicalization;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.Associativity;
-import name.martingeisse.mapag.grammar.canonical.NonterminalAnnotation;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
@@ -55,15 +54,15 @@ public final class GrammarCanonicalizer {
 		}
 
 		// build nonterminal definitions
-		ProductionCanonicalizer productionCanonicalizer = new ProductionCanonicalizer(inputGrammar.getProductions());
+		ProductionCanonicalizer productionCanonicalizer = new ProductionCanonicalizer(terminalDefinitions.keySet(), inputGrammar.getProductions());
 		productionCanonicalizer.run();
 		nonterminalDefinitions = new HashMap<>();
 		for (Map.Entry<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternativesEntry : productionCanonicalizer.getNonterminalAlternatives().entrySet()) {
 			String nonterminalName = nonterminalAlternativesEntry.getKey();
 			ImmutableList<name.martingeisse.mapag.grammar.canonical.Alternative> alternatives = ImmutableList.copyOf(nonterminalAlternativesEntry.getValue());
-			NonterminalAnnotation annotation = productionCanonicalizer.getNonterminalAnnotations().get(nonterminalName);
+			NonterminalDefinition.PsiStyle annotation = productionCanonicalizer.getNonterminalPsiStyles().get(nonterminalName);
 			if (annotation == null) {
-				annotation = NonterminalAnnotation.EMPTY;
+				annotation = NonterminalDefinition.PsiStyle.NORMAL;
 			}
 			NonterminalDefinition nonterminalDefinition = new NonterminalDefinition(nonterminalName, alternatives, annotation);
 			nonterminalDefinitions.put(nonterminalName, nonterminalDefinition);

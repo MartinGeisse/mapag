@@ -5,17 +5,14 @@ import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
 import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
-import name.martingeisse.mapag.grammar.canonical.NonterminalAnnotation;
+import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.ResolveBlock;
 import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -27,17 +24,19 @@ public class ProductionCanonicalizer {
 	private final List<Production> pendingProductions;
 	private final List<Production> nextPendingBatch;
 	private final Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
-	private final Map<String, NonterminalAnnotation> nonterminalAnnotations;
+	private final Map<String, NonterminalDefinition.PsiStyle> nonterminalPsiStyles;
 	private final SyntheticNonterminalNameGenerator syntheticNonterminalNameGenerator;
 
-	public ProductionCanonicalizer(ImmutableList<Production> inputProductions) {
+	public ProductionCanonicalizer(Collection<String> terminals, ImmutableList<Production> inputProductions) {
 		ParameterUtil.ensureNotNull(inputProductions, "inputProductions");
 		this.pendingProductions = new ArrayList<>(inputProductions);
 		this.nextPendingBatch = new ArrayList<>();
 		this.nonterminalAlternatives = new HashMap<>();
-		this.nonterminalAnnotations = new HashMap<>();
+		this.nonterminalPsiStyles = new HashMap<>();
 		this.syntheticNonterminalNameGenerator = new SyntheticNonterminalNameGenerator();
-		// TODO also register known nonterminals
+		for (String terminal : terminals) {
+			syntheticNonterminalNameGenerator.registerKnownSymbol(terminal);
+		}
 		for (Production production : inputProductions) {
 			syntheticNonterminalNameGenerator.registerKnownSymbol(production.getLeftHandSide());
 		}
@@ -53,8 +52,8 @@ public class ProductionCanonicalizer {
 		return nonterminalAlternatives;
 	}
 
-	public Map<String, NonterminalAnnotation> getNonterminalAnnotations() {
-		return nonterminalAnnotations;
+	public Map<String, NonterminalDefinition.PsiStyle> getNonterminalPsiStyles() {
+		return nonterminalPsiStyles;
 	}
 
 	private void work() {
@@ -138,7 +137,7 @@ public class ProductionCanonicalizer {
 			// we must create a synthetic nonterminal with empty content
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, expression, null, null));
-			}, NonterminalAnnotation.PsiStyle.NORMAL);
+			}, NonterminalDefinition.PsiStyle.NORMAL);
 
 		} else if (expression instanceof SymbolReference) {
 
@@ -152,7 +151,7 @@ public class ProductionCanonicalizer {
 				for (Expression orOperand : getOrOperands(expression)) {
 					alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(orOperand.getName(), orOperand, null, null));
 				}
-			}, NonterminalAnnotation.PsiStyle.NORMAL);
+			}, NonterminalDefinition.PsiStyle.NORMAL);
 
 		} else if (expression instanceof SequenceExpression) {
 
@@ -160,7 +159,7 @@ public class ProductionCanonicalizer {
 			// nonterminal -- otherwise we'd push it out to an infinite loop of new nonterminals.
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(null, expression.withName(null), null, null));
-			}, NonterminalAnnotation.PsiStyle.NORMAL);
+			}, NonterminalDefinition.PsiStyle.NORMAL);
 
 		} else if (expression instanceof OptionalExpression) {
 
@@ -170,7 +169,7 @@ public class ProductionCanonicalizer {
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("absent", new EmptyExpression(), null, null));
 				alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative("present", replacementOperand, null, null));
-			}, NonterminalAnnotation.PsiStyle.OPTIONAL);
+			}, NonterminalDefinition.PsiStyle.OPTIONAL);
 
 		} else if (expression instanceof ZeroOrMoreExpression) {
 
@@ -192,7 +191,7 @@ public class ProductionCanonicalizer {
 	// common handling for ZeroOrMoreExpression and OneOrMoreExpression
 	private String extractRepetition(Expression repetition, Expression operand, boolean zeroAllowed) {
 		Expression replacementOperand = new SymbolReference(convertExpressionToSymbol(operand)).withName(operand.getName()).withFallbackName("element");
-		NonterminalAnnotation.PsiStyle psiStyle = (zeroAllowed ? NonterminalAnnotation.PsiStyle.ZERO_OR_MORE : NonterminalAnnotation.PsiStyle.ONE_OR_MORE);
+		NonterminalDefinition.PsiStyle psiStyle = (zeroAllowed ? NonterminalDefinition.PsiStyle.ZERO_OR_MORE : NonterminalDefinition.PsiStyle.ONE_OR_MORE);
 		return createSyntheticNonterminal(repetition, (repetitionSyntheticName, alternatives) -> {
 			alternatives.add(new name.martingeisse.mapag.grammar.extended.Alternative(
 				"start",
@@ -228,14 +227,14 @@ public class ProductionCanonicalizer {
 	private String createSyntheticNonterminal(
 		Expression expression,
 		BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder,
-		NonterminalAnnotation.PsiStyle psiStyle) {
+		NonterminalDefinition.PsiStyle psiStyle) {
 
 		String syntheticName = syntheticNonterminalNameGenerator.createSyntheticName(expression);
 		List<name.martingeisse.mapag.grammar.extended.Alternative> alternatives = new ArrayList<>();
 		alternativesAdder.accept(syntheticName, alternatives);
 		Production production = new Production(syntheticName, ImmutableList.copyOf(alternatives));
 		pendingProductions.add(production);
-		nonterminalAnnotations.put(syntheticName, new NonterminalAnnotation(psiStyle));
+		nonterminalPsiStyles.put(syntheticName, psiStyle);
 		return syntheticName;
 	}
 

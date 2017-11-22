@@ -68,7 +68,7 @@ public class PsiToGrammarConverter {
 			} else {
 				throw new RuntimeException("unknown associativity PSI node: " + associativityNode);
 			}
-			convertedEntries.add(new PrecedenceTable.Entry(ImmutableSet.copyOf(identifiers), associativity));
+			convertedEntries.add(new PrecedenceTable.Entry(ImmutableList.copyOf(identifiers), associativity));
 		}
 		return new PrecedenceTable(ImmutableList.copyOf(convertedEntries));
 	}

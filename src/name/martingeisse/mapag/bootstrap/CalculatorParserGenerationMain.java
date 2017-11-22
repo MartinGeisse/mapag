@@ -58,8 +58,8 @@ public class CalculatorParserGenerationMain {
 		);
 
 		PrecedenceTable precedenceTable = new PrecedenceTable(ImmutableList.of(
-			new PrecedenceTable.Entry(ImmutableSet.of("PLUS", "MINUS"), Associativity.LEFT),
-			new PrecedenceTable.Entry(ImmutableSet.of("TIMES", "DIVIDED_BY"), Associativity.LEFT)
+			new PrecedenceTable.Entry(ImmutableList.of("PLUS", "MINUS"), Associativity.LEFT),
+			new PrecedenceTable.Entry(ImmutableList.of("TIMES", "DIVIDED_BY"), Associativity.LEFT)
 		));
 
 		String startNonterminalName = "calculation";

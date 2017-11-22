@@ -14,26 +14,33 @@ import org.apache.commons.lang3.StringUtils;
 public final class NonterminalDefinition extends SymbolDefinition {
 
 	private final ImmutableList<Alternative> alternatives;
-	private final NonterminalAnnotation annotation;
+	private final PsiStyle psiStyle;
 
-	public NonterminalDefinition(String name, ImmutableList<Alternative> alternatives, NonterminalAnnotation annotation) {
+	public NonterminalDefinition(String name, ImmutableList<Alternative> alternatives, PsiStyle psiStyle) {
 		super(name);
 		this.alternatives = ParameterUtil.ensureNotNullOrEmpty(alternatives, "alternatives");
 		ParameterUtil.ensureNoNullElement(alternatives, "alternatives");
-		this.annotation = ParameterUtil.ensureNotNull(annotation, "annotation");
+		this.psiStyle = ParameterUtil.ensureNotNull(psiStyle, "psiStyle");
 	}
 
 	public ImmutableList<Alternative> getAlternatives() {
 		return alternatives;
 	}
 
-	public NonterminalAnnotation getAnnotation() {
-		return annotation;
+	public PsiStyle getPsiStyle() {
+		return psiStyle;
 	}
 
 	@Override
 	public String toString() {
-		return getName() + " ::= " + StringUtils.join(alternatives, " | ") + ' ' + annotation + ';';
+		return getName() + " ::= " + StringUtils.join(alternatives, " | ") + " [PSI style: " + psiStyle + "]";
+	}
+
+	public enum PsiStyle {
+		NORMAL,
+		OPTIONAL,
+		ZERO_OR_MORE,
+		ONE_OR_MORE
 	}
 
 }

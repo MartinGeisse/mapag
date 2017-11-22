@@ -3,6 +3,7 @@ package name.martingeisse.mapag.grammar.extended.validation;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.extended.Alternative;
 import name.martingeisse.mapag.grammar.extended.Production;
+import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 class ProductionValidatorImpl implements ProductionValidator {
@@ -38,7 +39,17 @@ class ProductionValidatorImpl implements ProductionValidator {
 						alternative.getPrecedenceDefiningTerminal() + " in rule precedence specification for nonterminal " + leftHandSide);
 				}
 			}
-			// TODO validate resolve blocks -- only known terminals; no duplicate terminals
+			if (alternative.getResolveBlock() != null) {
+				for (ResolveDeclaration resolveDeclaration : alternative.getResolveBlock().getResolveDeclarations()) {
+					for (String symbol : resolveDeclaration.getTerminals()) {
+						if (!terminalNames.contains(symbol)) {
+							throw new IllegalStateException("unknown symbol '" + symbol +
+								"' in terminal list for resolve block in nonterminal " + production.getLeftHandSide() + ", " +
+								(alternative.getName() == null ? "unnamed alternative" : ("alternative " + alternative.getName())));
+						}
+					}
+				}
+			}
 		}
 	}
 

@@ -45,7 +45,7 @@ public class PsiClassesGenerator {
 	}
 
 	private void handleNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
-		switch (nonterminalDefinition.getAnnotation().getPsiStyle()) {
+		switch (nonterminalDefinition.getPsiStyle()) {
 
 			case NORMAL:
 				handleNormalStyledNonterminal(nonterminalDefinition);
@@ -64,7 +64,7 @@ public class PsiClassesGenerator {
 				break;
 
 			default:
-				throw new RuntimeException("unknown PSI style: " + nonterminalDefinition.getAnnotation().getPsiStyle());
+				throw new RuntimeException("unknown PSI style: " + nonterminalDefinition.getPsiStyle());
 
 		}
 	}

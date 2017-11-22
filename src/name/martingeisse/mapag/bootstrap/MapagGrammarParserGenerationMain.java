@@ -21,7 +21,7 @@ import java.io.StringWriter;
 import java.util.Properties;
 
 /**
- * TODO handle alternative names and corresponding new syntax -- see grammar-mapag for details
+ *
  */
 public class MapagGrammarParserGenerationMain {
 
