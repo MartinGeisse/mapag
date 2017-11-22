@@ -7,7 +7,7 @@ import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.GrammarBuilder;
-import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.TestUtil;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.testutil.ExAssert;
 import name.martingeisse.mapag.util.Pair;
@@ -235,7 +235,7 @@ public class StateTest {
 	// TODO test map-based resolver
 
 	@Test
-	public void testShiftReduceConflictResolvedAfterPlus() {
+	public void testShiftReduceConflictResolvedViaPrecedenceAfterPlus() {
 
 		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
 				builder.addTerminals("NUMBER")
@@ -271,7 +271,7 @@ public class StateTest {
 	}
 
 	@Test
-	public void testShiftReduceConflictResolvedAfterMinus() {
+	public void testShiftReduceConflictResolvedViaPrecedenceAfterMinus() {
 
 		// this test works like for PLUS since they have equal precedence, nothing new here
 
@@ -309,7 +309,7 @@ public class StateTest {
 	}
 
 	@Test
-	public void testShiftReduceConflictResolvedAfterTimes() {
+	public void testShiftReduceConflictResolvedViaPrecedenceAfterTimes() {
 
 		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
 				builder.addTerminals("NUMBER")
@@ -334,7 +334,7 @@ public class StateTest {
 	}
 
 	@Test
-	public void testRightAssociativePlusAfterPlus() {
+	public void testPrecedenceRightAssociativePlusAfterPlus() {
 
 		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
 						builder.addTerminals("NUMBER")
@@ -388,7 +388,7 @@ public class StateTest {
 	}
 
 	@Test
-	public void testRightAssociativePlusAfterTimes() {
+	public void testPrecedenceRightAssociativePlusAfterTimes() {
 
 		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
 						builder.addTerminals("NUMBER")
@@ -415,7 +415,7 @@ public class StateTest {
 	}
 
 	@Test
-	public void testRightAssociativeTimesAfterPlus() {
+	public void testPrecedenceRightAssociativeTimesAfterPlus() {
 
 		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
 						builder.addTerminals("NUMBER")
@@ -451,7 +451,7 @@ public class StateTest {
 	}
 
 	@Test
-	public void testRightAssociativeTimesAfterTimes() {
+	public void testPrecedenceRightAssociativeTimesAfterTimes() {
 
 		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
 						builder.addTerminals("NUMBER")
