@@ -14,14 +14,9 @@ public final class Alternative {
 	private final ResolveBlock resolveBlock;
 
 	public Alternative(String name, Expression expression, String precedenceDefiningTerminal, ResolveBlock resolveBlock) {
-		if (name != null && name.isEmpty()) {
-			throw new IllegalArgumentException("name cannot be empty"); // TODO test this
-		}
-		this.name = name;
+		this.name = ParameterUtil.ensureNotEmpty(name, "name");
 		this.expression = ParameterUtil.ensureNotNull(expression, "expression");
-		if (precedenceDefiningTerminal != null && precedenceDefiningTerminal.isEmpty()) {
-			throw new IllegalArgumentException("precedenceDefiningTerminal cannot be the empty string");
-		}
+		ParameterUtil.ensureNotEmpty(precedenceDefiningTerminal, "precedenceDefiningTerminal");
 		if (precedenceDefiningTerminal != null && resolveBlock != null) {
 			throw new IllegalArgumentException("cannot use both a precedence-defining terminal and a resolve block for the same alternative");
 		}

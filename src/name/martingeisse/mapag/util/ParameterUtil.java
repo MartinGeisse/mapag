@@ -114,6 +114,20 @@ public class ParameterUtil {
 	}
 
 	/**
+	 * Ensures that the specified argument is not the empty string (null is allowed).
+	 *
+	 * @param argument the argument value
+	 * @param name     the argument name (for error messages)
+	 * @return the argument value for convenience
+	 */
+	public static String ensureNotEmpty(final String argument, final String name) {
+		if (argument != null && argument.isEmpty()) {
+			throw new IllegalArgumentException("argument is empty: " + name + " (pass null to omit)");
+		}
+		return argument;
+	}
+
+	/**
 	 * Ensures that the specified array argument does not contain any null or empty-string element. This method does not
 	 * ensure that the array itself is a non-null reference; instead, it will simply skip the element check if the array
 	 * itself is null.

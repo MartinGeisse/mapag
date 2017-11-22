@@ -2,6 +2,7 @@ package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.grammar.ConflictResolution;
+import name.martingeisse.mapag.util.ParameterUtil;
 
 /**
  *
@@ -12,9 +13,7 @@ public final class AlternativeConflictResolver {
 	private final ImmutableMap<String, ConflictResolution> terminalToResolution;
 
 	public AlternativeConflictResolver(String effectivePrecedenceTerminal, ImmutableMap<String, ConflictResolution> terminalToResolution) {
-		if (effectivePrecedenceTerminal != null && effectivePrecedenceTerminal.isEmpty()) {
-			throw new IllegalArgumentException("precedence-defining terminal cannot be the empty string");
-		}
+		ParameterUtil.ensureNotEmpty(effectivePrecedenceTerminal, "effectivePrecedenceTerminal");
 		if (effectivePrecedenceTerminal != null && terminalToResolution != null) {
 			throw new IllegalArgumentException("cannot use both a precedence-defining terminal and a conflict resolution map for the same alternative");
 		}

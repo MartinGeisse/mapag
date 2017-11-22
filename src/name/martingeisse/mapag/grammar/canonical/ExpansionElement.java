@@ -12,10 +12,7 @@ public final class ExpansionElement {
 
 	public ExpansionElement(String symbol, String expressionName) {
 		this.symbol = ParameterUtil.ensureNotNullOrEmpty(symbol, "symbol");
-		if (expressionName != null && expressionName.isEmpty()) {
-			throw new IllegalArgumentException("expressionName cannot be empty (pass null for unnamed expressions)");
-		}
-		this.expressionName = expressionName;
+		this.expressionName = ParameterUtil.ensureNotEmpty(expressionName, "expressionName");
 	}
 
 	public String getSymbol() {
