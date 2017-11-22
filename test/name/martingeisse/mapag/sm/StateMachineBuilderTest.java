@@ -50,7 +50,7 @@ public class StateMachineBuilderTest {
 			for (Map.Entry<String, Action> actionEntry : stateEntry.getValue().entrySet()) {
 				Action action = actionEntry.getValue();
 				if (action instanceof Action.Shift) {
-					Assert.assertTrue(stateMachine.getStates().contains(((Action.Shift)action).getNextState()));
+					Assert.assertTrue(stateMachine.getStates().contains(((Action.Shift) action).getNextState()));
 				}
 			}
 		}
@@ -60,7 +60,7 @@ public class StateMachineBuilderTest {
 			Assert.assertTrue(stateMachine.getStates().contains(state));
 			for (Map.Entry<String, Action.Shift> actionEntry : stateEntry.getValue().entrySet()) {
 				Action action = actionEntry.getValue();
-				Assert.assertTrue(stateMachine.getStates().contains(((Action.Shift)action).getNextState()));
+				Assert.assertTrue(stateMachine.getStates().contains(((Action.Shift) action).getNextState()));
 			}
 		}
 

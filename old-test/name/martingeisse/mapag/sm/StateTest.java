@@ -33,7 +33,7 @@ public class StateTest {
 
 	@Test
 	public void testConstructorGetter() {
-		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
 		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
 		State state = new State(ImmutableSet.of(stateElement));
 		Assert.assertEquals(ImmutableSet.of(stateElement), state.getElements());
@@ -42,7 +42,7 @@ public class StateTest {
 	@Test
 	public void testEqualsAndHashCode() {
 
-		Alternative alternative1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+		Alternative alternative1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
 		StateElement stateElement1 = new StateElement("aaa", alternative1, 0, "foo");
 
 		Alternative alternative2 = new Alternative("a2", TestUtil.expansion("foo", "bar"), null);
@@ -69,7 +69,7 @@ public class StateTest {
 	}
 
 	@Test
-	public void testActionsWithoutPrecedences() {
+	public void testActionsWithoutResolver() {
 
 		GrammarBuilder builder = new GrammarBuilder();
 		builder.setStartNonterminalName("s");
@@ -231,6 +231,8 @@ public class StateTest {
 		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, "TIMES"));
 
 	}
+
+	// TODO test map-based resolver
 
 	@Test
 	public void testShiftReduceConflictResolvedAfterPlus() {
