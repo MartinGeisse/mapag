@@ -1,8 +1,8 @@
 package name.martingeisse.mapag.sm;
 
-import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
+import name.martingeisse.mapag.grammar.canonical.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,11 +11,20 @@ import org.junit.Test;
  */
 public class StateElementTest {
 
-	private static final Alternative ALTERNATIVE_1 = new Alternative("a1", TestUtil.expansion("abc", "def", "ghi"), "zzz");
+	// This resolver shouldn't have any effect on the methods of class StateElement since a single element cannot
+	// produce a conflict; only multiple conflicting elements can do that.
+	private static final AlternativeConflictResolver RESOLVER = new AlternativeConflictResolver("prec1", null);
+
+	private static final Alternative ALTERNATIVE_1 = new Alternative("a1", TestUtil.expansion("abc", "def", "ghi"), null);
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorNullLeftSide() {
 		new StateElement(null, ALTERNATIVE_1, 1, "bar");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorEmptyLeftSide() {
+		new StateElement("", ALTERNATIVE_1, 1, "bar");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -36,6 +45,11 @@ public class StateElementTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorNullFollowTerminal() {
 		new StateElement("nt1", ALTERNATIVE_1, 1, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorNullEmptyTerminal() {
+		new StateElement("nt1", ALTERNATIVE_1, 1, "");
 	}
 
 	@Test
@@ -68,7 +82,7 @@ public class StateElementTest {
 
 		// compare two equal states
 		{
-			Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+			Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
 			StateElement se1 = new StateElement("lll", alternative, 0, "foo");
 			StateElement se2 = new StateElement("lll", alternative, 0, "foo");
 			Assert.assertEquals(se1, se2);
@@ -77,24 +91,24 @@ public class StateElementTest {
 
 		// state elements with "equal" but distinct alternatives are different
 		{
-			Alternative a1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+			Alternative a1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
 			StateElement se1 = new StateElement("lll", a1, 0, "foo");
-			Alternative a2 = new Alternative("a2", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+			Alternative a2 = new Alternative("a2", TestUtil.expansion("r1", "r2", "r3"), null);
 			StateElement se2 = new StateElement("lll", a2, 0, "foo");
 			Assert.assertNotEquals(se1, se2);
 		}
 
 		// other cases
 		{
-			Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+			Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
 			StateElement[] stateElements = {
 				new StateElement("lll", alternative, 0, "foo"),
 				new StateElement("aaa", alternative, 0, "foo"),
 				new StateElement("lll", alternative, 1, "foo"),
 				new StateElement("lll", alternative, 0, "bar")
 			};
-			for (int i=0; i<stateElements.length; i++) {
-				for (int j=0; j<stateElements.length; j++) {
+			for (int i = 0; i < stateElements.length; i++) {
+				for (int j = 0; j < stateElements.length; j++) {
 					if (i == j) {
 						Assert.assertEquals(stateElements[i], stateElements[j]);
 						Assert.assertEquals(stateElements[i].hashCode(), stateElements[j].hashCode());
@@ -109,7 +123,7 @@ public class StateElementTest {
 
 	@Test
 	public void testToString() {
-		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
 		StateElement stateElement1 = new StateElement("lll", alternative, 0, "foo");
 		Assert.assertEquals("lll ::= . r1 r2 r3    [foo]", stateElement1.toString());
 		StateElement stateElement2 = new StateElement("lll", alternative, 1, "foo");
@@ -118,15 +132,22 @@ public class StateElementTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testDetermineActionTypeForTerminalNull() {
-		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
 		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
 		stateElement.determineActionTypeForTerminal(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDetermineActionTypeForTerminalEmpty() {
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
+		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
+		stateElement.determineActionTypeForTerminal("");
 	}
 
 	@Test
 	public void testDetermineActionTypeForTerminal() {
 
-		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), RESOLVER);
 		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
 		Assert.assertEquals(StateElement.ActionType.SHIFT, stateElement.determineActionTypeForTerminal("r1"));
 		Assert.assertEquals(StateElement.ActionType.DROP_ELEMENT, stateElement.determineActionTypeForTerminal("r2"));
@@ -163,7 +184,14 @@ public class StateElementTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testDetermineNextRootElementForNonterminalNull() {
-		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), RESOLVER);
+		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
+		stateElement.determineNextRootElementForNonterminal(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDetermineNextRootElementForNonterminalEmpty() {
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), RESOLVER);
 		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
 		stateElement.determineNextRootElementForNonterminal(null);
 	}
@@ -171,7 +199,7 @@ public class StateElementTest {
 	@Test
 	public void testDetermineNextRootElementForNonterminal() {
 
-		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), RESOLVER);
 		StateElement stateElement0 = new StateElement("lll", alternative, 0, "foo");
 		StateElement stateElement1 = new StateElement("lll", alternative, 1, "foo");
 		StateElement stateElement2 = new StateElement("lll", alternative, 2, "foo");
@@ -209,7 +237,7 @@ public class StateElementTest {
 
 	@Test
 	public void testGetShifted() {
-		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), RESOLVER);
 		StateElement stateElement0 = new StateElement("lll", alternative, 0, "foo");
 		StateElement stateElement1 = stateElement0.getShifted();
 		Assert.assertEquals(new StateElement("lll", alternative, 1, "foo"), stateElement1);
@@ -221,7 +249,7 @@ public class StateElementTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testGetShiftedAtEnd() {
-		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), RESOLVER);
 		StateElement stateElement = new StateElement("lll", alternative, 3, "foo");
 		stateElement.getShifted();
 	}
