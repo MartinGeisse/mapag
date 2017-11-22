@@ -34,6 +34,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 /**
  *
@@ -84,19 +85,6 @@ public class GenerateAction extends AnAction {
 			console.print("No module available to place output files in", ConsoleViewContentType.ERROR_OUTPUT);
 			return;
 		}
-		VirtualFile moduleFolder = module.getModuleFile().getParent();
-		final VirtualFile existingOutputFolder = moduleFolder.findChild("gen");
-		final VirtualFile outputFolder;
-		if (existingOutputFolder == null) {
-			try {
-				outputFolder = moduleFolder.createChildDirectory(this, "gen");
-			} catch (IOException e) {
-				console.print("Could not create 'gen' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
-				return;
-			}
-		} else {
-			outputFolder = existingOutputFolder;
-		}
 
 		// do it!
 		try {
@@ -106,15 +94,42 @@ public class GenerateAction extends AnAction {
 				new GrammarCanonicalizer(extendedGrammar).run().getResult();
 			GrammarInfo grammarInfo = new GrammarInfo(canonicalGrammar);
 			StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
-			OutputFileFactory outputFileFactory = (packageName, className) -> {
-				VirtualFile packageFolder = createPackageFolder(outputFolder, packageName);
-				VirtualFile javaFile = packageFolder.createChildData(this, className + ".java");
-				return javaFile.getOutputStream(this);
-			};
 			// TODO make sure that runWriteAction is synchronous with the calling thread (it seems to be)
 			ApplicationManager.getApplication().runWriteAction(() -> {
 				try {
+
+					// create the output folder
+					VirtualFile moduleFolder = module.getModuleFile().getParent();
+					final VirtualFile existingOutputFolder = moduleFolder.findChild("gen");
+					final VirtualFile outputFolder;
+					if (existingOutputFolder == null) {
+						try {
+							outputFolder = moduleFolder.createChildDirectory(this, "gen");
+						} catch (IOException e) {
+							console.print("Could not create 'gen' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
+							return;
+						}
+					} else {
+						outputFolder = existingOutputFolder;
+					}
+
+					// this is our callback to generate output files
+					OutputFileFactory outputFileFactory = (packageName, className) -> {
+						VirtualFile packageFolder = createPackageFolder(outputFolder, packageName);
+						String fileName = className + ".java";
+						VirtualFile javaFile = packageFolder.findChild(fileName);
+						if (javaFile == null) {
+							javaFile = packageFolder.createChildData(this, fileName);
+						} else if (javaFile.isDirectory()) {
+							throw new UserMessageException("collision with existing folder while creating output " +
+								"file for package '" + packageName + "', class '" + className + "'");
+						}
+						return javaFile.getOutputStream(this);
+					};
+
+					// run the code generator
 					new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
+
 				} catch (IOException e) {
 					throw new RuntimeException("unexpected IOException", e);
 				}
@@ -124,13 +139,10 @@ public class GenerateAction extends AnAction {
 			console.print(e.getMessage(), ConsoleViewContentType.ERROR_OUTPUT);
 			return;
 		} catch (StateMachineException.Conflict e) {
-			StringWriter stringWriter = new StringWriter();
-			PrintWriter printWriter = new PrintWriter(stringWriter);
-			e.describe(printWriter);
-			printWriter.flush();
-			console.print(stringWriter.toString(), ConsoleViewContentType.ERROR_OUTPUT);
+			printError(console, e::describe);
 		} catch (Exception e) {
-			console.print("unexpected exception: " + e, ConsoleViewContentType.ERROR_OUTPUT);
+			console.print("unexpected exception\n", ConsoleViewContentType.ERROR_OUTPUT);
+			printError(console, e::printStackTrace);
 			return;
 		}
 
@@ -142,11 +154,21 @@ public class GenerateAction extends AnAction {
 			return parent;
 		}
 		int index = packageName.indexOf('.');
+		String localPackageName;
 		if (index != -1) {
 			parent = createPackageFolder(parent, packageName.substring(0, index));
-			packageName = packageName.substring(index + 1);
+			localPackageName = packageName.substring(index + 1);
+		} else {
+			localPackageName = packageName;
 		}
-		return parent.createChildDirectory(this, packageName);
+		VirtualFile existing = parent.findChild(localPackageName);
+		if (existing == null) {
+			return parent.createChildDirectory(this, localPackageName);
+		} else if (existing.isDirectory()) {
+			return existing;
+		} else {
+			throw new UserMessageException("collision with existing file while creating output folders for package " + packageName);
+		}
 	}
 
 	private Properties readAssociatedProperties(PsiFile grammarPsiFile, ConsoleViewImpl console) {
@@ -209,6 +231,14 @@ public class GenerateAction extends AnAction {
 		consoleView.allowHeavyFilters();
 		return descriptor;
 
+	}
+
+	private static void printError(ConsoleViewImpl console, Consumer<PrintWriter> printable) {
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(stringWriter);
+		printable.accept(printWriter);
+		printWriter.flush();
+		console.print(stringWriter.toString(), ConsoleViewContentType.ERROR_OUTPUT);
 	}
 
 }

@@ -2,7 +2,6 @@ package name.martingeisse.mapag.codegen;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.log.NullLogChute;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 /**
  *
@@ -17,7 +16,7 @@ public final class MapagVelocityEngine {
 		engine.setProperty(VelocityEngine.OUTPUT_ENCODING, "UTF-8");
 		engine.setProperty(VelocityEngine.RESOURCE_LOADER, "classpath");
 		engine.setProperty("classpath.loader.description", "classpath-based resource loader");
-		engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+		engine.setProperty("classpath.resource.loader.instance", new MyResourceLoader());
 		engine.setProperty("classpath.resource.loader.cache", true);
 		engine.init();
 	}
