@@ -1,5 +1,7 @@
 package name.martingeisse.mapag.grammar.extended.expression;
 
+import name.martingeisse.mapag.util.ParameterUtil;
+
 /**
  *
  */
@@ -8,7 +10,7 @@ public abstract class Expression {
 	private final String name;
 
 	public Expression(String name) {
-		this.name = name;
+		this.name = ParameterUtil.ensureNotEmpty(name, "name");
 	}
 
 	/**
@@ -21,6 +23,7 @@ public abstract class Expression {
 	 * Like withName(name), but if this expression already has a name then this method keeps it.
 	 */
 	public final Expression withFallbackName(String fallbackName) {
+		ParameterUtil.ensureNotNullOrEmpty(fallbackName, "fallbackName");
 		return (name == null ? withName(fallbackName) : this);
 	}
 

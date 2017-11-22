@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.grammar.extended.expression;
 
+import name.martingeisse.mapag.testutil.ExAssert;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,6 +20,26 @@ public class ExpressionTest {
 	}
 
 	@Test
+	public void testWithNameNull() {
+		Expression a = new EmptyExpression();
+		Expression b = a.withName("foo");
+		Expression c = b.withName(null);
+		Expression d = c.withName("bar");
+		Assert.assertNull(a.getName());
+		Assert.assertEquals("foo", b.getName());
+		Assert.assertNull(c.getName());
+		Assert.assertEquals("bar", d.getName());
+	}
+
+	@Test
+	public void testWithNameEmpty() {
+		Expression a = new EmptyExpression();
+		ExAssert.assertThrows(IllegalArgumentException.class, () -> a.withName(""));
+		Expression b = a.withName("foo");
+		ExAssert.assertThrows(IllegalArgumentException.class, () -> b.withName(""));
+	}
+
+	@Test
 	public void testWithFallbackName() {
 		Expression a = new EmptyExpression();
 		Expression b = a.withFallbackName("foo");
@@ -28,6 +49,20 @@ public class ExpressionTest {
 		Assert.assertEquals("foo", c.getName());
 	}
 
-	// TODO test illegal arguments to withNAme() and withFallbackName()
+	@Test
+	public void testWithFallbackNameNull() {
+		Expression a = new EmptyExpression();
+		ExAssert.assertThrows(IllegalArgumentException.class, () -> a.withFallbackName(null));
+		Expression b = a.withName("foo");
+		ExAssert.assertThrows(IllegalArgumentException.class, () -> b.withFallbackName(null));
+	}
+
+	@Test
+	public void testWithFallbackNameEmpty() {
+		Expression a = new EmptyExpression();
+		ExAssert.assertThrows(IllegalArgumentException.class, () -> a.withFallbackName(""));
+		Expression b = a.withName("foo");
+		ExAssert.assertThrows(IllegalArgumentException.class, () -> b.withFallbackName(""));
+	}
 
 }
