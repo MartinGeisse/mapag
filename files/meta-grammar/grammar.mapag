@@ -22,7 +22,7 @@
 
 grammar ::=
 	KW_TERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList:terminals CLOSING_CURLY_BRACE
-	KW_NONTERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList:nonterminal CLOSING_CURLY_BRACE
+	KW_NONTERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList:nonterminals CLOSING_CURLY_BRACE
 	(KW_PRECEDENCE OPENING_CURLY_BRACE precedenceDeclaration*:precedenceDeclarations CLOSING_CURLY_BRACE)?:precedenceTable
 	KW_START IDENTIFIER:startSymbolName SEMICOLON
 	production+:productions
@@ -64,7 +64,7 @@ expression ::= {
 		%shift QUESTION_MARK, ASTERISK, PLUS, COLON;
 		%reduce OPENING_PARENTHESIS, IDENTIFIER, KW_ERROR, BAR;
     };
-    or ::= expression:eft BAR expression:right %resolve {
+    or ::= expression:left BAR expression:right %resolve {
 		%shift QUESTION_MARK, ASTERISK, PLUS, COLON, OPENING_PARENTHESIS, IDENTIFIER, KW_ERROR;
 		%reduce BAR;
     };

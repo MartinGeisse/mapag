@@ -32,7 +32,7 @@ public final class IdentifierUtil {
 		if (nonterminalDefinition.getAlternatives().size() == 1) {
 			return getNonterminalClassIdentifier(nonterminalDefinition);
 		} else {
-			return toIdentifier(nonterminalDefinition.getName() + '/' + alternative.getAnnotation().getAlternativeName(), true);
+			return toIdentifier(nonterminalDefinition.getName() + '/' + alternative.getName(), true);
 		}
 	}
 
@@ -40,7 +40,7 @@ public final class IdentifierUtil {
 		if (nonterminalDefinition.getAlternatives().size() == 1) {
 			return getNonterminalVariableIdentifier(nonterminalDefinition);
 		} else {
-			return toIdentifier(nonterminalDefinition.getName() + '/' + alternative.getAnnotation().getAlternativeName(), false);
+			return toIdentifier(nonterminalDefinition.getName() + '/' + alternative.getName(), false);
 		}
 	}
 

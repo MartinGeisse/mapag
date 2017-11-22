@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.sm;
 
 import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.util.ParameterUtil;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -21,7 +22,7 @@ public final class StateElement {
 		if (position < 0) {
 			throw new IllegalArgumentException("position cannot be negative");
 		}
-		if (position > alternative.getExpansion().size()) {
+		if (position > alternative.getExpansion().getElements().size()) {
 			throw new IllegalArgumentException("position cannot be greater than the number of right-hand symbols");
 		}
 		this.followTerminal = ParameterUtil.ensureNotNullOrEmpty(followTerminal, "followTerminal");
@@ -44,14 +45,14 @@ public final class StateElement {
 	}
 
 	public boolean isAtEnd() {
-		return position == alternative.getExpansion().size();
+		return position == alternative.getExpansion().getElements().size();
 	}
 
 	public String getNextSymbol() {
 		if (isAtEnd()) {
 			return followTerminal;
 		} else {
-			return alternative.getExpansion().get(position);
+			return alternative.getExpansion().getElements().get(position).getSymbol();
 		}
 	}
 
@@ -74,11 +75,11 @@ public final class StateElement {
 		StringBuilder builder = new StringBuilder();
 		builder.append(leftSide).append(" ::= ");
 		int i = 0;
-		for (String symbol : alternative.getExpansion()) {
+		for (ExpansionElement element : alternative.getExpansion().getElements()) {
 			if (i == position) {
 				builder.append(". ");
 			}
-			builder.append(symbol).append(' ');
+			builder.append(element.getSymbol()).append(' ');
 			i++;
 		}
 		if (i == position) {
@@ -92,7 +93,7 @@ public final class StateElement {
 		ParameterUtil.ensureNotNullOrEmpty(terminal, "terminal");
 		if (isAtEnd()) {
 			return followTerminal.equals(terminal) ? ActionType.REDUCE : ActionType.DROP_ELEMENT;
-		} else if (alternative.getExpansion().get(position).equals(terminal)) {
+		} else if (alternative.getExpansion().getElements().get(position).getSymbol().equals(terminal)) {
 			return ActionType.SHIFT;
 		} else {
 			return ActionType.DROP_ELEMENT;
@@ -103,7 +104,7 @@ public final class StateElement {
 		ParameterUtil.ensureNotNullOrEmpty(nonterminal, "nonterminal");
 		if (isAtEnd()) {
 			return null;
-		} else if (alternative.getExpansion().get(position).equals(nonterminal)) {
+		} else if (alternative.getExpansion().getElements().get(position).getSymbol().equals(nonterminal)) {
 			return getShifted();
 		} else {
 			return null;

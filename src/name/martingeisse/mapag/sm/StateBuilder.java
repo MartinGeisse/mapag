@@ -37,7 +37,7 @@ final class StateBuilder {
 	}
 
 	private ImmutableSet<String> computeLocalFollowSet(StateElement rootElement) {
-		ImmutableList<String> expansion = rootElement.getAlternative().getExpansion();
+		ImmutableList<String> expansion = rootElement.getAlternative().getExpansion().getSymbols();
 		ImmutableList<String> followSentence = expansion.subList(rootElement.getPosition() + 1, expansion.size());
 		ImmutableSet<String> localFollowSet = grammarInfo.determineFirstSetForSentence(followSentence);
 		if (grammarInfo.isSentenceVanishable(followSentence)) {

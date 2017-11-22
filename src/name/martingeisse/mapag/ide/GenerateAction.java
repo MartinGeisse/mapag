@@ -151,7 +151,7 @@ public class GenerateAction extends AnAction {
 		if (packageName == null || packageName.isEmpty()) {
 			return parent;
 		}
-		int index = packageName.indexOf('.');
+		int index = packageName.lastIndexOf('.');
 		String localPackageName;
 		if (index != -1) {
 			parent = createPackageFolder(parent, packageName.substring(0, index));

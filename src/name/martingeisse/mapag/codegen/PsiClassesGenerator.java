@@ -2,6 +2,7 @@ package name.martingeisse.mapag.codegen;
 
 import com.intellij.lang.ParserDefinition;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
@@ -118,23 +119,23 @@ public class PsiClassesGenerator {
 				nonterminalDefinition.getAlternatives().size() + " alternatives, expected 2");
 		}
 		Alternative baseCaseAlternative, repetitionCaseAlternative;
-		if (nonterminalDefinition.getAlternatives().get(0).getExpansion().size() == 2) {
+		if (nonterminalDefinition.getAlternatives().get(0).getExpansion().getElements().size() == 2) {
 			repetitionCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
 			baseCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
-		} else if (nonterminalDefinition.getAlternatives().get(1).getExpansion().size() == 2) {
+		} else if (nonterminalDefinition.getAlternatives().get(1).getExpansion().getElements().size() == 2) {
 			baseCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
 			repetitionCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
 		} else {
 			throw new RuntimeException("could not find alternative with expansion length 2 as repetition case for repetition-styled nonterminal " + nonterminalName);
 		}
-		if (baseCaseAlternative.getExpansion().size() != (zeroBased ? 0 : 1)) {
+		if (baseCaseAlternative.getExpansion().getElements().size() != (zeroBased ? 0 : 1)) {
 			throw new RuntimeException("could not recognize base case for repetition-styled nonterminal " + nonterminalName);
 		}
-		if (!repetitionCaseAlternative.getExpansion().get(0).equals(nonterminalName)) {
+		if (!repetitionCaseAlternative.getExpansion().getElements().get(0).getSymbol().equals(nonterminalName)) {
 			throw new RuntimeException("could not find left-recursion for repetition-styled nonterminal " + nonterminalName);
 		}
-		String elementSymbol = repetitionCaseAlternative.getExpansion().get(1);
-		if (!zeroBased && !baseCaseAlternative.getExpansion().get(0).equals(elementSymbol)) {
+		String elementSymbol = repetitionCaseAlternative.getExpansion().getElements().get(1).getSymbol();
+		if (!zeroBased && !baseCaseAlternative.getExpansion().getElements().get(0).getSymbol().equals(elementSymbol)) {
 			throw new RuntimeException("base-case uses different element symbol than repetition case for nonterminal " + elementSymbol);
 		}
 		String operandType = getEffectiveTypeForSymbol(elementSymbol);
@@ -189,21 +190,22 @@ public class PsiClassesGenerator {
 				nonterminalDefinition.getAlternatives().size() + " alternatives, expected 2");
 		}
 		Alternative absentCaseAlternative, presentCaseAlternative;
-		if (nonterminalDefinition.getAlternatives().get(0).getExpansion().size() == 0) {
+		if (nonterminalDefinition.getAlternatives().get(0).getExpansion().getElements().size() == 0) {
 			absentCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
 			presentCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
-		} else if (nonterminalDefinition.getAlternatives().get(1).getExpansion().size() == 0) {
+		} else if (nonterminalDefinition.getAlternatives().get(1).getExpansion().getElements().size() == 0) {
 			presentCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
 			absentCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
 		} else {
 			throw new RuntimeException("could not find alternative with expansion length 0 as absent case for optional-styled nonterminal " + nonterminalName);
 		}
-		if (presentCaseAlternative.getExpansion().size() != 1) {
+		if (presentCaseAlternative.getExpansion().getElements().size() != 1) {
 			throw new RuntimeException("could not recognize present case for optional-styled nonterminal " + nonterminalName);
 		}
-		String operandSymbol = presentCaseAlternative.getExpansion().get(0);
+
+		String operandSymbol = presentCaseAlternative.getExpansion().getElements().get(0).getSymbol();
+		String operandName = presentCaseAlternative.getExpansion().getElements().get(0).getExpressionName();
 		String operandType = getEffectiveTypeForSymbol(operandSymbol);
-		String operandName = presentCaseAlternative.getAnnotation().getExpressionNames().get(0);
 		if (operandName == null) {
 			operandName = "it";
 		}
@@ -295,17 +297,18 @@ public class PsiClassesGenerator {
 			context.put("optionalOperandGetterName", optionalOperandGetterName);
 
 			List<NodeGetter> nodeGetters = new ArrayList<>();
-			if (alternative != null && alternative.getAnnotation().getExpressionNames() != null) {
-				for (int i = 0; i < alternative.getAnnotation().getExpressionNames().size(); i++) {
-					String symbol = alternative.getExpansion().get(i);
-					String expressionName = alternative.getAnnotation().getExpressionNames().get(i);
-					if (!expressionName.isEmpty()) {
+			if (alternative != null) {
+				int childIndex = 0;
+				for (ExpansionElement element : alternative.getExpansion().getElements()) {
+					String expressionName = element.getExpressionName();
+					if (expressionName != null) {
 						NodeGetter nodeGetter = new NodeGetter();
-						nodeGetter.childIndex = i;
-						nodeGetter.nodeType = getEffectiveTypeForSymbol(symbol);
+						nodeGetter.childIndex = childIndex;
+						nodeGetter.nodeType = getEffectiveTypeForSymbol(element.getSymbol());
 						nodeGetter.getterName = "get" + StringUtils.capitalize(expressionName);
 						nodeGetters.add(nodeGetter);
 					}
+					childIndex++;
 				}
 			}
 			context.put("nodeGetters", nodeGetters);

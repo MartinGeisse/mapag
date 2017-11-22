@@ -4,10 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
-import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
+import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.ParameterUtil;
 
@@ -41,7 +38,8 @@ public class StateMachineBuilder {
 	public StateMachine build() {
 		// TODO test that name of the implicit root alternative is null
 		String startNonterminal = grammarInfo.getGrammar().getStartNonterminalName();
-		Alternative implicitAlternative = new Alternative(ImmutableList.of(startNonterminal), null, new AlternativeAnnotation("implicit", null));
+		Expansion expansion = new Expansion(ImmutableList.of(new ExpansionElement(startNonterminal, null)));
+		Alternative implicitAlternative = new Alternative("implicit", expansion, null);
 		StateBuilder builder = new StateBuilder(grammarInfo);
 		builder.addElementClosure(new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, implicitAlternative, 0, SpecialSymbols.EOF_SYMBOL_NAME));
 		State startState = builder.build();
