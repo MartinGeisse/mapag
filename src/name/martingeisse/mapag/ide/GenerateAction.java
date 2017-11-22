@@ -79,7 +79,7 @@ public class GenerateAction extends AnAction {
 		}
 		Configuration configuration = new Configuration(properties);
 
-		// we need a module to place output files in (TODO use ModuleRootManager?)
+		// we need a module to place output files in. Should this use ModuleRootManager?
 		Module module = event.getDataContext().getData(LangDataKeys.MODULE);
 		if (module == null) {
 			console.print("No module available to place output files in", ConsoleViewContentType.ERROR_OUTPUT);
