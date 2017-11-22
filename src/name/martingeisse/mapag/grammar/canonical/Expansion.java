@@ -48,12 +48,10 @@ public final class Expansion {
 		return StringUtils.join(' ', elements);
 	}
 
-	// TODO test equals / hashcode
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Expansion) {
-			Expansion other = (Expansion)obj;
+			Expansion other = (Expansion) obj;
 			return new EqualsBuilder()
 				.append(elements, other.getElements())
 				.build();
@@ -65,7 +63,5 @@ public final class Expansion {
 	public int hashCode() {
 		return new HashCodeBuilder().append(elements).toHashCode();
 	}
-
-
 
 }

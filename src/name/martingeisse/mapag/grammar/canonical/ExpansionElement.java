@@ -34,8 +34,6 @@ public final class ExpansionElement {
 		}
 	}
 
-	// TODO test equals / hashcode
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ExpansionElement) {

@@ -108,4 +108,28 @@ public class ExpansionTest {
 		Assert.assertEquals(ImmutableList.of(), expansion.vanishSymbol("foo").getElements());
 	}
 
+	@Test
+	public void testEqualsHashCode() {
+
+		ExpansionElement element1 = new ExpansionElement("xyz", null);
+		ExpansionElement element2 = new ExpansionElement("pqr", null);
+
+		Expansion a1 = new Expansion(ImmutableList.of());
+		Expansion a2 = new Expansion(ImmutableList.of());
+		Expansion b1 = new Expansion(ImmutableList.of(element1));
+		Expansion b2 = new Expansion(ImmutableList.of(element1));
+
+		Expansion c = new Expansion(ImmutableList.of(element2));
+		Expansion d = new Expansion(ImmutableList.of(element1, element2));
+		Expansion e = new Expansion(ImmutableList.of(element2, element1));
+
+		Assert.assertEquals(a1, a2);
+		Assert.assertEquals(b1, b2);
+		Assert.assertEquals(a1.hashCode(), a2.hashCode());
+		Assert.assertEquals(b1.hashCode(), b2.hashCode());
+
+		ExAssert.assertMutuallyUnequal(a1, b1, c, d, e);
+
+	}
+
 }

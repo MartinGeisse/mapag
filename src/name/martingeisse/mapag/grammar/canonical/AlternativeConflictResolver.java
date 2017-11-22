@@ -31,8 +31,6 @@ public final class AlternativeConflictResolver {
 		return terminalToResolution;
 	}
 
-	// TODO test equals / hashcode
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof AlternativeConflictResolver) {
