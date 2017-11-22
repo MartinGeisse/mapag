@@ -20,4 +20,11 @@ public class OneOrMoreExpressionTest {
 		Assert.assertSame(DUMMY, new OneOrMoreExpression(DUMMY).getOperand());
 	}
 
+	@Test
+	public void testWithName() {
+		OneOrMoreExpression expression = (OneOrMoreExpression) (new OneOrMoreExpression(DUMMY).withName("myName"));
+		Assert.assertEquals("myName", expression.getName());
+		Assert.assertSame(DUMMY, expression.getOperand());
+	}
+
 }

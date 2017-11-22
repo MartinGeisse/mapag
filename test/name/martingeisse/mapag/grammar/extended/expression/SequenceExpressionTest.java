@@ -28,4 +28,12 @@ public class SequenceExpressionTest {
 		Assert.assertSame(DUMMY_RIGHT, sequenceExpression.getRight());
 	}
 
+	@Test
+	public void testWithName() {
+		SequenceExpression expression = (SequenceExpression) (new SequenceExpression(DUMMY_LEFT, DUMMY_RIGHT).withName("myName"));
+		Assert.assertEquals("myName", expression.getName());
+		Assert.assertSame(DUMMY_LEFT, expression.getLeft());
+		Assert.assertSame(DUMMY_RIGHT, expression.getRight());
+	}
+
 }

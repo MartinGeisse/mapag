@@ -44,4 +44,11 @@ public class SymbolReferenceTest {
 		new SymbolReference("%whatever");
 	}
 
+	@Test
+	public void testWithName() {
+		SymbolReference expression = (SymbolReference) (new SymbolReference("foo").withName("myName"));
+		Assert.assertEquals("myName", expression.getName());
+		Assert.assertSame("foo", expression.getSymbolName());
+	}
+
 }

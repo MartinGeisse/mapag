@@ -28,4 +28,12 @@ public class OrExpressionTest {
 		Assert.assertSame(DUMMY_RIGHT, orExpression.getRightOperand());
 	}
 
+	@Test
+	public void testWithName() {
+		OrExpression expression = (OrExpression) (new OrExpression(DUMMY_LEFT, DUMMY_RIGHT).withName("myName"));
+		Assert.assertEquals("myName", expression.getName());
+		Assert.assertSame(DUMMY_LEFT, expression.getLeftOperand());
+		Assert.assertSame(DUMMY_RIGHT, expression.getRightOperand());
+	}
+
 }

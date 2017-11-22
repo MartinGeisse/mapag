@@ -20,4 +20,11 @@ public class OptionalExpressionTest {
 		Assert.assertSame(DUMMY, new OptionalExpression(DUMMY).getOperand());
 	}
 
+	@Test
+	public void testWithName() {
+		OptionalExpression expression = (OptionalExpression)(new OptionalExpression(DUMMY).withName("myName"));
+		Assert.assertEquals("myName", expression.getName());
+		Assert.assertSame(DUMMY, expression.getOperand());
+	}
+
 }

@@ -20,4 +20,11 @@ public class ZeroOrMoreExpressionTest {
 		Assert.assertSame(DUMMY, new ZeroOrMoreExpression(DUMMY).getOperand());
 	}
 
+	@Test
+	public void testWithName() {
+		ZeroOrMoreExpression expression = (ZeroOrMoreExpression)(new ZeroOrMoreExpression(DUMMY).withName("myName"));
+		Assert.assertEquals("myName", expression.getName());
+		Assert.assertSame(DUMMY, expression.getOperand());
+	}
+
 }
