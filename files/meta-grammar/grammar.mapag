@@ -50,7 +50,7 @@ rightHandSide ::= {
     withExplicitResolver ::= expression:expression KW_RESOLVE OPENING_CURLY_BRACE resolveDeclaration*:resolveDeclarations CLOSING_CURLY_BRACE;
 }
 
-resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce) resolveDeclarationSymbol:firstSymbol (COMMA resolveDeclarationSymbol:symbol)*:additionalSymbols SEMICOLON;
+resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce):action resolveDeclarationSymbol:firstSymbol (COMMA resolveDeclarationSymbol:symbol)*:additionalSymbols SEMICOLON;
 
 resolveDeclarationSymbol ::= {
     identifier ::= IDENTIFIER:symbol;

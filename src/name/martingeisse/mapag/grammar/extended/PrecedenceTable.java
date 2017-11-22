@@ -1,7 +1,6 @@
 package name.martingeisse.mapag.grammar.extended;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.util.ParameterUtil;
 
@@ -24,10 +23,10 @@ public final class PrecedenceTable {
 
 	public static final class Entry {
 
-		private final ImmutableSet<String> terminalNames;
+		private final ImmutableList<String> terminalNames;
 		private final Associativity associativity;
 
-		public Entry(ImmutableSet<String> terminalNames, Associativity associativity) {
+		public Entry(ImmutableList<String> terminalNames, Associativity associativity) {
 			ParameterUtil.ensureNotNullOrEmpty(terminalNames, "terminalNames");
 			ParameterUtil.ensureNoNullOrEmptyElement(terminalNames, "terminalNames");
 			ParameterUtil.ensureNotNull(associativity, "associativity");
@@ -40,7 +39,7 @@ public final class PrecedenceTable {
 			this.associativity = associativity;
 		}
 
-		public ImmutableSet<String> getTerminalNames() {
+		public ImmutableList<String> getTerminalNames() {
 			return terminalNames;
 		}
 
