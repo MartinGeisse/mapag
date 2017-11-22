@@ -50,8 +50,8 @@ public class GrammarValidatorTest {
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownTerminalInPrecedenceTable() {
 		PrecedenceTable precedenceTable = new PrecedenceTable(ImmutableList.of(
-				new PrecedenceTable.Entry(ImmutableSet.of("foo", "bar"), Associativity.LEFT),
-				new PrecedenceTable.Entry(ImmutableSet.of("baz", "xyz"), Associativity.LEFT)
+				new PrecedenceTable.Entry(ImmutableList.of("foo", "bar"), Associativity.LEFT),
+				new PrecedenceTable.Entry(ImmutableList.of("baz", "xyz"), Associativity.LEFT)
 		)
 		);
 		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
@@ -61,9 +61,9 @@ public class GrammarValidatorTest {
 	@Test(expected = IllegalStateException.class)
 	public void testDuplicateTerminalInPrecedenceTable() {
 		PrecedenceTable precedenceTable = new PrecedenceTable(ImmutableList.of(
-				new PrecedenceTable.Entry(ImmutableSet.of("foo"), Associativity.LEFT),
-				new PrecedenceTable.Entry(ImmutableSet.of("bar"), Associativity.LEFT),
-				new PrecedenceTable.Entry(ImmutableSet.of("baz", "foo"), Associativity.LEFT)
+				new PrecedenceTable.Entry(ImmutableList.of("foo"), Associativity.LEFT),
+				new PrecedenceTable.Entry(ImmutableList.of("bar"), Associativity.LEFT),
+				new PrecedenceTable.Entry(ImmutableList.of("baz", "foo"), Associativity.LEFT)
 		)
 		);
 		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);

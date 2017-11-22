@@ -2,8 +2,11 @@ package name.martingeisse.mapag.grammar.extended.validation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.extended.Alternative;
 import name.martingeisse.mapag.grammar.extended.Production;
+import name.martingeisse.mapag.grammar.extended.ResolveBlock;
+import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
 import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.grammar.extended.expression.SequenceExpression;
 import name.martingeisse.mapag.grammar.extended.expression.SymbolReference;
@@ -19,8 +22,8 @@ public class ProductionValidatorImplTest {
 	};
 	private static final ImmutableSet<String> TERMINALS = ImmutableSet.of("foo", "bar");
 	private static final ImmutableSet<String> NONTERMINALS = ImmutableSet.of("abc", "def");
-	private static final Alternative ALTERNATIVE_1 = new Alternative(null, new SymbolReference("foo"), null);
-	private static final Alternative ALTERNATIVE_2 = new Alternative(null, new SequenceExpression(new SymbolReference("abc"), new SymbolReference("bar")), null);
+	private static final Alternative ALTERNATIVE_1 = new Alternative(null, new SymbolReference("foo"), null, null);
+	private static final Alternative ALTERNATIVE_2 = new Alternative(null, new SequenceExpression(new SymbolReference("abc"), new SymbolReference("bar")), null, null);
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullTerminals() {
@@ -118,6 +121,36 @@ public class ProductionValidatorImplTest {
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", expressionValidator);
 		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_1)));
 		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_2)));
+		productionValidator.finish();
+	}
+
+	@Test
+	public void testValidPrecedenceDefiningTerminal() {
+		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), "foo", null))));
+		productionValidator.finish();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testUnknownPrecedenceDefiningTerminal() {
+		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), "blub", null))));
+		productionValidator.finish();
+	}
+
+	@Test
+	public void testValidResolveBlock() {
+		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of(new ResolveDeclaration(ConflictResolution.SHIFT, ImmutableList.of("foo"))));
+		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), null, resolveBlock))));
+		productionValidator.finish();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testResolveBlockWithUnknownTerminal() {
+		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of(new ResolveDeclaration(ConflictResolution.SHIFT, ImmutableList.of("blub"))));
+		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), null, resolveBlock))));
 		productionValidator.finish();
 	}
 

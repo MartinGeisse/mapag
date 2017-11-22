@@ -14,7 +14,8 @@ public final class ResolveDeclaration {
 
 	public ResolveDeclaration(ConflictResolution conflictResolution, ImmutableList<String> terminals) {
 		this.conflictResolution = ParameterUtil.ensureNotNull(conflictResolution, "conflictResolution");
-		this.terminals = ParameterUtil.ensureNoNullOrEmptyElement(terminals, "terminals");
+		this.terminals = ParameterUtil.ensureNotNull(terminals, "terminals");
+		ParameterUtil.ensureNoNullOrEmptyElement(terminals, "terminals");
 	}
 
 	public ConflictResolution getConflictResolution() {

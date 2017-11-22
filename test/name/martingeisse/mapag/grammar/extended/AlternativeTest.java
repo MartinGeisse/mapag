@@ -62,6 +62,12 @@ public class AlternativeTest {
 		Assert.assertSame(resolveBlock, alternative.getResolveBlock());
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorWithPrecedenceAndResolveBlock() {
+		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of());
+		new Alternative(null, SYMBOL_REFERENCE, "foo", resolveBlock);
+	}
+
 	@Test
 	public void testName() {
 		Alternative alternative = new Alternative("foo", SYMBOL_REFERENCE, null, null);
