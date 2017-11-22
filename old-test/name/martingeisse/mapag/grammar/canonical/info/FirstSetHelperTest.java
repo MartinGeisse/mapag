@@ -42,8 +42,8 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion(), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of("dummyStart"),
 				ImmutableMap.of("dummyStart", ImmutableSet.of()),
@@ -51,9 +51,9 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo", "bar"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of("baz", "bar"), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("foo", "bar"), null),
+						new Alternative("a2", TestUtil.expansion("baz", "bar"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of(),
 				ImmutableMap.of("dummyStart", ImmutableSet.of("foo", "baz")),
@@ -61,10 +61,10 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo", "bar"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of("baz", "bar"), null, new AlternativeAnnotation("a2", null)),
-						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a3", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("foo", "bar"), null),
+						new Alternative("a2", TestUtil.expansion("baz", "bar"), null),
+						new Alternative("a3", TestUtil.expansion(), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of("dummyStart"),
 				ImmutableMap.of("dummyStart", ImmutableSet.of("foo", "baz")),
@@ -77,12 +77,12 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of("nt1"), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null),
+						new Alternative("a2", TestUtil.expansion("nt1"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("bar"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of(),
 				ImmutableMap.of(
@@ -93,16 +93,16 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of("nt1"), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null),
+						new Alternative("a2", TestUtil.expansion("nt1"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt2"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt2"), null),
+						new Alternative("a2", TestUtil.expansion("bar"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("baz"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("baz"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of(),
 				ImmutableMap.of(
@@ -114,16 +114,16 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of("nt1"), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null),
+						new Alternative("a2", TestUtil.expansion("nt1"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt2"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt2"), null),
+						new Alternative("a2", TestUtil.expansion("bar"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("baz"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("baz"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of(),
 				ImmutableMap.of(
@@ -135,16 +135,16 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of("nt1"), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null),
+						new Alternative("a2", TestUtil.expansion("nt1"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt2"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt2"), null),
+						new Alternative("a2", TestUtil.expansion("foo"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("foo"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of(),
 				ImmutableMap.of(
@@ -161,14 +161,14 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt1", "nt2"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt1", "nt2"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("bar"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of(),
 				ImmutableMap.of(
@@ -186,15 +186,15 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt1", "nt2"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt1", "nt2"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null),
+						new Alternative("a2", TestUtil.expansion(), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("bar"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of("nt1"),
 				ImmutableMap.of(
@@ -211,17 +211,17 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt1", "nt2", "nt3"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("bar"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt3", ImmutableList.of(
-						new Alternative(ImmutableList.of("baz"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("baz"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of(),
 				ImmutableMap.of(
@@ -234,18 +234,18 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt1", "nt2", "nt3"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null),
+						new Alternative("a2", TestUtil.expansion(), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("bar"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt3", ImmutableList.of(
-						new Alternative(ImmutableList.of("baz"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("baz"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of("nt1"),
 				ImmutableMap.of(
@@ -258,18 +258,18 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt1", "nt2", "nt3"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("bar"), null),
+						new Alternative("a2", TestUtil.expansion(), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt3", ImmutableList.of(
-						new Alternative(ImmutableList.of("baz"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("baz"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of("nt2"),
 				ImmutableMap.of(
@@ -282,19 +282,19 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt1", "nt2", "nt3"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt1", "nt2", "nt3"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null),
+						new Alternative("a2", TestUtil.expansion(), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("bar"), null),
+						new Alternative("a2", TestUtil.expansion(), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt3", ImmutableList.of(
-						new Alternative(ImmutableList.of("baz"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("baz"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of("nt1", "nt2"),
 				ImmutableMap.of(
@@ -313,17 +313,17 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt1", "nt2"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt1", "nt2"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt3"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt3"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt3", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("bar"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of(),
 				ImmutableMap.of(
@@ -336,18 +336,18 @@ public class FirstSetHelperTest {
 			{
 				ImmutableList.of(
 					new NonterminalDefinition("dummyStart", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt1", "nt2"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt1", "nt2"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt1", ImmutableList.of(
-						new Alternative(ImmutableList.of("foo"), null, new AlternativeAnnotation("a1", null)),
-						new Alternative(ImmutableList.of(), null, new AlternativeAnnotation("a2", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("foo"), null),
+						new Alternative("a2", TestUtil.expansion(), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt2", ImmutableList.of(
-						new Alternative(ImmutableList.of("nt3"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY),
+						new Alternative("a1", TestUtil.expansion("nt3"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL),
 					new NonterminalDefinition("nt3", ImmutableList.of(
-						new Alternative(ImmutableList.of("bar"), null, new AlternativeAnnotation("a1", null))
-					), NonterminalAnnotation.EMPTY)
+						new Alternative("a1", TestUtil.expansion("bar"), null)
+					), NonterminalDefinition.PsiStyle.NORMAL)
 				),
 				ImmutableSet.of("nt1"),
 				ImmutableMap.of(
