@@ -3,8 +3,9 @@ package name.martingeisse.mapag.grammar.canonicalization;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.grammar.ConflictResolution;
-import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
 import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
+import name.martingeisse.mapag.grammar.canonical.Expansion;
+import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.ResolveBlock;
@@ -77,16 +78,12 @@ public class ProductionCanonicalizer {
 	}
 
 	private name.martingeisse.mapag.grammar.canonical.Alternative convertAlternative(name.martingeisse.mapag.grammar.extended.Alternative inputAlternative, int alternativeCounter) {
-		List<String> expansion = new ArrayList<>();
-		List<String> expressionNames = new ArrayList<>();
-		convertExpressionToExpansion(inputAlternative.getExpression(), expansion, expressionNames);
+		List<ExpansionElement> expansionElements = new ArrayList<>();
+		convertExpressionToExpansion(inputAlternative.getExpression(), expansionElements);
 		return new name.martingeisse.mapag.grammar.canonical.Alternative(
-			ImmutableList.copyOf(expansion),
-			convertConflictResolver(inputAlternative.getPrecedenceDefiningTerminal(), inputAlternative.getResolveBlock()),
-			new AlternativeAnnotation(
-				inputAlternative.getName() == null ? ("a" + alternativeCounter) : inputAlternative.getName(),
-				ImmutableList.copyOf(expressionNames)
-			)
+			inputAlternative.getName() == null ? ("a" + alternativeCounter) : inputAlternative.getName(),
+			new Expansion(ImmutableList.copyOf(expansionElements)),
+			convertConflictResolver(inputAlternative.getPrecedenceDefiningTerminal(), inputAlternative.getResolveBlock())
 		);
 	}
 
@@ -107,7 +104,7 @@ public class ProductionCanonicalizer {
 		}
 	}
 
-	private void convertExpressionToExpansion(Expression expression, List<String> expansion, List<String> expressionNames) {
+	private void convertExpressionToExpansion(Expression expression, List<ExpansionElement> expansionElements) {
 		if (expression instanceof EmptyExpression) {
 
 			// an empty expression becomes an empty expansion
@@ -117,15 +114,14 @@ public class ProductionCanonicalizer {
 			// an unnamed sequence gets "inlined" in the output expansion. (Named sequences get extracted in the
 			// else-case below.)
 			SequenceExpression sequenceExpression = (SequenceExpression) expression;
-			convertExpressionToExpansion(sequenceExpression.getLeft(), expansion, expressionNames);
-			convertExpressionToExpansion(sequenceExpression.getRight(), expansion, expressionNames);
+			convertExpressionToExpansion(sequenceExpression.getLeft(), expansionElements);
+			convertExpressionToExpansion(sequenceExpression.getRight(), expansionElements);
 
 		} else {
 
 			// anything else must be converted to a single symbol that gets added to the expansion (this also handles
 			// SymbolReferences and named sequences).
-			expansion.add(convertExpressionToSymbol(expression));
-			expressionNames.add(expression.getNameOrEmpty());
+			expansionElements.add(new ExpansionElement(convertExpressionToSymbol(expression), expression.getName()));
 
 		}
 	}

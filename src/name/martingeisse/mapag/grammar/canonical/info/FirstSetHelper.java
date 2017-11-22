@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.util.ParameterUtil;
@@ -74,8 +75,8 @@ final class FirstSetHelper {
 	}
 
 	void include(Alternative alternative) {
-		for (String symbol : alternative.getExpansion()) {
-			if (!include(symbol)) {
+		for (ExpansionElement element : alternative.getExpansion().getElements()) {
+			if (!include(element.getSymbol())) {
 				return;
 			}
 		}

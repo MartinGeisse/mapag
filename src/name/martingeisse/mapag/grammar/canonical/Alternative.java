@@ -16,20 +16,21 @@ import java.util.List;
  */
 public final class Alternative {
 
-	private final ImmutableList<String> expansion;
+	private final String name;
+	private final Expansion expansion;
 	private final AlternativeConflictResolver conflictResolver;
-	private final AlternativeAnnotation annotation;
 
-	public Alternative(ImmutableList<String> expansion, AlternativeConflictResolver conflictResolver, AlternativeAnnotation annotation) {
-		ParameterUtil.ensureNotNull(expansion, "expansion");
-		ParameterUtil.ensureNoNullOrEmptyElement(expansion, "expansion");
-		this.expansion = expansion;
+	public Alternative(String name, Expansion expansion, AlternativeConflictResolver conflictResolver) {
+		this.name = ParameterUtil.ensureNotNullOrEmpty(name, "name");
+		this.expansion = ParameterUtil.ensureNotNull(expansion, "expansion");
 		this.conflictResolver = conflictResolver;
-		this.annotation = ParameterUtil.ensureNotNull(annotation, "annotation");
-		annotation.validateConstruction(this);
 	}
 
-	public ImmutableList<String> getExpansion() {
+	public String getName() {
+		return name;
+	}
+
+	public Expansion getExpansion() {
 		return expansion;
 	}
 
@@ -37,39 +38,21 @@ public final class Alternative {
 		return conflictResolver;
 	}
 
-	public AlternativeAnnotation getAnnotation() {
-		return annotation;
-	}
-
-	public Alternative vanishSymbol(String nonterminalToVanish) {
-		// TODO test annotation handling
-		ImmutableList<String> expressionNames = annotation.getExpressionNames();
-		List<String> remainingSymbols = new ArrayList<>();
-		List<String> remainingExpressionNames = new ArrayList<>();
-		for (int i = 0; i < expansion.size(); i++) {
-			String symbol = expansion.get(i);
-			if (symbol.equals(nonterminalToVanish)) {
-				continue;
-			}
-			remainingSymbols.add(symbol);
-			if (expressionNames != null) {
-				remainingExpressionNames.add(expressionNames.get(i));
-			}
-		}
-		ParameterUtil.ensureNotNullOrEmpty(nonterminalToVanish, "nonterminalToVanish");
-		return new Alternative(
-			ImmutableList.copyOf(remainingSymbols),
-			conflictResolver,
-			new AlternativeAnnotation(
-				annotation.getAlternativeName(),
-				expressionNames == null ? null : ImmutableList.copyOf(remainingExpressionNames)
-			)
-		);
+	public Alternative vanishSymbol(String symbol) {
+		ParameterUtil.ensureNotNullOrEmpty(symbol, "symbol");
+		return new Alternative(name, expansion.vanishSymbol(symbol), conflictResolver);
 	}
 
 	@Override
 	public String toString() {
-		return StringUtils.join(expansion, ' ') + ' ' + conflictResolver + ' ' + annotation;
+		StringBuilder builder = new StringBuilder();
+		if (name != null) {
+			builder.append(name).append(" ::= ");
+		}
+		builder.append(expansion);
+		builder.append(' ');
+		builder.append(conflictResolver);
+		return builder.toString();
 	}
 
 }

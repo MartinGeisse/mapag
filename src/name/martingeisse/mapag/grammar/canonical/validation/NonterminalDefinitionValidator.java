@@ -1,10 +1,7 @@
 package name.martingeisse.mapag.grammar.canonical.validation;
 
 import name.martingeisse.mapag.grammar.SpecialSymbols;
-import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
+import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 import java.util.Map;
@@ -35,7 +32,8 @@ class NonterminalDefinitionValidator {
 	}
 
 	void validate(Alternative alternative) {
-		for (String symbol : alternative.getExpansion()) {
+		for (ExpansionElement expansionElement : alternative.getExpansion().getElements()) {
+			String symbol = expansionElement.getSymbol();
 			if (!terminalDefinitions.containsKey(symbol) && !nonterminalDefinitions.containsKey(symbol) && !symbol.equals(SpecialSymbols.ERROR_SYMBOL_NAME)) {
 				throw new IllegalStateException("unknown symbol in nonterminal expansion: " + symbol);
 			}

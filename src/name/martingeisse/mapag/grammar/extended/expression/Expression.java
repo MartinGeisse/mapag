@@ -28,8 +28,4 @@ public abstract class Expression {
 		return name;
 	}
 
-	public String getNameOrEmpty() {
-		return name == null ? "" : name;
-	}
-
 }

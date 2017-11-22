@@ -53,17 +53,26 @@ public final class GrammarBuilder {
 			this.alternatives = alternatives;
 		}
 
-		public ProductionBuilder addAlternative(String... expansion) {
-			alternatives.add(new Alternative(ImmutableList.copyOf(expansion), null, new AlternativeAnnotation("a" + alternatives.size(), null)));
-			return this;
+		public ProductionBuilder addAlternative(String... expansionSymbols) {
+			return addAlternativeWithPrecedence(null, expansionSymbols);
 		}
 
-		public ProductionBuilder addAlternativeWithPrecedence(String effectivePrecedenceTerminal, String... expansion) {
-			alternatives.add(new Alternative(
-				ImmutableList.copyOf(expansion),
-				new AlternativeConflictResolver(effectivePrecedenceTerminal, null),
-				new AlternativeAnnotation("a" + alternatives.size(), null))
-			);
+		public ProductionBuilder addAlternativeWithPrecedence(String effectivePrecedenceTerminal, String... expansionSymbols) {
+
+			List<ExpansionElement> elements = new ArrayList<>();
+			for (String symbol : expansionSymbols) {
+				elements.add(new ExpansionElement(symbol, null));
+			}
+			Expansion expansion = new Expansion(ImmutableList.copyOf(elements));
+
+			AlternativeConflictResolver conflictResolver;
+			if (effectivePrecedenceTerminal == null) {
+				conflictResolver = null;
+			} else {
+				conflictResolver = new AlternativeConflictResolver(effectivePrecedenceTerminal, null);
+			}
+
+			alternatives.add(new Alternative("a" + alternatives.size(), expansion, conflictResolver));
 			return this;
 		}
 

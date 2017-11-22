@@ -51,7 +51,7 @@ final class VanishableNonterminalsHelper {
 		for (Map.Entry<String, NonterminalDefinition> nonterminalDefinitionEntry : grammar.getNonterminalDefinitions().entrySet()) {
 			List<Alternative> alternatives = new ArrayList<>();
 			for (Alternative alternative : nonterminalDefinitionEntry.getValue().getAlternatives()) {
-				if (!grammar.sentenceContainsTerminals(alternative.getExpansion())) {
+				if (!grammar.sentenceContainsTerminals(alternative.getExpansion().getSymbols())) {
 					alternatives.add(alternative);
 				}
 			}

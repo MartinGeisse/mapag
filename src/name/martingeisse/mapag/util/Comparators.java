@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.util;
 
 import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateElement;
 
@@ -13,8 +14,26 @@ import java.util.List;
  */
 public final class Comparators {
 
-	public static final Comparator<Alternative> alternativeComparator = Comparator.comparing(a -> a.getExpansion(),
-		ListComparator.forComparableElements());
+	public static final Comparator<ExpansionElement> expansionElementComparator = (e1, e2) -> {
+		int result = e1.getSymbol().compareTo(e2.getSymbol());
+		if (result != 0) {
+			return result;
+		}
+		if (e1.getExpressionName() == e2.getExpressionName()) {
+			return 0;
+		}
+		if (e1.getExpressionName() == null) {
+			return -1;
+		}
+		if (e2.getExpressionName() == null) {
+			return 1;
+		}
+		return (e1.getExpressionName().compareTo(e2.getExpressionName()));
+	};
+
+	public static final Comparator<Alternative> alternativeComparator = Comparator.comparing(
+		a -> a.getExpansion().getElements(),
+		new ListComparator<>(expansionElementComparator));
 
 	public static final Comparator<Pair<String, Alternative>> nonterminalAlternativeComparator = (r1, r2) -> {
 		int leftResult = r1.getLeft().compareTo(r2.getLeft());
