@@ -12,8 +12,8 @@ import org.junit.Test;
  */
 public class PrecedenceTableTest {
 
-	private static final PrecedenceTable.Entry ENTRY_1 = new PrecedenceTable.Entry(ImmutableSet.of("foo"), Associativity.NONASSOC);
-	private static final PrecedenceTable.Entry ENTRY_2 = new PrecedenceTable.Entry(ImmutableSet.of("bar"), Associativity.RIGHT);
+	private static final PrecedenceTable.Entry ENTRY_1 = new PrecedenceTable.Entry(ImmutableList.of("foo"), Associativity.NONASSOC);
+	private static final PrecedenceTable.Entry ENTRY_2 = new PrecedenceTable.Entry(ImmutableList.of("bar"), Associativity.RIGHT);
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullArgument() {
@@ -27,22 +27,22 @@ public class PrecedenceTableTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testArgumentContainsEofSymbol() {
-		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableSet.of(SpecialSymbols.EOF_SYMBOL_NAME), Associativity.LEFT)));
+		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableList.of(SpecialSymbols.EOF_SYMBOL_NAME), Associativity.LEFT)));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testArgumentContainsErrorSymbol() {
-		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableSet.of(SpecialSymbols.ERROR_SYMBOL_NAME), Associativity.LEFT)));
+		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableList.of(SpecialSymbols.ERROR_SYMBOL_NAME), Associativity.LEFT)));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testArgumentContainsRootSymbol() {
-		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableSet.of(SpecialSymbols.ROOT_SYMBOL_NAME), Associativity.LEFT)));
+		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableList.of(SpecialSymbols.ROOT_SYMBOL_NAME), Associativity.LEFT)));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testArgumentContainsOtherSpecialSymbol() {
-		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableSet.of("%whatever"), Associativity.LEFT)));
+		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableList.of("%whatever"), Associativity.LEFT)));
 	}
 
 	@Test

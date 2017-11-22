@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.grammar.extended;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import org.junit.Assert;
@@ -10,7 +11,7 @@ import org.junit.Test;
  */
 public class PrecedenceTableEntryTest {
 
-	private static final ImmutableSet<String> TERMINAL_NAMES = ImmutableSet.of("abc", "def");
+	private static final ImmutableList<String> TERMINAL_NAMES = ImmutableList.of("abc", "def");
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullTerminalNames() {
@@ -19,17 +20,17 @@ public class PrecedenceTableEntryTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyTerminalNames() {
-		new PrecedenceTable.Entry(ImmutableSet.of(), Associativity.NONASSOC);
+		new PrecedenceTable.Entry(ImmutableList.of(), Associativity.NONASSOC);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testTerminalNamesContainsEmpty() {
-		new PrecedenceTable.Entry(ImmutableSet.of("abc", "", "foo"), Associativity.NONASSOC);
+		new PrecedenceTable.Entry(ImmutableList.of("abc", "", "foo"), Associativity.NONASSOC);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullAssociativity() {
-		new PrecedenceTable.Entry(ImmutableSet.of("foo"), null);
+		new PrecedenceTable.Entry(ImmutableList.of("foo"), null);
 	}
 
 	@Test
