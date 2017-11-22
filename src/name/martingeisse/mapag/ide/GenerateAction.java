@@ -94,7 +94,6 @@ public class GenerateAction extends AnAction {
 				new GrammarCanonicalizer(extendedGrammar).run().getResult();
 			GrammarInfo grammarInfo = new GrammarInfo(canonicalGrammar);
 			StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
-			// TODO make sure that runWriteAction is synchronous with the calling thread (it seems to be)
 			ApplicationManager.getApplication().runWriteAction(() -> {
 				try {
 
@@ -133,7 +132,6 @@ public class GenerateAction extends AnAction {
 				} catch (IOException e) {
 					throw new RuntimeException("unexpected IOException", e);
 				}
-				console.print("Write action done.", ConsoleViewContentType.NORMAL_OUTPUT);
 			});
 		} catch (UserMessageException e) {
 			console.print(e.getMessage(), ConsoleViewContentType.ERROR_OUTPUT);
