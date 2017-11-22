@@ -1,10 +1,9 @@
 package name.martingeisse.mapag.sm;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,7 +12,7 @@ import org.junit.Test;
  */
 public class StateMachineTest {
 
-	private static Alternative alternative1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
+	private static Alternative alternative1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
 	private static StateElement stateElement1 = new StateElement("aaa", alternative1, 0, "foo");
 
 	private static Alternative alternative2 = new Alternative("a2", TestUtil.expansion("foo", "bar"), null);
@@ -70,7 +69,7 @@ public class StateMachineTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorUnknownStartState() {
-		Alternative alternativeX = new Alternative(TestUtil.expansion("foo", "bar"), null, new AlternativeAnnotation("a", null));
+		Alternative alternativeX = new Alternative("a", TestUtil.expansion("foo", "bar"), null);
 		StateElement stateElementX = new StateElement("bbb", alternativeX, 1, "baz");
 		State stateX = new State(ImmutableSet.of(stateElementX));
 		new StateMachine(states, terminalActions, nonterminalActions, stateX);
