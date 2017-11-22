@@ -3,7 +3,7 @@ package name.martingeisse.mapag.util;
 import java.util.Objects;
 
 /**
- *
+ * TODO check if we can use the Pair class from apache commons lang.
  */
 public final class Pair<A, B> {
 

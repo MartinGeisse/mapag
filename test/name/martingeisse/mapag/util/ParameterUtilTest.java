@@ -81,6 +81,21 @@ public class ParameterUtilTest {
 	}
 
 	@Test
+	public void testEnsureNotEmptyStringWithNull() {
+		ParameterUtil.ensureNotEmpty("foo", (String) null);
+	}
+
+	@Test
+	public void testEnsureNotEmptyStringWithEmpty() {
+		testException(ParameterUtil::ensureNotEmpty, "");
+	}
+
+	@Test
+	public void testEnsureNotEmptyStringWithNonNull() {
+		ParameterUtil.ensureNotEmpty("foo", NAME);
+	}
+
+	@Test
 	public void testEnsureNoNullOrEmptyElementAcceptsNullCollection() {
 		ParameterUtil.ensureNoNullOrEmptyElement((String[]) null, NAME);
 		ParameterUtil.ensureNoNullOrEmptyElement((List<String>) null, NAME);

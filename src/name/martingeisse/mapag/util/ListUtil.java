@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- *
+ * TODO use this class where it makes sense
  */
 public final class ListUtil {
 
