@@ -14,8 +14,7 @@ import org.junit.runner.RunWith;
 @RunWith(DataProviderRunner.class)
 public class AlternativeTest {
 
-	private static final ImmutableList<String> EXPANSION = ImmutableList.of("foo", "bar", "baz", "foo", "abc");
-	private static final ImmutableList<String> EXPANSION_WITH_EMPTY = ImmutableList.of("foo", "", "bar");
+	private static final Expansion EXPANSION = TestUtil.expansion("foo", "bar", "baz", "foo", "abc");
 
 	//
 	// constructor calls
@@ -69,15 +68,6 @@ public class AlternativeTest {
 		Assert.assertEquals("xyz", alternative.getEffectivePrecedenceTerminal());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testExpansionContainsEmptyWithNullPrecedence() {
-		new Alternative(EXPANSION_WITH_EMPTY, null, new AlternativeAnnotation("a1", null));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testExpansionContainsEmptyWithNonNullPrecedence() {
-		new Alternative(EXPANSION_WITH_EMPTY, "xyz", new AlternativeAnnotation("a1", null));
-	}
 
 
 	//
