@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static name.martingeisse.mapag.grammar.canonical.TestGrammarObjects.*;
-import static name.martingeisse.mapag.grammar.canonical.TestGrammarObjects.START_NONTERMINAL_NAME;
 
 /**
  *
