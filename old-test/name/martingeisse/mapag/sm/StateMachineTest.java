@@ -13,10 +13,10 @@ import org.junit.Test;
  */
 public class StateMachineTest {
 
-	private static Alternative alternative1 = new Alternative(ImmutableList.of("r1", "r2", "r3"), "prec1", new AlternativeAnnotation("a1", null));
+	private static Alternative alternative1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), "prec1");
 	private static StateElement stateElement1 = new StateElement("aaa", alternative1, 0, "foo");
 
-	private static Alternative alternative2 = new Alternative(ImmutableList.of("foo", "bar"), null, new AlternativeAnnotation("a2", null));
+	private static Alternative alternative2 = new Alternative("a2", TestUtil.expansion("foo", "bar"), null);
 	private static StateElement stateElement2 = new StateElement("bbb", alternative2, 1, "baz");
 
 	private static State state1 = new State(ImmutableSet.of(stateElement1));
@@ -70,7 +70,7 @@ public class StateMachineTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorUnknownStartState() {
-		Alternative alternativeX = new Alternative(ImmutableList.of("foo", "bar"), null, new AlternativeAnnotation("a", null));
+		Alternative alternativeX = new Alternative(TestUtil.expansion("foo", "bar"), null, new AlternativeAnnotation("a", null));
 		StateElement stateElementX = new StateElement("bbb", alternativeX, 1, "baz");
 		State stateX = new State(ImmutableSet.of(stateElementX));
 		new StateMachine(states, terminalActions, nonterminalActions, stateX);

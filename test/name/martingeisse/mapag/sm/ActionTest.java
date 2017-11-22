@@ -1,9 +1,8 @@
 package name.martingeisse.mapag.sm;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.AlternativeAnnotation;
+import name.martingeisse.mapag.grammar.canonical.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +11,7 @@ import org.junit.Test;
  */
 public class ActionTest {
 
-	private static final Alternative alternative = new Alternative(ImmutableList.of("abc", "def"), null, new AlternativeAnnotation("a1", null));
+	private static final Alternative alternative = new Alternative("a1", TestUtil.expansion("abc", "def"), null);
 
 	@Test
 	public void testShift() {
