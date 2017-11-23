@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.util;
 
+import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.sm.State;
@@ -61,10 +62,8 @@ public final class Comparators {
 	public static final Comparator<List<StateElement>> stateElementListComparator = new ListComparator<>(stateElementComparator);
 
 	public static final Comparator<State> stateComparator = (s1, s2) -> {
-		List<StateElement> elements1 = new ArrayList<>(s1.getElements());
-		elements1.sort(stateElementComparator);
-		List<StateElement> elements2 = new ArrayList<>(s2.getElements());
-		elements2.sort(stateElementComparator);
+		ImmutableList<StateElement> elements1 = ListUtil.sorted(s1.getElements(), stateElementComparator);
+		ImmutableList<StateElement> elements2 = ListUtil.sorted(s2.getElements(), stateElementComparator);
 		return stateElementListComparator.compare(elements1, elements2);
 	};
 

@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.sm;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.ConflictResolution;
@@ -7,6 +8,7 @@ import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.Comparators;
+import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.ParameterUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,8 +48,7 @@ public final class State {
 
 	@Override
 	public String toString() {
-		List<StateElement> sortedElements = new ArrayList<>(elements);
-		sortedElements.sort(Comparators.stateElementComparator);
+		ImmutableList<StateElement> sortedElements = ListUtil.sorted(elements, Comparators.stateElementComparator);
 		return "\n" + StringUtils.join(sortedElements, '\n') + "\n";
 	}
 

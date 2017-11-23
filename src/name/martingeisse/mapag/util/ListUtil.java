@@ -3,12 +3,11 @@ package name.martingeisse.mapag.util;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
-/**
- * TODO use this class where it makes sense
- */
 public final class ListUtil {
 
 	// prevent instantiation
@@ -27,6 +26,15 @@ public final class ListUtil {
 		List<T> result = new ArrayList<>(original);
 		result.removeIf(removalPredicate);
 		return ImmutableList.copyOf(result);
+	}
+
+	/**
+	 * Note: If the comparator is null, then the elements must implement {@link Comparable}.
+	 */
+	public static <T> ImmutableList<T> sorted(Collection<T> original, Comparator<T> comparator) {
+		List<T> list = new ArrayList<>(original);
+		list.sort(comparator);
+		return ImmutableList.copyOf(list);
 	}
 
 }

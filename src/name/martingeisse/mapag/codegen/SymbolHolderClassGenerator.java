@@ -4,6 +4,7 @@ import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
+import name.martingeisse.mapag.util.ListUtil;
 import org.apache.velocity.VelocityContext;
 
 import java.io.IOException;
@@ -39,9 +40,6 @@ public class SymbolHolderClassGenerator {
 
 	public void generate() throws ConfigurationException, IOException {
 
-		List<String> terminals = new ArrayList<>(grammar.getTerminalDefinitions().keySet());
-		Collections.sort(terminals);
-
 		List<String> nonterminalAlternatives = new ArrayList<>();
 		for (NonterminalDefinition nonterminal : grammar.getNonterminalDefinitions().values()) {
 			for (Alternative alternative : nonterminal.getAlternatives()) {
@@ -53,7 +51,7 @@ public class SymbolHolderClassGenerator {
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
-		context.put("terminals", terminals);
+		context.put("terminals", ListUtil.sorted(grammar.getTerminalDefinitions().keySet(), null));
 		context.put("terminalElementTypeClass", configuration.getExactlyOne(TERMINAL_ELEMENT_TYPE_CLASS, ELEMENT_TYPE_CLASS));
 		context.put("nonterminalAlternatives", nonterminalAlternatives);
 		context.put("nonterminalElementTypeClass", configuration.getExactlyOne(NONTERMINAL_ELEMENT_TYPE_CLASS, ELEMENT_TYPE_CLASS));

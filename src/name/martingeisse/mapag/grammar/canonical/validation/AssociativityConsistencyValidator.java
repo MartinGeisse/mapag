@@ -2,6 +2,7 @@ package name.martingeisse.mapag.grammar.canonical.validation;
 
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
+import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 import java.util.*;
@@ -32,11 +33,9 @@ class AssociativityConsistencyValidator {
 
 	void validate(Collection<TerminalDefinition> terminalDefinitions) {
 		ParameterUtil.ensureNotNull(terminalDefinitions, "terminalDefinitions");
-		List<TerminalDefinition> terminalDefinitionList = new ArrayList<>(terminalDefinitions);
-		terminalDefinitionList.sort(PRECEDENCE_COMPARATOR);
 		Integer previousPrecedence = null;
 		Associativity previousAssociativity = null;
-		for (TerminalDefinition terminalDefinition : terminalDefinitionList) {
+		for (TerminalDefinition terminalDefinition : ListUtil.sorted(terminalDefinitions, PRECEDENCE_COMPARATOR)) {
 			if (Objects.equals(previousPrecedence, terminalDefinition.getPrecedenceIndex())) {
 				if (previousAssociativity != null && previousAssociativity != terminalDefinition.getAssociativity()) {
 					throw new IllegalStateException("found two terminals with the same precedence index but different associativity");

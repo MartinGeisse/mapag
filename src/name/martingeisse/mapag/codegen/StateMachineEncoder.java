@@ -9,6 +9,7 @@ import name.martingeisse.mapag.sm.Action;
 import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.util.Comparators;
+import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.Pair;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public final class StateMachineEncoder {
 	public StateMachineEncoder(GrammarInfo grammarInfo, StateMachine stateMachine) {
 		this.terminals = list(grammarInfo.getGrammar().getTerminalDefinitions().keySet());
 		this.nonterminals = list(grammarInfo.getGrammar().getNonterminalDefinitions().keySet());
-		this.states = list(stateMachine.getStates(), Comparators.stateComparator);
+		this.states = ListUtil.sorted(stateMachine.getStates(), Comparators.stateComparator);
 
 		List<Pair<String, Alternative>> alternatives = new ArrayList<>();
 		for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
@@ -42,18 +43,12 @@ public final class StateMachineEncoder {
 		this.alternatives = ImmutableList.copyOf(alternatives);
 	}
 
-	private <T> ImmutableList<T> list(Collection<T> input, Comparator<T> comparator) {
-		List<T> list = new ArrayList<>(input);
-		list.sort(comparator);
-		return ImmutableList.copyOf(list);
-	}
-
 	private <T, C extends Comparable<C>> ImmutableList<T> list(Collection<T> input, Function<T, C> mapper) {
-		return list(input, Comparator.comparing(mapper));
+		return ListUtil.sorted(input, Comparator.comparing(mapper));
 	}
 
 	private <T extends Comparable<T>> ImmutableList<T> list(Collection<T> input) {
-		return list(input, (Comparator<T>) null);
+		return ListUtil.sorted(input, (Comparator<T>) null);
 	}
 
 	public int getTerminalIndex(String terminal) {
