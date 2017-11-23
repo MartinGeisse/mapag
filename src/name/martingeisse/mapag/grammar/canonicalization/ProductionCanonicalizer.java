@@ -16,10 +16,6 @@ import name.martingeisse.mapag.util.ParameterUtil;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-/**
- * TODO test names of generated alternatives (name of converted alternative is that of the original one; name of
- * synthetic alternatives is null; name of synthetic nonterminals includes the parent alternative name if any
- */
 public class ProductionCanonicalizer {
 
 	private final List<Production> pendingProductions;
