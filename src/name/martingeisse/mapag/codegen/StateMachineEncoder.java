@@ -10,7 +10,7 @@ import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.util.Comparators;
 import name.martingeisse.mapag.util.ListUtil;
-import name.martingeisse.mapag.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +37,7 @@ public final class StateMachineEncoder {
 		List<Pair<String, Alternative>> alternatives = new ArrayList<>();
 		for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
 			for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
-				alternatives.add(new Pair<>(nonterminalDefinition.getName(), alternative));
+				alternatives.add(Pair.of(nonterminalDefinition.getName(), alternative));
 			}
 		}
 		this.alternatives = ImmutableList.copyOf(alternatives);
@@ -94,7 +94,7 @@ public final class StateMachineEncoder {
 	}
 
 	public int getAlternativeIndex(String nonterminal, Alternative alternative) {
-		int index = alternatives.indexOf(new Pair<>(nonterminal, alternative));
+		int index = alternatives.indexOf(Pair.of(nonterminal, alternative));
 		if (index < 0) {
 			throw new IllegalArgumentException("unknown alternative for nonterminal " + nonterminal + ": " + alternative);
 		}

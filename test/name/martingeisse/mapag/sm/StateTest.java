@@ -1,6 +1,5 @@
 package name.martingeisse.mapag.sm;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
@@ -10,7 +9,7 @@ import name.martingeisse.mapag.grammar.canonical.GrammarBuilder;
 import name.martingeisse.mapag.grammar.canonical.TestUtil;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.testutil.ExAssert;
-import name.martingeisse.mapag.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -337,15 +336,15 @@ public class StateTest {
 	public void testPrecedenceRightAssociativePlusAfterPlus() {
 
 		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
-						builder.addTerminals("NUMBER")
-								.addTerminals(1, Associativity.RIGHT, "PLUS", "MINUS")
-								.addTerminals(2, Associativity.LEFT, "TIMES")
-								.createNonterminal("e")
-								.addAlternative("NUMBER")
-								.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
-								.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
-								.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
-				"PLUS"
+				builder.addTerminals("NUMBER")
+					.addTerminals(1, Associativity.RIGHT, "PLUS", "MINUS")
+					.addTerminals(2, Associativity.LEFT, "TIMES")
+					.createNonterminal("e")
+					.addAlternative("NUMBER")
+					.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+					.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+					.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+			"PLUS"
 		);
 		GrammarInfo grammarInfo = helper.getLeft();
 		Grammar grammar = grammarInfo.getGrammar();
@@ -355,21 +354,21 @@ public class StateTest {
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "PLUS");
 			State expectedState2 = new StateBuilder(grammarInfo)
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, SpecialSymbols.EOF_SYMBOL_NAME))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "PLUS"))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "MINUS"))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "TIMES"))
-					.build();
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "PLUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "MINUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "TIMES"))
+				.build();
 			Assert.assertEquals(expectedState2, actualState2);
 		}
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "MINUS");
 			State expectedState2 = new StateBuilder(grammarInfo)
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, SpecialSymbols.EOF_SYMBOL_NAME))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "PLUS"))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "MINUS"))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "TIMES"))
-					.build();
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "PLUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "MINUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "TIMES"))
+				.build();
 			Assert.assertEquals(expectedState2, actualState2);
 		}
 
@@ -377,11 +376,11 @@ public class StateTest {
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
 			State expectedState2 = new StateBuilder(grammarInfo)
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
-					.build();
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
+				.build();
 			Assert.assertEquals(expectedState2, actualState2);
 		}
 
@@ -391,15 +390,15 @@ public class StateTest {
 	public void testPrecedenceRightAssociativePlusAfterTimes() {
 
 		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
-						builder.addTerminals("NUMBER")
-								.addTerminals(1, Associativity.RIGHT, "PLUS", "MINUS")
-								.addTerminals(2, Associativity.LEFT, "TIMES")
-								.createNonterminal("e")
-								.addAlternative("NUMBER")
-								.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
-								.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
-								.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
-				"TIMES"
+				builder.addTerminals("NUMBER")
+					.addTerminals(1, Associativity.RIGHT, "PLUS", "MINUS")
+					.addTerminals(2, Associativity.LEFT, "TIMES")
+					.createNonterminal("e")
+					.addAlternative("NUMBER")
+					.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+					.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+					.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+			"TIMES"
 		);
 		GrammarInfo grammarInfo = helper.getLeft();
 		Grammar grammar = grammarInfo.getGrammar();
@@ -418,15 +417,15 @@ public class StateTest {
 	public void testPrecedenceRightAssociativeTimesAfterPlus() {
 
 		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
-						builder.addTerminals("NUMBER")
-								.addTerminals(1, Associativity.LEFT, "PLUS", "MINUS")
-								.addTerminals(2, Associativity.RIGHT, "TIMES")
-								.createNonterminal("e")
-								.addAlternative("NUMBER")
-								.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
-								.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
-								.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
-				"PLUS"
+				builder.addTerminals("NUMBER")
+					.addTerminals(1, Associativity.LEFT, "PLUS", "MINUS")
+					.addTerminals(2, Associativity.RIGHT, "TIMES")
+					.createNonterminal("e")
+					.addAlternative("NUMBER")
+					.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+					.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+					.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+			"PLUS"
 		);
 		GrammarInfo grammarInfo = helper.getLeft();
 		Grammar grammar = grammarInfo.getGrammar();
@@ -440,11 +439,11 @@ public class StateTest {
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
 			State expectedState2 = new StateBuilder(grammarInfo)
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
-					.build();
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
+				.build();
 			Assert.assertEquals(expectedState2, actualState2);
 		}
 
@@ -454,15 +453,15 @@ public class StateTest {
 	public void testPrecedenceRightAssociativeTimesAfterTimes() {
 
 		Pair<GrammarInfo, State> helper = conflictTestHelper(builder ->
-						builder.addTerminals("NUMBER")
-								.addTerminals(1, Associativity.LEFT, "PLUS", "MINUS")
-								.addTerminals(2, Associativity.RIGHT, "TIMES")
-								.createNonterminal("e")
-								.addAlternative("NUMBER")
-								.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
-								.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
-								.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
-				"TIMES"
+				builder.addTerminals("NUMBER")
+					.addTerminals(1, Associativity.LEFT, "PLUS", "MINUS")
+					.addTerminals(2, Associativity.RIGHT, "TIMES")
+					.createNonterminal("e")
+					.addAlternative("NUMBER")
+					.addAlternativeWithPrecedence("PLUS", "e", "PLUS", "e")
+					.addAlternativeWithPrecedence("MINUS", "e", "MINUS", "e")
+					.addAlternativeWithPrecedence("TIMES", "e", "TIMES", "e"),
+			"TIMES"
 		);
 		GrammarInfo grammarInfo = helper.getLeft();
 		Grammar grammar = grammarInfo.getGrammar();
@@ -476,11 +475,11 @@ public class StateTest {
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
 			State expectedState2 = new StateBuilder(grammarInfo)
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
-					.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
-					.build();
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "TIMES"))
+				.build();
 			Assert.assertEquals(expectedState2, actualState2);
 		}
 
@@ -497,6 +496,6 @@ public class StateTest {
 		state = state.determineNextStateAfterShiftingNonterminal(grammarInfo, "e");
 		state = expectShiftTerminal(grammarInfo, state, operatorTerminal);
 		state = state.determineNextStateAfterShiftingNonterminal(grammarInfo, "e");
-		return new Pair<>(grammarInfo, state);
+		return Pair.of(grammarInfo, state);
 	}
 }

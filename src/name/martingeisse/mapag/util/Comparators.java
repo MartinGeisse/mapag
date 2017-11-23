@@ -5,6 +5,7 @@ import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateElement;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Comparator;
