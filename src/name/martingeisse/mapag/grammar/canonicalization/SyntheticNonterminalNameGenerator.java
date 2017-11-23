@@ -29,7 +29,6 @@ public final class SyntheticNonterminalNameGenerator {
 		}
 	}
 
-	// TODO test name collision resolution
 	public String createSyntheticName(Expression expression) {
 		if (expression.getName() != null) {
 			String syntheticName = syntheticNamePrefix + expression.getName();
