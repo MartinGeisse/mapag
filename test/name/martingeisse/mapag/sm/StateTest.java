@@ -1,7 +1,9 @@
 package name.martingeisse.mapag.sm;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
+import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
@@ -230,8 +232,6 @@ public class StateTest {
 		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, "TIMES"));
 
 	}
-
-	// TODO test map-based resolver
 
 	@Test
 	public void testShiftReduceConflictResolvedViaPrecedenceAfterPlus() {
@@ -483,6 +483,55 @@ public class StateTest {
 			Assert.assertEquals(expectedState2, actualState2);
 		}
 
+	}
+
+	@Test
+	public void testConflictResolutionMapAfterPlus() {
+
+		Pair<GrammarInfo, State> helper = conflictResolutionMapTestHelper("PLUS");
+		GrammarInfo grammarInfo = helper.getLeft();
+		Grammar grammar = grammarInfo.getGrammar();
+		State state = helper.getRight();
+
+		// reduce on PLUS
+		expectReduceOnTerminal(grammarInfo, state, "PLUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1));
+
+		// ... and shift TIMES
+		{
+			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
+			State expectedState2 = new StateBuilder(grammarInfo)
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, SpecialSymbols.EOF_SYMBOL_NAME))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "PLUS"))
+				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "TIMES"))
+				.build();
+			Assert.assertEquals(expectedState2, actualState2);
+		}
+
+	}
+
+	@Test
+	public void testConflictResolutionMapAfterTimes() {
+
+		Pair<GrammarInfo, State> helper = conflictResolutionMapTestHelper("TIMES");
+		GrammarInfo grammarInfo = helper.getLeft();
+		Grammar grammar = grammarInfo.getGrammar();
+		State state = helper.getRight();
+
+		// reduce on PLUS and on TIMES
+		expectReduceOnTerminal(grammarInfo, state, "PLUS", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2));
+		expectReduceOnTerminal(grammarInfo, state, "TIMES", "e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2));
+
+	}
+
+	private static Pair<GrammarInfo, State> conflictResolutionMapTestHelper(String operatorTerminal) {
+		return conflictTestHelper(builder ->
+			builder.addTerminals("NUMBER", "PLUS", "TIMES")
+				.createNonterminal("e")
+				.addAlternative("NUMBER")
+				.addAlternativeWithResolutionMap(ImmutableMap.of("PLUS", ConflictResolution.REDUCE, "TIMES", ConflictResolution.SHIFT), "e", "PLUS", "e")
+				.addAlternativeWithResolutionMap(ImmutableMap.of("PLUS", ConflictResolution.REDUCE, "TIMES", ConflictResolution.REDUCE), "e", "TIMES", "e"),
+			operatorTerminal
+		);
 	}
 
 	private static Pair<GrammarInfo, State> conflictTestHelper(Consumer<GrammarBuilder> symbolContributor, String operatorTerminal) {

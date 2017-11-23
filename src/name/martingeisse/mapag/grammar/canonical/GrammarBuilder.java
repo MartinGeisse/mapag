@@ -1,7 +1,9 @@
 package name.martingeisse.mapag.grammar.canonical;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.grammar.Associativity;
+import name.martingeisse.mapag.grammar.ConflictResolution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,8 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Note: This class is only used to support the unit tests. It doesn't support custom alternative annotations since
- * the tests don't need them (except the tests testing alternative annotations specifically).
+ *
  */
 public final class GrammarBuilder {
 
@@ -54,26 +55,28 @@ public final class GrammarBuilder {
 		}
 
 		public ProductionBuilder addAlternative(String... expansionSymbols) {
-			return addAlternativeWithPrecedence(null, expansionSymbols);
+			alternatives.add(new Alternative("a" + alternatives.size(), buildExpansion(expansionSymbols), null));
+			return this;
 		}
 
 		public ProductionBuilder addAlternativeWithPrecedence(String effectivePrecedenceTerminal, String... expansionSymbols) {
+			AlternativeConflictResolver conflictResolver = new AlternativeConflictResolver(effectivePrecedenceTerminal, null);
+			alternatives.add(new Alternative("a" + alternatives.size(), buildExpansion(expansionSymbols), conflictResolver));
+			return this;
+		}
 
+		public ProductionBuilder addAlternativeWithResolutionMap(ImmutableMap<String, ConflictResolution> conflictResolutionMap, String... expansionSymbols) {
+			AlternativeConflictResolver conflictResolver = new AlternativeConflictResolver(null, conflictResolutionMap);
+			alternatives.add(new Alternative("a" + alternatives.size(), buildExpansion(expansionSymbols), conflictResolver));
+			return this;
+		}
+
+		private Expansion buildExpansion(String... symbols) {
 			List<ExpansionElement> elements = new ArrayList<>();
-			for (String symbol : expansionSymbols) {
+			for (String symbol : symbols) {
 				elements.add(new ExpansionElement(symbol, null));
 			}
-			Expansion expansion = new Expansion(ImmutableList.copyOf(elements));
-
-			AlternativeConflictResolver conflictResolver;
-			if (effectivePrecedenceTerminal == null) {
-				conflictResolver = null;
-			} else {
-				conflictResolver = new AlternativeConflictResolver(effectivePrecedenceTerminal, null);
-			}
-
-			alternatives.add(new Alternative("a" + alternatives.size(), expansion, conflictResolver));
-			return this;
+			return new Expansion(ImmutableList.copyOf(elements));
 		}
 
 	}
