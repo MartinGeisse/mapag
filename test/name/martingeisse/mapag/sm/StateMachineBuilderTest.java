@@ -2,6 +2,7 @@ package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.grammar.Associativity;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.GrammarBuilder;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
@@ -20,8 +21,6 @@ public class StateMachineBuilderTest {
 		new StateMachineBuilder(null);
 	}
 
-	// Most of the state machine building has been tested in other unit tests. One thing that is left is to
-	// check for closure of the state set under shifting.
 
 	@Test
 	public void checkClosureUnderShiftingInNumberExpressionGrammar() {
@@ -39,11 +38,15 @@ public class StateMachineBuilderTest {
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
 
+		// most of the state machine building has been tested in other unit tests, so we only check some basics here:
+
+		// check that an action map is available for each state
 		for (State state : stateMachine.getStates()) {
 			Assert.assertNotNull(stateMachine.getTerminalOrEofActions().get(state));
 			Assert.assertNotNull(stateMachine.getNonterminalActions().get(state));
 		}
 
+		// check that all resulting actions from shifting terminals are part of the state machine
 		for (Map.Entry<State, ImmutableMap<String, Action>> stateEntry : stateMachine.getTerminalOrEofActions().entrySet()) {
 			State state = stateEntry.getKey();
 			Assert.assertTrue(stateMachine.getStates().contains(state));
@@ -55,6 +58,7 @@ public class StateMachineBuilderTest {
 			}
 		}
 
+		// check that all resulting actions from shifting nonterminals are part of the state machine
 		for (Map.Entry<State, ImmutableMap<String, Action.Shift>> stateEntry : stateMachine.getNonterminalActions().entrySet()) {
 			State state = stateEntry.getKey();
 			Assert.assertTrue(stateMachine.getStates().contains(state));
@@ -63,6 +67,12 @@ public class StateMachineBuilderTest {
 				Assert.assertTrue(stateMachine.getStates().contains(((Action.Shift) action).getNextState()));
 			}
 		}
+
+		// check properties of the start and end states
+		State startState = stateMachine.getStartState();
+		State endState = startState.determineNextStateAfterShiftingNonterminal(grammarInfo, grammar.getStartNonterminalName());
+		Assert.assertNotNull(endState);
+		Assert.assertEquals(Action.Accept.INSTANCE, stateMachine.getTerminalOrEofActions().get(endState).get(SpecialSymbols.EOF_SYMBOL_NAME));
 
 	}
 

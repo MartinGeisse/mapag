@@ -36,7 +36,6 @@ public class StateMachineBuilder {
 	}
 
 	public StateMachine build() {
-		// TODO test that name of the implicit root alternative is null
 		String startNonterminal = grammarInfo.getGrammar().getStartNonterminalName();
 		Expansion expansion = new Expansion(ImmutableList.of(new ExpansionElement(startNonterminal, null)));
 		Alternative implicitAlternative = new Alternative("implicit", expansion, null);
