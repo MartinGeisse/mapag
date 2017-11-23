@@ -5,9 +5,12 @@ import com.google.common.collect.ImmutableMap;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
 import name.martingeisse.mapag.grammar.canonical.TestUtil;
 import name.martingeisse.mapag.grammar.extended.Production;
+import name.martingeisse.mapag.grammar.extended.ResolveBlock;
+import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,8 +41,6 @@ public class ProductionCanonicalizerTest {
 		productionCanonicalizer.run();
 		Assert.assertTrue(productionCanonicalizer.getNonterminalAlternatives().isEmpty());
 	}
-
-	// TODO test resolve blocks
 
 	@DataProvider
 	public static Object[][] getTestCanonicalizationData() {
@@ -540,6 +541,34 @@ public class ProductionCanonicalizerTest {
 					),
 					"nt2", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("bbb"), new AlternativeConflictResolver("yyy", null))
+					)
+				)
+			},
+
+			//
+			// resolve blocks
+			//
+
+			{
+				ImmutableList.of(
+					new Production("nt1", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.extended.Alternative(null, new EmptyExpression(), null,
+							new ResolveBlock(ImmutableList.of(
+								new ResolveDeclaration(ConflictResolution.REDUCE, ImmutableList.of("aaa")),
+								new ResolveDeclaration(ConflictResolution.SHIFT, ImmutableList.of("bbb", "ccc"))
+							))
+						)
+					))
+				),
+				ImmutableMap.of(
+					"nt1", ImmutableList.of(
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion(),
+							new AlternativeConflictResolver(null, ImmutableMap.of(
+								"aaa", ConflictResolution.REDUCE,
+								"bbb", ConflictResolution.SHIFT,
+								"ccc", ConflictResolution.SHIFT
+							))
+						)
 					)
 				)
 			},
