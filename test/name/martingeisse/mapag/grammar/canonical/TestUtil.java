@@ -25,4 +25,19 @@ public final class TestUtil {
 		return new Expansion(ImmutableList.copyOf(expansionElements));
 	}
 
+	/**
+	 * Creates an {@link Expansion} object containing the specified symbols and expression names. The argument must
+	 * contain alternating symbols and names.
+	 */
+	public static Expansion expansionWithNames(String... symbolsAndNames) {
+		if (symbolsAndNames.length % 2 != 0) {
+			throw new IllegalArgumentException("odd number of strings in the argument");
+		}
+		List<ExpansionElement> expansionElements = new ArrayList<>();
+		for (int i = 0; i < symbolsAndNames.length; i += 2) {
+			expansionElements.add(new ExpansionElement(symbolsAndNames[i], symbolsAndNames[i + 1]));
+		}
+		return new Expansion(ImmutableList.copyOf(expansionElements));
+	}
+
 }

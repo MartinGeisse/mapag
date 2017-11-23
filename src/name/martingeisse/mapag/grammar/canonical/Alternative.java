@@ -47,8 +47,11 @@ public final class Alternative {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		if (name != null) {
-			builder.append(name).append(" ::= ");
+			builder.append(name);
+		} else {
+			builder.append('?');
 		}
+		builder.append(" ::= ");
 		builder.append(expansion);
 		builder.append(' ');
 		builder.append(conflictResolver);

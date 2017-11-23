@@ -29,6 +29,7 @@ public class ProductionCanonicalizer {
 	private final SyntheticNonterminalNameGenerator syntheticNonterminalNameGenerator;
 
 	public ProductionCanonicalizer(Collection<String> terminals, ImmutableList<Production> inputProductions) {
+		ParameterUtil.ensureNotNull(terminals, "terminals");
 		ParameterUtil.ensureNotNull(inputProductions, "inputProductions");
 		this.pendingProductions = new ArrayList<>(inputProductions);
 		this.nextPendingBatch = new ArrayList<>();
@@ -88,11 +89,7 @@ public class ProductionCanonicalizer {
 	}
 
 	private AlternativeConflictResolver convertConflictResolver(String precedenceDefiningTerminal, ResolveBlock resolveBlock) {
-		if (resolveBlock == null) {
-			return null;
-		} else if (resolveBlock.getResolveDeclarations() == null) {
-			return new AlternativeConflictResolver(precedenceDefiningTerminal, null);
-		} else {
+		if (resolveBlock != null) {
 			Map<String, ConflictResolution> terminalToConflictResolution = new HashMap<>();
 			for (ResolveDeclaration resolveDeclaration : resolveBlock.getResolveDeclarations()) {
 				ConflictResolution resolution = resolveDeclaration.getConflictResolution();
@@ -101,6 +98,10 @@ public class ProductionCanonicalizer {
 				}
 			}
 			return new AlternativeConflictResolver(precedenceDefiningTerminal, ImmutableMap.copyOf(terminalToConflictResolution));
+		} else if (precedenceDefiningTerminal != null) {
+			return new AlternativeConflictResolver(precedenceDefiningTerminal, null);
+		} else {
+			return null;
 		}
 	}
 
