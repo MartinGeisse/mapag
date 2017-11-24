@@ -14,6 +14,7 @@ import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.ide.MapagSourceFile;
 import name.martingeisse.mapag.input.psi.*;
+import name.martingeisse.mapag.util.UserMessageException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +118,7 @@ public class PsiToGrammarConverter {
 				productions.add(new Production(nonterminal, ImmutableList.copyOf(alternatives)));
 
 			} else if (psiProduction instanceof Production_Error) {
-				throw new RuntimeException("grammar contains error nodes");
+				throw new UserMessageException("grammar contains errors");
 			} else {
 				throw new RuntimeException("unknown production PSI node: " + psiProduction);
 			}
