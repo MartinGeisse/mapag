@@ -25,6 +25,11 @@ public final class SpecialSymbols {
 	 */
 	public static final String ERROR_SYMBOL_NAME = "%error";
 
+	/**
+	 * This symbol is used as a replacment terminal for any input that does not correspond to any other terminal.
+	 */
+	public static final String BAD_CHARACTER_SYMBOL_NAME = "%badchar";
+
 	// prevent instantiation
 	private SpecialSymbols() {
 	}

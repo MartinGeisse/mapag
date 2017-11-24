@@ -41,6 +41,11 @@ public class PrecedenceTableTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	public void testArgumentContainsBadCharacterSymbol() {
+		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableList.of(SpecialSymbols.BAD_CHARACTER_SYMBOL_NAME), Associativity.LEFT)));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testArgumentContainsOtherSpecialSymbol() {
 		new PrecedenceTable(ImmutableList.of(new PrecedenceTable.Entry(ImmutableList.of("%whatever"), Associativity.LEFT)));
 	}

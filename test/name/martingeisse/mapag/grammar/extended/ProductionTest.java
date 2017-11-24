@@ -43,6 +43,11 @@ public class ProductionTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	public void testBadCharacterSymbolOnLeftHandSide() {
+		new Production(SpecialSymbols.BAD_CHARACTER_SYMBOL_NAME, ALTERNATIVES);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testOtherSpecialSymbolOnLeftHandSide() {
 		new Production("%whatever", ALTERNATIVES);
 	}

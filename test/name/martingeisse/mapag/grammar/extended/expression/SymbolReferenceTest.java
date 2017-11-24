@@ -40,6 +40,11 @@ public class SymbolReferenceTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	public void testBadCharacterSymbolNotAllowed() {
+		new SymbolReference(SpecialSymbols.BAD_CHARACTER_SYMBOL_NAME);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testOtherSpecialSymbolNameNotAllowed() {
 		new SymbolReference("%whatever");
 	}

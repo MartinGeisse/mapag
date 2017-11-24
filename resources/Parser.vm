@@ -23,6 +23,7 @@ public class $className implements PsiParser, LightPsiParser {
 	private static final IElementType[] SYMBOL_CODE_TO_ELEMENT_TYPE = {
     	null, // %eof -- doesn't have an IElementType
     	null, // %error -- doesn't have an IElementType
+    	TokenType.BAD_CHARACTER, // %badchar
         #foreach($token in $tokenCodeToToken)
             Symbols.$token,
         #end
