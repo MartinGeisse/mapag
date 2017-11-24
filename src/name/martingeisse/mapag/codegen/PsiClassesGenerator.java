@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.codegen;
 
+import com.google.common.collect.ImmutableList;
 import com.intellij.lang.ParserDefinition;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
@@ -18,17 +19,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Note: A dynamically named PSI element must currently be represented by its own nonterminal, because otherwise
+ * we don't have a stable way of naming it in the properties. As long as the handling of dynamically named elements
+ * is delegated to a utility class (as it is currently the case), that's okay, because without a nonterminal the
+ * naming of the Parameter type of that utility method wouldn't be stable either. The cost of this is that the
+ * author has to invent a new nonterminal for a dynamically named element if one doesn't exist yet, so that's
+ * acceptable.
  */
 public class PsiClassesGenerator {
 
 	public static final String PACKAGE_NAME_PROPERTY = "psi.package";
 	public static final String PARSER_DEFINITION_CLASS_PROPERTY = "context.parserDefinitionClass";
+	public static final String DYNAMICALLY_NAMED_CLASSES_PROPERTY = "psi.dynamicallyNamedClasses";
+	public static final String PSI_UTIL_CLASS_PROPERTY = "psi.utilClass";
 
 	private final GrammarInfo grammarInfo;
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
+	private ImmutableList<String> dynamicallyNamedClasses;
 
 	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammarInfo = grammarInfo;
@@ -38,11 +47,26 @@ public class PsiClassesGenerator {
 	}
 
 	public void generate() throws ConfigurationException, IOException {
+
+		// prepare configuration
+		String dynamicallyNamedElementsProperty = configuration.getOptional(DYNAMICALLY_NAMED_CLASSES_PROPERTY);
+		if (dynamicallyNamedElementsProperty == null || dynamicallyNamedElementsProperty.trim().isEmpty()) {
+			dynamicallyNamedClasses = ImmutableList.of();
+		} else {
+			ImmutableList.Builder<String> builder = ImmutableList.builder();
+			for (String s : StringUtils.split(dynamicallyNamedElementsProperty, ',')) {
+				builder.add(s.trim());
+			}
+			dynamicallyNamedClasses = builder.build();
+		}
+
+		// generate classes
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			handleNonterminal(nonterminalDefinition);
 		}
 		generateFactoryClass();
 		generateInternalPsiUtilClass();
+
 	}
 
 	private void handleNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
@@ -312,6 +336,12 @@ public class PsiClassesGenerator {
 				}
 			}
 			context.put("nodeGetters", nodeGetters);
+
+			boolean dynamicallyNamed = dynamicallyNamedClasses.contains(className);
+			context.put("dynamicallyNamed", dynamicallyNamed);
+			if (dynamicallyNamed) {
+				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
+			}
 
 			try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
 				try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
