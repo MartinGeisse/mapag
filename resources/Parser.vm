@@ -67,7 +67,6 @@ public class $className implements PsiParser, LightPsiParser {
 	// other
 	private static final IElementType FILE_ELEMENT_TYPE = $fileElementType;
 	private static final int RECOVERY_SYNC_LENGTH = 3;
-	private static final Object ERROR_LOCATION_INDICATOR = new Object();
 
 	// ------------------------------------------------------------------------------------------------
 	// --- non-generated stuff (initialization and static stuff)
@@ -163,12 +162,15 @@ public class $className implements PsiParser, LightPsiParser {
 
             // Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
             // a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
-			if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
-				recoverFromError(psiBuilder);
-				if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
-					throw new UnrecoverableSyntaxException();
-				}
-			}
+            {
+                int originalState = state;
+                if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
+                    recoverFromError(psiBuilder);
+                    if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
+                        throw new UnrecoverableSyntaxException(state);
+                    }
+                }
+            }
 
         } catch (UnrecoverableSyntaxException e) {
 
@@ -275,8 +277,9 @@ public class $className implements PsiParser, LightPsiParser {
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
 			feedPsiBuilder(builder, ((List<?>)what).toArray());
-		} else if (what == ERROR_LOCATION_INDICATOR) {
-			builder.error("syntax error");
+		} else if (what instanceof ErrorLocationIndicator) {
+		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
+			builder.error(STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
 		} else if (what instanceof UnrecoverableSyntaxException) {
             builder.error(((UnrecoverableSyntaxException)what).getMessage());
             while (!builder.eof()) {
@@ -298,6 +301,8 @@ public class $className implements PsiParser, LightPsiParser {
 		// Note the edge cases: Both the current state (at the current stack size) and the start state (with an empty
 		// stack) could be able to consume the error symbol.
 
+		int originalState = state; // used for error messages
+
 		// dig up a recovery-capable state from the stack
 		int originalStackSize = stackSize;
 		while (ACTION_TABLE[state * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] == 0) {
@@ -305,7 +310,7 @@ public class $className implements PsiParser, LightPsiParser {
 			if (stackSize < 0) {
 				// we didn't even find a recovery-capable state
 				stackSize = originalStackSize;
-				throw new UnrecoverableSyntaxException();
+				throw new UnrecoverableSyntaxException(originalState);
 			}
 			state = stateStack[stackSize];
 		}
@@ -322,7 +327,9 @@ public class $className implements PsiParser, LightPsiParser {
 		// for the user to locate the error. For example, if the grammar allows to reduce the content for a whole
 		// broken statement to %error, IntelliJ would underline the whole broken statement as an error, not just the
 		// location where the error occurred.
-		errorNodeBuilder.add(ERROR_LOCATION_INDICATOR);
+		ErrorLocationIndicator errorLocationIndicator = new ErrorLocationIndicator();
+		errorLocationIndicator.state = originalState;
+		errorNodeBuilder.add(errorLocationIndicator);
 
 		// shift the error symbol. The parse tree is the node builder, so we can add further discarded tokens below.
 		if (!consumeSymbol(ERROR_SYMBOL_CODE, errorNodeBuilder)) {
@@ -371,7 +378,7 @@ public class $className implements PsiParser, LightPsiParser {
 				// irrelevant now. The PSI builder need not be reset here -- that happens automatically after the
 				// catch block.
 				stackSize = originalStackSize;
-				throw new UnrecoverableSyntaxException();
+				throw new UnrecoverableSyntaxException(originalState);
 			}
 			errorNodeBuilder.add(null);
 			psiBuilder.advanceLexer();
@@ -386,6 +393,14 @@ public class $className implements PsiParser, LightPsiParser {
             super("syntax error");
         }
 
+        public UnrecoverableSyntaxException(int state) {
+            super("expected: " + STATE_INPUT_EXPECTATION[state]);
+        }
+
+    }
+
+    private static class ErrorLocationIndicator {
+        int state;
     }
 
 }
