@@ -68,10 +68,10 @@ public class MapagGrammarParserGenerationMain {
 		codeGenerationProperties.setProperty("parser.error.IDENTIFIER", "identifier");
 		codeGenerationProperties.setProperty("parser.error.BLOCK_COMMENT", "/*");
 		codeGenerationProperties.setProperty("parser.error.LINE_COMMENT", "//");
-		codeGenerationProperties.setProperty("parser.error.precedenceDeclaration", "precedence declaration");
+		codeGenerationProperties.setProperty("parser.error.precedenceDeclaration", "precedence-declaration");
 		codeGenerationProperties.setProperty("parser.error.production", "production");
 		codeGenerationProperties.setProperty("parser.error.expression", "expression");
-		codeGenerationProperties.setProperty("parser.error.resolveDeclaration", "resolve declaration");
+		codeGenerationProperties.setProperty("parser.error.resolveDeclaration", "resolve-declaration");
 		codeGenerationProperties.setProperty("parser.error.nonemptyIdentifierList", "identifier(s)");
 		codeGenerationProperties.setProperty("symbolHolder.generate", "true");
 		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.mapag.input");

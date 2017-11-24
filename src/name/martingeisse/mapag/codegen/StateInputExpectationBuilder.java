@@ -103,7 +103,7 @@ public class StateInputExpectationBuilder {
 		Set<String> result = new HashSet<>();
 		for (StateElement element : elements) {
 			String symbol = element.getNextSymbol();
-			if (grammarInfo.getGrammar().getTerminalDefinitions().keySet().contains(symbolNaming.containsKey(symbol))) {
+			if (grammarInfo.getGrammar().getNonterminalDefinitions().keySet().contains(symbol) && symbolNaming.containsKey(symbol)) {
 				result.add(symbol);
 			}
 		}
