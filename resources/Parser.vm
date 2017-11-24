@@ -57,6 +57,13 @@ public class $className implements PsiParser, LightPsiParser {
         #end
 	};
 
+	// state machine (error messages)
+	private static final String[] STATE_INPUT_EXPECTATION = {
+        #foreach($text in $encodedStateInputExpectation)
+            "$text",
+        #end
+    };
+
 	// other
 	private static final IElementType FILE_ELEMENT_TYPE = $fileElementType;
 	private static final int RECOVERY_SYNC_LENGTH = 3;

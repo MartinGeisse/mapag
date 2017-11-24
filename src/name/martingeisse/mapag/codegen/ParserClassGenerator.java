@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  *
@@ -45,7 +46,8 @@ public class ParserClassGenerator {
 		int numberOfTerminals = grammar.getTerminalDefinitions().size();
 		int numberOfNonterminals = grammar.getNonterminalDefinitions().size();
 
-		StateInputExpectationBuilder stateInputExpectationBuilder = new StateInputExpectationBuilder(grammarInfo, stateMachine, symbolNaming)
+		StateInputExpectationBuilder stateInputExpectationBuilder = new StateInputExpectationBuilder(grammarInfo, stateMachine, configuration.getPrefixed("parser.error."));
+		stateInputExpectationBuilder.build();
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
@@ -120,6 +122,15 @@ public class ParserClassGenerator {
 				}
 			}
 			context.put("alternativeEntries", alternativeEntries);
+		}
+		{
+			Map<State, String> stateInputExpectation = stateInputExpectationBuilder.getExpectations();
+			String[] encodedStateInputExpectation = new String[numberOfStates];
+			for (Map.Entry<State, String> entry : stateInputExpectation.entrySet()) {
+				int stateIndex = stateMachineEncoder.getStateIndex(entry.getKey());
+				encodedStateInputExpectation[stateIndex] = entry.getValue();
+			}
+			context.put("stateInputExpectation", encodedStateInputExpectation);
 		}
 
 		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {

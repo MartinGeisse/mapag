@@ -99,9 +99,17 @@ public final class Configuration {
 	 * Gets all entries starting with the specified prefix as a map and marks them "understood".
 	 */
 	public Map<String, String> getPrefixed(String prefix) {
+		ParameterUtil.ensureNotNull(prefix, "prefix");
 		Map<String, String> result = new HashMap<>();
-		TODO
-			
+		for (Map.Entry<String, String> entry : allProperties.entrySet()) {
+			String key = entry.getKey();
+			if (key.startsWith(prefix)) {
+				keysNotYetUnderstood.remove(key);
+				String suffix = key.substring(prefix.length());
+				result.put(suffix, entry.getValue());
+			}
+		}
+		return result;
 	}
 
 	/**
