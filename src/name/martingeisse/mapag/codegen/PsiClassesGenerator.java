@@ -338,8 +338,15 @@ public class PsiClassesGenerator {
 			context.put("nodeGetters", nodeGetters);
 
 			boolean dynamicallyNamed = dynamicallyNamedClasses.contains(className);
-			context.put("dynamicallyNamed", dynamicallyNamed);
-			if (dynamicallyNamed) {
+			if (!dynamicallyNamed) {
+				context.put("dynamicallyNamedAbstract", false);
+				context.put("dynamicallyNamedImplementation", false);
+			} else if (isAbstract) {
+				context.put("dynamicallyNamedAbstract", true);
+				context.put("dynamicallyNamedImplementation", false);
+			} else {
+				context.put("dynamicallyNamedAbstract", false);
+				context.put("dynamicallyNamedImplementation", true);
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 			}
 

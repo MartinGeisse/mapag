@@ -5,6 +5,7 @@ import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
@@ -17,7 +18,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-public $classModifiers class $className extends $superclass #if($dynamicallyNamed) implements PsiNamedElement #end {
+public $classModifiers class $className extends $superclass #if($dynamicallyNamedAbstract) implements PsiNamedElement #end {
 
     public $className(@NotNull ASTNode node) {
         super(node);
@@ -105,7 +106,7 @@ public $classModifiers class $className extends $superclass #if($dynamicallyName
 
     #end
 
-	#if($dynamicallyNamed)
+	#if($dynamicallyNamedImplementation)
 
 		String getName() {
 			return ${psiUtilClass}.getName(this);
