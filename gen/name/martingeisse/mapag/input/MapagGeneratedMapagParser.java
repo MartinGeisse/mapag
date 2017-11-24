@@ -60,14 +60,14 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		-2147483648, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 25, 9, 0, 0, 23, 27, 0, 0, 18, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 31, 33, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 25, 9, 0, 0, 24, 27, 0, 0, 18, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 31, 33, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 25, -8, 0, 0, -8, 27, 0, 0, 18, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 31, 33, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 25, -7, 0, 0, -7, 27, 0, 0, -7, 0, -7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 31, 33, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 29, 9, 0, 0, 23, 25, 0, 0, 18, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 31, 33, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 29, 9, 0, 0, 24, 25, 0, 0, 18, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 31, 33, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 29, -8, 0, 0, -8, 25, 0, 0, 18, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 31, 33, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 29, -7, 0, 0, -7, 25, 0, 0, -7, 0, -7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7, 31, 33, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 26, -8, 0, 0, 0, 28, 0, 0, 19, 0, 22, 0, 0, 0, -8, 0, -8, 0, 0, 0, 0, 0, 0, 4, 32, 34, -8, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 26, -7, 0, 0, 0, 28, 0, 0, -7, 0, -7, 0, 0, 0, -7, 0, -7, 0, 0, 0, 0, 0, 0, 4, 32, 34, -7, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 26, 13, 0, 0, 0, 28, 0, 0, 19, 0, 22, 0, 0, 0, 102, 0, 104, 0, 0, 0, 0, 0, 0, 4, 32, 34, -2, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 30, -8, 0, 0, 0, 26, 0, 0, 19, 0, 22, 0, 0, 0, -8, 0, -8, 0, 0, 0, 0, 0, 0, 4, 32, 34, -8, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 30, -7, 0, 0, 0, 26, 0, 0, -7, 0, -7, 0, 0, 0, -7, 0, -7, 0, 0, 0, 0, 0, 0, -7, 32, 34, -7, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 30, 13, 0, 0, 0, 26, 0, 0, 19, 0, 22, 0, 0, 0, 102, 0, 104, 0, 0, 0, 0, 0, 0, 4, 32, 34, -2, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 77, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 79, 4, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 81, 0,
@@ -80,12 +80,12 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		0, 0, -6, -6, 0, 0, 0, -6, 0, 0, -6, 0, -6, 0, 0, 0, -6, 0, -6, 0, 0, 0, 0, 0, 0, -6, -6, -6, -6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, -12, -12, 0, 0, -12, -12, 0, 0, -12, 0, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -12, -12, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, -12, -12, 0, 0, 0, -12, 0, 0, -12, 0, -12, 0, 0, 0, -12, 0, -12, 0, 0, 0, 0, 0, 0, -12, -12, -12, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, -9, -9, 0, 0, -9, -9, 0, 0, -9, 0, -9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -9, -9, -9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, -9, -9, 0, 0, 0, -9, 0, 0, -9, 0, -9, 0, 0, 0, -9, 0, -9, 0, 0, 0, 0, 0, 0, -9, -9, -9, -9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, -13, -13, 0, 0, -13, -13, 0, 0, -13, 0, -13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -13, -13, -13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, -13, -13, 0, 0, 0, -13, 0, 0, -13, 0, -13, 0, 0, 0, -13, 0, -13, 0, 0, 0, 0, 0, 0, -13, -13, -13, -13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, -9, -9, 0, 0, -9, -9, 0, 0, -9, 0, -9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -9, -9, -9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, -9, -9, 0, 0, 0, -9, 0, 0, -9, 0, -9, 0, 0, 0, -9, 0, -9, 0, 0, 0, 0, 0, 0, -9, -9, -9, -9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, -10, -10, 0, 0, -10, -10, 0, 0, -10, 0, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -10, -10, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, -10, -10, 0, 0, 0, -10, 0, 0, -10, 0, -10, 0, 0, 0, -10, 0, -10, 0, 0, 0, 0, 0, 0, -10, -10, -10, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, -11, -11, 0, 0, -11, -11, 0, 0, -11, 0, -11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -11, -11, -11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -318,10 +318,13 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		37,
 	};
 
+	// state machine (error messages)
+	private static final String[] STATE_INPUT_EXPECTATION = {
+	};
+
 	// other
 	private static final IElementType FILE_ELEMENT_TYPE = name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE;
 	private static final int RECOVERY_SYNC_LENGTH = 3;
-	private static final Object ERROR_LOCATION_INDICATOR = new Object();
 
 	// ------------------------------------------------------------------------------------------------
 	// --- non-generated stuff (initialization and static stuff)
@@ -329,10 +332,19 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 	// static table, but has to be initialized at startup since element type indices aren't compile-time constants
 	private static int[] elementTypeIndexToSymbolCode;
+	private boolean used = false;
+	private int[] stateStack = new int[256];
+
+	// ------------------------------------------------------------------------------------------------
+	// --- non-generated stuff
+	// ------------------------------------------------------------------------------------------------
+	private Object[] parseTreeStack = new Object[256];
+	private int stackSize = 0;
+	private int state = START_STATE;
 
 	/**
-	 * This method initializes static tables on the first parse run -- we need element type
-	 * indices to be initialized before doing this.
+	 * This method initializes static tables on the first parse run -- we need element type indices to be initialized
+	 * before doing this.
 	 */
 	private static void initializeStatic() {
 		if (elementTypeIndexToSymbolCode != null) {
@@ -366,16 +378,6 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		}
 		throw new RuntimeException("unknown token: " + elementType);
 	}
-
-	// ------------------------------------------------------------------------------------------------
-	// --- non-generated stuff
-	// ------------------------------------------------------------------------------------------------
-
-	private boolean used = false;
-	private int[] stateStack = new int[256];
-	private Object[] parseTreeStack = new Object[256];
-	private int stackSize = 0;
-	private int state = START_STATE;
 
 	@Override
 	public ASTNode parse(IElementType type, PsiBuilder psiBuilder) {
@@ -417,10 +419,13 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 			// Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
 			// a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
-			if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
-				recoverFromError(psiBuilder);
+			{
+				int originalState = state;
 				if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
-					throw new UnrecoverableSyntaxException();
+					recoverFromError(psiBuilder);
+					if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
+						throw new UnrecoverableSyntaxException(state);
+					}
 				}
 			}
 
@@ -529,8 +534,9 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
 			feedPsiBuilder(builder, ((List<?>) what).toArray());
-		} else if (what == ERROR_LOCATION_INDICATOR) {
-			builder.error("syntax error");
+		} else if (what instanceof ErrorLocationIndicator) {
+			ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator) what;
+			builder.error(STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
 		} else if (what instanceof UnrecoverableSyntaxException) {
 			builder.error(((UnrecoverableSyntaxException) what).getMessage());
 			while (!builder.eof()) {
@@ -552,6 +558,8 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		// Note the edge cases: Both the current state (at the current stack size) and the start state (with an empty
 		// stack) could be able to consume the error symbol.
 
+		int originalState = state; // used for error messages
+
 		// dig up a recovery-capable state from the stack
 		int originalStackSize = stackSize;
 		while (ACTION_TABLE[state * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] == 0) {
@@ -559,7 +567,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			if (stackSize < 0) {
 				// we didn't even find a recovery-capable state
 				stackSize = originalStackSize;
-				throw new UnrecoverableSyntaxException();
+				throw new UnrecoverableSyntaxException(originalState);
 			}
 			state = stateStack[stackSize];
 		}
@@ -576,7 +584,9 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		// for the user to locate the error. For example, if the grammar allows to reduce the content for a whole
 		// broken statement to %error, IntelliJ would underline the whole broken statement as an error, not just the
 		// location where the error occurred.
-		errorNodeBuilder.add(ERROR_LOCATION_INDICATOR);
+		ErrorLocationIndicator errorLocationIndicator = new ErrorLocationIndicator();
+		errorLocationIndicator.state = originalState;
+		errorNodeBuilder.add(errorLocationIndicator);
 
 		// shift the error symbol. The parse tree is the node builder, so we can add further discarded tokens below.
 		if (!consumeSymbol(ERROR_SYMBOL_CODE, errorNodeBuilder)) {
@@ -625,7 +635,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 				// irrelevant now. The PSI builder need not be reset here -- that happens automatically after the
 				// catch block.
 				stackSize = originalStackSize;
-				throw new UnrecoverableSyntaxException();
+				throw new UnrecoverableSyntaxException(originalState);
 			}
 			errorNodeBuilder.add(null);
 			psiBuilder.advanceLexer();
@@ -640,6 +650,14 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			super("syntax error");
 		}
 
+		public UnrecoverableSyntaxException(int state) {
+			super("expected: " + STATE_INPUT_EXPECTATION[state]);
+		}
+
+	}
+
+	private static class ErrorLocationIndicator {
+		int state;
 	}
 
 }

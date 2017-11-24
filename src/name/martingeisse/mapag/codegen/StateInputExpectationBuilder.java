@@ -81,7 +81,7 @@ public class StateInputExpectationBuilder {
 
 	private void closeUnderEpsilonSkip(Set<StateElement> elements, Set<StateElement> uncheckedElements) {
 		Set<StateElement> newElements = new HashSet<>();
-		for (StateElement element : elements) {
+		for (StateElement element : uncheckedElements) {
 			if (!element.isAtEnd()) { // actually redundant because the element's follow-terminal is never a vanishable nonterminal
 				if (grammarInfo.getVanishableNonterminals().contains(element.getNextSymbol())) {
 					newElements.add(element.getShifted());
