@@ -11,6 +11,9 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import org.jetbrains.annotations.NotNull;
+#if($dynamicallyNamedImplementation)
+	import com.intellij.util.IncorrectOperationException;
+#end
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,12 +111,12 @@ public $classModifiers class $className extends $superclass #if($dynamicallyName
 
 	#if($dynamicallyNamedImplementation)
 
-		String getName() {
+		public String getName() {
 			return ${psiUtilClass}.getName(this);
 		}
 
-		PsiElement setName(String name) throws IncorrectOperationException {
-			return ${psiUtilClass}.setName(name);
+		public PsiElement setName(String newName) throws IncorrectOperationException {
+			return ${psiUtilClass}.setName(this, newName);
 		}
 
 	#end

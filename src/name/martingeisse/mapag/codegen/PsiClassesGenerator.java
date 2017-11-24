@@ -8,6 +8,7 @@ import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.Comparators;
+import name.martingeisse.mapag.util.UserMessageException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.VelocityContext;
 
@@ -337,17 +338,43 @@ public class PsiClassesGenerator {
 			}
 			context.put("nodeGetters", nodeGetters);
 
-			boolean dynamicallyNamed = dynamicallyNamedClasses.contains(className);
-			if (!dynamicallyNamed) {
-				context.put("dynamicallyNamedAbstract", false);
-				context.put("dynamicallyNamedImplementation", false);
-			} else if (isAbstract) {
-				context.put("dynamicallyNamedAbstract", true);
-				context.put("dynamicallyNamedImplementation", false);
-			} else {
-				context.put("dynamicallyNamedAbstract", false);
-				context.put("dynamicallyNamedImplementation", true);
+			if (dynamicallyNamedClasses.contains(className)) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
+				if (isAbstract) {
+
+					// this is a dynamically named multi-alternative nonterminal class
+					context.put("dynamicallyNamedAbstract", true);
+					context.put("dynamicallyNamedImplementation", false);
+
+				} else {
+
+					// this is either a dynamically named single-alternative nonterminal class or a
+					// directly dynamically named alternative class from a multialternative nonterminal (the latter
+					// is useful if only this alternative is dynamically named, and the others aren't)
+					context.put("dynamicallyNamedAbstract", false);
+					context.put("dynamicallyNamedImplementation", true);
+
+				}
+			} else if (dynamicallyNamedClasses.contains(superclass)) {
+				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
+				if (isAbstract) {
+
+					throw new UserMessageException("Found an abstract PSI class whose base class is " +
+						"dynamically named: " + className + " -- this doesn't make sense");
+
+				} else {
+
+					// this is an alternative of a dynamically named nonterminal, so the naming is inherited
+					context.put("dynamicallyNamedAbstract", false);
+					context.put("dynamicallyNamedImplementation", true);
+
+				}
+			} else {
+
+				// this class is not dynamically named
+				context.put("dynamicallyNamedAbstract", false);
+				context.put("dynamicallyNamedImplementation", false);
+
 			}
 
 			try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
