@@ -645,7 +645,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			feedPsiBuilder(builder, ((List<?>)what).toArray());
 		} else if (what instanceof ErrorLocationIndicator) {
 		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
-			builder.error(STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
+			builder.error("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
 		} else if (what instanceof UnrecoverableSyntaxException) {
             builder.error(((UnrecoverableSyntaxException)what).getMessage());
             while (!builder.eof()) {
