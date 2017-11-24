@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.input.psi;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.IncorrectOperationException;
 
@@ -12,6 +13,34 @@ final class PsiUtil {
 	// prevent instantiation
 	private PsiUtil() {
 	}
+
+	//
+	// reference support
+	//
+
+	public static PsiReference getReference(Expression_Identifier expression) {
+		return null;
+	}
+
+	public static PsiReference getReference(Production_SingleUnnamed expression) {
+		return null;
+	}
+
+	public static PsiReference getReference(Production_SingleNamed expression) {
+		return null;
+	}
+
+	public static PsiReference getReference(Production_Multi expression) {
+		return null;
+	}
+
+	public static PsiReference getReference(Production_Error expression) {
+		return null;
+	}
+
+	//
+	// naming support
+	//
 
 	public static String getName(Production_SingleUnnamed node) {
 		return node.getNonterminalName().getText();
