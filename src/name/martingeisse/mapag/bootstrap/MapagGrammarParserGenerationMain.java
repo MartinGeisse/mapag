@@ -36,11 +36,43 @@ public class MapagGrammarParserGenerationMain {
 	}
 
 	private static void run() throws Exception {
-
 		Properties codeGenerationProperties = new Properties();
 		codeGenerationProperties.setProperty("parser.package", "name.martingeisse.mapag.input");
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
 		codeGenerationProperties.setProperty("parser.fileElementType", "name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE");
+
+		codeGenerationProperties.setProperty("parser.error.KW_TERMINALS", "%terminals");
+		codeGenerationProperties.setProperty("parser.error.KW_NONTERMINALS", "%nonterminals");
+		codeGenerationProperties.setProperty("parser.error.KW_PRECEDENCE", "%precedence");
+		codeGenerationProperties.setProperty("parser.error.KW_LEFT", "%left");
+		codeGenerationProperties.setProperty("parser.error.KW_RIGHT", "%right");
+		codeGenerationProperties.setProperty("parser.error.KW_NONASSOC", "%nonassoc");
+		codeGenerationProperties.setProperty("parser.error.KW_START", "%start");
+		codeGenerationProperties.setProperty("parser.error.KW_RESOLVE", "%resolve");
+		codeGenerationProperties.setProperty("parser.error.KW_SHIFT", "%shift");
+		codeGenerationProperties.setProperty("parser.error.KW_REDUCE", "%reduce");
+		codeGenerationProperties.setProperty("parser.error.KW_EOF", "%eof");
+		codeGenerationProperties.setProperty("parser.error.KW_ERROR", "%error");
+		codeGenerationProperties.setProperty("parser.error.OPENING_CURLY_BRACE", "{");
+		codeGenerationProperties.setProperty("parser.error.CLOSING_CURLY_BRACE", "}");
+		codeGenerationProperties.setProperty("parser.error.OPENING_PARENTHESIS", "(");
+		codeGenerationProperties.setProperty("parser.error.CLOSING_PARENTHESIS", ")");
+		codeGenerationProperties.setProperty("parser.error.COMMA", ",");
+		codeGenerationProperties.setProperty("parser.error.SEMICOLON", ";");
+		codeGenerationProperties.setProperty("parser.error.COLON", ":");
+		codeGenerationProperties.setProperty("parser.error.EXPANDS_TO", "::=");
+		codeGenerationProperties.setProperty("parser.error.QUESTION_MARK", "?");
+		codeGenerationProperties.setProperty("parser.error.ASTERISK", "*");
+		codeGenerationProperties.setProperty("parser.error.PLUS", "+");
+		codeGenerationProperties.setProperty("parser.error.BAR", "|");
+		codeGenerationProperties.setProperty("parser.error.IDENTIFIER", "identifier");
+		codeGenerationProperties.setProperty("parser.error.BLOCK_COMMENT", "/*");
+		codeGenerationProperties.setProperty("parser.error.LINE_COMMENT", "//");
+		codeGenerationProperties.setProperty("parser.error.precedenceDeclaration", "precedence declaration");
+		codeGenerationProperties.setProperty("parser.error.production", "production");
+		codeGenerationProperties.setProperty("parser.error.expression", "expression");
+		codeGenerationProperties.setProperty("parser.error.resolveDeclaration", "resolve declaration");
+		codeGenerationProperties.setProperty("parser.error.nonemptyIdentifierList", "identifier(s)");
 		codeGenerationProperties.setProperty("symbolHolder.generate", "true");
 		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.mapag.input");
 		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");

@@ -59,7 +59,7 @@ public class $className implements PsiParser, LightPsiParser {
 
 	// state machine (error messages)
 	private static final String[] STATE_INPUT_EXPECTATION = {
-        #foreach($text in $encodedStateInputExpectation)
+        #foreach($text in $stateInputExpectation)
             "$text",
         #end
     };
@@ -394,7 +394,7 @@ public class $className implements PsiParser, LightPsiParser {
         }
 
         public UnrecoverableSyntaxException(int state) {
-            super("expected: " + STATE_INPUT_EXPECTATION[state]);
+            super("expected one of: " + STATE_INPUT_EXPECTATION[state]);
         }
 
     }

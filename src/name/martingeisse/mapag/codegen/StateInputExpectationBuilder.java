@@ -103,7 +103,7 @@ public class StateInputExpectationBuilder {
 		Set<String> result = new HashSet<>();
 		for (StateElement element : elements) {
 			String symbol = element.getNextSymbol();
-			if (symbolNaming.containsKey(symbol)) {
+			if (grammarInfo.getGrammar().getTerminalDefinitions().keySet().contains(symbolNaming.containsKey(symbol))) {
 				result.add(symbol);
 			}
 		}
@@ -140,7 +140,7 @@ public class StateInputExpectationBuilder {
 		terminalList.sort(null);
 		List<String> allList = new ArrayList<>(nonterminalList);
 		allList.addAll(terminalList);
-		return StringUtils.join(allList, ", ");
+		return StringUtils.join(allList, ' ');
 	}
 
 	private List<String> convertSymbolsToDisplayNames(Collection<String> symbols) {
