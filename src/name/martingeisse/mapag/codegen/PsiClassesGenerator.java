@@ -32,6 +32,7 @@ public class PsiClassesGenerator {
 	public static final String PACKAGE_NAME_PROPERTY = "psi.package";
 	public static final String PARSER_DEFINITION_CLASS_PROPERTY = "context.parserDefinitionClass";
 	public static final String DYNAMICALLY_NAMED_CLASSES_PROPERTY = "psi.dynamicallyNamedClasses";
+	public static final String REFERENCE_CLASSES_PROPERTY = "psi.referenceClasses";
 	public static final String PSI_UTIL_CLASS_PROPERTY = "psi.utilClass";
 
 	private final GrammarInfo grammarInfo;
@@ -39,6 +40,7 @@ public class PsiClassesGenerator {
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
 	private ImmutableList<String> dynamicallyNamedClasses;
+	private ImmutableList<String> referenceClasses;
 
 	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammarInfo = grammarInfo;
@@ -59,6 +61,16 @@ public class PsiClassesGenerator {
 				builder.add(s.trim());
 			}
 			dynamicallyNamedClasses = builder.build();
+		}
+		String referenceClassesProperty = configuration.getOptional(REFERENCE_CLASSES_PROPERTY);
+		if (referenceClassesProperty == null || referenceClassesProperty.trim().isEmpty()) {
+			referenceClasses = ImmutableList.of();
+		} else {
+			ImmutableList.Builder<String> builder = ImmutableList.builder();
+			for (String s : StringUtils.split(referenceClassesProperty, ',')) {
+				builder.add(s.trim());
+			}
+			referenceClasses = builder.build();
 		}
 
 		// generate classes
@@ -375,6 +387,13 @@ public class PsiClassesGenerator {
 				context.put("dynamicallyNamedAbstract", false);
 				context.put("dynamicallyNamedImplementation", false);
 
+			}
+
+			if (!isAbstract && (referenceClasses.contains(className) || referenceClasses.contains(superclass))) {
+				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
+				context.put("isReference", true);
+			} else {
+				context.put("isReference", false);
 			}
 
 			try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
