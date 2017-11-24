@@ -25,7 +25,7 @@ public final class Production_Multi extends Production {
 	}
 
 	public PsiElement setName(String newName) throws IncorrectOperationException {
-		return name.martingeisse.mapag.input.psi.PsiUtil.setName(this, newName);
+		return PsiUtil.setName(this, newName);
 	}
 
 }
