@@ -82,6 +82,8 @@ public class MapagGrammarParserGenerationMain {
 		codeGenerationProperties.setProperty("symbol.elementType.class", "MapagElementType");
 		codeGenerationProperties.setProperty("psi.generate", "true");
 		codeGenerationProperties.setProperty("psi.package", "name.martingeisse.mapag.input.psi");
+		codeGenerationProperties.setProperty("psi.utilClass", "name.martingeisse.mapag.input.psi.PsiUtil");
+		codeGenerationProperties.setProperty("psi.dynamicallyNamedClasses", "Production");
 		codeGenerationProperties.setProperty("context.parserDefinitionClass", "name.martingeisse.mapag.ide.MapagParserDefinition");
 		Configuration configuration = new Configuration(codeGenerationProperties);
 

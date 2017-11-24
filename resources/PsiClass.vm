@@ -108,11 +108,11 @@ public $classModifiers class $className extends $superclass #if($dynamicallyName
 	#if($dynamicallyNamed)
 
 		String getName() {
-			return $psiUtilClass.getName(this);
+			return ${psiUtilClass}.getName(this);
 		}
 
 		PsiElement setName(String name) throws IncorrectOperationException {
-			return $psiUtilClass.setName(name);
+			return ${psiUtilClass}.setName(name);
 		}
 
 	#end
