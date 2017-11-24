@@ -96,6 +96,15 @@ public final class Configuration {
 	}
 
 	/**
+	 * Gets all entries starting with the specified prefix as a map and marks them "understood".
+	 */
+	public Map<String, String> getPrefixed(String prefix) {
+		Map<String, String> result = new HashMap<>();
+		TODO
+			
+	}
+
+	/**
 	 * Throws an exception if any actual configuration property was not understood.
 	 */
 	public void expectAllUnderstood() throws ConfigurationException {

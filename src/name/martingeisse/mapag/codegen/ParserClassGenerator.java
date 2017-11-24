@@ -45,6 +45,8 @@ public class ParserClassGenerator {
 		int numberOfTerminals = grammar.getTerminalDefinitions().size();
 		int numberOfNonterminals = grammar.getNonterminalDefinitions().size();
 
+		StateInputExpectationBuilder stateInputExpectationBuilder = new StateInputExpectationBuilder(grammarInfo, stateMachine, symbolNaming)
+
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));

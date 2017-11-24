@@ -74,6 +74,7 @@ Sammeln der Symbole und erkennung von Duplikaten und "ausblenden":
 	        kein JMN verschwinden, außer es ist durch ein anderes JMN abgedeckt.
 - Danach werden alle State Elements mit einem JMN auf der linken Seite und den Punkt am Anfang entfernt
     (da weiter unten nur noch Terminale gefunden werden, ist das nur da relevant, wo ein JMN mit einem Terminal anfängt).
+        --> nein, nicht "DANACH", denn die oben unterdrückten Nichtterminale sollen auch keine Terminale erzeugen
 - Die Menge der jetzt möglichen Terminale "JMT" ist die Menge aller Terminale, wo in irgendeinem Element
 	des aktuellen State ein Punkt davor steht, vereinigt mit der Menge aller Terminale, die in irgendeinem
 	Element des aktuellen State mit Punkt am Ende als Lookahead-Terminal vorkommen.
