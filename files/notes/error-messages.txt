@@ -67,11 +67,17 @@ Sammeln der Symbole und erkennung von Duplikaten und "ausblenden":
 	Wenn eines der Elemente den Punkt vor einem vanishable Nonterminal stehen hat, wird das State Element
 	mit dem Punkt eine Stelle weiter dazugenommen.
 - Die Menge der jetzt möglichen Nichtterminale "JMN" ist die Menge aller signifikanten Nichtterminale, wo in
-	irgendeinenem Element des aktuellen State ein Punkt davor steht
-- Danach werden alle State Elements mit einem JMN auf der linken Seite entfernt
+	irgendeinenem Element des aktuellen State ein Punkt davor steht;
+	ausgenommen sind diejenigen Elemente, wo der Punkt am Anfang steht und auf der Linken Seite auch ein JMN.
+	    -> das macht keine Probleme bei Rekursion: Da kein Nichtterminal außer %start einen "Lufthaken" bildet,
+	        muss jedes Nichtterminal auch irgendwo anders rechts vorkommen als in einer Rekursion. Dadurch kann so
+	        kein JMN verschwinden, außer es ist durch ein anderes JMN abgedeckt.
+- Danach werden alle State Elements mit einem JMN auf der linken Seite und den Punkt am Anfang entfernt
+    (da weiter unten nur noch Terminale gefunden werden, ist das nur da relevant, wo ein JMN mit einem Terminal anfängt).
 - Die Menge der jetzt möglichen Terminale "JMT" ist die Menge aller Terminale, wo in irgendeinem Element
 	des aktuellen State ein Punkt davor steht, vereinigt mit der Menge aller Terminale, die in irgendeinem
 	Element des aktuellen State mit Punkt am Ende als Lookahead-Terminal vorkommen.
+- Die Menge der jetzt möglichen Symbole sind JMN vereinigt mit JMT.
 
 Hinweis: Dadurch kann ein Terminal in JMT vorkommen, auch wenn es ein anfangendes Terminal für ein JMN
 	ist, wenn es zusätzlich auch anderswo im aktuellen State erlaubt ist.
