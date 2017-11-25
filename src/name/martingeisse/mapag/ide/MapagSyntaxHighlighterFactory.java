@@ -42,8 +42,6 @@ public class MapagSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
 						return MapagTextAttributeKeys.IDENTIFIER;
 					} else if (tokenType == Symbols.KW_TERMINALS) {
 						return MapagTextAttributeKeys.KEYWORD;
-					} else if (tokenType == Symbols.KW_NONTERMINALS) {
-						return MapagTextAttributeKeys.KEYWORD;
 					} else if (tokenType == Symbols.KW_PRECEDENCE) {
 						return MapagTextAttributeKeys.KEYWORD;
 					} else if (tokenType == Symbols.KW_LEFT) {

@@ -134,7 +134,7 @@ final class PsiUtil {
 				}
 				List<Object> result = new ArrayList<>();
 				result.addAll(convertNonemptyIdentifierListToStrings(grammar.getTerminals()));
-				result.addAll(convertNonemptyIdentifierListToStrings(grammar.getNonterminals()));
+				// TODO result.addAll(convertNonemptyIdentifierListToStrings(grammar.getNonterminals()));
 				return result.toArray();
 			}
 

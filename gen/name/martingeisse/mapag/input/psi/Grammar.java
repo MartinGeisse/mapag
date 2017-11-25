@@ -15,20 +15,16 @@ public final class Grammar extends ASTWrapperPsiElement {
 		return (NonemptyIdentifierList) InternalPsiUtil.getChild(this, 2);
 	}
 
-	public NonemptyIdentifierList getNonterminals() {
-		return (NonemptyIdentifierList) InternalPsiUtil.getChild(this, 6);
-	}
-
 	public Grammar_PrecedenceTable getPrecedenceTable() {
-		return (Grammar_PrecedenceTable) InternalPsiUtil.getChild(this, 8);
+		return (Grammar_PrecedenceTable) InternalPsiUtil.getChild(this, 4);
 	}
 
 	public LeafPsiElement getStartSymbolName() {
-		return (LeafPsiElement) InternalPsiUtil.getChild(this, 10);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 6);
 	}
 
 	public Grammar_Productions getProductions() {
-		return (Grammar_Productions) InternalPsiUtil.getChild(this, 12);
+		return (Grammar_Productions) InternalPsiUtil.getChild(this, 8);
 	}
 
 }

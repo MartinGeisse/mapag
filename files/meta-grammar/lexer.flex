@@ -37,7 +37,6 @@ Identifier = ([:jletter:] | "_" ) ([:jletterdigit:] | [:jletter:] | "_" )*
 
 	// keywords
 	"%terminals" { return Symbols.KW_TERMINALS; }
-	"%nonterminals" { return Symbols.KW_NONTERMINALS; }
 	"%precedence" { return Symbols.KW_PRECEDENCE; }
 	"%left" { return Symbols.KW_LEFT; }
 	"%right" { return Symbols.KW_RIGHT; }

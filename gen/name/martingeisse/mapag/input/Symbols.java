@@ -19,7 +19,6 @@ public class Symbols {
 	public static final MapagElementType KW_ERROR = new MapagElementType("KW_ERROR");
 	public static final MapagElementType KW_LEFT = new MapagElementType("KW_LEFT");
 	public static final MapagElementType KW_NONASSOC = new MapagElementType("KW_NONASSOC");
-	public static final MapagElementType KW_NONTERMINALS = new MapagElementType("KW_NONTERMINALS");
 	public static final MapagElementType KW_PRECEDENCE = new MapagElementType("KW_PRECEDENCE");
 	public static final MapagElementType KW_REDUCE = new MapagElementType("KW_REDUCE");
 	public static final MapagElementType KW_RESOLVE = new MapagElementType("KW_RESOLVE");
