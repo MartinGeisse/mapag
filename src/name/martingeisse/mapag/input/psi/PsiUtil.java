@@ -26,19 +26,24 @@ final class PsiUtil {
 	//
 
 	public static String getNonterminalName(Production production) {
+		PsiElement element = getNonterminalNameNode(production);
+		return (element == null ? null : element.getText());
+	}
+
+	public static LeafPsiElement getNonterminalNameNode(Production production) {
 		if (production instanceof Production_SingleUnnamed) {
-			return ((Production_SingleUnnamed)production).getNonterminalName().getText();
+			return ((Production_SingleUnnamed) production).getNonterminalName();
 		} else if (production instanceof Production_SingleNamed) {
-			return ((Production_SingleNamed)production).getNonterminalName().getText();
+			return ((Production_SingleNamed) production).getNonterminalName();
 		} else if (production instanceof Production_Multi) {
-			return ((Production_Multi)production).getNonterminalName().getText();
+			return ((Production_Multi) production).getNonterminalName();
 		} else {
 			return null;
 		}
 	}
 
 	public static PsiElement setText(LeafPsiElement element, String newText) {
-		return (PsiElement)element.replaceWithText(newText);
+		return (PsiElement) element.replaceWithText(newText);
 	}
 
 	public static List<String> convertNonemptyIdentifierListToStrings(NonemptyIdentifierList list) {
@@ -62,6 +67,25 @@ final class PsiUtil {
 		}
 	}
 
+	public static List<LeafPsiElement> getSymbolDefiningPsiElements(PsiElement anchor) {
+		Grammar grammar = getAncestor(anchor, Grammar.class);
+		if (grammar == null) {
+			return new ArrayList<>();
+		}
+		List<LeafPsiElement> result = new ArrayList<>();
+		result.add(grammar.getTerminals().getFirstIdentifier());
+		for (NonemptyIdentifierList_1 more : grammar.getTerminals().getMoreIdentifiers().getAll()) {
+			result.add(more.getIdentifier());
+		}
+		for (Production production : grammar.getProductions().getAll()) {
+			LeafPsiElement nonterminalName = getNonterminalNameNode(production);
+			if (nonterminalName != null) {
+				result.add(nonterminalName);
+			}
+		}
+		return result;
+	}
+
 	//
 	// reference support
 	//
@@ -76,13 +100,18 @@ final class PsiUtil {
 
 			@Override
 			public TextRange getRangeInElement() {
-				return expression.getTextRange();
+				return new TextRange(0, getCanonicalText().length());
 			}
 
 			@Nullable
 			@Override
 			public PsiElement resolve() {
-				// TODO terminals too
+				String id = getCanonicalText();
+				for (LeafPsiElement element : getSymbolDefiningPsiElements(expression)) {
+					if (id.equals(element.getText())) {
+						return element;
+					}
+				}
 				return null;
 			}
 
@@ -101,7 +130,7 @@ final class PsiUtil {
 			public PsiElement bindToElement(@NotNull PsiElement psiElement) throws IncorrectOperationException {
 				// binding to terminals is currently not supported
 				if (psiElement instanceof Production) {
-					String newName = getNonterminalName((Production)psiElement);
+					String newName = getNonterminalName((Production) psiElement);
 					if (newName != null) {
 						return setText(expression.getIdentifier(), newName);
 					}
@@ -111,31 +140,14 @@ final class PsiUtil {
 
 			@Override
 			public boolean isReferenceTo(PsiElement psiElement) {
-				// TODO support terminals
-				if (psiElement instanceof Production) {
-					String referenceText = getCanonicalText();
-					String nonterminalName = getNonterminalName((Production)psiElement);
-					if (nonterminalName == null) {
-						return false;
-					}
-					return referenceText.equals(nonterminalName);
-				}
-				return false;
+				// TODO optimize
+				return getSymbolDefiningPsiElements(expression).contains(psiElement);
 			}
 
 			@NotNull
 			@Override
 			public Object[] getVariants() {
-				// here we show the nonterminals declared, regardless of whether there is a production
-				// TODO the whole concept is bad. "jump-to-definition" doesn't work if multiple productions can exist for a nonterminal!
-				Grammar grammar = getAncestor(expression, Grammar.class);
-				if (grammar == null) {
-					return new Object[0];
-				}
-				List<Object> result = new ArrayList<>();
-				result.addAll(convertNonemptyIdentifierListToStrings(grammar.getTerminals()));
-				// TODO result.addAll(convertNonemptyIdentifierListToStrings(grammar.getNonterminals()));
-				return result.toArray();
+				return getSymbolDefiningPsiElements(expression).toArray();
 			}
 
 			@Override
@@ -172,7 +184,7 @@ final class PsiUtil {
 
 	public static PsiElement setName(Production_SingleUnnamed node, String newName) throws IncorrectOperationException {
 		// rawReplaceWithText()? The docs don't tell the difference.
-		return (LeafPsiElement)node.getNonterminalName().replaceWithText(newName);
+		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
 	}
 
 	public static String getName(Production_SingleNamed node) {
@@ -180,7 +192,7 @@ final class PsiUtil {
 	}
 
 	public static PsiElement setName(Production_SingleNamed node, String newName) throws IncorrectOperationException {
-		return (LeafPsiElement)node.getNonterminalName().replaceWithText(newName);
+		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
 	}
 
 	public static String getName(Production_Multi node) {
@@ -188,7 +200,7 @@ final class PsiUtil {
 	}
 
 	public static PsiElement setName(Production_Multi node, String newName) throws IncorrectOperationException {
-		return (LeafPsiElement)node.getNonterminalName().replaceWithText(newName);
+		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
 	}
 
 	public static String getName(Production_Error node) {

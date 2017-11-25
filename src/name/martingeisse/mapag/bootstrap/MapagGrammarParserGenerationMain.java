@@ -18,13 +18,6 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.Properties;
 
-/**
- * TODO:
- * java.lang.RuntimeException: unknown token: BAD_CHARACTER
- * at name.martingeisse.mapag.input.MapagGeneratedMapagParser.getSymbolCodeForElementType(MapagGeneratedMapagParser.java:478)
- * at name.martingeisse.mapag.input.MapagGeneratedMapagParser.parse(MapagGeneratedMapagParser.java:522)
- * ...
- */
 public class MapagGrammarParserGenerationMain {
 
 	public static void main(String[] args) throws Exception {
