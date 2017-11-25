@@ -11,9 +11,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import name.martingeisse.mapag.input.MapagGeneratedMapagParser;
 import name.martingeisse.mapag.input.MapagLexer;
-import name.martingeisse.mapag.input.Symbols;
 import name.martingeisse.mapag.input.psi.PsiFactory;
 import org.jetbrains.annotations.NotNull;
 

@@ -11,7 +11,6 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import name.martingeisse.mapag.input.MapagElementType;
 import name.martingeisse.mapag.input.MapagLexer;
-import name.martingeisse.mapag.input.Symbols;
 import org.jetbrains.annotations.NotNull;
 
 /**
