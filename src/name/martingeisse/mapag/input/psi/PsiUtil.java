@@ -140,14 +140,24 @@ final class PsiUtil {
 
 			@Override
 			public boolean isReferenceTo(PsiElement psiElement) {
-				// TODO optimize
-				return getSymbolDefiningPsiElements(expression).contains(psiElement);
+				if (psiElement instanceof LeafPsiElement) {
+					String id = getCanonicalText();
+					if (id.equals(psiElement.getText())) {
+						return getSymbolDefiningPsiElements(expression).contains(psiElement);
+					}
+				}
+				return false;
 			}
 
 			@NotNull
 			@Override
 			public Object[] getVariants() {
-				return getSymbolDefiningPsiElements(expression).toArray();
+				// note: if this returns PSI elements, they must be PsiNamedElement or contain the name in meta-data
+				List<Object> variants = new ArrayList<>();
+				for (LeafPsiElement element : getSymbolDefiningPsiElements(expression)) {
+					variants.add(element.getText());
+				}
+				return variants.toArray();
 			}
 
 			@Override
