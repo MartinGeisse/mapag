@@ -26,6 +26,8 @@ import java.util.List;
  * naming of the Parameter type of that utility method wouldn't be stable either. The cost of this is that the
  * author has to invent a new nonterminal for a dynamically named element if one doesn't exist yet, so that's
  * acceptable.
+ *
+ * TODO PsiNameIdentifierOwner
  */
 public class PsiClassesGenerator {
 
