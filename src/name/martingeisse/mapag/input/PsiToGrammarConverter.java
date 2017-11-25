@@ -38,9 +38,6 @@ public class PsiToGrammarConverter {
 		ImmutableList<TerminalDeclaration> terminalDeclarations =
 			convertIdentifiers(psiGrammar.getTerminals(), TerminalDeclaration::new);
 
-		ImmutableList<NonterminalDeclaration> nonterminalDeclarations =
-			convertIdentifiers(psiGrammar.getNonterminals(), NonterminalDeclaration::new);
-
 		PrecedenceTable precedenceTable =
 			convertPrecedenceTable(psiGrammar.getPrecedenceTable());
 
@@ -48,7 +45,7 @@ public class PsiToGrammarConverter {
 
 		ImmutableList<Production> productions = convertProductions(psiGrammar.getProductions());
 
-		return new Grammar(terminalDeclarations, nonterminalDeclarations, precedenceTable, startSymbol, productions);
+		return new Grammar(terminalDeclarations, precedenceTable, startSymbol, productions);
 	}
 
 	private PrecedenceTable convertPrecedenceTable(Grammar_PrecedenceTable psiPrecedenceTable) {

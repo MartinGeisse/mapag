@@ -1,16 +1,10 @@
 
 %terminals {
-    KW_TERMINALS, KW_NONTERMINALS, KW_PRECEDENCE, KW_LEFT, KW_RIGHT, KW_NONASSOC, KW_START, KW_RESOLVE, KW_SHIFT, KW_REDUCE, KW_EOF, KW_ERROR,
+    KW_TERMINALS, KW_PRECEDENCE, KW_LEFT, KW_RIGHT, KW_NONASSOC, KW_START, KW_RESOLVE, KW_SHIFT, KW_REDUCE, KW_EOF, KW_ERROR,
     OPENING_CURLY_BRACE, CLOSING_CURLY_BRACE, OPENING_PARENTHESIS, CLOSING_PARENTHESIS,
     COMMA, SEMICOLON, COLON, EXPANDS_TO, QUESTION_MARK, ASTERISK, PLUS, BAR,
 	IDENTIFIER,
 	BLOCK_COMMENT, LINE_COMMENT // never passed to the parser
-}
-
-%nonterminals {
-    grammar, precedenceDeclaration,
-	production, rightHandSide, expression, resolveDeclaration, resolveDeclarationSymbol,
-	nonemptyIdentifierList
 }
 
 %start grammar;
@@ -22,7 +16,6 @@
 
 grammar ::=
 	KW_TERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList:terminals CLOSING_CURLY_BRACE
-	KW_NONTERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList:nonterminals CLOSING_CURLY_BRACE
 	(KW_PRECEDENCE OPENING_CURLY_BRACE precedenceDeclaration*:precedenceDeclarations CLOSING_CURLY_BRACE)?:precedenceTable
 	KW_START IDENTIFIER:startSymbolName SEMICOLON
 	production+:productions

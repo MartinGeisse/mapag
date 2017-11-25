@@ -14,21 +14,18 @@ public class TestGrammarObjects {
 	public static final TerminalDeclaration TERMINAL_2 = new TerminalDeclaration("bar");
 	public static final TerminalDeclaration TERMINAL_3 = new TerminalDeclaration("baz");
 	public static final ImmutableList<TerminalDeclaration> TERMINALS = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3);
-	public static final NonterminalDeclaration NONTERMINAL_1 = new NonterminalDeclaration("nt1");
-	public static final NonterminalDeclaration NONTERMINAL_2 = new NonterminalDeclaration("nt2");
-	public static final NonterminalDeclaration NONTERMINAL_3 = new NonterminalDeclaration("dummyStart");
-	public static final ImmutableList<NonterminalDeclaration> NONTERMINALS = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3);
 	public static final PrecedenceTable PRECEDENCE_TABLE_EMPTY = new PrecedenceTable(ImmutableList.of());
 	public static final PrecedenceTable PRECEDENCE_TABLE_NONEMPTY = new PrecedenceTable(ImmutableList.of(
 			new PrecedenceTable.Entry(ImmutableList.of(TERMINAL_2.getName()), Associativity.LEFT)
 	));
 	public static final String START_NONTERMINAL_NAME = "dummyStart";
 	public static final Alternative ALTERNATIVE_1 = new Alternative(null, new SymbolReference(TERMINAL_1.getName()), null, null);
-	public static final Alternative ALTERNATIVE_2 = new Alternative(null, new SymbolReference(NONTERMINAL_2.getName()), TERMINAL_3.getName(), null);
-	public static final Alternative ALTERNATIVE_3 = new Alternative(null, new SymbolReference(NONTERMINAL_1.getName()), null, null);
+	public static final Alternative ALTERNATIVE_2 = new Alternative(null, new SymbolReference("nt2"), TERMINAL_3.getName(), null);
+	public static final Alternative ALTERNATIVE_3 = new Alternative(null, new SymbolReference("nt1"), null, null);
 	public static final Production PRODUCTION_1 = new Production(START_NONTERMINAL_NAME, ImmutableList.of(ALTERNATIVE_1, ALTERNATIVE_2));
-	public static final Production PRODUCTION_2 = new Production(NONTERMINAL_1.getName(), ImmutableList.of(ALTERNATIVE_3));
-	public static final ImmutableList<Production> PRODUCTIONS = ImmutableList.of(PRODUCTION_1, PRODUCTION_2);
+	public static final Production PRODUCTION_2 = new Production("nt1", ImmutableList.of(ALTERNATIVE_3));
+	public static final Production PRODUCTION_3 = new Production("nt2", ImmutableList.of(ALTERNATIVE_3));
+	public static final ImmutableList<Production> PRODUCTIONS = ImmutableList.of(PRODUCTION_1, PRODUCTION_2, PRODUCTION_3);
 
 	// prevent instantiation
 	private TestGrammarObjects() {

@@ -19,7 +19,7 @@ public class GrammarValidatorTest {
 
 	@Test
 	public void testValid() {
-		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
@@ -27,23 +27,23 @@ public class GrammarValidatorTest {
 	public void testDuplicateTerminalName() {
 		TerminalDeclaration conflictingTerminalDeclaration = new TerminalDeclaration("foo");
 		ImmutableList<TerminalDeclaration> terminals = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3, conflictingTerminalDeclaration);
-		Grammar grammar = new Grammar(terminals, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(terminals, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testDuplicateNonterminalName() {
-		NonterminalDeclaration conflictingNonterminalDeclaration = new NonterminalDeclaration("nt2");
-		ImmutableList<NonterminalDeclaration> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminalDeclaration);
-		Grammar grammar = new Grammar(TERMINALS, nonterminals, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Production conflictingProduction = new Production("nt2", ImmutableList.of(ALTERNATIVE_3));
+		ImmutableList<Production> productions = ImmutableList.of(PRODUCTION_1, PRODUCTION_2, PRODUCTION_3, conflictingProduction);
+		Grammar grammar = new Grammar(TERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
 		new GrammarValidator(grammar).validate();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testSameNameForTerminalAndNonterminal() {
-		NonterminalDeclaration conflictingNonterminalDeclaration = new NonterminalDeclaration("foo");
-		ImmutableList<NonterminalDeclaration> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminalDeclaration);
-		Grammar grammar = new Grammar(TERMINALS, nonterminals, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Production conflictingProduction = new Production("foo", ImmutableList.of(ALTERNATIVE_3));
+		ImmutableList<Production> productions = ImmutableList.of(PRODUCTION_1, PRODUCTION_2, PRODUCTION_3, conflictingProduction);
+		Grammar grammar = new Grammar(TERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
 		new GrammarValidator(grammar).validate();
 	}
 
@@ -54,7 +54,7 @@ public class GrammarValidatorTest {
 				new PrecedenceTable.Entry(ImmutableList.of("baz", "xyz"), Associativity.LEFT)
 		)
 		);
-		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
@@ -66,22 +66,22 @@ public class GrammarValidatorTest {
 				new PrecedenceTable.Entry(ImmutableList.of("baz", "foo"), Associativity.LEFT)
 		)
 		);
-		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownStartNonterminal() {
-		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, "unknown", PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, PRECEDENCE_TABLE_EMPTY, "unknown", PRODUCTIONS);
 		new GrammarValidator(grammar).validate();
 	}
 
 	@Test
 	public void testProductionValidatorGetsCalled() {
-		Grammar grammar = new Grammar(TERMINALS, NONTERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
+		Grammar grammar = new Grammar(TERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
 		GrammarValidator.ProductionValidatorFactory productionValidatorFactory = (terminalNames, nonterminalNames, startSymbol) -> {
 			Assert.assertEquals(ImmutableSet.of(TERMINAL_1.getName(), TERMINAL_2.getName(), TERMINAL_3.getName()), terminalNames);
-			Assert.assertEquals(ImmutableSet.of(NONTERMINAL_1.getName(), NONTERMINAL_2.getName(), NONTERMINAL_3.getName()), nonterminalNames);
+			Assert.assertEquals(ImmutableSet.of("dummyStart", "nt1", "nt2"), nonterminalNames);
 			Assert.assertEquals(START_NONTERMINAL_NAME, startSymbol);
 			return new ProductionValidator() {
 
@@ -93,6 +93,8 @@ public class GrammarValidatorTest {
 						Assert.assertEquals(PRODUCTION_1, production);
 					} else if (counter == 1) {
 						Assert.assertEquals(PRODUCTION_2, production);
+					} else if (counter == 2) {
+						Assert.assertEquals(PRODUCTION_3, production);
 					} else {
 						Assert.fail("invalid counter: " + counter);
 					}
@@ -101,7 +103,7 @@ public class GrammarValidatorTest {
 
 				@Override
 				public void finish() {
-					Assert.assertEquals(2, counter);
+					Assert.assertEquals(3, counter);
 				}
 
 			};

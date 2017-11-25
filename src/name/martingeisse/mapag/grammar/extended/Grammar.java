@@ -9,16 +9,13 @@ import name.martingeisse.mapag.util.ParameterUtil;
 public final class Grammar {
 
 	private final ImmutableList<TerminalDeclaration> terminalDeclarations;
-	private final ImmutableList<NonterminalDeclaration> nonterminalDeclarations;
 	private final PrecedenceTable precedenceTable;
 	private final String startNonterminalName;
 	private final ImmutableList<Production> productions;
 
-	public Grammar(ImmutableList<TerminalDeclaration> terminalDeclarations, ImmutableList<NonterminalDeclaration> nonterminalDeclarations, PrecedenceTable precedenceTable, String startNonterminalName, ImmutableList<Production> productions) {
+	public Grammar(ImmutableList<TerminalDeclaration> terminalDeclarations, PrecedenceTable precedenceTable, String startNonterminalName, ImmutableList<Production> productions) {
 		this.terminalDeclarations = ParameterUtil.ensureNotNull(terminalDeclarations, "terminalDeclarations");
 		ParameterUtil.ensureNoNullElement(terminalDeclarations, "terminalDeclarations");
-		this.nonterminalDeclarations = ParameterUtil.ensureNotNull(nonterminalDeclarations, "nonterminalDeclarations");
-		ParameterUtil.ensureNoNullElement(nonterminalDeclarations, "nonterminalDeclarations");
 		this.precedenceTable = (precedenceTable == null ? new PrecedenceTable(ImmutableList.of()) : precedenceTable);
 		this.startNonterminalName = ParameterUtil.ensureNotNullOrEmpty(startNonterminalName, "startNonterminalName");
 		this.productions = ParameterUtil.ensureNotNull(productions, "productions");
@@ -27,10 +24,6 @@ public final class Grammar {
 
 	public ImmutableList<TerminalDeclaration> getTerminalDeclarations() {
 		return terminalDeclarations;
-	}
-
-	public ImmutableList<NonterminalDeclaration> getNonterminalDeclarations() {
-		return nonterminalDeclarations;
 	}
 
 	public PrecedenceTable getPrecedenceTable() {

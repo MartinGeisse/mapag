@@ -30,13 +30,6 @@ public class GrammarCanonicalizerTest {
 		TERMINAL_1, TERMINAL_2, TERMINAL_3, TERMINAL_4, TERMINAL_5, TERMINAL_6, TERMINAL_7
 	);
 
-	private static final NonterminalDeclaration NONTERMINAL_1 = new NonterminalDeclaration("p");
-	private static final NonterminalDeclaration NONTERMINAL_2 = new NonterminalDeclaration("q");
-	private static final NonterminalDeclaration NONTERMINAL_3 = new NonterminalDeclaration("start");
-	private static final ImmutableList<NonterminalDeclaration> NONTERMINALS = ImmutableList.of(
-		NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3
-	);
-
 	private static final PrecedenceTable PRECEDENCE_TABLE = new PrecedenceTable(ImmutableList.of(
 		new PrecedenceTable.Entry(ImmutableList.of("e"), Associativity.LEFT),
 		new PrecedenceTable.Entry(ImmutableList.of("f", "a"), Associativity.RIGHT),
@@ -60,8 +53,7 @@ public class GrammarCanonicalizerTest {
 	@Test(expected = IllegalStateException.class)
 	public void testConstructorWithInvalid() {
 		name.martingeisse.mapag.grammar.extended.Grammar inputGrammar =
-			new name.martingeisse.mapag.grammar.extended.Grammar(TERMINALS, NONTERMINALS,
-				PRECEDENCE_TABLE_EMPTY, "unknownStartNonterminal", PRODUCTIONS);
+			new name.martingeisse.mapag.grammar.extended.Grammar(TERMINALS, PRECEDENCE_TABLE_EMPTY, "unknownStartNonterminal", PRODUCTIONS);
 		new GrammarCanonicalizer(inputGrammar).run();
 	}
 
@@ -69,7 +61,7 @@ public class GrammarCanonicalizerTest {
 	public void testCanonicalization() {
 
 		name.martingeisse.mapag.grammar.extended.Grammar inputGrammar = new name.martingeisse.mapag.grammar.extended.Grammar(
-			TERMINALS, NONTERMINALS, PRECEDENCE_TABLE, START_NONTERMINAL_NAME, PRODUCTIONS);
+			TERMINALS, PRECEDENCE_TABLE, START_NONTERMINAL_NAME, PRODUCTIONS);
 		name.martingeisse.mapag.grammar.canonical.Grammar canonicalGrammar = new GrammarCanonicalizer(inputGrammar).run().getResult();
 
 		//

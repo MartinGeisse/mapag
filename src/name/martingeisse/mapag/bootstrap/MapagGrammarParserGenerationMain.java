@@ -1,7 +1,6 @@
 package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
-import com.intellij.execution.ui.ConsoleViewContentType;
 import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
@@ -17,15 +16,14 @@ import name.martingeisse.mapag.sm.StateMachineException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Properties;
 
 /**
  * TODO:
- java.lang.RuntimeException: unknown token: BAD_CHARACTER
- at name.martingeisse.mapag.input.MapagGeneratedMapagParser.getSymbolCodeForElementType(MapagGeneratedMapagParser.java:478)
- at name.martingeisse.mapag.input.MapagGeneratedMapagParser.parse(MapagGeneratedMapagParser.java:522)
- ...
+ * java.lang.RuntimeException: unknown token: BAD_CHARACTER
+ * at name.martingeisse.mapag.input.MapagGeneratedMapagParser.getSymbolCodeForElementType(MapagGeneratedMapagParser.java:478)
+ * at name.martingeisse.mapag.input.MapagGeneratedMapagParser.parse(MapagGeneratedMapagParser.java:522)
+ * ...
  */
 public class MapagGrammarParserGenerationMain {
 
@@ -45,7 +43,6 @@ public class MapagGrammarParserGenerationMain {
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
 		codeGenerationProperties.setProperty("parser.fileElementType", "name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE");
 		codeGenerationProperties.setProperty("parser.error.KW_TERMINALS", "%terminals");
-		codeGenerationProperties.setProperty("parser.error.KW_NONTERMINALS", "%nonterminals");
 		codeGenerationProperties.setProperty("parser.error.KW_PRECEDENCE", "%precedence");
 		codeGenerationProperties.setProperty("parser.error.KW_LEFT", "%left");
 		codeGenerationProperties.setProperty("parser.error.KW_RIGHT", "%right");
@@ -90,7 +87,6 @@ public class MapagGrammarParserGenerationMain {
 
 		ImmutableList terminalDeclarations = ImmutableList.of(
 			new TerminalDeclaration("KW_TERMINALS"),
-			new TerminalDeclaration("KW_NONTERMINALS"),
 			new TerminalDeclaration("KW_PRECEDENCE"),
 			new TerminalDeclaration("KW_LEFT"),
 			new TerminalDeclaration("KW_RIGHT"),
@@ -118,17 +114,6 @@ public class MapagGrammarParserGenerationMain {
 			new TerminalDeclaration("LINE_COMMENT") // never passed to the parser
 		);
 
-		ImmutableList nonterminalDeclarations = ImmutableList.of(
-			new NonterminalDeclaration("grammar"),
-			new NonterminalDeclaration("precedenceDeclaration"),
-			new NonterminalDeclaration("production"),
-			new NonterminalDeclaration("rightHandSide"),
-			new NonterminalDeclaration("expression"),
-			new NonterminalDeclaration("resolveDeclaration"),
-			new NonterminalDeclaration("resolveDeclarationSymbol"),
-			new NonterminalDeclaration("nonemptyIdentifierList")
-		);
-
 		PrecedenceTable precedenceTable = null;
 
 		String startNonterminalName = "grammar";
@@ -139,10 +124,6 @@ public class MapagGrammarParserGenerationMain {
 					symbol("KW_TERMINALS"),
 					symbol("OPENING_CURLY_BRACE"),
 					symbol("nonemptyIdentifierList").withName("terminals"),
-					symbol("CLOSING_CURLY_BRACE"),
-					symbol("KW_NONTERMINALS"),
-					symbol("OPENING_CURLY_BRACE"),
-					symbol("nonemptyIdentifierList").withName("nonterminals"),
 					symbol("CLOSING_CURLY_BRACE"),
 					optional(
 						symbol("KW_PRECEDENCE"),
@@ -283,7 +264,7 @@ public class MapagGrammarParserGenerationMain {
 			))
 		);
 
-		Grammar grammar = new Grammar(terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
+		Grammar grammar = new Grammar(terminalDeclarations, precedenceTable, startNonterminalName, productions);
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
 		OutputFileFactory outputFileFactory = (packageName, className) -> {

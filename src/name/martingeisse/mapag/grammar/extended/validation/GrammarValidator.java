@@ -1,7 +1,10 @@
 package name.martingeisse.mapag.grammar.extended.validation;
 
 import com.google.common.collect.ImmutableSet;
-import name.martingeisse.mapag.grammar.extended.*;
+import name.martingeisse.mapag.grammar.extended.Grammar;
+import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
+import name.martingeisse.mapag.grammar.extended.Production;
+import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +18,7 @@ public final class GrammarValidator {
 
 	private final Grammar grammar;
 	private final ProductionValidatorFactory productionValidatorFactory;
+
 	public GrammarValidator(Grammar grammar) {
 		this(grammar, (terminalNames, nonterminalNames, startSymbol) -> {
 			ImmutableSet<String> allSymbolNames = ImmutableSet.<String>builder().addAll(terminalNames).addAll(nonterminalNames).build();
@@ -41,9 +45,9 @@ public final class GrammarValidator {
 		}
 
 		Set<String> nonterminalNames = new HashSet<>();
-		for (NonterminalDeclaration nonterminalDeclaration : grammar.getNonterminalDeclarations()) {
-			if (!nonterminalNames.add(nonterminalDeclaration.getName())) {
-				throw new IllegalStateException("redeclaration of nonterminal: " + nonterminalDeclaration.getName());
+		for (Production production : grammar.getProductions()) {
+			if (!nonterminalNames.add(production.getLeftHandSide())) {
+				throw new IllegalStateException("redeclaration of nonterminal: " + production.getLeftHandSide());
 			}
 		}
 

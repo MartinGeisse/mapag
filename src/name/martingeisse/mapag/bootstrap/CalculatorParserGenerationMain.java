@@ -1,7 +1,6 @@
 package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
@@ -51,12 +50,6 @@ public class CalculatorParserGenerationMain {
 			new TerminalDeclaration("LINE_COMMENT") // never passed to the parser
 		);
 
-		ImmutableList<NonterminalDeclaration> nonterminalDeclarations = ImmutableList.of(
-			new NonterminalDeclaration("calculation"),
-			new NonterminalDeclaration("statement"),
-			new NonterminalDeclaration("expression")
-		);
-
 		PrecedenceTable precedenceTable = new PrecedenceTable(ImmutableList.of(
 			new PrecedenceTable.Entry(ImmutableList.of("PLUS", "MINUS"), Associativity.LEFT),
 			new PrecedenceTable.Entry(ImmutableList.of("TIMES", "DIVIDED_BY"), Associativity.LEFT)
@@ -89,7 +82,7 @@ public class CalculatorParserGenerationMain {
 			))
 		);
 
-		Grammar grammar = new Grammar(terminalDeclarations, nonterminalDeclarations, precedenceTable, startNonterminalName, productions);
+		Grammar grammar = new Grammar(terminalDeclarations, precedenceTable, startNonterminalName, productions);
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
 		OutputFileFactory outputFileFactory = (packageName, className) -> {
