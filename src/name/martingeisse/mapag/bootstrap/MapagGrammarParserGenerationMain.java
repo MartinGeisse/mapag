@@ -193,10 +193,10 @@ public class MapagGrammarParserGenerationMain {
 			new Production("rightHandSide", ImmutableList.of(
 				alternative(null, sequence(
 					symbol("expression").withName("expression"),
-					zeroOrMore(symbol("rightHandSideAttribute")).withName("attributes")
+					zeroOrMore(symbol("alternativeAttribute")).withName("attributes")
 				))
 			)),
-			new Production("rightHandSideAttribute", ImmutableList.of(
+			new Production("alternativeAttribute", ImmutableList.of(
 				alternative("precedence", sequence(
 					symbol("KW_PRECEDENCE"),
 					symbol("IDENTIFIER").withName("precedenceDefiningTerminal")
@@ -207,22 +207,19 @@ public class MapagGrammarParserGenerationMain {
 					zeroOrMore(symbol("resolveDeclaration")).withName("resolveDeclarations"),
 					symbol("CLOSING_CURLY_BRACE")
 				)),
-				alternative("reduceOnError", symbol("KW_REDUCE_ON_ERROR"))
+				alternative("reduceOnError", symbol("KW_REDUCE_ON_ERROR")),
+				alternative("eof", symbol("KW_EOF"))
 			)),
 			new Production("resolveDeclaration", ImmutableList.of(
 				alternative(null, sequence(
 					or(symbol("KW_SHIFT").withName("shift"), symbol("KW_REDUCE").withName("reduce")).withName("action"),
-					symbol("resolveDeclarationSymbol").withName("firstSymbol"),
+					symbol("IDENTIFIER").withName("firstSymbol"),
 					zeroOrMore(
 						symbol("COMMA"),
-						symbol("resolveDeclarationSymbol").withName("symbol")
+						symbol("IDENTIFIER").withName("symbol")
 					).withName("additionalSymbols"),
 					symbol("SEMICOLON")
 				))
-			)),
-			new Production("resolveDeclarationSymbol", ImmutableList.of(
-				alternative("identifier", symbol("IDENTIFIER").withName("symbol")),
-				alternative("eof", symbol("KW_EOF"))
 			)),
 			new Production("expression", ImmutableList.of(
 				alternativeWithReduceOnError("identifier", symbol("IDENTIFIER").withName("identifier")),

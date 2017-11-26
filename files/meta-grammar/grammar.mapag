@@ -52,20 +52,16 @@ production ::= {
 	error ::= %error SEMICOLON;
 }
 
-rightHandSide ::= expression:expression rightHandSideAttribute*:attributes;
+rightHandSide ::= expression:expression alternativeAttribute*:attributes;
 
-rightHandSideAttribute ::= {
+alternativeAttribute ::= {
 	precedence ::= KW_PRECEDENCE IDENTIFIER:precedenceDefiningTerminal;
 	resolveBlock ::= KW_RESOLVE OPENING_CURLY_BRACE resolveDeclaration*:resolveDeclarations CLOSING_CURLY_BRACE;
 	reduceOnError ::= KW_REDUCE_ON_ERROR;
+	eof ::= KW_EOF;
 }
 
-resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce):action resolveDeclarationSymbol:firstSymbol (COMMA resolveDeclarationSymbol:symbol)*:additionalSymbols SEMICOLON;
-
-resolveDeclarationSymbol ::= {
-    identifier ::= IDENTIFIER:symbol;
-    eof ::= KW_EOF;
-}
+resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce):action IDENTIFIER:firstSymbol (COMMA IDENTIFIER:symbol)*:additionalSymbols SEMICOLON;
 
 expression ::= {
     identifier ::= IDENTIFIER:identifier;
