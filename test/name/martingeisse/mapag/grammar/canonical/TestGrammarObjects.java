@@ -16,15 +16,15 @@ public class TestGrammarObjects {
 	public static final ImmutableList<TerminalDefinition> TERMINALS = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3);
 
 	public static final NonterminalDefinition NONTERMINAL_1 = new NonterminalDefinition("nt1", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion(), null),
-		new Alternative("a2", TestUtil.expansion("foo", "bar"), null),
-		new Alternative("a3", TestUtil.expansion("foo", "baz"), null)
+		new Alternative("a1", TestUtil.expansion(), null, false),
+		new Alternative("a2", TestUtil.expansion("foo", "bar"), null, false),
+		new Alternative("a3", TestUtil.expansion("foo", "baz"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 	public static final NonterminalDefinition NONTERMINAL_2 = new NonterminalDefinition("nt2", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion("dummyStart", "dummyStart"), null)
+		new Alternative("a1", TestUtil.expansion("dummyStart", "dummyStart"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 	public static final NonterminalDefinition NONTERMINAL_3 = new NonterminalDefinition("dummyStart", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion("nt1", "nt2", "baz"), null)
+		new Alternative("a1", TestUtil.expansion("nt1", "nt2", "baz"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 	public static final ImmutableList<NonterminalDefinition> NONTERMINALS = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3);
 

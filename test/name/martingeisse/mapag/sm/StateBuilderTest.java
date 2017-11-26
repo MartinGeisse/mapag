@@ -25,37 +25,37 @@ public class StateBuilderTest {
 	private static final TerminalDefinition TERMINAL_3 = new TerminalDefinition("t3", 3, Associativity.RIGHT);
 
 	private static final NonterminalDefinition START_SYMBOL_1 = new NonterminalDefinition("startSymbol", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion("t1"), null)
+		new Alternative("a1", TestUtil.expansion("t1"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 
 	private static final NonterminalDefinition START_SYMBOL_2 = new NonterminalDefinition("startSymbol", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion("t1"), null),
-		new Alternative("a2", TestUtil.expansion("t2"), null)
+		new Alternative("a1", TestUtil.expansion("t1"), null, false),
+		new Alternative("a2", TestUtil.expansion("t2"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 
 	private static final NonterminalDefinition START_SYMBOL_3 = new NonterminalDefinition("startSymbol", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion("t3"), null),
-		new Alternative("a2", TestUtil.expansion("nt1"), null)
+		new Alternative("a1", TestUtil.expansion("t3"), null, false),
+		new Alternative("a2", TestUtil.expansion("nt1"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 
 	private static final NonterminalDefinition NONTERMINAL_1 = new NonterminalDefinition("nt1", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion("t1"), null)
+		new Alternative("a1", TestUtil.expansion("t1"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 
 	private static final NonterminalDefinition NONTERMINAL_2 = new NonterminalDefinition("nt2", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion("t2"), null)
+		new Alternative("a1", TestUtil.expansion("t2"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 
 	private static final NonterminalDefinition NONTERMINAL_3 = new NonterminalDefinition("nt3", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion("t1", "nt1", "t2", "t2"), null)
+		new Alternative("a1", TestUtil.expansion("t1", "nt1", "t2", "t2"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 
 	private static final NonterminalDefinition NONTERMINAL_4 = new NonterminalDefinition("nt4", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion("t1", "nt1", "t2", "t3"), null)
+		new Alternative("a1", TestUtil.expansion("t1", "nt1", "t2", "t3"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 
 	private static final NonterminalDefinition NONTERMINAL_5 = new NonterminalDefinition("nt5", ImmutableList.of(
-		new Alternative("a1", TestUtil.expansion("t1", "nt1", "t3", "t3"), null)
+		new Alternative("a1", TestUtil.expansion("t1", "nt1", "t3", "t3"), null, false)
 	), NonterminalDefinition.PsiStyle.NORMAL);
 
 	//
@@ -90,7 +90,7 @@ public class StateBuilderTest {
 			{
 				ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3),
 				ImmutableList.of(START_SYMBOL_1),
-				ImmutableSet.of(new StateElement("dummy", new Alternative("a1", TestUtil.expansion("startSymbol"), null), 0, "%eof")),
+				ImmutableSet.of(new StateElement("dummy", new Alternative("a1", TestUtil.expansion("startSymbol"), null, false), 0, "%eof")),
 				ImmutableSet.of(new StateElement("startSymbol", START_SYMBOL_1.getAlternatives().get(0), 0, "%eof")),
 			},
 
@@ -98,7 +98,7 @@ public class StateBuilderTest {
 			{
 				ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3),
 				ImmutableList.of(START_SYMBOL_2),
-				ImmutableSet.of(new StateElement("dummy", new Alternative("a1", TestUtil.expansion("startSymbol"), null), 0, "%eof")),
+				ImmutableSet.of(new StateElement("dummy", new Alternative("a1", TestUtil.expansion("startSymbol"), null, false), 0, "%eof")),
 				ImmutableSet.of(
 					new StateElement("startSymbol", START_SYMBOL_2.getAlternatives().get(0), 0, "%eof"),
 					new StateElement("startSymbol", START_SYMBOL_2.getAlternatives().get(1), 0, "%eof")
@@ -109,7 +109,7 @@ public class StateBuilderTest {
 			{
 				ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3),
 				ImmutableList.of(START_SYMBOL_3, NONTERMINAL_1),
-				ImmutableSet.of(new StateElement("dummy", new Alternative("a1", TestUtil.expansion("startSymbol"), null), 0, "%eof")),
+				ImmutableSet.of(new StateElement("dummy", new Alternative("a1", TestUtil.expansion("startSymbol"), null, false), 0, "%eof")),
 				ImmutableSet.of(
 					new StateElement("startSymbol", START_SYMBOL_3.getAlternatives().get(0), 0, "%eof"),
 					new StateElement("startSymbol", START_SYMBOL_3.getAlternatives().get(1), 0, "%eof"),
@@ -121,7 +121,7 @@ public class StateBuilderTest {
 			{
 				ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3),
 				ImmutableList.of(START_SYMBOL_3, NONTERMINAL_1, NONTERMINAL_2),
-				ImmutableSet.of(new StateElement("dummy", new Alternative("a1", TestUtil.expansion("startSymbol"), null), 0, "%eof")),
+				ImmutableSet.of(new StateElement("dummy", new Alternative("a1", TestUtil.expansion("startSymbol"), null, false), 0, "%eof")),
 				ImmutableSet.of(
 					new StateElement("startSymbol", START_SYMBOL_3.getAlternatives().get(0), 0, "%eof"),
 					new StateElement("startSymbol", START_SYMBOL_3.getAlternatives().get(1), 0, "%eof"),

@@ -18,6 +18,13 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.Properties;
 
+/**
+ * TODO: Problem #1: a partial / faulty production at the end of the input file causes a give-up syntax error, which
+ * turns the whole file into a "parsed fragment" instead of a "grammar" and thus breaks auto-complete.
+ *
+ * TODO: Problem #2: an IDENTIFIER right before a syntax error won't get reduced to an Expression_Identifier due to
+ * the wrong lookahead terminal. This also breaks auto-complete.
+ */
 public class MapagGrammarParserGenerationMain {
 
 	public static void main(String[] args) throws Exception {
@@ -46,6 +53,7 @@ public class MapagGrammarParserGenerationMain {
 		codeGenerationProperties.setProperty("parser.error.KW_REDUCE", "%reduce");
 		codeGenerationProperties.setProperty("parser.error.KW_EOF", "%eof");
 		codeGenerationProperties.setProperty("parser.error.KW_ERROR", "%error");
+		codeGenerationProperties.setProperty("parser.error.KW_REDUCE_ON_ERROR", "%reduceOnError");
 		codeGenerationProperties.setProperty("parser.error.OPENING_CURLY_BRACE", "{");
 		codeGenerationProperties.setProperty("parser.error.CLOSING_CURLY_BRACE", "}");
 		codeGenerationProperties.setProperty("parser.error.OPENING_PARENTHESIS", "(");
@@ -90,6 +98,7 @@ public class MapagGrammarParserGenerationMain {
 			new TerminalDeclaration("KW_REDUCE"),
 			new TerminalDeclaration("KW_EOF"),
 			new TerminalDeclaration("KW_ERROR"),
+			new TerminalDeclaration("KW_REDUCE_ON_ERROR"),
 			new TerminalDeclaration("OPENING_CURLY_BRACE"),
 			new TerminalDeclaration("CLOSING_CURLY_BRACE"),
 			new TerminalDeclaration("OPENING_PARENTHESIS"),
@@ -182,19 +191,23 @@ public class MapagGrammarParserGenerationMain {
 				))
 			)),
 			new Production("rightHandSide", ImmutableList.of(
-				alternative("withoutResolver", symbol("expression").withName("expression")),
-				alternative("withPrecedenceResolver", sequence(
+				alternative("withExplicitResolver", sequence(
 					symbol("expression").withName("expression"),
+					zeroOrMore(symbol("rightHandSideAttribute")).withName("attributes")
+				))
+			)),
+			new Production("rightHandSideAttribute", ImmutableList.of(
+				alternative("precedence", sequence(
 					symbol("KW_PRECEDENCE"),
 					symbol("IDENTIFIER").withName("precedenceDefiningTerminal")
 				)),
-				alternative("withExplicitResolver", sequence(
-					symbol("expression").withName("expression"),
+				alternative("resolveBlock", sequence(
 					symbol("KW_RESOLVE"),
 					symbol("OPENING_CURLY_BRACE"),
 					zeroOrMore(symbol("resolveDeclaration")).withName("resolveDeclarations"),
 					symbol("CLOSING_CURLY_BRACE")
-				))
+				)),
+				alternative("reduceOnError", symbol("KW_REDUCE_ON_ERROR"))
 			)),
 			new Production("resolveDeclaration", ImmutableList.of(
 				alternative(null, sequence(
@@ -326,14 +339,14 @@ public class MapagGrammarParserGenerationMain {
 	}
 
 	private static Alternative alternative(String name, Expression expression) {
-		return new Alternative(name, expression, null, null);
+		return new Alternative(name, expression, null, null, false);
 	}
 
 	private static Alternative alternativeWithResolution(String name, Expression expression, ImmutableList<String> shiftTerminals, ImmutableList<String> reduceTerminals) {
 		ResolveDeclaration shiftDeclaration = new ResolveDeclaration(ConflictResolution.SHIFT, shiftTerminals);
 		ResolveDeclaration reduceDeclaration = new ResolveDeclaration(ConflictResolution.REDUCE, reduceTerminals);
 		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of(shiftDeclaration, reduceDeclaration));
-		return new Alternative(name, expression, null, resolveBlock);
+		return new Alternative(name, expression, null, resolveBlock, false);
 	}
 
 }

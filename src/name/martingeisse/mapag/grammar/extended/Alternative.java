@@ -12,8 +12,9 @@ public final class Alternative {
 	private final Expression expression;
 	private final String precedenceDefiningTerminal;
 	private final ResolveBlock resolveBlock;
+	private final boolean reduceOnError;
 
-	public Alternative(String name, Expression expression, String precedenceDefiningTerminal, ResolveBlock resolveBlock) {
+	public Alternative(String name, Expression expression, String precedenceDefiningTerminal, ResolveBlock resolveBlock, boolean reduceOnError) {
 		this.name = ParameterUtil.ensureNotEmpty(name, "name");
 		this.expression = ParameterUtil.ensureNotNull(expression, "expression");
 		ParameterUtil.ensureNotEmpty(precedenceDefiningTerminal, "precedenceDefiningTerminal");
@@ -22,6 +23,7 @@ public final class Alternative {
 		}
 		this.precedenceDefiningTerminal = precedenceDefiningTerminal;
 		this.resolveBlock = resolveBlock;
+		this.reduceOnError = reduceOnError;
 	}
 
 	public String getName() {
@@ -40,6 +42,10 @@ public final class Alternative {
 		return resolveBlock;
 	}
 
+	public boolean isReduceOnError() {
+		return reduceOnError;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -50,6 +56,9 @@ public final class Alternative {
 		}
 		if (resolveBlock != null) {
 			builder.append(" %resolve ").append(resolveBlock);
+		}
+		if (reduceOnError) {
+			builder.append(" %reduceOnError");
 		}
 		builder.append('}');
 		return builder.toString();

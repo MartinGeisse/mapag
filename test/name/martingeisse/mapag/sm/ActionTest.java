@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class ActionTest {
 
-	private static final Alternative alternative = new Alternative("a1", TestUtil.expansion("abc", "def"), null);
+	private static final Alternative alternative = new Alternative("a1", TestUtil.expansion("abc", "def"), null, false);
 
 	@Test
 	public void testShift() {

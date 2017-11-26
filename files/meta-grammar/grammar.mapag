@@ -1,10 +1,25 @@
 
 %terminals {
-    KW_TERMINALS, KW_PRECEDENCE, KW_LEFT, KW_RIGHT, KW_NONASSOC, KW_START, KW_RESOLVE, KW_SHIFT, KW_REDUCE, KW_EOF, KW_ERROR,
+
+	// grammar keywords
+    KW_TERMINALS, KW_PRECEDENCE, KW_LEFT, KW_RIGHT, KW_NONASSOC, KW_START,
+
+    // production keywords
+    KW_RESOLVE, KW_SHIFT, KW_REDUCE, KW_EOF, KW_ERROR, KW_REDUCE_ON_ERROR,
+
+	// parentheses, braces and brackets
     OPENING_CURLY_BRACE, CLOSING_CURLY_BRACE, OPENING_PARENTHESIS, CLOSING_PARENTHESIS,
+
+    // punctuation
     COMMA, SEMICOLON, COLON, EXPANDS_TO, QUESTION_MARK, ASTERISK, PLUS, BAR,
+
+    // identifiers
 	IDENTIFIER,
-	BLOCK_COMMENT, LINE_COMMENT // never passed to the parser
+
+	// comments (never passed to the parser, but unlike whitespace we need them in the symbols holder class because
+	// IntelliJ doesn't define a generic IElementType for comments)
+	BLOCK_COMMENT, LINE_COMMENT
+
 }
 
 %start grammar;
@@ -37,10 +52,12 @@ production ::= {
 	error ::= %error SEMICOLON;
 }
 
-rightHandSide ::= {
-    withoutResolver ::= expression:expression;
-    withPrecedenceResolver ::= expression:expression KW_PRECEDENCE IDENTIFIER:precedenceDefiningTerminal;
-    withExplicitResolver ::= expression:expression KW_RESOLVE OPENING_CURLY_BRACE resolveDeclaration*:resolveDeclarations CLOSING_CURLY_BRACE;
+rightHandSide ::= expression:expression rightHandSideAttribute*:attributes;
+
+rightHandSideAttribute ::= {
+	precedence ::= KW_PRECEDENCE IDENTIFIER:precedenceDefiningTerminal;
+	resolveBlock ::= KW_RESOLVE OPENING_CURLY_BRACE resolveDeclaration*:resolveDeclarations CLOSING_CURLY_BRACE;
+	reduceOnError ::= KW_REDUCE_ON_ERROR;
 }
 
 resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce):action resolveDeclarationSymbol:firstSymbol (COMMA resolveDeclarationSymbol:symbol)*:additionalSymbols SEMICOLON;

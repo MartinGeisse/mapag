@@ -153,7 +153,10 @@ final class PsiUtil {
 			@Override
 			public Object[] getVariants() {
 				// note: if this returns PSI elements, they must be PsiNamedElement or contain the name in meta-data
+
 				// TODO: if the input file contains syntax errors then this methods doesn't get called!
+				// This happens even if the error is in a different production!
+
 				List<Object> variants = new ArrayList<>();
 				for (LeafPsiElement element : getSymbolDefiningPsiElements(expression)) {
 					variants.add(element.getText());

@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class ProductionTest {
 
-	private static final Alternative ALTERNATIVE = new Alternative(null, new SymbolReference("foo"), null, null);
+	private static final Alternative ALTERNATIVE = new Alternative(null, new SymbolReference("foo"), null, null, false);
 	private static final ImmutableList<Alternative> ALTERNATIVES = ImmutableList.of(ALTERNATIVE);
 
 	@Test(expected = IllegalArgumentException.class)

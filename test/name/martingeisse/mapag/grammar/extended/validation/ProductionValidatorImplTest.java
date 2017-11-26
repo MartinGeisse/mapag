@@ -22,8 +22,8 @@ public class ProductionValidatorImplTest {
 	};
 	private static final ImmutableSet<String> TERMINALS = ImmutableSet.of("foo", "bar");
 	private static final ImmutableSet<String> NONTERMINALS = ImmutableSet.of("abc", "def");
-	private static final Alternative ALTERNATIVE_1 = new Alternative(null, new SymbolReference("foo"), null, null);
-	private static final Alternative ALTERNATIVE_2 = new Alternative(null, new SequenceExpression(new SymbolReference("abc"), new SymbolReference("bar")), null, null);
+	private static final Alternative ALTERNATIVE_1 = new Alternative(null, new SymbolReference("foo"), null, null, false);
+	private static final Alternative ALTERNATIVE_2 = new Alternative(null, new SequenceExpression(new SymbolReference("abc"), new SymbolReference("bar")), null, null, false);
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullTerminals() {
@@ -127,14 +127,14 @@ public class ProductionValidatorImplTest {
 	@Test
 	public void testValidPrecedenceDefiningTerminal() {
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), "foo", null))));
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), "foo", null, false))));
 		productionValidator.finish();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownPrecedenceDefiningTerminal() {
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), "blub", null))));
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), "blub", null, false))));
 		productionValidator.finish();
 	}
 
@@ -142,7 +142,7 @@ public class ProductionValidatorImplTest {
 	public void testValidResolveBlock() {
 		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of(new ResolveDeclaration(ConflictResolution.SHIFT, ImmutableList.of("foo"))));
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), null, resolveBlock))));
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), null, resolveBlock, false))));
 		productionValidator.finish();
 	}
 
@@ -150,7 +150,7 @@ public class ProductionValidatorImplTest {
 	public void testResolveBlockWithUnknownTerminal() {
 		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of(new ResolveDeclaration(ConflictResolution.SHIFT, ImmutableList.of("blub"))));
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), null, resolveBlock))));
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), null, resolveBlock, false))));
 		productionValidator.finish();
 	}
 

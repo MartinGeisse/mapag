@@ -19,11 +19,13 @@ public final class Alternative {
 	private final String name;
 	private final Expansion expansion;
 	private final AlternativeConflictResolver conflictResolver;
+	private final boolean reduceOnError;
 
-	public Alternative(String name, Expansion expansion, AlternativeConflictResolver conflictResolver) {
+	public Alternative(String name, Expansion expansion, AlternativeConflictResolver conflictResolver, boolean reduceOnError) {
 		this.name = ParameterUtil.ensureNotNullOrEmpty(name, "name");
 		this.expansion = ParameterUtil.ensureNotNull(expansion, "expansion");
 		this.conflictResolver = conflictResolver;
+		this.reduceOnError = reduceOnError;
 	}
 
 	public String getName() {
@@ -38,9 +40,13 @@ public final class Alternative {
 		return conflictResolver;
 	}
 
+	public boolean isReduceOnError() {
+		return reduceOnError;
+	}
+
 	public Alternative vanishSymbol(String symbol) {
 		ParameterUtil.ensureNotNullOrEmpty(symbol, "symbol");
-		return new Alternative(name, expansion.vanishSymbol(symbol), conflictResolver);
+		return new Alternative(name, expansion.vanishSymbol(symbol), conflictResolver, reduceOnError);
 	}
 
 	@Override

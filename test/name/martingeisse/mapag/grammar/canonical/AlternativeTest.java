@@ -18,17 +18,17 @@ public class AlternativeTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullExpansionNullConflictResolver() {
-		new Alternative("a", null, null);
+		new Alternative("a", null, null, false);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullExpansionNonNullConflictResolver() {
-		new Alternative("a", null, CONFLICT_RESOLVER);
+		new Alternative("a", null, CONFLICT_RESOLVER, false);
 	}
 
 	@Test
 	public void testEmptyExpansionNullConflictResolver() {
-		Alternative alternative = new Alternative("a", EMPTY_EXPANSION, null);
+		Alternative alternative = new Alternative("a", EMPTY_EXPANSION, null, false);
 		Assert.assertEquals("a", alternative.getName());
 		Assert.assertEquals(EMPTY_EXPANSION, alternative.getExpansion());
 		Assert.assertNull(alternative.getConflictResolver());
@@ -36,7 +36,7 @@ public class AlternativeTest {
 
 	@Test
 	public void testEmptyExpansionNonNullConflictResolver() {
-		Alternative alternative = new Alternative("a", EMPTY_EXPANSION, CONFLICT_RESOLVER);
+		Alternative alternative = new Alternative("a", EMPTY_EXPANSION, CONFLICT_RESOLVER, false);
 		Assert.assertEquals("a", alternative.getName());
 		Assert.assertEquals(EMPTY_EXPANSION, alternative.getExpansion());
 		Assert.assertEquals(CONFLICT_RESOLVER, alternative.getConflictResolver());
@@ -44,7 +44,7 @@ public class AlternativeTest {
 
 	@Test
 	public void testNonemptyExpansionNullConflictResolver() {
-		Alternative alternative = new Alternative("a", EXPANSION, null);
+		Alternative alternative = new Alternative("a", EXPANSION, null, false);
 		Assert.assertEquals("a", alternative.getName());
 		Assert.assertEquals(EXPANSION, alternative.getExpansion());
 		Assert.assertNull(alternative.getConflictResolver());
@@ -52,7 +52,7 @@ public class AlternativeTest {
 
 	@Test
 	public void testNonemptyExpansionNonNullConflictResolver() {
-		Alternative alternative = new Alternative("a", EXPANSION, CONFLICT_RESOLVER);
+		Alternative alternative = new Alternative("a", EXPANSION, CONFLICT_RESOLVER, false);
 		Assert.assertEquals("a", alternative.getName());
 		Assert.assertEquals(EXPANSION, alternative.getExpansion());
 		Assert.assertEquals(CONFLICT_RESOLVER, alternative.getConflictResolver());
@@ -61,7 +61,7 @@ public class AlternativeTest {
 	@Test
 	public void testVanishSymbol() {
 		Expansion expectedExpansion = TestUtil.expansion("bar", "baz", "abc");
-		Alternative alternative = new Alternative("a", EXPANSION, CONFLICT_RESOLVER).vanishSymbol("foo");
+		Alternative alternative = new Alternative("a", EXPANSION, CONFLICT_RESOLVER, false).vanishSymbol("foo");
 		Assert.assertEquals("a", alternative.getName());
 		Assert.assertEquals(expectedExpansion, alternative.getExpansion());
 		Assert.assertEquals(CONFLICT_RESOLVER, alternative.getConflictResolver());

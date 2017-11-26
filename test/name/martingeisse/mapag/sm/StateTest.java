@@ -34,7 +34,7 @@ public class StateTest {
 
 	@Test
 	public void testConstructorGetter() {
-		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null, false);
 		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
 		State state = new State(ImmutableSet.of(stateElement));
 		Assert.assertEquals(ImmutableSet.of(stateElement), state.getElements());
@@ -43,10 +43,10 @@ public class StateTest {
 	@Test
 	public void testEqualsAndHashCode() {
 
-		Alternative alternative1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null);
+		Alternative alternative1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null, false);
 		StateElement stateElement1 = new StateElement("aaa", alternative1, 0, "foo");
 
-		Alternative alternative2 = new Alternative("a2", TestUtil.expansion("foo", "bar"), null);
+		Alternative alternative2 = new Alternative("a2", TestUtil.expansion("foo", "bar"), null, false);
 		StateElement stateElement2 = new StateElement("bbb", alternative2, 1, "baz");
 
 		State[] states = new State[]{
@@ -88,7 +88,7 @@ public class StateTest {
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
 
 		{
-			Alternative startAlternative = new Alternative("a1", TestUtil.expansion("s"), null);
+			Alternative startAlternative = new Alternative("a1", TestUtil.expansion("s"), null, false);
 			StateElement startStateElement = new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, startAlternative, 0, SpecialSymbols.EOF_SYMBOL_NAME);
 			State state0 = new StateBuilder(grammarInfo).addElementClosure(startStateElement).build();
 			Assert.assertEquals(new State(ImmutableSet.of(
@@ -540,7 +540,7 @@ public class StateTest {
 		symbolContributor.accept(builder);
 		Grammar grammar = builder.build();
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
-		StateElement startStateElement = new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, new Alternative("a1", TestUtil.expansion("e"), null), 0, SpecialSymbols.EOF_SYMBOL_NAME);
+		StateElement startStateElement = new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, new Alternative("a1", TestUtil.expansion("e"), null, false), 0, SpecialSymbols.EOF_SYMBOL_NAME);
 		State state = new StateBuilder(grammarInfo).addElementClosure(startStateElement).build();
 		state = state.determineNextStateAfterShiftingNonterminal(grammarInfo, "e");
 		state = expectShiftTerminal(grammarInfo, state, operatorTerminal);

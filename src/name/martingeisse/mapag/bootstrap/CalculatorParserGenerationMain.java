@@ -59,26 +59,26 @@ public class CalculatorParserGenerationMain {
 
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("calculation", ImmutableList.of(
-				new Alternative(null, new ZeroOrMoreExpression(symbol("statement")).withName("statements"), null, null)
+				new Alternative(null, new ZeroOrMoreExpression(symbol("statement")).withName("statements"), null, null, false)
 			)),
 			new Production("statement", ImmutableList.of(
-				new Alternative("expression", sequence(symbol("expression").withName("expression"), symbol("SEMICOLON")), null, null),
-				new Alternative("error", sequence(symbol("%error"), symbol("SEMICOLON")), null, null)
+				new Alternative("expression", sequence(symbol("expression").withName("expression"), symbol("SEMICOLON")), null, null, false),
+				new Alternative("error", sequence(symbol("%error"), symbol("SEMICOLON")), null, null, false)
 			)),
 			new Production("expression", ImmutableList.of(
-				new Alternative("literal", symbol("NUMBER").withName("value"), null, null),
-				new Alternative("variable", symbol("IDENTIFIER").withName("variableName"), null, null),
+				new Alternative("literal", symbol("NUMBER").withName("value"), null, null, false),
+				new Alternative("variable", symbol("IDENTIFIER").withName("variableName"), null, null, false),
 				new Alternative("additive", sequence(
 					symbol("expression").withName("left"),
 					or(symbol("PLUS"), symbol("MINUS")).withName("operator"),
 					symbol("expression").withName("right")
-				), "PLUS", null),
+				), "PLUS", null, false),
 				new Alternative("multiplicative", sequence(
 					symbol("expression").withName("left"),
 					or(symbol("TIMES"), symbol("DIVIDED_BY")).withName("operator"),
 					symbol("expression").withName("right")
-				), "TIMES", null),
-				new Alternative("parenthesized", sequence(symbol("OPENING_PARENTHESIS"), symbol("expression").withName("inner"), symbol("CLOSING_PARENTHESIS")), null, null)
+				), "TIMES", null, false),
+				new Alternative("parenthesized", sequence(symbol("OPENING_PARENTHESIS"), symbol("expression").withName("inner"), symbol("CLOSING_PARENTHESIS")), null, null, false)
 			))
 		);
 

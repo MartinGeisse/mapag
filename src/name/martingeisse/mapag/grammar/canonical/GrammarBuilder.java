@@ -55,19 +55,19 @@ public final class GrammarBuilder {
 		}
 
 		public ProductionBuilder addAlternative(String... expansionSymbols) {
-			alternatives.add(new Alternative("a" + alternatives.size(), buildExpansion(expansionSymbols), null));
+			alternatives.add(new Alternative("a" + alternatives.size(), buildExpansion(expansionSymbols), null, false));
 			return this;
 		}
 
 		public ProductionBuilder addAlternativeWithPrecedence(String effectivePrecedenceTerminal, String... expansionSymbols) {
 			AlternativeConflictResolver conflictResolver = new AlternativeConflictResolver(effectivePrecedenceTerminal, null);
-			alternatives.add(new Alternative("a" + alternatives.size(), buildExpansion(expansionSymbols), conflictResolver));
+			alternatives.add(new Alternative("a" + alternatives.size(), buildExpansion(expansionSymbols), conflictResolver, false));
 			return this;
 		}
 
 		public ProductionBuilder addAlternativeWithResolutionMap(ImmutableMap<String, ConflictResolution> conflictResolutionMap, String... expansionSymbols) {
 			AlternativeConflictResolver conflictResolver = new AlternativeConflictResolver(null, conflictResolutionMap);
-			alternatives.add(new Alternative("a" + alternatives.size(), buildExpansion(expansionSymbols), conflictResolver));
+			alternatives.add(new Alternative("a" + alternatives.size(), buildExpansion(expansionSymbols), conflictResolver, false));
 			return this;
 		}
 
