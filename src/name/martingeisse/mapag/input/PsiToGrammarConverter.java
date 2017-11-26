@@ -1,7 +1,6 @@
 package name.martingeisse.mapag.input;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.ConflictResolution;
@@ -76,14 +75,14 @@ public class PsiToGrammarConverter {
 		for (name.martingeisse.mapag.input.psi.Production psiProduction : psiProductions.getAll()) {
 			if (psiProduction instanceof Production_SingleUnnamed) {
 
-				Production_SingleUnnamed typed = (Production_SingleUnnamed)psiProduction;
+				Production_SingleUnnamed typed = (Production_SingleUnnamed) psiProduction;
 				String nonterminal = getText(typed.getNonterminalName());
 				Alternative alternative = convertAlternative(null, typed.getRightHandSide());
 				productions.add(new Production(nonterminal, ImmutableList.of(alternative)));
 
 			} else if (psiProduction instanceof Production_SingleNamed) {
 
-				Production_SingleNamed typed = (Production_SingleNamed)psiProduction;
+				Production_SingleNamed typed = (Production_SingleNamed) psiProduction;
 				String nonterminal = getText(typed.getNonterminalName());
 				String alternativeName = getText(typed.getAlternativeName());
 				Alternative alternative = convertAlternative(alternativeName, typed.getRightHandSide());
@@ -91,18 +90,18 @@ public class PsiToGrammarConverter {
 
 			} else if (psiProduction instanceof Production_Multi) {
 
-				Production_Multi typed = (Production_Multi)psiProduction;
+				Production_Multi typed = (Production_Multi) psiProduction;
 				String nonterminal = getText(typed.getNonterminalName());
 				List<Alternative> alternatives = new ArrayList<>();
 				for (Production_Multi_1 element : typed.getAlternatives().getAll()) {
 					if (element instanceof Production_Multi_1_Unnamed) {
 
-						Production_Multi_1_Unnamed typedElement = (Production_Multi_1_Unnamed)element;
+						Production_Multi_1_Unnamed typedElement = (Production_Multi_1_Unnamed) element;
 						alternatives.add(convertAlternative(null, typedElement.getUnnamed().getRightHandSide()));
 
 					} else if (element instanceof Production_Multi_1_Named) {
 
-						Production_Multi_1_Named typedElement = (Production_Multi_1_Named)element;
+						Production_Multi_1_Named typedElement = (Production_Multi_1_Named) element;
 						alternatives.add(convertAlternative(
 							getText(typedElement.getNamed().getAlternativeName()),
 							typedElement.getNamed().getRightHandSide()
@@ -124,30 +123,31 @@ public class PsiToGrammarConverter {
 	}
 
 	private Alternative convertAlternative(String alternativeName, RightHandSide rightHandSide) {
-		throw new RuntimeException();
-//		if (rightHandSide instanceof RightHandSide_WithoutResolver) {
-//
-//			RightHandSide_WithoutResolver typedRightHandSide = (RightHandSide_WithoutResolver)rightHandSide;
-//			Expression expression = convertExpression(typedRightHandSide.getExpression());
-//			return new Alternative(alternativeName, expression, null, null, false); // TODO reduceOnError
-//
-//		} else if (rightHandSide instanceof RightHandSide_WithPrecedenceResolver) {
-//
-//			RightHandSide_WithPrecedenceResolver typedRightHandSide = (RightHandSide_WithPrecedenceResolver)rightHandSide;
-//			Expression expression = convertExpression(typedRightHandSide.getExpression());
-//			String precedenceDefiningTerminal = getText(typedRightHandSide.getPrecedenceDefiningTerminal());
-//			return new Alternative(alternativeName, expression, precedenceDefiningTerminal, null, false); // TODO reduceOnError
-//
-//		} else if (rightHandSide instanceof RightHandSide_WithExplicitResolver) {
-//
-//			RightHandSide_WithExplicitResolver typedRightHandSide = (RightHandSide_WithExplicitResolver)rightHandSide;
-//			Expression expression = convertExpression(typedRightHandSide.getExpression());
-//			ResolveBlock resolveBlock = convertResolveBlock(typedRightHandSide.getResolveDeclarations().getAll());
-//			return new Alternative(alternativeName, expression, null, resolveBlock, false); // TODO reduceOnError
-//
-//		} else {
-//			throw new RuntimeException("unknown right-hand side PSI node: " + rightHandSide);
-//		}
+		Expression expression = convertExpression(rightHandSide.getExpression());
+		String precedenceDefiningTerminal = null;
+		ResolveBlock resolveBlock = null;
+		boolean reduceOnErrors = false;
+		for (RightHandSideAttribute attribute : rightHandSide.getAttributes().getAll()) {
+			if (attribute instanceof RightHandSideAttribute_Precedence) {
+
+				RightHandSideAttribute_Precedence precedenceAttribute = (RightHandSideAttribute_Precedence) attribute;
+				precedenceDefiningTerminal = getText(precedenceAttribute.getPrecedenceDefiningTerminal());
+
+			} else if (attribute instanceof RightHandSideAttribute_ResolveBlock) {
+
+				RightHandSideAttribute_ResolveBlock resolveBlockAttribute = (RightHandSideAttribute_ResolveBlock) attribute;
+				resolveBlock = convertResolveBlock(resolveBlockAttribute.getResolveDeclarations().getAll());
+
+			} else if (attribute instanceof RightHandSideAttribute_ReduceOnError) {
+
+				reduceOnErrors = true;
+
+			} else {
+				throw new RuntimeException("unknown right-hand side attribute PSI node: " + attribute);
+
+			}
+		}
+		return new Alternative(alternativeName, expression, precedenceDefiningTerminal, resolveBlock, reduceOnErrors);
 	}
 
 	private ResolveBlock convertResolveBlock(ImmutableList<name.martingeisse.mapag.input.psi.ResolveDeclaration> psiResolveDeclarations) {
@@ -177,7 +177,7 @@ public class PsiToGrammarConverter {
 
 	private String convertResolveDeclarationSymbol(ResolveDeclarationSymbol symbol) {
 		if (symbol instanceof ResolveDeclarationSymbol_Identifier) {
-			return getText(((ResolveDeclarationSymbol_Identifier)symbol).getSymbol());
+			return getText(((ResolveDeclarationSymbol_Identifier) symbol).getSymbol());
 		} else if (symbol instanceof ResolveDeclarationSymbol_Eof) {
 			return SpecialSymbols.EOF_SYMBOL_NAME;
 		} else {
@@ -188,27 +188,26 @@ public class PsiToGrammarConverter {
 	private Expression convertExpression(name.martingeisse.mapag.input.psi.Expression psiExpression) {
 		if (psiExpression instanceof Expression_Named) {
 
-			Expression_Named typedExpression = (Expression_Named)psiExpression;
+			Expression_Named typedExpression = (Expression_Named) psiExpression;
 			String name = getText(typedExpression.getExpressionName());
 			return convertExpression(typedExpression.getExpression()).withName(name);
 
 		} else if (psiExpression instanceof Expression_OneOrMore) {
 
-			Expression_OneOrMore typedExpression = (Expression_OneOrMore)psiExpression;
+			Expression_OneOrMore typedExpression = (Expression_OneOrMore) psiExpression;
 			Expression operand = convertExpression(typedExpression.getOperand());
 			return new OneOrMoreExpression(operand);
 
-
 		} else if (psiExpression instanceof Expression_Sequence) {
 
-			Expression_Sequence typedExpression = (Expression_Sequence)psiExpression;
+			Expression_Sequence typedExpression = (Expression_Sequence) psiExpression;
 			Expression left = convertExpression(typedExpression.getLeft());
 			Expression right = convertExpression(typedExpression.getRight());
 			return new SequenceExpression(left, right);
 
 		} else if (psiExpression instanceof Expression_Identifier) {
 
-			Expression_Identifier typedExpression = (Expression_Identifier)psiExpression;
+			Expression_Identifier typedExpression = (Expression_Identifier) psiExpression;
 			return new SymbolReference(getText(typedExpression.getIdentifier()));
 
 		} else if (psiExpression instanceof Expression_Error) {
@@ -217,25 +216,25 @@ public class PsiToGrammarConverter {
 
 		} else if (psiExpression instanceof Expression_Parenthesized) {
 
-			Expression_Parenthesized typedExpression = (Expression_Parenthesized)psiExpression;
+			Expression_Parenthesized typedExpression = (Expression_Parenthesized) psiExpression;
 			return convertExpression(typedExpression.getInner());
 
 		} else if (psiExpression instanceof Expression_ZeroOrMore) {
 
-			Expression_ZeroOrMore typedExpression = (Expression_ZeroOrMore)psiExpression;
+			Expression_ZeroOrMore typedExpression = (Expression_ZeroOrMore) psiExpression;
 			Expression operand = convertExpression(typedExpression.getOperand());
 			return new ZeroOrMoreExpression(operand);
 
 		} else if (psiExpression instanceof Expression_Or) {
 
-			Expression_Or typedExpression = (Expression_Or)psiExpression;
+			Expression_Or typedExpression = (Expression_Or) psiExpression;
 			Expression left = convertExpression(typedExpression.getLeft());
 			Expression right = convertExpression(typedExpression.getRight());
 			return new OrExpression(left, right);
 
 		} else if (psiExpression instanceof Expression_Optional) {
 
-			Expression_Optional typedExpression = (Expression_Optional)psiExpression;
+			Expression_Optional typedExpression = (Expression_Optional) psiExpression;
 			Expression operand = convertExpression(typedExpression.getOperand());
 			return new OptionalExpression(operand);
 
