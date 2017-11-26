@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public abstract class RightHandSideAttribute_ResolveBlock_ResolveDeclarations extends ASTWrapperPsiElement {
+public abstract class AlternativeAttribute_ResolveBlock_ResolveDeclarations extends ASTWrapperPsiElement {
 
-	public RightHandSideAttribute_ResolveBlock_ResolveDeclarations(@NotNull ASTNode node) {
+	public AlternativeAttribute_ResolveBlock_ResolveDeclarations(@NotNull ASTNode node) {
 		super(node);
 	}
 

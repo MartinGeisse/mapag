@@ -13,10 +13,10 @@ public abstract class RightHandSide_Attributes extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public abstract ImmutableList<RightHandSideAttribute> getAll();
+	public abstract ImmutableList<AlternativeAttribute> getAll();
 
-	public abstract void addAllTo(List<RightHandSideAttribute> list);
+	public abstract void addAllTo(List<AlternativeAttribute> list);
 
-	public abstract void addAllTo(ImmutableList.Builder<RightHandSideAttribute> builder);
+	public abstract void addAllTo(ImmutableList.Builder<AlternativeAttribute> builder);
 
 }

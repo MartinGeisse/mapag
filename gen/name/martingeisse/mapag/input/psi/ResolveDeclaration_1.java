@@ -2,6 +2,7 @@ package name.martingeisse.mapag.input.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import org.jetbrains.annotations.NotNull;
 
 public final class ResolveDeclaration_1 extends ASTWrapperPsiElement {
@@ -10,8 +11,8 @@ public final class ResolveDeclaration_1 extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public ResolveDeclarationSymbol getSymbol() {
-		return (ResolveDeclarationSymbol) InternalPsiUtil.getChild(this, 1);
+	public LeafPsiElement getSymbol() {
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 1);
 	}
 
 }

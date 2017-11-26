@@ -16,22 +16,22 @@ public final class RightHandSide_Attributes_Next extends RightHandSide_Attribute
 		return (RightHandSide_Attributes) InternalPsiUtil.getChild(this, 0);
 	}
 
-	public RightHandSideAttribute getElement() {
-		return (RightHandSideAttribute) InternalPsiUtil.getChild(this, 1);
+	public AlternativeAttribute getElement() {
+		return (AlternativeAttribute) InternalPsiUtil.getChild(this, 1);
 	}
 
-	public ImmutableList<RightHandSideAttribute> getAll() {
-		ImmutableList.Builder<RightHandSideAttribute> builder = ImmutableList.builder();
+	public ImmutableList<AlternativeAttribute> getAll() {
+		ImmutableList.Builder<AlternativeAttribute> builder = ImmutableList.builder();
 		addAllTo(builder);
 		return builder.build();
 	}
 
-	public void addAllTo(List<RightHandSideAttribute> list) {
+	public void addAllTo(List<AlternativeAttribute> list) {
 		getPrevious().addAllTo(list);
 		list.add(getElement());
 	}
 
-	public void addAllTo(ImmutableList.Builder<RightHandSideAttribute> builder) {
+	public void addAllTo(ImmutableList.Builder<AlternativeAttribute> builder) {
 		getPrevious().addAllTo(builder);
 		builder.add(getElement());
 	}

@@ -12,14 +12,14 @@ public final class RightHandSide_Attributes_Start extends RightHandSide_Attribut
 		super(node);
 	}
 
-	public ImmutableList<RightHandSideAttribute> getAll() {
+	public ImmutableList<AlternativeAttribute> getAll() {
 		return ImmutableList.of();
 	}
 
-	public void addAllTo(List<RightHandSideAttribute> list) {
+	public void addAllTo(List<AlternativeAttribute> list) {
 	}
 
-	public void addAllTo(ImmutableList.Builder<RightHandSideAttribute> builder) {
+	public void addAllTo(ImmutableList.Builder<AlternativeAttribute> builder) {
 	}
 
 }

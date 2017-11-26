@@ -4,9 +4,9 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import org.jetbrains.annotations.NotNull;
 
-public final class RightHandSideAttribute_Precedence extends RightHandSideAttribute {
+public final class AlternativeAttribute_Precedence extends AlternativeAttribute {
 
-	public RightHandSideAttribute_Precedence(@NotNull ASTNode node) {
+	public AlternativeAttribute_Precedence(@NotNull ASTNode node) {
 		super(node);
 	}
 

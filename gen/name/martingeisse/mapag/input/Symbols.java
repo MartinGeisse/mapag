@@ -38,6 +38,12 @@ public class Symbols {
 	// nonterminals
 	//
 
+	public static final MapagElementType alternativeAttribute_Eof = new MapagElementType("alternativeAttribute_Eof");
+	public static final MapagElementType alternativeAttribute_Precedence = new MapagElementType("alternativeAttribute_Precedence");
+	public static final MapagElementType alternativeAttribute_ReduceOnError = new MapagElementType("alternativeAttribute_ReduceOnError");
+	public static final MapagElementType alternativeAttribute_ResolveBlock = new MapagElementType("alternativeAttribute_ResolveBlock");
+	public static final MapagElementType alternativeAttribute_ResolveBlock_ResolveDeclarations_Next = new MapagElementType("alternativeAttribute_ResolveBlock_ResolveDeclarations_Next");
+	public static final MapagElementType alternativeAttribute_ResolveBlock_ResolveDeclarations_Start = new MapagElementType("alternativeAttribute_ResolveBlock_ResolveDeclarations_Start");
 	public static final MapagElementType expression_Error = new MapagElementType("expression_Error");
 	public static final MapagElementType expression_Identifier = new MapagElementType("expression_Identifier");
 	public static final MapagElementType expression_Named = new MapagElementType("expression_Named");
@@ -74,19 +80,12 @@ public class Symbols {
 	public static final MapagElementType production_SingleNamed = new MapagElementType("production_SingleNamed");
 	public static final MapagElementType production_SingleUnnamed = new MapagElementType("production_SingleUnnamed");
 	public static final MapagElementType resolveDeclaration = new MapagElementType("resolveDeclaration");
-	public static final MapagElementType resolveDeclarationSymbol_Eof = new MapagElementType("resolveDeclarationSymbol_Eof");
-	public static final MapagElementType resolveDeclarationSymbol_Identifier = new MapagElementType("resolveDeclarationSymbol_Identifier");
 	public static final MapagElementType resolveDeclaration_1 = new MapagElementType("resolveDeclaration_1");
 	public static final MapagElementType resolveDeclaration_Action_Reduce = new MapagElementType("resolveDeclaration_Action_Reduce");
 	public static final MapagElementType resolveDeclaration_Action_Shift = new MapagElementType("resolveDeclaration_Action_Shift");
 	public static final MapagElementType resolveDeclaration_AdditionalSymbols_Next = new MapagElementType("resolveDeclaration_AdditionalSymbols_Next");
 	public static final MapagElementType resolveDeclaration_AdditionalSymbols_Start = new MapagElementType("resolveDeclaration_AdditionalSymbols_Start");
 	public static final MapagElementType rightHandSide = new MapagElementType("rightHandSide");
-	public static final MapagElementType rightHandSideAttribute_Precedence = new MapagElementType("rightHandSideAttribute_Precedence");
-	public static final MapagElementType rightHandSideAttribute_ReduceOnError = new MapagElementType("rightHandSideAttribute_ReduceOnError");
-	public static final MapagElementType rightHandSideAttribute_ResolveBlock = new MapagElementType("rightHandSideAttribute_ResolveBlock");
-	public static final MapagElementType rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Next = new MapagElementType("rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Next");
-	public static final MapagElementType rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Start = new MapagElementType("rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Start");
 	public static final MapagElementType rightHandSide_Attributes_Next = new MapagElementType("rightHandSide_Attributes_Next");
 	public static final MapagElementType rightHandSide_Attributes_Start = new MapagElementType("rightHandSide_Attributes_Start");
 
