@@ -29,9 +29,9 @@ public class SymbolReferenceTest {
 		Assert.assertEquals(SpecialSymbols.ERROR_SYMBOL_NAME, new SymbolReference(SpecialSymbols.ERROR_SYMBOL_NAME).getSymbolName());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testEofSymbolNotAllowed() {
-		new SymbolReference(SpecialSymbols.EOF_SYMBOL_NAME);
+	@Test
+	public void testWithEofSymbol() {
+		Assert.assertEquals(SpecialSymbols.EOF_SYMBOL_NAME, new SymbolReference(SpecialSymbols.EOF_SYMBOL_NAME).getSymbolName());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
