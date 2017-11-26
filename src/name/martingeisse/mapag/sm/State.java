@@ -104,6 +104,38 @@ public final class State {
 			}
 		}
 
+		//
+		// TODO here we use the conflict resolver of the element that wants to reduce, so we can decide between SHIFT
+		// and REDUCE. But this resolver actually tells which lookahead terminals are acceptable for a REDUCE,
+		// so it could also be used to resolve REDUCE/REDUCE conflicts; the naming should be better in that case,
+		// and defaults would be nice.
+		//
+		// No, that's only somewhat true. It doesn't just say which lookahead terminals are acceptable for a REDUCE,
+		// but which of them have higher priority than shifting -- because there is no way to list "unacceptable"
+		// terminals for shifting in the affected state(s). So this mechanism cannot simply be extended to cover
+		// REDUCE/REDUCE too since the situation is different: For R/R, conflict resolution can be defined for
+		// both conflicting alternatives, so saying "this has priority" in one of them is ugly (why not say in the
+		// other that it *doesn't* have priority?)
+		//
+		// Also: Is any R/R conflict solved in a meaningful way just by looking at the lookahead token? Probably not;
+		// most of them are just bugs in the grammar (unlike S/R). Even if it's not a bug, the lookaehad token
+		// usually won't give any useful information to resolve the conflict.
+		//
+		// Bottom line: Don't try to solve R/R here. S/R is already nicely solved. Being able to specify a default
+		// would be nice though.
+		//
+		// -----
+		//
+		// 1. %eof as lookahead in resolve blocks is probably useless because it cannot be shifted
+		// 2. We don't need conflict resolution to solve the "%error at EOF" problem, but rather (probably)
+		//    a way to define an alternative that is only valid at the end of the file. Idea: use %eof as a modifier
+		//    keyword (like precedence, resolve blocks and %reduceOnError); This causes, during state building
+		//    ("dot-into-nonterminal" closure) to include, for this alternative, only the state element with
+		//    %eof as the lookahead (or not at all if %eof is not a valid lookahead in the state to build)
+		// 3. Should probably collect precedence, resolve blocks, reduce-on-error and reduce-on-eof-only into a
+		//    separate object to simplify the Alternative class. The current ConflictResolver is a starting point;
+		//    add reduceOnError and reduceOnEofOnly to that.
+
 		// handle shift/reduce conflicts by resolution
 		AlternativeConflictResolver conflictResolver = elementThatWantsToReduce.getAlternative().getConflictResolver();
 		if (conflictResolver != null) {
