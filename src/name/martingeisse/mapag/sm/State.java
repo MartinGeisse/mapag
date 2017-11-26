@@ -92,7 +92,7 @@ public final class State {
 		// handle non-conflict cases
 		if (elementsThatWantToShift.isEmpty()) {
 			if (elementsThatWantToReduce.isEmpty()) {
-				return getError(terminalOrEof);
+				return getError();
 			} else {
 				return getReduce(elementThatWantsToReduce);
 			}
@@ -198,7 +198,11 @@ public final class State {
 		return builder.isEmpty() ? null : builder.build();
 	}
 
-	public Action getError(String terminalOrEof) {
+	/**
+	 * Returns the action in case of a syntax error. This gives %reduceOnError a chance. Returns null to indicate
+	 * an actual syntax error.
+	 */
+	public Action getError() {
 		// Here we must deal with the fact that the same alternative my appear in multiple state elements with
 		// different lookahead terminals. That's not a conflict since it is the alternative that reduces on error,
 		// not individual elements (since the error-causing lookahead token is irrelevant for the decision)
@@ -214,7 +218,7 @@ public final class State {
 		}
 		if (nonterminalsAndAlternativesThatWantToReduce.size() > 1) {
 			// multiple elements want to reduce on error, causing a conflict
-			throw new StateMachineException.OnErrorReduceReduceConflict(this, terminalOrEof,
+			throw new StateMachineException.OnErrorReduceReduceConflict(this,
 				ImmutableSet.copyOf(nonterminalsAndAlternativesThatWantToReduce));
 		}
 		Pair<String, Alternative> nonterminalAndAlternative = nonterminalsAndAlternativesThatWantToReduce.iterator().next();

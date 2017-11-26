@@ -84,7 +84,9 @@ public class ParserClassGenerator {
 
 				// %badchar
 				{
-					actionTable[stateIndex][2] = 0;
+					Action action = state.getError();
+					int actionCode = stateMachineEncoder.getActionCode(action);
+					actionTable[stateIndex][2] = actionCode;
 				}
 
 				// terminals

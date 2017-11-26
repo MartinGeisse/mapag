@@ -123,8 +123,8 @@ public class StateMachineException extends RuntimeException {
 
 		private final ImmutableSet<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce;
 
-		public OnErrorReduceReduceConflict(State state, String terminal, ImmutableSet<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce) {
-			super("onError reduce/reduce", state, terminal);
+		public OnErrorReduceReduceConflict(State state, ImmutableSet<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce) {
+			super("onError reduce/reduce", state, null);
 			this.nonterminalsAndAlternativesThatWantToReduce = nonterminalsAndAlternativesThatWantToReduce;
 		}
 

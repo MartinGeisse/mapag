@@ -225,7 +225,7 @@ public class MapagGrammarParserGenerationMain {
 				alternative("eof", symbol("KW_EOF"))
 			)),
 			new Production("expression", ImmutableList.of(
-				alternative("identifier", symbol("IDENTIFIER").withName("identifier")),
+				alternativeWithReduceOnError("identifier", symbol("IDENTIFIER").withName("identifier")),
 				alternative("error", symbol("KW_ERROR")),
 				alternativeWithResolution("sequence", sequence(
 					symbol("expression").withName("left"),
@@ -347,6 +347,10 @@ public class MapagGrammarParserGenerationMain {
 		ResolveDeclaration reduceDeclaration = new ResolveDeclaration(ConflictResolution.REDUCE, reduceTerminals);
 		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of(shiftDeclaration, reduceDeclaration));
 		return new Alternative(name, expression, null, resolveBlock, false);
+	}
+
+	private static Alternative alternativeWithReduceOnError(String name, Expression expression) {
+		return new Alternative(name, expression, null, null, true);
 	}
 
 }
