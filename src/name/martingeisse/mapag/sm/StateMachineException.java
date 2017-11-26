@@ -1,6 +1,8 @@
 package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.canonical.Alternative;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.PrintWriter;
 
@@ -101,11 +103,42 @@ public class StateMachineException extends RuntimeException {
 		}
 
 		public void describe(PrintWriter out) {
-			out.println("reduce/reduce conflict on terminal " + getTerminal());
+			out.print("reduce/reduce conflict on terminal " + getTerminal());
+			out.println();
 			out.println();
 			out.println("state elements that want to reduce:");
 			for (StateElement stateElement : elementsThatWantToReduce) {
 				out.println("    " + stateElement);
+			}
+			out.println();
+			out.println("---------------------------------------------------------------------------------");
+			out.println("complete state:");
+			out.println(getState());
+			out.println();
+		}
+
+	}
+
+	public static final class OnErrorReduceReduceConflict extends Conflict {
+
+		private final ImmutableSet<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce;
+
+		public OnErrorReduceReduceConflict(State state, String terminal, ImmutableSet<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce) {
+			super("onError reduce/reduce", state, terminal);
+			this.nonterminalsAndAlternativesThatWantToReduce = nonterminalsAndAlternativesThatWantToReduce;
+		}
+
+		public ImmutableSet<Pair<String, Alternative>> getNonterminalsAndAlternativesThatWantToReduce() {
+			return nonterminalsAndAlternativesThatWantToReduce;
+		}
+
+		public void describe(PrintWriter out) {
+			out.print("onError reduce/reduce conflict on terminal " + getTerminal());
+			out.println();
+			out.println();
+			out.println("nonterminals and alternatives that want to reduce:");
+			for (Pair<String, Alternative> nonterminalAndAlternative : nonterminalsAndAlternativesThatWantToReduce) {
+				out.println("    " + nonterminalAndAlternative.getLeft() + " / " + nonterminalAndAlternative.getRight());
 			}
 			out.println();
 			out.println("---------------------------------------------------------------------------------");

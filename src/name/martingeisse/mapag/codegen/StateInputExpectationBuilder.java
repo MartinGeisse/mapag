@@ -32,6 +32,10 @@ import java.util.*;
  * different roles). While this may seem to cause problems with recursively defined nonterminals, it doesn't: A state
  * element from a recursively defined nonterminal is only part of the current state if one of the nonterminals from the
  * recursion loop appears somewhere outside that loop, thus it is included in the error message from there.
+ * <p>
+ * The documentation produced by this class does not correspond direclty to the set of possible transitions if one or
+ * more alternatices are marked with %reduceOnError. The additional transitions produced by that keyword are part
+ * of the run-time state machine, but they are not documented since they are an error mitigating mechanism.
  */
 public class StateInputExpectationBuilder {
 

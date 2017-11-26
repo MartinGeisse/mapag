@@ -126,7 +126,7 @@ public class PsiToGrammarConverter {
 		Expression expression = convertExpression(rightHandSide.getExpression());
 		String precedenceDefiningTerminal = null;
 		ResolveBlock resolveBlock = null;
-		boolean reduceOnErrors = false;
+		boolean reduceOnError = false;
 		for (RightHandSideAttribute attribute : rightHandSide.getAttributes().getAll()) {
 			if (attribute instanceof RightHandSideAttribute_Precedence) {
 
@@ -140,14 +140,14 @@ public class PsiToGrammarConverter {
 
 			} else if (attribute instanceof RightHandSideAttribute_ReduceOnError) {
 
-				reduceOnErrors = true;
+				reduceOnError = true;
 
 			} else {
 				throw new RuntimeException("unknown right-hand side attribute PSI node: " + attribute);
 
 			}
 		}
-		return new Alternative(alternativeName, expression, precedenceDefiningTerminal, resolveBlock, reduceOnErrors);
+		return new Alternative(alternativeName, expression, precedenceDefiningTerminal, resolveBlock, reduceOnError);
 	}
 
 	private ResolveBlock convertResolveBlock(ImmutableList<name.martingeisse.mapag.input.psi.ResolveDeclaration> psiResolveDeclarations) {

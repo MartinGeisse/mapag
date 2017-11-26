@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.ConflictResolution;
+import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
@@ -11,6 +12,7 @@ import name.martingeisse.mapag.util.Comparators;
 import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.ParameterUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -90,7 +92,7 @@ public final class State {
 		// handle non-conflict cases
 		if (elementsThatWantToShift.isEmpty()) {
 			if (elementsThatWantToReduce.isEmpty()) {
-				return null;
+				return getError(terminalOrEof);
 			} else {
 				return getReduce(elementThatWantsToReduce);
 			}
@@ -194,6 +196,29 @@ public final class State {
 			}
 		}
 		return builder.isEmpty() ? null : builder.build();
+	}
+
+	public Action getError(String terminalOrEof) {
+		// Here we must deal with the fact that the same alternative my appear in multiple state elements with
+		// different lookahead terminals. That's not a conflict since it is the alternative that reduces on error,
+		// not individual elements (since the error-causing lookahead token is irrelevant for the decision)
+		Set<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce = new HashSet<>();
+		for (StateElement element : elements) {
+			if (element.isAtEnd() && element.getAlternative().isReduceOnError()) {
+				nonterminalsAndAlternativesThatWantToReduce.add(Pair.of(element.getLeftSide(), element.getAlternative()));
+			}
+		}
+		if (nonterminalsAndAlternativesThatWantToReduce.isEmpty()) {
+			// syntax error
+			return null;
+		}
+		if (nonterminalsAndAlternativesThatWantToReduce.size() > 1) {
+			// multiple elements want to reduce on error, causing a conflict
+			throw new StateMachineException.OnErrorReduceReduceConflict(this, terminalOrEof,
+				ImmutableSet.copyOf(nonterminalsAndAlternativesThatWantToReduce));
+		}
+		Pair<String, Alternative> nonterminalAndAlternative = nonterminalsAndAlternativesThatWantToReduce.iterator().next();
+		return new Action.Reduce(nonterminalAndAlternative.getLeft(), nonterminalAndAlternative.getRight());
 	}
 
 }
