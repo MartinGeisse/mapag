@@ -227,15 +227,16 @@ public class MapagGrammarParserGenerationMain {
 			new Production("expression", ImmutableList.of(
 				alternativeWithReduceOnError("identifier", symbol("IDENTIFIER").withName("identifier")),
 				alternative("error", symbol("KW_ERROR")),
+				alternative("eof", symbol("KW_EOF")),
 				alternativeWithResolution("sequence", sequence(
 					symbol("expression").withName("left"),
 					symbol("expression").withName("right")
-				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON"), ImmutableList.of("OPENING_PARENTHESIS", "IDENTIFIER", "KW_ERROR", "BAR")),
+				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON"), ImmutableList.of("OPENING_PARENTHESIS", "IDENTIFIER", "KW_ERROR", "KW_EOF", "BAR")),
 				alternativeWithResolution("or", sequence(
 					symbol("expression").withName("left"),
 					symbol("BAR"),
 					symbol("expression").withName("right")
-				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON", "OPENING_PARENTHESIS", "IDENTIFIER", "KW_ERROR"), ImmutableList.of("BAR")),
+				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON", "OPENING_PARENTHESIS", "IDENTIFIER", "KW_ERROR", "KW_EOF"), ImmutableList.of("BAR")),
 				alternative("zeroOrMore", sequence(
 					symbol("expression").withName("operand"),
 					symbol("ASTERISK")
