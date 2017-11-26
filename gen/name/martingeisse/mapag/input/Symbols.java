@@ -38,7 +38,6 @@ public class Symbols {
 	// nonterminals
 	//
 
-	public static final MapagElementType expression_Eof = new MapagElementType("expression_Eof");
 	public static final MapagElementType expression_Error = new MapagElementType("expression_Error");
 	public static final MapagElementType expression_Identifier = new MapagElementType("expression_Identifier");
 	public static final MapagElementType expression_Named = new MapagElementType("expression_Named");

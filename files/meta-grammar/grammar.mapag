@@ -70,13 +70,12 @@ resolveDeclarationSymbol ::= {
 expression ::= {
     identifier ::= IDENTIFIER:identifier;
     error ::= KW_ERROR;
-    eof ::= KW_EOF;
     sequence ::= expression:left expression:right %resolve {
 		%shift QUESTION_MARK, ASTERISK, PLUS, COLON;
-		%reduce OPENING_PARENTHESIS, IDENTIFIER, KW_ERROR, KW_EOF, BAR;
+		%reduce OPENING_PARENTHESIS, IDENTIFIER, KW_ERROR, BAR;
     };
     or ::= expression:left BAR expression:right %resolve {
-		%shift QUESTION_MARK, ASTERISK, PLUS, COLON, OPENING_PARENTHESIS, IDENTIFIER, KW_ERROR, KW_EOF;
+		%shift QUESTION_MARK, ASTERISK, PLUS, COLON, OPENING_PARENTHESIS, IDENTIFIER, KW_ERROR;
 		%reduce BAR;
     };
     zeroOrMore ::= expression:operand ASTERISK;

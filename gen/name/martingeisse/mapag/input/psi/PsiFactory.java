@@ -95,9 +95,6 @@ public class PsiFactory {
 		if (type == Symbols.expression_Error) {
 			return new Expression_Error(node);
 		}
-		if (type == Symbols.expression_Eof) {
-			return new Expression_Eof(node);
-		}
 		if (type == Symbols.expression_Sequence) {
 			return new Expression_Sequence(node);
 		}
