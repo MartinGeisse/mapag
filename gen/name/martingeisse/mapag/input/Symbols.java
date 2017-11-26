@@ -21,6 +21,7 @@ public class Symbols {
 	public static final MapagElementType KW_NONASSOC = new MapagElementType("KW_NONASSOC");
 	public static final MapagElementType KW_PRECEDENCE = new MapagElementType("KW_PRECEDENCE");
 	public static final MapagElementType KW_REDUCE = new MapagElementType("KW_REDUCE");
+	public static final MapagElementType KW_REDUCE_ON_ERROR = new MapagElementType("KW_REDUCE_ON_ERROR");
 	public static final MapagElementType KW_RESOLVE = new MapagElementType("KW_RESOLVE");
 	public static final MapagElementType KW_RIGHT = new MapagElementType("KW_RIGHT");
 	public static final MapagElementType KW_SHIFT = new MapagElementType("KW_SHIFT");
@@ -80,11 +81,14 @@ public class Symbols {
 	public static final MapagElementType resolveDeclaration_Action_Shift = new MapagElementType("resolveDeclaration_Action_Shift");
 	public static final MapagElementType resolveDeclaration_AdditionalSymbols_Next = new MapagElementType("resolveDeclaration_AdditionalSymbols_Next");
 	public static final MapagElementType resolveDeclaration_AdditionalSymbols_Start = new MapagElementType("resolveDeclaration_AdditionalSymbols_Start");
-	public static final MapagElementType rightHandSide_WithExplicitResolver = new MapagElementType("rightHandSide_WithExplicitResolver");
-	public static final MapagElementType rightHandSide_WithExplicitResolver_ResolveDeclarations_Next = new MapagElementType("rightHandSide_WithExplicitResolver_ResolveDeclarations_Next");
-	public static final MapagElementType rightHandSide_WithExplicitResolver_ResolveDeclarations_Start = new MapagElementType("rightHandSide_WithExplicitResolver_ResolveDeclarations_Start");
-	public static final MapagElementType rightHandSide_WithPrecedenceResolver = new MapagElementType("rightHandSide_WithPrecedenceResolver");
-	public static final MapagElementType rightHandSide_WithoutResolver = new MapagElementType("rightHandSide_WithoutResolver");
+	public static final MapagElementType rightHandSide = new MapagElementType("rightHandSide");
+	public static final MapagElementType rightHandSideAttribute_Precedence = new MapagElementType("rightHandSideAttribute_Precedence");
+	public static final MapagElementType rightHandSideAttribute_ReduceOnError = new MapagElementType("rightHandSideAttribute_ReduceOnError");
+	public static final MapagElementType rightHandSideAttribute_ResolveBlock = new MapagElementType("rightHandSideAttribute_ResolveBlock");
+	public static final MapagElementType rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Next = new MapagElementType("rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Next");
+	public static final MapagElementType rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Start = new MapagElementType("rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Start");
+	public static final MapagElementType rightHandSide_WithExplicitResolver_Attributes_Next = new MapagElementType("rightHandSide_WithExplicitResolver_Attributes_Next");
+	public static final MapagElementType rightHandSide_WithExplicitResolver_Attributes_Start = new MapagElementType("rightHandSide_WithExplicitResolver_Attributes_Start");
 
 	//
 	// special

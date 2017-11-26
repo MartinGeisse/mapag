@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public final class RightHandSide_WithExplicitResolver_ResolveDeclarations_Start extends RightHandSide_WithExplicitResolver_ResolveDeclarations {
+public final class RightHandSideAttribute_ResolveBlock_ResolveDeclarations_Start extends RightHandSideAttribute_ResolveBlock_ResolveDeclarations {
 
-	public RightHandSide_WithExplicitResolver_ResolveDeclarations_Start(@NotNull ASTNode node) {
+	public RightHandSideAttribute_ResolveBlock_ResolveDeclarations_Start(@NotNull ASTNode node) {
 		super(node);
 	}
 

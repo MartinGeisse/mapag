@@ -6,14 +6,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public final class RightHandSide_WithExplicitResolver_ResolveDeclarations_Next extends RightHandSide_WithExplicitResolver_ResolveDeclarations {
+public final class RightHandSideAttribute_ResolveBlock_ResolveDeclarations_Next extends RightHandSideAttribute_ResolveBlock_ResolveDeclarations {
 
-	public RightHandSide_WithExplicitResolver_ResolveDeclarations_Next(@NotNull ASTNode node) {
+	public RightHandSideAttribute_ResolveBlock_ResolveDeclarations_Next(@NotNull ASTNode node) {
 		super(node);
 	}
 
-	public RightHandSide_WithExplicitResolver_ResolveDeclarations getPrevious() {
-		return (RightHandSide_WithExplicitResolver_ResolveDeclarations) InternalPsiUtil.getChild(this, 0);
+	public RightHandSideAttribute_ResolveBlock_ResolveDeclarations getPrevious() {
+		return (RightHandSideAttribute_ResolveBlock_ResolveDeclarations) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public ResolveDeclaration getElement() {
