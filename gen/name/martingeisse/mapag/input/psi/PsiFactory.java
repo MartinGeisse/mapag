@@ -77,6 +77,12 @@ public class PsiFactory {
 		if (type == Symbols.grammar_PrecedenceTable_Present) {
 			return new Grammar_PrecedenceTable_Present(node);
 		}
+		if (type == Symbols.rightHandSide_Attributes_Start) {
+			return new RightHandSide_Attributes_Start(node);
+		}
+		if (type == Symbols.rightHandSide_Attributes_Next) {
+			return new RightHandSide_Attributes_Next(node);
+		}
 		if (type == Symbols.production_Multi_1_Named_Named) {
 			return new Production_Multi_1_Named_Named(node);
 		}
@@ -127,12 +133,6 @@ public class PsiFactory {
 		}
 		if (type == Symbols.grammar_1) {
 			return new Grammar_1(node);
-		}
-		if (type == Symbols.rightHandSide_WithExplicitResolver_Attributes_Start) {
-			return new RightHandSide_WithExplicitResolver_Attributes_Start(node);
-		}
-		if (type == Symbols.rightHandSide_WithExplicitResolver_Attributes_Next) {
-			return new RightHandSide_WithExplicitResolver_Attributes_Next(node);
 		}
 		if (type == Symbols.nonemptyIdentifierList) {
 			return new NonemptyIdentifierList(node);

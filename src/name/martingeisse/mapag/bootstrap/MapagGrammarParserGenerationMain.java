@@ -191,7 +191,7 @@ public class MapagGrammarParserGenerationMain {
 				))
 			)),
 			new Production("rightHandSide", ImmutableList.of(
-				alternative("withExplicitResolver", sequence(
+				alternative(null, sequence(
 					symbol("expression").withName("expression"),
 					zeroOrMore(symbol("rightHandSideAttribute")).withName("attributes")
 				))

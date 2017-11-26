@@ -87,8 +87,8 @@ public class Symbols {
 	public static final MapagElementType rightHandSideAttribute_ResolveBlock = new MapagElementType("rightHandSideAttribute_ResolveBlock");
 	public static final MapagElementType rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Next = new MapagElementType("rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Next");
 	public static final MapagElementType rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Start = new MapagElementType("rightHandSideAttribute_ResolveBlock_ResolveDeclarations_Start");
-	public static final MapagElementType rightHandSide_WithExplicitResolver_Attributes_Next = new MapagElementType("rightHandSide_WithExplicitResolver_Attributes_Next");
-	public static final MapagElementType rightHandSide_WithExplicitResolver_Attributes_Start = new MapagElementType("rightHandSide_WithExplicitResolver_Attributes_Start");
+	public static final MapagElementType rightHandSide_Attributes_Next = new MapagElementType("rightHandSide_Attributes_Next");
+	public static final MapagElementType rightHandSide_Attributes_Start = new MapagElementType("rightHandSide_Attributes_Start");
 
 	//
 	// special

@@ -124,29 +124,30 @@ public class PsiToGrammarConverter {
 	}
 
 	private Alternative convertAlternative(String alternativeName, RightHandSide rightHandSide) {
-		if (rightHandSide instanceof RightHandSide_WithoutResolver) {
-
-			RightHandSide_WithoutResolver typedRightHandSide = (RightHandSide_WithoutResolver)rightHandSide;
-			Expression expression = convertExpression(typedRightHandSide.getExpression());
-			return new Alternative(alternativeName, expression, null, null, false); // TODO reduceOnError
-
-		} else if (rightHandSide instanceof RightHandSide_WithPrecedenceResolver) {
-
-			RightHandSide_WithPrecedenceResolver typedRightHandSide = (RightHandSide_WithPrecedenceResolver)rightHandSide;
-			Expression expression = convertExpression(typedRightHandSide.getExpression());
-			String precedenceDefiningTerminal = getText(typedRightHandSide.getPrecedenceDefiningTerminal());
-			return new Alternative(alternativeName, expression, precedenceDefiningTerminal, null, false); // TODO reduceOnError
-
-		} else if (rightHandSide instanceof RightHandSide_WithExplicitResolver) {
-
-			RightHandSide_WithExplicitResolver typedRightHandSide = (RightHandSide_WithExplicitResolver)rightHandSide;
-			Expression expression = convertExpression(typedRightHandSide.getExpression());
-			ResolveBlock resolveBlock = convertResolveBlock(typedRightHandSide.getResolveDeclarations().getAll());
-			return new Alternative(alternativeName, expression, null, resolveBlock, false); // TODO reduceOnError
-
-		} else {
-			throw new RuntimeException("unknown right-hand side PSI node: " + rightHandSide);
-		}
+		throw new RuntimeException();
+//		if (rightHandSide instanceof RightHandSide_WithoutResolver) {
+//
+//			RightHandSide_WithoutResolver typedRightHandSide = (RightHandSide_WithoutResolver)rightHandSide;
+//			Expression expression = convertExpression(typedRightHandSide.getExpression());
+//			return new Alternative(alternativeName, expression, null, null, false); // TODO reduceOnError
+//
+//		} else if (rightHandSide instanceof RightHandSide_WithPrecedenceResolver) {
+//
+//			RightHandSide_WithPrecedenceResolver typedRightHandSide = (RightHandSide_WithPrecedenceResolver)rightHandSide;
+//			Expression expression = convertExpression(typedRightHandSide.getExpression());
+//			String precedenceDefiningTerminal = getText(typedRightHandSide.getPrecedenceDefiningTerminal());
+//			return new Alternative(alternativeName, expression, precedenceDefiningTerminal, null, false); // TODO reduceOnError
+//
+//		} else if (rightHandSide instanceof RightHandSide_WithExplicitResolver) {
+//
+//			RightHandSide_WithExplicitResolver typedRightHandSide = (RightHandSide_WithExplicitResolver)rightHandSide;
+//			Expression expression = convertExpression(typedRightHandSide.getExpression());
+//			ResolveBlock resolveBlock = convertResolveBlock(typedRightHandSide.getResolveDeclarations().getAll());
+//			return new Alternative(alternativeName, expression, null, resolveBlock, false); // TODO reduceOnError
+//
+//		} else {
+//			throw new RuntimeException("unknown right-hand side PSI node: " + rightHandSide);
+//		}
 	}
 
 	private ResolveBlock convertResolveBlock(ImmutableList<name.martingeisse.mapag.input.psi.ResolveDeclaration> psiResolveDeclarations) {
