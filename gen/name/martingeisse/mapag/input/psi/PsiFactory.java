@@ -65,8 +65,17 @@ public class PsiFactory {
 		if (type == Symbols.production_Multi) {
 			return new Production_Multi(node);
 		}
-		if (type == Symbols.production_Error) {
-			return new Production_Error(node);
+		if (type == Symbols.production_Error1) {
+			return new Production_Error1(node);
+		}
+		if (type == Symbols.production_Error2) {
+			return new Production_Error2(node);
+		}
+		if (type == Symbols.production_Error3) {
+			return new Production_Error3(node);
+		}
+		if (type == Symbols.production_Error4) {
+			return new Production_Error4(node);
 		}
 		if (type == Symbols.production_Multi_Alternatives_Start) {
 			return new Production_Multi_Alternatives_Start(node);

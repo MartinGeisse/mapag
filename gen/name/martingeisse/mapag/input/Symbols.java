@@ -69,7 +69,10 @@ public class Symbols {
 	public static final MapagElementType precedenceDeclaration_Associativity_Left = new MapagElementType("precedenceDeclaration_Associativity_Left");
 	public static final MapagElementType precedenceDeclaration_Associativity_Nonassoc = new MapagElementType("precedenceDeclaration_Associativity_Nonassoc");
 	public static final MapagElementType precedenceDeclaration_Associativity_Right = new MapagElementType("precedenceDeclaration_Associativity_Right");
-	public static final MapagElementType production_Error = new MapagElementType("production_Error");
+	public static final MapagElementType production_Error1 = new MapagElementType("production_Error1");
+	public static final MapagElementType production_Error2 = new MapagElementType("production_Error2");
+	public static final MapagElementType production_Error3 = new MapagElementType("production_Error3");
+	public static final MapagElementType production_Error4 = new MapagElementType("production_Error4");
 	public static final MapagElementType production_Multi = new MapagElementType("production_Multi");
 	public static final MapagElementType production_Multi_1_Named = new MapagElementType("production_Multi_1_Named");
 	public static final MapagElementType production_Multi_1_Named_Named = new MapagElementType("production_Multi_1_Named_Named");

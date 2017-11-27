@@ -186,14 +186,22 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 					).withName("alternatives"),
 					symbol("CLOSING_CURLY_BRACE")
 				)),
-
-				// TODO this is a test for %eof for now. Later on, the nonterminal name should be recognizable even
-				// for a broken production, to support auto-complete of recursive productions
 				alternative("error1", sequence(
 					symbol("%error"),
 					symbol("SEMICOLON")
 				)),
 				alternativeWithReduceOnEofOnly("error2", sequence(
+					symbol("%error")
+				)),
+				alternative("error3", sequence(
+					symbol("IDENTIFIER").withName("nonterminalName"),
+					symbol("EXPANDS_TO"),
+					symbol("%error"),
+					symbol("SEMICOLON")
+				)),
+				alternativeWithReduceOnEofOnly("error4", sequence(
+					symbol("IDENTIFIER").withName("nonterminalName"),
+					symbol("EXPANDS_TO"),
 					symbol("%error")
 				))
 
