@@ -2,19 +2,16 @@ package name.martingeisse.mapag.grammar.extended;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
-import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.grammar.extended.expression.SymbolReference;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.List;
 
 /**
  *
  */
 public class ProductionTest {
 
-	private static final Alternative ALTERNATIVE = new Alternative(null, new SymbolReference("foo"), null, null, false);
+	private static final Alternative ALTERNATIVE = new Alternative(null, new SymbolReference("foo"), null, null, false, false);
 	private static final ImmutableList<Alternative> ALTERNATIVES = ImmutableList.of(ALTERNATIVE);
 
 	@Test(expected = IllegalArgumentException.class)

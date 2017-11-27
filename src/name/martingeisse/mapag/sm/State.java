@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
+import name.martingeisse.mapag.grammar.canonical.AlternativeAttributes;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.Comparators;
@@ -14,9 +14,7 @@ import name.martingeisse.mapag.util.ParameterUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -137,15 +135,15 @@ public final class State {
 		//    add reduceOnError and reduceOnEofOnly to that.
 
 		// handle shift/reduce conflicts by resolution
-		AlternativeConflictResolver conflictResolver = elementThatWantsToReduce.getAlternative().getConflictResolver();
-		if (conflictResolver != null) {
+		AlternativeAttributes attributes = elementThatWantsToReduce.getAlternative().getAttributes();
+		if (attributes != null) {
 
-			if (conflictResolver.getEffectivePrecedenceTerminal() != null) {
+			if (attributes.getEffectivePrecedenceTerminal() != null) {
 				TerminalDefinition shiftPrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(terminalOrEof);
 				if (shiftPrecedenceDefinition == null) {
 					throw new RuntimeException("cannot determine terminal definition for terminal " + terminalOrEof);
 				}
-				String reducePrecedenceTerminal = conflictResolver.getEffectivePrecedenceTerminal();
+				String reducePrecedenceTerminal = attributes.getEffectivePrecedenceTerminal();
 				TerminalDefinition reducePrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(reducePrecedenceTerminal);
 				if (reducePrecedenceDefinition != null) {
 					if (shiftPrecedenceDefinition.getPrecedenceIndex() != null && reducePrecedenceDefinition.getPrecedenceIndex() != null) {
@@ -179,8 +177,8 @@ public final class State {
 				}
 			}
 
-			if (conflictResolver.getTerminalToResolution() != null) {
-				ConflictResolution resolution = conflictResolver.getTerminalToResolution().get(terminalOrEof);
+			if (attributes.getTerminalToResolution() != null) {
+				ConflictResolution resolution = attributes.getTerminalToResolution().get(terminalOrEof);
 				if (resolution != null) {
 					switch (resolution) {
 
@@ -240,7 +238,7 @@ public final class State {
 		// not individual elements (since the error-causing lookahead token is irrelevant for the decision)
 		Set<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce = new HashSet<>();
 		for (StateElement element : elements) {
-			if (element.isAtEnd() && element.getAlternative().isReduceOnError()) {
+			if (element.isAtEnd() && element.getAlternative().getAttributes().isReduceOnError()) {
 				nonterminalsAndAlternativesThatWantToReduce.add(Pair.of(element.getLeftSide(), element.getAlternative()));
 			}
 		}

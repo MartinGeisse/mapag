@@ -127,27 +127,32 @@ public class PsiToGrammarConverter {
 		String precedenceDefiningTerminal = null;
 		ResolveBlock resolveBlock = null;
 		boolean reduceOnError = false;
-		for (RightHandSideAttribute attribute : rightHandSide.getAttributes().getAll()) {
-			if (attribute instanceof RightHandSideAttribute_Precedence) {
+		boolean reduceOnEofOnly = false;
+		for (AlternativeAttribute attribute : rightHandSide.getAttributes().getAll()) {
+			if (attribute instanceof AlternativeAttribute_Precedence) {
 
-				RightHandSideAttribute_Precedence precedenceAttribute = (RightHandSideAttribute_Precedence) attribute;
+				AlternativeAttribute_Precedence precedenceAttribute = (AlternativeAttribute_Precedence) attribute;
 				precedenceDefiningTerminal = getText(precedenceAttribute.getPrecedenceDefiningTerminal());
 
-			} else if (attribute instanceof RightHandSideAttribute_ResolveBlock) {
+			} else if (attribute instanceof AlternativeAttribute_ResolveBlock) {
 
-				RightHandSideAttribute_ResolveBlock resolveBlockAttribute = (RightHandSideAttribute_ResolveBlock) attribute;
+				AlternativeAttribute_ResolveBlock resolveBlockAttribute = (AlternativeAttribute_ResolveBlock) attribute;
 				resolveBlock = convertResolveBlock(resolveBlockAttribute.getResolveDeclarations().getAll());
 
-			} else if (attribute instanceof RightHandSideAttribute_ReduceOnError) {
+			} else if (attribute instanceof AlternativeAttribute_ReduceOnError) {
 
 				reduceOnError = true;
+
+			} else if (attribute instanceof AlternativeAttribute_Eof) {
+
+				reduceOnEofOnly = true;
 
 			} else {
 				throw new RuntimeException("unknown right-hand side attribute PSI node: " + attribute);
 
 			}
 		}
-		return new Alternative(alternativeName, expression, precedenceDefiningTerminal, resolveBlock, reduceOnError);
+		return new Alternative(alternativeName, expression, precedenceDefiningTerminal, resolveBlock, reduceOnError, reduceOnEofOnly);
 	}
 
 	private ResolveBlock convertResolveBlock(ImmutableList<name.martingeisse.mapag.input.psi.ResolveDeclaration> psiResolveDeclarations) {
@@ -165,24 +170,14 @@ public class PsiToGrammarConverter {
 			}
 
 			List<String> terminals = new ArrayList<>();
-			terminals.add(convertResolveDeclarationSymbol(psiResolveDeclaration.getFirstSymbol()));
+			terminals.add(getText(psiResolveDeclaration.getFirstSymbol()));
 			for (ResolveDeclaration_1 elementNode : psiResolveDeclaration.getAdditionalSymbols().getAll()) {
-				terminals.add(convertResolveDeclarationSymbol(elementNode.getSymbol()));
+				terminals.add(getText(elementNode.getSymbol()));
 			}
 
 			resolveDeclarations.add(new ResolveDeclaration(conflictResolution, ImmutableList.copyOf(terminals)));
 		}
 		return new ResolveBlock(ImmutableList.copyOf(resolveDeclarations));
-	}
-
-	private String convertResolveDeclarationSymbol(ResolveDeclarationSymbol symbol) {
-		if (symbol instanceof ResolveDeclarationSymbol_Identifier) {
-			return getText(((ResolveDeclarationSymbol_Identifier) symbol).getSymbol());
-		} else if (symbol instanceof ResolveDeclarationSymbol_Eof) {
-			return SpecialSymbols.EOF_SYMBOL_NAME;
-		} else {
-			throw new RuntimeException("unknown resolve declaration symbol node: " + symbol);
-		}
 	}
 
 	private Expression convertExpression(name.martingeisse.mapag.input.psi.Expression psiExpression) {

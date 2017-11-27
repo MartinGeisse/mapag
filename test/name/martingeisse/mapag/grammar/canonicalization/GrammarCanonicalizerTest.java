@@ -3,8 +3,10 @@ package name.martingeisse.mapag.grammar.canonicalization;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
-import name.martingeisse.mapag.grammar.canonical.AlternativeConflictResolver;
-import name.martingeisse.mapag.grammar.extended.*;
+import name.martingeisse.mapag.grammar.extended.Alternative;
+import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
+import name.martingeisse.mapag.grammar.extended.Production;
+import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
 import name.martingeisse.mapag.grammar.extended.expression.SequenceExpression;
 import name.martingeisse.mapag.grammar.extended.expression.SymbolReference;
 import org.junit.Assert;
@@ -36,10 +38,10 @@ public class GrammarCanonicalizerTest {
 		new PrecedenceTable.Entry(ImmutableList.of("c"), Associativity.NONASSOC)
 	));
 
-	private static final Alternative ALTERNATIVE_1 = new Alternative(null, new SymbolReference("a"), null, null, false);
-	private static final Alternative ALTERNATIVE_2 = new Alternative(null, new SymbolReference("p"), "f", null, false);
-	private static final Alternative ALTERNATIVE_3 = new Alternative(null, new SequenceExpression(new SymbolReference("f"), new SymbolReference("g")), null, null, false);
-	private static final Alternative ALTERNATIVE_4 = new Alternative(null, new SymbolReference("e"), null, null, false);
+	private static final Alternative ALTERNATIVE_1 = new Alternative(null, new SymbolReference("a"), null, null, false, false);
+	private static final Alternative ALTERNATIVE_2 = new Alternative(null, new SymbolReference("p"), "f", null, false, false);
+	private static final Alternative ALTERNATIVE_3 = new Alternative(null, new SequenceExpression(new SymbolReference("f"), new SymbolReference("g")), null, null, false, false);
+	private static final Alternative ALTERNATIVE_4 = new Alternative(null, new SymbolReference("e"), null, null, false, false);
 	private static final Production PRODUCTION_1 = new Production("p", ImmutableList.of(ALTERNATIVE_1, ALTERNATIVE_2));
 	private static final Production PRODUCTION_2 = new Production("q", ImmutableList.of(ALTERNATIVE_3));
 	private static final Production PRODUCTION_3 = new Production("start", ImmutableList.of(ALTERNATIVE_4));
@@ -127,12 +129,8 @@ public class GrammarCanonicalizerTest {
 	}
 
 	private static String getEffectivePrecedenceTerminal(name.martingeisse.mapag.grammar.canonical.Alternative alternative) {
-		AlternativeConflictResolver resolver = alternative.getConflictResolver();
-		if (resolver == null) {
-			return null;
-		}
-		Assert.assertNull(resolver.getTerminalToResolution());
-		return resolver.getEffectivePrecedenceTerminal();
+		Assert.assertNull(alternative.getAttributes().getTerminalToResolution());
+		return alternative.getAttributes().getEffectivePrecedenceTerminal();
 	}
 
 }

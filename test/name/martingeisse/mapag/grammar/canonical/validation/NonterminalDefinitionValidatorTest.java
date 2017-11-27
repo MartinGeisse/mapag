@@ -29,8 +29,8 @@ public class NonterminalDefinitionValidatorTest {
 	}
 
 	private static final Map<String, NonterminalDefinition> SIMPLE_NONTERMINALS = ImmutableMap.of(
-		"x", new NonterminalDefinition("x", ImmutableList.of(new Alternative("a1", TestUtil.expansion(), null, false)), NonterminalDefinition.PsiStyle.NORMAL),
-		"y", new NonterminalDefinition("y", ImmutableList.of(new Alternative("a2", TestUtil.expansion(), null, false)), NonterminalDefinition.PsiStyle.NORMAL)
+		"x", new NonterminalDefinition("x", ImmutableList.of(new Alternative("a1", TestUtil.expansion(), AlternativeAttributes.EMPTY)), NonterminalDefinition.PsiStyle.NORMAL),
+		"y", new NonterminalDefinition("y", ImmutableList.of(new Alternative("a2", TestUtil.expansion(), AlternativeAttributes.EMPTY)), NonterminalDefinition.PsiStyle.NORMAL)
 	);
 
 	@Test
@@ -61,58 +61,58 @@ public class NonterminalDefinitionValidatorTest {
 	@Test
 	public void testValidAlternatives() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative("a1", TestUtil.expansion(), null, false));
-		validator.validate(new Alternative("a1", TestUtil.expansion(), new AlternativeConflictResolver("a", null), false));
-		validator.validate(new Alternative("a1", TestUtil.expansion(), new AlternativeConflictResolver("d", null), false));
-		validator.validate(new Alternative("a1", TestUtil.expansion("a", "b"), null, false));
-		validator.validate(new Alternative("a1", TestUtil.expansion("a", "b"), new AlternativeConflictResolver("d", null), false));
-		validator.validate(new Alternative("a1", TestUtil.expansion("a", "x"), null, false));
-		validator.validate(new Alternative("a1", TestUtil.expansion("a", "x"), new AlternativeConflictResolver("d", null), false));
-		validator.validate(new Alternative("a1", TestUtil.expansion("y"), null, false));
-		validator.validate(new Alternative("a1", TestUtil.expansion("y"), new AlternativeConflictResolver("d", null), false));
-		validator.validate(new Alternative("a1", TestUtil.expansion("y"), new AlternativeConflictResolver(null, ImmutableMap.of("d", ConflictResolution.SHIFT)), false));
+		validator.validate(new Alternative("a1", TestUtil.expansion(), AlternativeAttributes.EMPTY));
+		validator.validate(new Alternative("a1", TestUtil.expansion(), new AlternativeAttributes("a", null, false, false)));
+		validator.validate(new Alternative("a1", TestUtil.expansion(), new AlternativeAttributes("d", null, false, false)));
+		validator.validate(new Alternative("a1", TestUtil.expansion("a", "b"), AlternativeAttributes.EMPTY));
+		validator.validate(new Alternative("a1", TestUtil.expansion("a", "b"), new AlternativeAttributes("d", null, false, false)));
+		validator.validate(new Alternative("a1", TestUtil.expansion("a", "x"), AlternativeAttributes.EMPTY));
+		validator.validate(new Alternative("a1", TestUtil.expansion("a", "x"), new AlternativeAttributes("d", null, false, false)));
+		validator.validate(new Alternative("a1", TestUtil.expansion("y"), AlternativeAttributes.EMPTY));
+		validator.validate(new Alternative("a1", TestUtil.expansion("y"), new AlternativeAttributes("d", null, false, false)));
+		validator.validate(new Alternative("a1", TestUtil.expansion("y"), new AlternativeAttributes(null, ImmutableMap.of("d", ConflictResolution.SHIFT), false, false)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownSymbolInExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative("a1", TestUtil.expansion("a", "u"), null, false));
+		validator.validate(new Alternative("a1", TestUtil.expansion("a", "u"), AlternativeAttributes.EMPTY));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownPrecedenceTerminalWithEmptyExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative("a1", TestUtil.expansion(), new AlternativeConflictResolver("u", null), false));
+		validator.validate(new Alternative("a1", TestUtil.expansion(), new AlternativeAttributes("u", null, false, false)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownPrecedenceTerminalWithNonemptyExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative("a1", TestUtil.expansion("a"), new AlternativeConflictResolver("u", null), false));
+		validator.validate(new Alternative("a1", TestUtil.expansion("a"), new AlternativeAttributes("u", null, false, false)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testNonterminalUsedForPrecedence() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative("a1", TestUtil.expansion("a"), new AlternativeConflictResolver("x", null), false));
+		validator.validate(new Alternative("a1", TestUtil.expansion("a"), new AlternativeAttributes("x", null, false, false)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownResolveMapKeyWithEmptyExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative("a1", TestUtil.expansion(), new AlternativeConflictResolver(null, ImmutableMap.of("u", ConflictResolution.SHIFT)), false));
+		validator.validate(new Alternative("a1", TestUtil.expansion(), new AlternativeAttributes(null, ImmutableMap.of("u", ConflictResolution.SHIFT), false, false)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownResolveMapKeyWithNonemptyExpansion() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative("a1", TestUtil.expansion("a"), new AlternativeConflictResolver(null, ImmutableMap.of("u", ConflictResolution.SHIFT)), false));
+		validator.validate(new Alternative("a1", TestUtil.expansion("a"), new AlternativeAttributes(null, ImmutableMap.of("u", ConflictResolution.SHIFT), false, false)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testNonterminalUsedForResolveMapKey() {
 		NonterminalDefinitionValidator validator = new NonterminalDefinitionValidator(TERMINALS, SIMPLE_NONTERMINALS);
-		validator.validate(new Alternative("a1", TestUtil.expansion("a"), new AlternativeConflictResolver(null, ImmutableMap.of("x", ConflictResolution.SHIFT)), false));
+		validator.validate(new Alternative("a1", TestUtil.expansion("a"), new AlternativeAttributes(null, ImmutableMap.of("x", ConflictResolution.SHIFT), false, false)));
 	}
 
 }

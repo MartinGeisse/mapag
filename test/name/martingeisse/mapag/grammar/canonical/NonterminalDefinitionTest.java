@@ -9,8 +9,8 @@ import org.junit.Test;
  */
 public class NonterminalDefinitionTest {
 
-	private static final Alternative ALTERNATIVE_1 = new Alternative("a1", TestUtil.expansion("foo", "bar"), null, false);
-	private static final Alternative ALTERNATIVE_2 = new Alternative("a2", TestUtil.expansion("a", "b"), null, false);
+	private static final Alternative ALTERNATIVE_1 = new Alternative("a1", TestUtil.expansion("foo", "bar"), AlternativeAttributes.EMPTY);
+	private static final Alternative ALTERNATIVE_2 = new Alternative("a2", TestUtil.expansion("a", "b"), AlternativeAttributes.EMPTY);
 	private static final ImmutableList<Alternative> ALTERNATIVES = ImmutableList.of(ALTERNATIVE_1, ALTERNATIVE_2);
 
 	@Test

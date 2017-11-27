@@ -38,15 +38,15 @@ class NonterminalDefinitionValidator {
 				throw new IllegalStateException("unknown symbol in nonterminal expansion: " + symbol);
 			}
 		}
-		if (alternative.getConflictResolver() != null) {
-			AlternativeConflictResolver conflictResolver = alternative.getConflictResolver();
-			if (conflictResolver.getEffectivePrecedenceTerminal() != null) {
-				if (!terminalDefinitions.containsKey(conflictResolver.getEffectivePrecedenceTerminal())) {
-					throw new IllegalStateException("nonterminal defines precedence using unknown terminal " + conflictResolver.getEffectivePrecedenceTerminal());
+		if (alternative.getAttributes() != null) {
+			AlternativeAttributes attributes = alternative.getAttributes();
+			if (attributes.getEffectivePrecedenceTerminal() != null) {
+				if (!terminalDefinitions.containsKey(attributes.getEffectivePrecedenceTerminal())) {
+					throw new IllegalStateException("nonterminal defines precedence using unknown terminal " + attributes.getEffectivePrecedenceTerminal());
 				}
 			}
-			if (conflictResolver.getTerminalToResolution() != null) {
-				for (String terminal : conflictResolver.getTerminalToResolution().keySet()) {
+			if (attributes.getTerminalToResolution() != null) {
+				for (String terminal : attributes.getTerminalToResolution().keySet()) {
 					if (!terminalDefinitions.containsKey(terminal)) {
 						throw new IllegalStateException("nonterminal defines conflict resolution using unknown terminal " + terminal);
 					}

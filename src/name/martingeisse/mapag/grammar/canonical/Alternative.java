@@ -18,14 +18,12 @@ public final class Alternative {
 
 	private final String name;
 	private final Expansion expansion;
-	private final AlternativeConflictResolver conflictResolver;
-	private final boolean reduceOnError;
+	private final AlternativeAttributes attributes;
 
-	public Alternative(String name, Expansion expansion, AlternativeConflictResolver conflictResolver, boolean reduceOnError) {
+	public Alternative(String name, Expansion expansion, AlternativeAttributes attributes) {
 		this.name = ParameterUtil.ensureNotNullOrEmpty(name, "name");
 		this.expansion = ParameterUtil.ensureNotNull(expansion, "expansion");
-		this.conflictResolver = conflictResolver;
-		this.reduceOnError = reduceOnError;
+		this.attributes = ParameterUtil.ensureNotNull(attributes, "attributes");
 	}
 
 	public String getName() {
@@ -36,17 +34,13 @@ public final class Alternative {
 		return expansion;
 	}
 
-	public AlternativeConflictResolver getConflictResolver() {
-		return conflictResolver;
-	}
-
-	public boolean isReduceOnError() {
-		return reduceOnError;
+	public AlternativeAttributes getAttributes() {
+		return attributes;
 	}
 
 	public Alternative vanishSymbol(String symbol) {
 		ParameterUtil.ensureNotNullOrEmpty(symbol, "symbol");
-		return new Alternative(name, expansion.vanishSymbol(symbol), conflictResolver, reduceOnError);
+		return new Alternative(name, expansion.vanishSymbol(symbol), attributes);
 	}
 
 	@Override
@@ -60,7 +54,7 @@ public final class Alternative {
 		builder.append(" ::= ");
 		builder.append(expansion);
 		builder.append(' ');
-		builder.append(conflictResolver);
+		builder.append(attributes);
 		return builder.toString();
 	}
 

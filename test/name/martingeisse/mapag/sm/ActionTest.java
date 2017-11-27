@@ -2,6 +2,7 @@ package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.grammar.canonical.AlternativeAttributes;
 import name.martingeisse.mapag.grammar.canonical.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,7 +12,7 @@ import org.junit.Test;
  */
 public class ActionTest {
 
-	private static final Alternative alternative = new Alternative("a1", TestUtil.expansion("abc", "def"), null, false);
+	private static final Alternative alternative = new Alternative("a1", TestUtil.expansion("abc", "def"), AlternativeAttributes.EMPTY);
 
 	@Test
 	public void testShift() {

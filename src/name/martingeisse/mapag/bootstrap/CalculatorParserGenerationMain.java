@@ -20,7 +20,7 @@ import java.util.Properties;
  * This is the bootstrapper for the calculator grammar (test project). This should ultimately be defined in a mapag
  * specification file, but for now, we don't actually have a parser for these specification files.
  */
-public class CalculatorParserGenerationMain {
+public class CalculatorParserGenerationMain extends BootstrapBase {
 
 	public static void main(String[] args) throws Exception {
 
@@ -59,26 +59,26 @@ public class CalculatorParserGenerationMain {
 
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("calculation", ImmutableList.of(
-				new Alternative(null, new ZeroOrMoreExpression(symbol("statement")).withName("statements"), null, null, false)
+				alternative(null, new ZeroOrMoreExpression(symbol("statement")).withName("statements"))
 			)),
 			new Production("statement", ImmutableList.of(
-				new Alternative("expression", sequence(symbol("expression").withName("expression"), symbol("SEMICOLON")), null, null, false),
-				new Alternative("error", sequence(symbol("%error"), symbol("SEMICOLON")), null, null, false)
+				alternative("expression", sequence(symbol("expression").withName("expression"), symbol("SEMICOLON"))),
+				alternative("error", sequence(symbol("%error"), symbol("SEMICOLON")))
 			)),
 			new Production("expression", ImmutableList.of(
-				new Alternative("literal", symbol("NUMBER").withName("value"), null, null, false),
-				new Alternative("variable", symbol("IDENTIFIER").withName("variableName"), null, null, false),
-				new Alternative("additive", sequence(
+				alternative("literal", symbol("NUMBER").withName("value")),
+				alternative("variable", symbol("IDENTIFIER").withName("variableName")),
+				alternativeWithPrecedence("additive", sequence(
 					symbol("expression").withName("left"),
 					or(symbol("PLUS"), symbol("MINUS")).withName("operator"),
 					symbol("expression").withName("right")
-				), "PLUS", null, false),
-				new Alternative("multiplicative", sequence(
+				), "PLUS"),
+				alternativeWithPrecedence("multiplicative", sequence(
 					symbol("expression").withName("left"),
 					or(symbol("TIMES"), symbol("DIVIDED_BY")).withName("operator"),
 					symbol("expression").withName("right")
-				), "TIMES", null, false),
-				new Alternative("parenthesized", sequence(symbol("OPENING_PARENTHESIS"), symbol("expression").withName("inner"), symbol("CLOSING_PARENTHESIS")), null, null, false)
+				), "TIMES"),
+				alternative("parenthesized", sequence(symbol("OPENING_PARENTHESIS"), symbol("expression").withName("inner"), symbol("CLOSING_PARENTHESIS")))
 			))
 		);
 
@@ -98,38 +98,6 @@ public class CalculatorParserGenerationMain {
 		};
 		new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
 
-	}
-
-	private static SymbolReference symbol(String name) {
-		return new SymbolReference(name);
-	}
-
-	private static Expression sequence(Expression... expressions) {
-		return sequence(0, expressions);
-	}
-
-	private static Expression sequence(int i, Expression... expressions) {
-		if (i == expressions.length) {
-			return new EmptyExpression();
-		} else if (i == expressions.length - 1) {
-			return expressions[i];
-		} else {
-			return new SequenceExpression(expressions[i], sequence(i + 1, expressions));
-		}
-	}
-
-	private static Expression or(Expression... expressions) {
-		return or(0, expressions);
-	}
-
-	private static Expression or(int i, Expression... expressions) {
-		if (i == expressions.length) {
-			return new EmptyExpression();
-		} else if (i == expressions.length - 1) {
-			return expressions[i];
-		} else {
-			return new OrExpression(expressions[i], or(i + 1, expressions));
-		}
 	}
 
 }

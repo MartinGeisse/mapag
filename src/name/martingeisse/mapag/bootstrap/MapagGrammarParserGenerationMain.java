@@ -25,7 +25,7 @@ import java.util.Properties;
  * TODO: Problem #2: an IDENTIFIER right before a syntax error won't get reduced to an Expression_Identifier due to
  * the wrong lookahead terminal. This also breaks auto-complete.
  */
-public class MapagGrammarParserGenerationMain {
+public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
 	public static void main(String[] args) throws Exception {
 		try {
@@ -285,69 +285,5 @@ public class MapagGrammarParserGenerationMain {
 
 	}
 
-	private static SymbolReference symbol(String name) {
-		return new SymbolReference(name);
-	}
-
-	private static Expression sequence(Expression... expressions) {
-		if (expressions.length == 0) {
-			return new EmptyExpression();
-		} else if (expressions.length == 1) {
-			return expressions[0];
-		} else {
-			return sequence(0, expressions);
-		}
-	}
-
-	private static Expression sequence(int i, Expression... expressions) {
-		if (i == expressions.length) {
-			return new EmptyExpression();
-		} else if (i == expressions.length - 1) {
-			return expressions[i];
-		} else {
-			return new SequenceExpression(expressions[i], sequence(i + 1, expressions));
-		}
-	}
-
-	private static Expression or(Expression... expressions) {
-		return or(0, expressions);
-	}
-
-	private static Expression or(int i, Expression... expressions) {
-		if (i == expressions.length) {
-			return new EmptyExpression();
-		} else if (i == expressions.length - 1) {
-			return expressions[i];
-		} else {
-			return new OrExpression(expressions[i], or(i + 1, expressions));
-		}
-	}
-
-	private static OptionalExpression optional(Expression... expressions) {
-		return new OptionalExpression(sequence(expressions));
-	}
-
-	private static ZeroOrMoreExpression zeroOrMore(Expression... expressions) {
-		return new ZeroOrMoreExpression(sequence(expressions));
-	}
-
-	private static OneOrMoreExpression oneOrMore(Expression... expressions) {
-		return new OneOrMoreExpression(sequence(expressions));
-	}
-
-	private static Alternative alternative(String name, Expression expression) {
-		return new Alternative(name, expression, null, null, false);
-	}
-
-	private static Alternative alternativeWithResolution(String name, Expression expression, ImmutableList<String> shiftTerminals, ImmutableList<String> reduceTerminals) {
-		ResolveDeclaration shiftDeclaration = new ResolveDeclaration(ConflictResolution.SHIFT, shiftTerminals);
-		ResolveDeclaration reduceDeclaration = new ResolveDeclaration(ConflictResolution.REDUCE, reduceTerminals);
-		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of(shiftDeclaration, reduceDeclaration));
-		return new Alternative(name, expression, null, resolveBlock, false);
-	}
-
-	private static Alternative alternativeWithReduceOnError(String name, Expression expression) {
-		return new Alternative(name, expression, null, null, true);
-	}
 
 }

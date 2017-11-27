@@ -13,8 +13,9 @@ public final class Alternative {
 	private final String precedenceDefiningTerminal;
 	private final ResolveBlock resolveBlock;
 	private final boolean reduceOnError;
+	private final boolean reduceOnEofOnly;
 
-	public Alternative(String name, Expression expression, String precedenceDefiningTerminal, ResolveBlock resolveBlock, boolean reduceOnError) {
+	public Alternative(String name, Expression expression, String precedenceDefiningTerminal, ResolveBlock resolveBlock, boolean reduceOnError, boolean reduceOnEofOnly) {
 		this.name = ParameterUtil.ensureNotEmpty(name, "name");
 		this.expression = ParameterUtil.ensureNotNull(expression, "expression");
 		ParameterUtil.ensureNotEmpty(precedenceDefiningTerminal, "precedenceDefiningTerminal");
@@ -24,6 +25,7 @@ public final class Alternative {
 		this.precedenceDefiningTerminal = precedenceDefiningTerminal;
 		this.resolveBlock = resolveBlock;
 		this.reduceOnError = reduceOnError;
+		this.reduceOnEofOnly = reduceOnEofOnly;
 	}
 
 	public String getName() {
@@ -46,6 +48,10 @@ public final class Alternative {
 		return reduceOnError;
 	}
 
+	public boolean isReduceOnEofOnly() {
+		return reduceOnEofOnly;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -59,6 +65,9 @@ public final class Alternative {
 		}
 		if (reduceOnError) {
 			builder.append(" %reduceOnError");
+		}
+		if (reduceOnEofOnly) {
+			builder.append(" %eof");
 		}
 		builder.append('}');
 		return builder.toString();

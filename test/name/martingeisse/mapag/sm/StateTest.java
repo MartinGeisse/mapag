@@ -5,10 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
-import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.Grammar;
-import name.martingeisse.mapag.grammar.canonical.GrammarBuilder;
-import name.martingeisse.mapag.grammar.canonical.TestUtil;
+import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.testutil.ExAssert;
 import org.apache.commons.lang3.tuple.Pair;
@@ -34,7 +31,7 @@ public class StateTest {
 
 	@Test
 	public void testConstructorGetter() {
-		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null, false);
+		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), AlternativeAttributes.EMPTY);
 		StateElement stateElement = new StateElement("lll", alternative, 0, "foo");
 		State state = new State(ImmutableSet.of(stateElement));
 		Assert.assertEquals(ImmutableSet.of(stateElement), state.getElements());
@@ -43,10 +40,10 @@ public class StateTest {
 	@Test
 	public void testEqualsAndHashCode() {
 
-		Alternative alternative1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), null, false);
+		Alternative alternative1 = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), AlternativeAttributes.EMPTY);
 		StateElement stateElement1 = new StateElement("aaa", alternative1, 0, "foo");
 
-		Alternative alternative2 = new Alternative("a2", TestUtil.expansion("foo", "bar"), null, false);
+		Alternative alternative2 = new Alternative("a2", TestUtil.expansion("foo", "bar"), AlternativeAttributes.EMPTY);
 		StateElement stateElement2 = new StateElement("bbb", alternative2, 1, "baz");
 
 		State[] states = new State[]{
@@ -88,7 +85,7 @@ public class StateTest {
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
 
 		{
-			Alternative startAlternative = new Alternative("a1", TestUtil.expansion("s"), null, false);
+			Alternative startAlternative = new Alternative("a1", TestUtil.expansion("s"), AlternativeAttributes.EMPTY);
 			StateElement startStateElement = new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, startAlternative, 0, SpecialSymbols.EOF_SYMBOL_NAME);
 			State state0 = new StateBuilder(grammarInfo).addElementClosure(startStateElement).build();
 			Assert.assertEquals(new State(ImmutableSet.of(
@@ -540,7 +537,7 @@ public class StateTest {
 		symbolContributor.accept(builder);
 		Grammar grammar = builder.build();
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
-		StateElement startStateElement = new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, new Alternative("a1", TestUtil.expansion("e"), null, false), 0, SpecialSymbols.EOF_SYMBOL_NAME);
+		StateElement startStateElement = new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, new Alternative("a1", TestUtil.expansion("e"), AlternativeAttributes.EMPTY), 0, SpecialSymbols.EOF_SYMBOL_NAME);
 		State state = new StateBuilder(grammarInfo).addElementClosure(startStateElement).build();
 		state = state.determineNextStateAfterShiftingNonterminal(grammarInfo, "e");
 		state = expectShiftTerminal(grammarInfo, state, operatorTerminal);
