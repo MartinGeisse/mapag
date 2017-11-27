@@ -20,11 +20,7 @@ import java.io.PrintWriter;
 import java.util.Properties;
 
 /**
- * TODO: Problem #1: a partial / faulty production at the end of the input file causes a give-up syntax error, which
- * turns the whole file into a "parsed fragment" instead of a "grammar" and thus breaks auto-complete.
- *
- * TODO: Problem #2: an IDENTIFIER right before a syntax error won't get reduced to an Expression_Identifier due to
- * the wrong lookahead terminal. This also breaks auto-complete.
+ * TODO auto-complete mostly works now, except when the identifier to complete is right before EOF.
  */
 public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
