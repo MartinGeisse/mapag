@@ -113,7 +113,13 @@ public class PsiToGrammarConverter {
 				}
 				productions.add(new Production(nonterminal, ImmutableList.copyOf(alternatives)));
 
-			} else if (psiProduction instanceof Production_Error) {
+			} else if (psiProduction instanceof Production_Error1) {
+				throw new UserMessageException("grammar contains errors");
+			} else if (psiProduction instanceof Production_Error2) {
+				throw new UserMessageException("grammar contains errors");
+			} else if (psiProduction instanceof Production_Error3) {
+				throw new UserMessageException("grammar contains errors");
+			} else if (psiProduction instanceof Production_Error4) {
 				throw new UserMessageException("grammar contains errors");
 			} else {
 				throw new RuntimeException("unknown production PSI node: " + psiProduction);

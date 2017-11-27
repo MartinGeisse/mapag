@@ -184,7 +184,19 @@ final class PsiUtil {
 		return null;
 	}
 
-	public static PsiReference getReference(Production_Error expression) {
+	public static PsiReference getReference(Production_Error1 expression) {
+		return null;
+	}
+
+	public static PsiReference getReference(Production_Error2 expression) {
+		return null;
+	}
+
+	public static PsiReference getReference(Production_Error3 expression) {
+		return null;
+	}
+
+	public static PsiReference getReference(Production_Error4 expression) {
 		return null;
 	}
 
@@ -217,12 +229,36 @@ final class PsiUtil {
 		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
 	}
 
-	public static String getName(Production_Error node) {
+	public static String getName(Production_Error1 node) {
 		return null;
 	}
 
-	public static PsiElement setName(Production_Error node, String newName) throws IncorrectOperationException {
+	public static String getName(Production_Error2 node) {
+		return null;
+	}
+
+	public static String getName(Production_Error3 node) {
+		return node.getNonterminalName().getText();
+	}
+
+	public static String getName(Production_Error4 node) {
+		return node.getNonterminalName().getText();
+	}
+
+	public static PsiElement setName(Production_Error1 node, String newName) throws IncorrectOperationException {
 		throw new IncorrectOperationException("grammar contains errors");
+	}
+
+	public static PsiElement setName(Production_Error2 node, String newName) throws IncorrectOperationException {
+		throw new IncorrectOperationException("grammar contains errors");
+	}
+
+	public static PsiElement setName(Production_Error3 node, String newName) throws IncorrectOperationException {
+		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
+	}
+
+	public static PsiElement setName(Production_Error4 node, String newName) throws IncorrectOperationException {
+		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
 	}
 
 }
