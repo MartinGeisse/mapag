@@ -147,7 +147,8 @@ final class PsiUtil {
 				if (psiElement instanceof LeafPsiElement) {
 					String id = getCanonicalText();
 					if (id.equals(psiElement.getText())) {
-						return getSymbolDefiningPsiElements(expression).contains(psiElement);
+						PsiElement resolved = resolve();
+						return (resolved != null && resolved.equals(psiElement));
 					}
 				}
 				return false;
