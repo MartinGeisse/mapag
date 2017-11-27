@@ -185,10 +185,18 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 					).withName("alternatives"),
 					symbol("CLOSING_CURLY_BRACE")
 				)),
-				alternative("error", sequence(
+
+				// TODO this is a test for %eof for now. Later on, the nonterminal name should be recognizable even
+				// for a broken production, to support auto-complete of recursive productions
+				// TODO this should generate a shift/reduce conflict but doesn't.
+				alternative("error1", sequence(
 					symbol("%error"),
 					symbol("SEMICOLON")
+				)),
+				alternative("error2", sequence(
+					symbol("%error")
 				))
+
 			)),
 			new Production("rightHandSide", ImmutableList.of(
 				alternative(null, sequence(
