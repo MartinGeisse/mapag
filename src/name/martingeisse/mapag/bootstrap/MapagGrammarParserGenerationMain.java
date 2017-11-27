@@ -19,9 +19,6 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.Properties;
 
-/**
- * TODO auto-complete mostly works now, except when the identifier to complete is right before EOF.
- */
 public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
 	public static void main(String[] args) throws Exception {

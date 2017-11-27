@@ -37,6 +37,10 @@ final class PsiUtil {
 			return ((Production_SingleNamed) production).getNonterminalName();
 		} else if (production instanceof Production_Multi) {
 			return ((Production_Multi) production).getNonterminalName();
+		} else if (production instanceof Production_Error3) {
+			return ((Production_Error3) production).getNonterminalName();
+		} else if (production instanceof Production_Error4) {
+			return ((Production_Error4) production).getNonterminalName();
 		} else {
 			return null;
 		}
