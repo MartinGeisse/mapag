@@ -22,6 +22,7 @@
     <fileTypeFactory implementation="name.martingeisse.mapag.ide.MapagFileTypeFactory" />
     <lang.syntaxHighlighterFactory language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagSyntaxHighlighterFactory" />
     <lang.parserDefinition language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagParserDefinition" />
+    <lang.findUsagesProvider language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagFindUsagesProvider" />
   </extensions>
 
   <actions>
