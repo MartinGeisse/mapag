@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.codegen;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
@@ -24,12 +25,16 @@ import java.util.function.Function;
  */
 public final class StateMachineEncoder {
 
+	private final GrammarInfo grammarInfo;
+	private final StateMachine stateMachine;
 	private final ImmutableList<String> terminals;
 	private final ImmutableList<String> nonterminals;
 	private final ImmutableList<State> states;
 	private final ImmutableList<Pair<String, Alternative>> alternatives;
 
 	public StateMachineEncoder(GrammarInfo grammarInfo, StateMachine stateMachine) {
+		this.grammarInfo = grammarInfo;
+		this.stateMachine = stateMachine;
 		this.terminals = list(grammarInfo.getGrammar().getTerminalDefinitions().keySet());
 		this.nonterminals = list(grammarInfo.getGrammar().getNonterminalDefinitions().keySet());
 		this.states = ListUtil.sorted(stateMachine.getStates(), Comparators.stateComparator);
@@ -171,9 +176,50 @@ public final class StateMachineEncoder {
 			System.out.println();
 			System.out.println("state " + stateCode + ": ");
 			System.out.println(state);
+			System.out.println("actions:");
+			{
+				ImmutableMap<String, Action> terminalActionMap = stateMachine.getTerminalOrEofActions().get(state);
+				for (String terminal : grammarInfo.getGrammar().getTerminalDefinitions().keySet()) {
+					printAction(terminalActionMap, terminal);
+				}
+				printAction(terminalActionMap, SpecialSymbols.EOF_SYMBOL_NAME);
+			}
+			{
+				ImmutableMap<String, Action.Shift> nonterminalActionMap = stateMachine.getNonterminalActions().get(state);
+				for (String nonterminal : grammarInfo.getGrammar().getNonterminalDefinitions().keySet()) {
+					printAction(nonterminalActionMap, nonterminal);
+				}
+				printAction(nonterminalActionMap, SpecialSymbols.ERROR_SYMBOL_NAME);
+			}
+
+			System.out.println();
 			stateCode++;
 		}
 
+	}
+
+	private void printAction(ImmutableMap<String, ? extends Action> map, String symbol) {
+		System.out.println("  " + symbol + " -> " + actionToString(map.get(symbol)));
+	}
+
+	private String actionToString(Action untypedAction) {
+		if (untypedAction == null) {
+			return "-";
+		} else if (untypedAction instanceof Action.Shift) {
+			Action.Shift action = (Action.Shift)untypedAction;
+			return "SHIFT " + getStateIndex(action.getNextState());
+		} else if (untypedAction instanceof Action.Reduce) {
+			Action.Reduce action = (Action.Reduce)untypedAction;
+			return "REDUCE " + action.getNonterminal()
+				+ " (nonterminal code " + getNonterminalIndex(action.getNonterminal())
+				+ " symbol code " + getSymbolIndex(action.getNonterminal())
+				+ " alternative code " + getAlternativeIndex(action.getNonterminal(), action.getAlternative())
+				+ ") from " + action.getAlternative();
+		} else if (untypedAction instanceof Action.Accept) {
+			return "ACCEPT";
+		} else {
+			return "??? " + untypedAction.toString();
+		}
 	}
 
 }
