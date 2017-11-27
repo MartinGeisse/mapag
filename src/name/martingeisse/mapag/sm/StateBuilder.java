@@ -2,6 +2,7 @@ package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
@@ -52,8 +53,14 @@ final class StateBuilder {
 	private void includeNonterminal(String nonterminal, ImmutableSet<String> localFollowSet) {
 		NonterminalDefinition nonterminalDefinition = grammarInfo.getGrammar().getNonterminalDefinitions().get(nonterminal);
 		for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
-			for (String followTerminal : localFollowSet) {
-				addElementClosure(new StateElement(nonterminal, alternative, 0, followTerminal));
+			if (alternative.getAttributes().isReduceOnEofOnly()) {
+				if (localFollowSet.contains(SpecialSymbols.EOF_SYMBOL_NAME)) {
+					addElementClosure(new StateElement(nonterminal, alternative, 0, SpecialSymbols.EOF_SYMBOL_NAME));
+				}
+			} else {
+				for (String followTerminal : localFollowSet) {
+					addElementClosure(new StateElement(nonterminal, alternative, 0, followTerminal));
+				}
 			}
 		}
 	}
