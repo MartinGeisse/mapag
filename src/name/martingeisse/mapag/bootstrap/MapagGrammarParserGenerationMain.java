@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.StateMachineEncoder;
 import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
@@ -188,12 +189,11 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
 				// TODO this is a test for %eof for now. Later on, the nonterminal name should be recognizable even
 				// for a broken production, to support auto-complete of recursive productions
-				// TODO this should generate a shift/reduce conflict but doesn't.
 				alternative("error1", sequence(
 					symbol("%error"),
 					symbol("SEMICOLON")
 				)),
-				alternative("error2", sequence(
+				alternativeWithReduceOnEofOnly("error2", sequence(
 					symbol("%error")
 				))
 
