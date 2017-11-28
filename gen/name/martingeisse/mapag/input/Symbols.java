@@ -91,6 +91,11 @@ public class Symbols {
 	public static final MapagElementType rightHandSide = new MapagElementType("rightHandSide");
 	public static final MapagElementType rightHandSide_Attributes_Next = new MapagElementType("rightHandSide_Attributes_Next");
 	public static final MapagElementType rightHandSide_Attributes_Start = new MapagElementType("rightHandSide_Attributes_Start");
+	public static final MapagElementType terminalDeclaration = new MapagElementType("terminalDeclaration");
+	public static final MapagElementType terminalDeclarations = new MapagElementType("terminalDeclarations");
+	public static final MapagElementType terminalDeclarations_1 = new MapagElementType("terminalDeclarations_1");
+	public static final MapagElementType terminalDeclarations_MoreIdentifiers_Next = new MapagElementType("terminalDeclarations_MoreIdentifiers_Next");
+	public static final MapagElementType terminalDeclarations_MoreIdentifiers_Start = new MapagElementType("terminalDeclarations_MoreIdentifiers_Start");
 
 	//
 	// special

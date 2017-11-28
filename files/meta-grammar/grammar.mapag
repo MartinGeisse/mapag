@@ -30,11 +30,15 @@
 //
 
 grammar ::=
-	KW_TERMINALS OPENING_CURLY_BRACE nonemptyIdentifierList:terminals CLOSING_CURLY_BRACE
+	KW_TERMINALS OPENING_CURLY_BRACE terminalDeclarations:terminals CLOSING_CURLY_BRACE
 	(KW_PRECEDENCE OPENING_CURLY_BRACE precedenceDeclaration*:precedenceDeclarations CLOSING_CURLY_BRACE)?:precedenceTable
 	KW_START IDENTIFIER:startSymbolName SEMICOLON
 	production+:productions
 	;
+
+terminalDeclarations ::= terminalDeclaration:firstIdentifier (COMMA terminalDeclaration:identifier)*:moreIdentifiers;
+
+terminalDeclaration ::= IDENTIFIER:identifier;
 
 precedenceDeclaration ::= (KW_LEFT:left | KW_RIGHT:right | KW_NONASSOC:nonassoc):associativity nonemptyIdentifierList:terminals SEMICOLON;
 

@@ -76,7 +76,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		codeGenerationProperties.setProperty("psi.package", "name.martingeisse.mapag.input.psi");
 		codeGenerationProperties.setProperty("psi.utilClass", "name.martingeisse.mapag.input.psi.PsiUtil");
 		codeGenerationProperties.setProperty("psi.dynamicallyNamedClasses", "Production");
-		codeGenerationProperties.setProperty("psi.referenceClasses", "Production, Expression_Identifier");
+		codeGenerationProperties.setProperty("psi.referenceClasses", "Expression_Identifier");
 		codeGenerationProperties.setProperty("context.parserDefinitionClass", "name.martingeisse.mapag.ide.MapagParserDefinition");
 		Configuration configuration = new Configuration(codeGenerationProperties);
 
@@ -119,7 +119,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 				alternative(null, sequence(
 					symbol("KW_TERMINALS"),
 					symbol("OPENING_CURLY_BRACE"),
-					symbol("nonemptyIdentifierList").withName("terminals"),
+					symbol("terminalDeclarations").withName("terminals"),
 					symbol("CLOSING_CURLY_BRACE"),
 					optional(
 						symbol("KW_PRECEDENCE"),
@@ -132,6 +132,18 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 					symbol("SEMICOLON"),
 					oneOrMore(symbol("production")).withName("productions")
 				))
+			)),
+			new Production("terminalDeclarations", ImmutableList.of(
+				alternative(null, sequence(
+					symbol("terminalDeclaration").withName("firstIdentifier"),
+					zeroOrMore(
+						symbol("COMMA"),
+						symbol("terminalDeclaration").withName("identifier")
+					).withName("moreIdentifiers")
+				))
+			)),
+			new Production("terminalDeclaration", ImmutableList.of(
+				alternative(null, symbol("IDENTIFIER").withName("identifier"))
 			)),
 			new Production("precedenceDeclaration", ImmutableList.of(
 				alternative(null, sequence(

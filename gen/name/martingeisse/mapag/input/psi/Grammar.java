@@ -11,8 +11,8 @@ public final class Grammar extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public NonemptyIdentifierList getTerminals() {
-		return (NonemptyIdentifierList) InternalPsiUtil.getChild(this, 2);
+	public TerminalDeclarations getTerminals() {
+		return (TerminalDeclarations) InternalPsiUtil.getChild(this, 2);
 	}
 
 	public Grammar_PrecedenceTable getPrecedenceTable() {
