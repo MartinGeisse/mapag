@@ -35,6 +35,7 @@ public class PsiClassesGenerator {
 	public static final String PARSER_DEFINITION_CLASS_PROPERTY = "context.parserDefinitionClass";
 	public static final String DYNAMICALLY_NAMED_CLASSES_PROPERTY = "psi.dynamicallyNamedClasses";
 	public static final String REFERENCE_CLASSES_PROPERTY = "psi.referenceClasses";
+	public static final String SAFE_DELETABLE_CLASSES_PROPERTY = "psi.safeDeletableClasses";
 	public static final String PSI_UTIL_CLASS_PROPERTY = "psi.utilClass";
 
 	private final GrammarInfo grammarInfo;
@@ -43,6 +44,7 @@ public class PsiClassesGenerator {
 	private final OutputFileFactory outputFileFactory;
 	private ImmutableList<String> dynamicallyNamedClasses;
 	private ImmutableList<String> referenceClasses;
+	private ImmutableList<String> safeDeletableClasses;
 
 	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammarInfo = grammarInfo;
@@ -52,36 +54,25 @@ public class PsiClassesGenerator {
 	}
 
 	public void generate() throws ConfigurationException, IOException {
-
-		// prepare configuration
-		String dynamicallyNamedElementsProperty = configuration.getOptional(DYNAMICALLY_NAMED_CLASSES_PROPERTY);
-		if (dynamicallyNamedElementsProperty == null || dynamicallyNamedElementsProperty.trim().isEmpty()) {
-			dynamicallyNamedClasses = ImmutableList.of();
-		} else {
-			ImmutableList.Builder<String> builder = ImmutableList.builder();
-			for (String s : StringUtils.split(dynamicallyNamedElementsProperty, ',')) {
-				builder.add(s.trim());
-			}
-			dynamicallyNamedClasses = builder.build();
-		}
-		String referenceClassesProperty = configuration.getOptional(REFERENCE_CLASSES_PROPERTY);
-		if (referenceClassesProperty == null || referenceClassesProperty.trim().isEmpty()) {
-			referenceClasses = ImmutableList.of();
-		} else {
-			ImmutableList.Builder<String> builder = ImmutableList.builder();
-			for (String s : StringUtils.split(referenceClassesProperty, ',')) {
-				builder.add(s.trim());
-			}
-			referenceClasses = builder.build();
-		}
-
-		// generate classes
+		dynamicallyNamedClasses = convertStringListProperty(configuration.getOptional(DYNAMICALLY_NAMED_CLASSES_PROPERTY));
+		referenceClasses = convertStringListProperty(configuration.getOptional(REFERENCE_CLASSES_PROPERTY));
+		safeDeletableClasses = convertStringListProperty(configuration.getOptional(SAFE_DELETABLE_CLASSES_PROPERTY));
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			handleNonterminal(nonterminalDefinition);
 		}
 		generateFactoryClass();
 		generateInternalPsiUtilClass();
+	}
 
+	private static ImmutableList<String> convertStringListProperty(String propertyValue) {
+		if (propertyValue == null || propertyValue.trim().isEmpty()) {
+			return ImmutableList.of();
+		}
+		ImmutableList.Builder<String> builder = ImmutableList.builder();
+		for (String s : StringUtils.split(propertyValue, ',')) {
+			builder.add(s.trim());
+		}
+		return builder.build();
 	}
 
 	private void handleNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
@@ -396,6 +387,13 @@ public class PsiClassesGenerator {
 				context.put("isReference", true);
 			} else {
 				context.put("isReference", false);
+			}
+
+			if (!isAbstract && (safeDeletableClasses.contains(className) || safeDeletableClasses.contains(superclass))) {
+				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
+				context.put("isSafeDeletable", true);
+			} else {
+				context.put("isSafeDeletable", false);
 			}
 
 			try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {

@@ -130,4 +130,10 @@ public $classModifiers class $className extends $superclass #if($dynamicallyName
 		}
 	#end
 
+	#if($isSafeDeletable)
+		public void delete() throws IncorrectOperationException {
+			${psiUtilClass}.delete(this);
+		}
+	#end
+
 }

@@ -77,6 +77,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		codeGenerationProperties.setProperty("psi.utilClass", "name.martingeisse.mapag.input.psi.PsiUtil");
 		codeGenerationProperties.setProperty("psi.dynamicallyNamedClasses", "Production");
 		codeGenerationProperties.setProperty("psi.referenceClasses", "Expression_Identifier");
+		codeGenerationProperties.setProperty("psi.safeDeletableClasses", "Production");
 		codeGenerationProperties.setProperty("context.parserDefinitionClass", "name.martingeisse.mapag.ide.MapagParserDefinition");
 		Configuration configuration = new Configuration(codeGenerationProperties);
 

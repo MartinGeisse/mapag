@@ -32,4 +32,8 @@ public final class Production_SingleNamed extends Production {
 		return PsiUtil.setName(this, newName);
 	}
 
+	public void delete() throws IncorrectOperationException {
+		PsiUtil.delete(this);
+	}
+
 }

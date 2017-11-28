@@ -19,4 +19,8 @@ public final class Production_Error2 extends Production {
 		return PsiUtil.setName(this, newName);
 	}
 
+	public void delete() throws IncorrectOperationException {
+		PsiUtil.delete(this);
+	}
+
 }
