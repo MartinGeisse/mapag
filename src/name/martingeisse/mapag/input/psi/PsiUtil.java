@@ -159,4 +159,36 @@ final class PsiUtil {
 		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
 	}
 
+	//
+	// safe delete
+	//
+
+	public static void delete(Production_SingleUnnamed node) {
+
+	}
+
+	public static void delete(Production_SingleNamed node) {
+
+	}
+
+	public static void delete(Production_Multi node) {
+
+	}
+
+	public static void delete(Production_Error1 node) {
+
+	}
+
+	public static void delete(Production_Error2 node) {
+
+	}
+
+	public static void delete(Production_Error3 node) {
+
+	}
+
+	public static void delete(Production_Error4 node) {
+
+	}
+
 }
