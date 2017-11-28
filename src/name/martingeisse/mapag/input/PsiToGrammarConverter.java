@@ -9,6 +9,7 @@ import name.martingeisse.mapag.grammar.extended.*;
 import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
+import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
 import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.ide.MapagSourceFile;
@@ -247,6 +248,15 @@ public class PsiToGrammarConverter {
 	//
 	//
 	//
+
+	private <T> ImmutableList<T> convertIdentifiers(TerminalDeclarations terminalDeclarations, Function<String, T> elementFactory) {
+		List<T> result = new ArrayList<>();
+		result.add(elementFactory.apply(getText(terminalDeclarations.getFirstIdentifier().getIdentifier())));
+		for (TerminalDeclarations_1 node : terminalDeclarations.getMoreIdentifiers().getAll()) {
+			result.add(elementFactory.apply(getText(node.getIdentifier().getIdentifier())));
+		}
+		return ImmutableList.copyOf(result);
+	}
 
 	private <T> ImmutableList<T> convertIdentifiers(NonemptyIdentifierList identifiers, Function<String, T> elementFactory) {
 		List<T> result = new ArrayList<>();

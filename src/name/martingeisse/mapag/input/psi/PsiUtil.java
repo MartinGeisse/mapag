@@ -77,9 +77,9 @@ final class PsiUtil {
 			return new ArrayList<>();
 		}
 		List<LeafPsiElement> result = new ArrayList<>();
-		result.add(grammar.getTerminals().getFirstIdentifier());
-		for (NonemptyIdentifierList_1 more : grammar.getTerminals().getMoreIdentifiers().getAll()) {
-			result.add(more.getIdentifier());
+		result.add(grammar.getTerminals().getFirstIdentifier().getIdentifier());
+		for (TerminalDeclarations_1 more : grammar.getTerminals().getMoreIdentifiers().getAll()) {
+			result.add(more.getIdentifier().getIdentifier());
 		}
 		for (Production production : grammar.getProductions().getAll()) {
 			LeafPsiElement nonterminalName = getNonterminalNameNode(production);
@@ -95,35 +95,7 @@ final class PsiUtil {
 	//
 
 	public static PsiReference getReference(Expression_Identifier expression) {
-		return null;
-	}
-
-	public static PsiReference getReference(Production_SingleUnnamed expression) {
-		return null;
-	}
-
-	public static PsiReference getReference(Production_SingleNamed expression) {
-		return null;
-	}
-
-	public static PsiReference getReference(Production_Multi expression) {
-		return null;
-	}
-
-	public static PsiReference getReference(Production_Error1 expression) {
-		return null;
-	}
-
-	public static PsiReference getReference(Production_Error2 expression) {
-		return null;
-	}
-
-	public static PsiReference getReference(Production_Error3 expression) {
-		return null;
-	}
-
-	public static PsiReference getReference(Production_Error4 expression) {
-		return null;
+		return new IdentifierExpressionReference(expression);
 	}
 
 	//
