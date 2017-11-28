@@ -164,31 +164,39 @@ final class PsiUtil {
 	//
 
 	public static void delete(Production_SingleUnnamed node) {
-
+		// TODO this doesn't work yet -- we either have to modify the PSI correctly or force a reparse, but this code doesn't force a reparse
+		node.superclassDelete();
+		node.getContainingFile().subtreeChanged();
 	}
 
 	public static void delete(Production_SingleNamed node) {
-
+		node.superclassDelete();
+		node.getContainingFile().subtreeChanged();
 	}
 
 	public static void delete(Production_Multi node) {
-
+		node.superclassDelete();
+		node.getContainingFile().subtreeChanged();
 	}
 
 	public static void delete(Production_Error1 node) {
-
+		node.superclassDelete();
+		node.getContainingFile().subtreeChanged();
 	}
 
 	public static void delete(Production_Error2 node) {
-
+		node.superclassDelete();
+		node.getContainingFile().subtreeChanged();
 	}
 
 	public static void delete(Production_Error3 node) {
-
+		node.superclassDelete();
+		node.getContainingFile().subtreeChanged();
 	}
 
 	public static void delete(Production_Error4 node) {
-
+		node.superclassDelete();
+		node.getContainingFile().subtreeChanged();
 	}
 
 }
