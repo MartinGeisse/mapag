@@ -1,9 +1,17 @@
 package name.martingeisse.mapag.ide;
 
+import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.tree.TokenSet;
+import name.martingeisse.mapag.input.MapagLexer;
+import name.martingeisse.mapag.input.Symbols;
+import name.martingeisse.mapag.input.psi.Expression_Identifier;
+import name.martingeisse.mapag.input.psi.Production;
+import name.martingeisse.mapag.input.psi.Production_SingleUnnamed;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,12 +23,24 @@ public class MapagFindUsagesProvider implements FindUsagesProvider {
 	@Nullable
 	@Override
 	public WordsScanner getWordsScanner() {
-		return null;
+		return new DefaultWordsScanner(new MapagLexer(),
+			TokenSet.create(Symbols.IDENTIFIER),
+			TokenSet.create(Symbols.BLOCK_COMMENT, Symbols.LINE_COMMENT),
+			TokenSet.create()
+		);
 	}
 
 	@Override
 	public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
-		// TODO references too! Which PSI nodes are named / references?
+
+		// TODO terminals
+
+		if (psiElement instanceof Expression_Identifier) {
+			return true;
+		}
+		if (psiElement instanceof Production) {
+			return true;
+		}
 		return false;
 	}
 
@@ -39,20 +59,27 @@ public class MapagFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getDescriptiveName(@NotNull PsiElement psiElement) {
-		// TODO references too! Which PSI nodes are named / references?
-		if (psiElement instanceof PsiNamedElement) {
-			String name = ((PsiNamedElement) psiElement).getName();
-			if (name != null) {
-				return name;
-			}
-		}
-		return psiElement.getText();
+		return getNodeText(psiElement, false);
 	}
 
 	@NotNull
 	@Override
-	public String getNodeText(@NotNull PsiElement psiElement, boolean b) {
-		// TODO references too! Which PSI nodes are named / references?
+	public String getNodeText(@NotNull PsiElement psiElement, boolean useFullName) {
+
+		// TODO terminals
+
+		if (psiElement instanceof Expression_Identifier) {
+			return ((Expression_Identifier) psiElement).getIdentifier().getText();
+		}
+		if (psiElement instanceof Production) {
+			String name = ((Production) psiElement).getName();
+			if (name != null) {
+				return name;
+			} else {
+				return psiElement.getText();
+			}
+		}
+		return psiElement.getText();
 	}
 
 }

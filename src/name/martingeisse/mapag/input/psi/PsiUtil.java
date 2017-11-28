@@ -1,13 +1,10 @@
 package name.martingeisse.mapag.input.psi;
 
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +22,13 @@ final class PsiUtil {
 	// general
 	//
 
+	// TODO not needed, .getName() does the same
 	public static String getNonterminalName(Production production) {
 		PsiElement element = getNonterminalNameNode(production);
 		return (element == null ? null : element.getText());
 	}
 
+	// TODO support .getNameIdentifier() in the nodes themselves? Probably useful for PsiNameIdentifierOwner. Then remove this.
 	public static LeafPsiElement getNonterminalNameNode(Production production) {
 		if (production instanceof Production_SingleUnnamed) {
 			return ((Production_SingleUnnamed) production).getNonterminalName();
@@ -71,6 +70,7 @@ final class PsiUtil {
 		}
 	}
 
+	// TODO only used once -> inline
 	public static List<LeafPsiElement> getSymbolDefiningPsiElements(PsiElement anchor) {
 		Grammar grammar = getAncestor(anchor, Grammar.class);
 		if (grammar == null) {
@@ -95,86 +95,7 @@ final class PsiUtil {
 	//
 
 	public static PsiReference getReference(Expression_Identifier expression) {
-		return new PsiReference() {
-
-			@Override
-			public PsiElement getElement() {
-				return expression;
-			}
-
-			@Override
-			public TextRange getRangeInElement() {
-				return new TextRange(0, getCanonicalText().length());
-			}
-
-			@Nullable
-			@Override
-			public PsiElement resolve() {
-				String id = getCanonicalText();
-				for (LeafPsiElement element : getSymbolDefiningPsiElements(expression)) {
-					if (id.equals(element.getText())) {
-						return element;
-					}
-				}
-				return null;
-			}
-
-			@NotNull
-			@Override
-			public String getCanonicalText() {
-				return expression.getIdentifier().getText();
-			}
-
-			@Override
-			public PsiElement handleElementRename(String newName) throws IncorrectOperationException {
-				return setText(expression.getIdentifier(), newName);
-			}
-
-			@Override
-			public PsiElement bindToElement(@NotNull PsiElement psiElement) throws IncorrectOperationException {
-				// binding to terminals is currently not supported
-				if (psiElement instanceof Production) {
-					String newName = getNonterminalName((Production) psiElement);
-					if (newName != null) {
-						return setText(expression.getIdentifier(), newName);
-					}
-				}
-				throw new IncorrectOperationException();
-			}
-
-			@Override
-			public boolean isReferenceTo(PsiElement psiElement) {
-				if (psiElement instanceof LeafPsiElement) {
-					String id = getCanonicalText();
-					if (id.equals(psiElement.getText())) {
-						PsiElement resolved = resolve();
-						return (resolved != null && resolved.equals(psiElement));
-					}
-				}
-				return false;
-			}
-
-			@NotNull
-			@Override
-			public Object[] getVariants() {
-				// note: if this returns PSI elements, they must be PsiNamedElement or contain the name in meta-data
-
-				// TODO: if the input file contains syntax errors then this methods doesn't get called!
-				// This happens even if the error is in a different production!
-
-				List<Object> variants = new ArrayList<>();
-				for (LeafPsiElement element : getSymbolDefiningPsiElements(expression)) {
-					variants.add(element.getText());
-				}
-				return variants.toArray();
-			}
-
-			@Override
-			public boolean isSoft() {
-				return false;
-			}
-
-		};
+		return null;
 	}
 
 	public static PsiReference getReference(Production_SingleUnnamed expression) {
