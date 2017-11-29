@@ -48,7 +48,7 @@ public class PsiToGrammarConverter {
 		return new Grammar(terminalDeclarations, precedenceTable, startSymbol, productions);
 	}
 
-	private PrecedenceTable convertPrecedenceTable(Optional<Grammar_PrecedenceTable_1> psiPrecedenceTable) {
+	private PrecedenceTable convertPrecedenceTable(Optional<Grammar_PrecedenceTable> psiPrecedenceTable) {
 		if (psiPrecedenceTable.getIt() == null) {
 			return null;
 		}
