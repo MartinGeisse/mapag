@@ -1,0 +1,16 @@
+
+
+- (inline "present" case for optionals) or (use single generic class for all optionals)
+    The intention was to use a single generic class for all optionals. This isn't happening at the moment.
+    Either:
+        (1) use a single generic class for all optionals. Turn the optionals' nonterminal names into something long
+            since they won't be visible anyway, and use the short, readable name for the operand.
+        (2) inline the "present" case. This is best done by the canonicalizer.
+
+    --> I like the "single generic class" approach more, even though it requires an additional AST node. But it
+        produces fewer classes and less cryptic names.
+
+- inline repetition elements. No inlining of the elements' contents into the repeition nodes is required or possible
+    after that, because there aren't any enclosing repetition nodes anymore (only a single parent node for all elements).
+
+
