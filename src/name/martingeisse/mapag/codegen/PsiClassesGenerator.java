@@ -59,6 +59,7 @@ public class PsiClassesGenerator {
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			handleNonterminal(nonterminalDefinition);
 		}
+		generateOptionalClass();
 		generateFactoryClass();
 		generateInternalPsiUtilClass();
 	}
@@ -71,7 +72,7 @@ public class PsiClassesGenerator {
 				break;
 
 			case OPTIONAL:
-				handleOptionalStyledNonterminal(nonterminalDefinition);
+				// nothing to generate -- we use the generic "Optional" class instead
 				break;
 
 			case ZERO_OR_MORE:
@@ -199,85 +200,39 @@ public class PsiClassesGenerator {
 
 	}
 
-	private void handleOptionalStyledNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
-
-		// verify the nonterminal's structure and determine its element symbol and Java type
+	// analyzes and validates the structure of the specified nonterminal to be an optional, and returns the operand's expansion element
+	private ExpansionElement recognizeOptionalStyledNonterminal(NonterminalDefinition nonterminalDefinition) {
 		String nonterminalName = nonterminalDefinition.getName();
 		if (nonterminalDefinition.getAlternatives().size() != 2) {
 			throw new RuntimeException("optional-styled nonterminal " + nonterminalName + " has " +
 				nonterminalDefinition.getAlternatives().size() + " alternatives, expected 2");
 		}
-		Alternative absentCaseAlternative, presentCaseAlternative;
+		Alternative presentCaseAlternative;
 		if (nonterminalDefinition.getAlternatives().get(0).getExpansion().getElements().size() == 0) {
-			absentCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
 			presentCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
 		} else if (nonterminalDefinition.getAlternatives().get(1).getExpansion().getElements().size() == 0) {
 			presentCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
-			absentCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
 		} else {
 			throw new RuntimeException("could not find alternative with expansion length 0 as absent case for optional-styled nonterminal " + nonterminalName);
 		}
 		if (presentCaseAlternative.getExpansion().getElements().size() != 1) {
 			throw new RuntimeException("could not recognize present case for optional-styled nonterminal " + nonterminalName);
 		}
-
-		String operandSymbol = presentCaseAlternative.getExpansion().getElements().get(0).getSymbol();
-		String operandName = presentCaseAlternative.getExpansion().getElements().get(0).getExpressionName();
-		String operandType = getEffectiveTypeForSymbol(operandSymbol);
-		if (operandName == null) {
-			operandName = "it";
-		}
-		String operandGetterName = "get" + StringUtils.capitalize(operandName);
-
-		// generate abstract class
-		{
-			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
-			classGenerator.superclass = "ASTWrapperPsiElement";
-			classGenerator.isAbstract = true;
-			classGenerator.alternative = null;
-			classGenerator.operandType = operandType;
-			classGenerator.isOptionalAbstract = true;
-			classGenerator.optionalOperandGetterName = operandGetterName;
-			classGenerator.generate();
-		}
-
-		// generate "absent" case
-		{
-			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, absentCaseAlternative);
-			classGenerator.superclass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
-			classGenerator.isAbstract = false;
-			classGenerator.alternative = absentCaseAlternative;
-			classGenerator.operandType = operandType;
-			classGenerator.isOptionalAbsentCase = true;
-			classGenerator.optionalOperandGetterName = operandGetterName;
-			classGenerator.generate();
-		}
-
-		// generate "present" case
-		{
-			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, presentCaseAlternative);
-			classGenerator.superclass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
-			classGenerator.isAbstract = false;
-			classGenerator.alternative = presentCaseAlternative;
-			classGenerator.operandType = operandType;
-			classGenerator.isOptionalPresentCase = true;
-			classGenerator.optionalOperandGetterName = operandGetterName;
-			classGenerator.generate();
-		}
-
+		return presentCaseAlternative.getExpansion().getElements().get(0);
 	}
 
 	public String getEffectiveTypeForSymbol(String symbol) {
 		if (grammar.getTerminalDefinitions().get(symbol) != null) {
 			return "LeafPsiElement";
-		} else if (grammar.getNonterminalDefinitions().get(symbol) != null) {
-			return IdentifierUtil.toIdentifier(symbol, true);
-		} else {
+		}
+		NonterminalDefinition nonterminalDefinition = grammar.getNonterminalDefinitions().get(symbol);
+		if (nonterminalDefinition == null) {
 			throw new RuntimeException("unknown symbol: " + symbol);
 		}
+		if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
+			return "Optional<" + getEffectiveTypeForSymbol(recognizeOptionalStyledNonterminal(nonterminalDefinition).getSymbol()) + ">";
+		}
+		return IdentifierUtil.toIdentifier(symbol, true);
 	}
 
 	private class PsiClassGenerator {
@@ -414,6 +369,19 @@ public class PsiClassesGenerator {
 
 	}
 
+	private void generateOptionalClass() throws ConfigurationException, IOException {
+
+		VelocityContext context = new VelocityContext();
+		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+
+		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "Optional")) {
+			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+				MapagVelocityEngine.engine.getTemplate("Optional.vm").merge(context, outputStreamWriter);
+			}
+		}
+
+	}
+
 	private void generateFactoryClass() throws ConfigurationException, IOException {
 
 		VelocityContext context = new VelocityContext();
@@ -429,11 +397,18 @@ public class PsiClassesGenerator {
 
 		List<FactoryCaseEntry> cases = new ArrayList<>();
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
-			for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
+			if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
 				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
-				caseEntry.elementType = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
-				caseEntry.psiClass = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
+				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
+				caseEntry.psiClass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
 				cases.add(caseEntry);
+			} else {
+				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
+					FactoryCaseEntry caseEntry = new FactoryCaseEntry();
+					caseEntry.elementType = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
+					caseEntry.psiClass = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
+					cases.add(caseEntry);
+				}
 			}
 		}
 		context.put("cases", cases);
