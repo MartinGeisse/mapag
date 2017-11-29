@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.codegen;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.util.ParameterUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -59,8 +60,8 @@ public final class Configuration {
 	}
 
 	/**
-	 * Gets one of a set of properties. The configuration must not contain more than one of those keys. Returns null
-	 * if not found.
+	 * Gets one of a set of properties. The configuration must not contain more than one of those keys. Returns null if
+	 * not found.
 	 */
 	public String getAtMostOne(String... keys) throws ConfigurationException {
 		String value = null;
@@ -110,6 +111,21 @@ public final class Configuration {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Gets a comma-separated list of strings (trimmed), or the empty list if the property does not exist.
+	 */
+	public ImmutableList<String> getStringList(String name) {
+		String propertyValue = getOptional(name);
+		if (propertyValue == null || propertyValue.trim().isEmpty()) {
+			return ImmutableList.of();
+		}
+		ImmutableList.Builder<String> builder = ImmutableList.builder();
+		for (String s : StringUtils.split(propertyValue, ',')) {
+			builder.add(s.trim());
+		}
+		return builder.build();
 	}
 
 	/**

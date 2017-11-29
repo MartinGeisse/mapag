@@ -1,7 +1,6 @@
 package name.martingeisse.mapag.codegen;
 
 import com.google.common.collect.ImmutableList;
-import com.intellij.lang.ParserDefinition;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
@@ -54,25 +53,14 @@ public class PsiClassesGenerator {
 	}
 
 	public void generate() throws ConfigurationException, IOException {
-		dynamicallyNamedClasses = convertStringListProperty(configuration.getOptional(DYNAMICALLY_NAMED_CLASSES_PROPERTY));
-		referenceClasses = convertStringListProperty(configuration.getOptional(REFERENCE_CLASSES_PROPERTY));
-		safeDeletableClasses = convertStringListProperty(configuration.getOptional(SAFE_DELETABLE_CLASSES_PROPERTY));
+		dynamicallyNamedClasses = configuration.getStringList(DYNAMICALLY_NAMED_CLASSES_PROPERTY);
+		referenceClasses = configuration.getStringList(REFERENCE_CLASSES_PROPERTY);
+		safeDeletableClasses = configuration.getStringList(SAFE_DELETABLE_CLASSES_PROPERTY);
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			handleNonterminal(nonterminalDefinition);
 		}
 		generateFactoryClass();
 		generateInternalPsiUtilClass();
-	}
-
-	private static ImmutableList<String> convertStringListProperty(String propertyValue) {
-		if (propertyValue == null || propertyValue.trim().isEmpty()) {
-			return ImmutableList.of();
-		}
-		ImmutableList.Builder<String> builder = ImmutableList.builder();
-		for (String s : StringUtils.split(propertyValue, ',')) {
-			builder.add(s.trim());
-		}
-		return builder.build();
 	}
 
 	private void handleNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
