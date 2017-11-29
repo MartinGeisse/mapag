@@ -1,10 +1,12 @@
 package name.martingeisse.mapag.input.psi;
 
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.source.PsiFileImpl;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.util.FileContentUtil;
 import com.intellij.util.IncorrectOperationException;
 
 import java.util.ArrayList;
@@ -131,29 +133,15 @@ final class PsiUtil {
 
 	public static void delete(Production node) throws IncorrectOperationException {
 		PsiFile psiFile = node.getContainingFile();
-		if (!(psiFile instanceof PsiFileImpl)) {
-			throw new IncorrectOperationException("production is not inside a PsiFileImpl");
+		if (psiFile != null) {
+			VirtualFile virtualFile = psiFile.getVirtualFile();
+			if (virtualFile != null) {
+				node.superclassDelete();
+				FileContentUtil.reparseFiles(virtualFile);
+				return;
+			}
 		}
-		node.superclassDelete();
-		((PsiFileImpl)psiFile).onContentReload();
-
-//		PsiElement parent = node.getParent();
-//		if (parent instanceof Grammar_Productions_Start) {
-//			Grammar_Productions_Start start = (Grammar_Productions_Start)parent;
-//			PsiElement grandparent = parent.getParent();
-//			if (grandparent instanceof Grammar_Productions_Next) {
-//				Grammar_Productions_Next grandparentNext = (Grammar_Productions_Next)grandparent;
-//				node.replace(grandparentNext.getElement());
-//				grandparentNext.replace(parent);
-//			} else if (grandparent instanceof Grammar) {
-//				// this causes the grammar to be invalid because at least one production is mandatory
-//				// TODO: make sure this gets flagged as an error marker
-//				// TODO we don'T have an AST node! start.replace(new Production_Error2())
-//			}
-//		} else if (parent instanceof Grammar_Productions_Next) {
-//			Grammar_Productions_Next next = (Grammar_Productions_Next)parent;
-//			next.replace(next.getPrevious());
-//		}
+		throw new IncorrectOperationException("could not determine containing virtual file to reparse after safe delete");
 	}
 
 }
