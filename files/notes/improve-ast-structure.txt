@@ -1,16 +1,68 @@
 
-
-- (inline "present" case for optionals) or (use single generic class for all optionals)
-    The intention was to use a single generic class for all optionals. This isn't happening at the moment.
-    Either:
-        (1) use a single generic class for all optionals. Turn the optionals' nonterminal names into something long
-            since they won't be visible anyway, and use the short, readable name for the operand.
-        (2) inline the "present" case. This is best done by the canonicalizer.
-
-    --> I like the "single generic class" approach more, even though it requires an additional AST node. But it
-        produces fewer classes and less cryptic names.
-
 - inline repetition elements. No inlining of the elements' contents into the repeition nodes is required or possible
     after that, because there aren't any enclosing repetition nodes anymore (only a single parent node for all elements).
 
+- to handle repetition in a useful way, the grammar specification syntax must be extended to include separator symbols:
+
+    expression* --> {expression, }*
+
+        means:
+            (epsilon)
+            expression
+            expression expression
+            expression expression expression
+            ...
+
+    expression+ --> {expression, }+
+
+        means:
+            expression
+            expression expression
+            expression expression expression
+            ...
+
+    {a, b}*
+
+        means:
+            (epsilon)
+            a
+            a b a
+            a b a b a
+            ...
+
+    {a, b}+
+
+        means:
+            a
+            a b a
+            a b a b a
+            ...
+
+    Works with sequences too:
+
+    {a b c, d e f}*
+
+        means:
+            (epsilon)
+            a b c
+            a b c d e f a b c
+            ...
+
+    {a b c, d e f}+
+
+        means:
+            a b c
+            a b c d e f a b c
+            ...
+
+    But both the repeated expression and the separator expression are represented by a single symbol in the
+    canonical grammar, i.e. they are extracted to a synthetic nonterminal if they are something else than a single
+    symbol.
+
+    Neither symbol is "named" in the traditional sense since traditional getters won't be available anyway.
+
+    --> all this isn't really well thought out right now. For example, there is no good way to generate getters
+        for a mixed "soup" of elements and separators. Also, it isn't clear how this really simplifies "safe delete".
+
+    Note that the changes in AST generation would be easy though -- just leave out some of the markers to the PsiBuilder.
 
