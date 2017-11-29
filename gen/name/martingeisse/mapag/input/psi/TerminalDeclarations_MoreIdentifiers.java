@@ -13,10 +13,10 @@ public abstract class TerminalDeclarations_MoreIdentifiers extends ASTWrapperPsi
 		super(node);
 	}
 
-	public abstract ImmutableList<TerminalDeclarations_1> getAll();
+	public abstract ImmutableList<TerminalDeclarations_MoreIdentifiers_1> getAll();
 
-	public abstract void addAllTo(List<TerminalDeclarations_1> list);
+	public abstract void addAllTo(List<TerminalDeclarations_MoreIdentifiers_1> list);
 
-	public abstract void addAllTo(ImmutableList.Builder<TerminalDeclarations_1> builder);
+	public abstract void addAllTo(ImmutableList.Builder<TerminalDeclarations_MoreIdentifiers_1> builder);
 
 }

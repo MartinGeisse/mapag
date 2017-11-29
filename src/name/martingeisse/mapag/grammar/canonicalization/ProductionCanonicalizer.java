@@ -163,16 +163,18 @@ public class ProductionCanonicalizer {
 
 		} else if (expression instanceof OptionalExpression) {
 
-			// An OptionalExpression gets extracted into a two-alternative nonterminal
-			Expression operand = ((OptionalExpression) expression).getOperand();
-			extendOperandNameStart(expression);
-			String operandSymbol = convertExpressionToSymbol(operand);
-			extendOperandNameEnd(expression);
-			Expression replacementOperand = new SymbolReference(operandSymbol).withName(operand.getName()).withFallbackName("it");
-			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
+			// An OptionalExpression gets extracted into a two-alternative nonterminal, but with special naming
+			Expression originalOperand = ((OptionalExpression) expression).getOperand();
+			Expression namedOperand = originalOperand.withFallbackName(expression.getName());
+			String operandSymbol = convertExpressionToSymbol(namedOperand);
+			Expression replacementOperand = new SymbolReference(operandSymbol).withName("it");
+			extendNameStart(namedOperand);
+			String syntheticNonterminal = createSyntheticNonterminal("optional", (syntheticName, alternatives) -> {
 				alternatives.add(syntheticAlternative("absent", new EmptyExpression()));
 				alternatives.add(syntheticAlternative("present", replacementOperand));
 			}, NonterminalDefinition.PsiStyle.OPTIONAL);
+			extendNameEnd(namedOperand);
+			return syntheticNonterminal;
 
 		} else if (expression instanceof ZeroOrMoreExpression) {
 
@@ -193,9 +195,9 @@ public class ProductionCanonicalizer {
 
 	// common handling for ZeroOrMoreExpression and OneOrMoreExpression
 	private String extractRepetition(Expression repetition, Expression operand, boolean zeroAllowed) {
-		extendOperandNameStart(repetition);
+		extendNameStart(repetition);
 		String operandSymbol = convertExpressionToSymbol(operand);
-		extendOperandNameEnd(repetition);
+		extendNameEnd(repetition);
 		Expression replacementOperand = new SymbolReference(operandSymbol).withName(operand.getName()).withFallbackName("element");
 		NonterminalDefinition.PsiStyle psiStyle = (zeroAllowed ? NonterminalDefinition.PsiStyle.ZERO_OR_MORE : NonterminalDefinition.PsiStyle.ONE_OR_MORE);
 		return createSyntheticNonterminal(repetition, (repetitionSyntheticName, alternatives) -> {
@@ -222,21 +224,21 @@ public class ProductionCanonicalizer {
 	}
 
 	/**
-	 * This method is used for an outer expression that contains an operand expression, i.e. an optional or repetition.
-	 * Due to the way these are converted, the operand would normally be prefixed with the name of the original
-	 * nonterminal, but not with the name of the outer expression (if any). This method causes the outer expression's
-	 * name to be used too.
+	 * Uses the specified expression as the starting point for generating synthetic names, in addition to whatever
+	 * prefix is already there.
 	 */
-	//
-	private void extendOperandNameStart(Expression outerExpression) {
-		if (outerExpression.getName() != null) {
+	private void extendNameStart(Expression expression) {
+		if (expression.getName() != null) {
 			syntheticNonterminalNameGenerator.save();
-			syntheticNonterminalNameGenerator.extend(outerExpression.getName());
+			syntheticNonterminalNameGenerator.extend(expression.getName());
 		}
 	}
 
-	private void extendOperandNameEnd(Expression outerExpression) {
-		if (outerExpression.getName() != null) {
+	/**
+	 * Resets naming to the original behavior before calling extendNameStart().
+	 */
+	private void extendNameEnd(Expression expression) {
+		if (expression.getName() != null) {
 			syntheticNonterminalNameGenerator.restore();
 		}
 	}
@@ -252,7 +254,21 @@ public class ProductionCanonicalizer {
 		BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder,
 		NonterminalDefinition.PsiStyle psiStyle) {
 
-		String syntheticName = syntheticNonterminalNameGenerator.createSyntheticName(expression);
+		return createSyntheticNonterminal(expression.getName(), alternativesAdder, psiStyle);
+	}
+
+	/**
+	 * Creates a synthetic nonterminal, using the specified callback to provide the expressions for its alternatives.
+	 * All generated alternatives have undefined precedence.
+	 * <p>
+	 * The original expression is passed to use its name, if any, for the synthetic nonterminal.
+	 */
+	private String createSyntheticNonterminal(
+		String suggestedName,
+		BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder,
+		NonterminalDefinition.PsiStyle psiStyle) {
+
+		String syntheticName = syntheticNonterminalNameGenerator.createSyntheticName(suggestedName);
 		List<name.martingeisse.mapag.grammar.extended.Alternative> alternatives = new ArrayList<>();
 		alternativesAdder.accept(syntheticName, alternatives);
 		Production production = new Production(syntheticName, ImmutableList.copyOf(alternatives));

@@ -52,7 +52,7 @@ final class PsiUtil {
 	public static List<String> convertNonemptyIdentifierListToStrings(NonemptyIdentifierList list) {
 		List<String> strings = new ArrayList<>();
 		strings.add(list.getFirstIdentifier().getText());
-		for (NonemptyIdentifierList_1 more : list.getMoreIdentifiers().getAll()) {
+		for (NonemptyIdentifierList_MoreIdentifiers_1 more : list.getMoreIdentifiers().getAll()) {
 			strings.add(more.getIdentifier().getText());
 		}
 		return strings;
@@ -78,7 +78,7 @@ final class PsiUtil {
 		}
 		List<LeafPsiElement> result = new ArrayList<>();
 		result.add(grammar.getTerminals().getFirstIdentifier().getIdentifier());
-		for (TerminalDeclarations_1 more : grammar.getTerminals().getMoreIdentifiers().getAll()) {
+		for (TerminalDeclarations_MoreIdentifiers_1 more : grammar.getTerminals().getMoreIdentifiers().getAll()) {
 			result.add(more.getIdentifier().getIdentifier());
 		}
 		for (Production production : grammar.getProductions().getAll()) {

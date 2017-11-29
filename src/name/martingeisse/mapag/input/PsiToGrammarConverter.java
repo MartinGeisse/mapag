@@ -48,7 +48,7 @@ public class PsiToGrammarConverter {
 		return new Grammar(terminalDeclarations, precedenceTable, startSymbol, productions);
 	}
 
-	private PrecedenceTable convertPrecedenceTable(Grammar_PrecedenceTable psiPrecedenceTable) {
+	private PrecedenceTable convertPrecedenceTable(Optional<Grammar_PrecedenceTable_1> psiPrecedenceTable) {
 		if (psiPrecedenceTable.getIt() == null) {
 			return null;
 		}
@@ -94,15 +94,15 @@ public class PsiToGrammarConverter {
 				Production_Multi typed = (Production_Multi) psiProduction;
 				String nonterminal = getText(typed.getNonterminalName());
 				List<Alternative> alternatives = new ArrayList<>();
-				for (Production_Multi_1 element : typed.getAlternatives().getAll()) {
-					if (element instanceof Production_Multi_1_Unnamed) {
+				for (Production_Multi_Alternatives_1 element : typed.getAlternatives().getAll()) {
+					if (element instanceof Production_Multi_Alternatives_1_Unnamed) {
 
-						Production_Multi_1_Unnamed typedElement = (Production_Multi_1_Unnamed) element;
+						Production_Multi_Alternatives_1_Unnamed typedElement = (Production_Multi_Alternatives_1_Unnamed) element;
 						alternatives.add(convertAlternative(null, typedElement.getUnnamed().getRightHandSide()));
 
-					} else if (element instanceof Production_Multi_1_Named) {
+					} else if (element instanceof Production_Multi_Alternatives_1_Named) {
 
-						Production_Multi_1_Named typedElement = (Production_Multi_1_Named) element;
+						Production_Multi_Alternatives_1_Named typedElement = (Production_Multi_Alternatives_1_Named) element;
 						alternatives.add(convertAlternative(
 							getText(typedElement.getNamed().getAlternativeName()),
 							typedElement.getNamed().getRightHandSide()
@@ -178,7 +178,7 @@ public class PsiToGrammarConverter {
 
 			List<String> terminals = new ArrayList<>();
 			terminals.add(getText(psiResolveDeclaration.getFirstSymbol()));
-			for (ResolveDeclaration_1 elementNode : psiResolveDeclaration.getAdditionalSymbols().getAll()) {
+			for (ResolveDeclaration_AdditionalSymbols_1 elementNode : psiResolveDeclaration.getAdditionalSymbols().getAll()) {
 				terminals.add(getText(elementNode.getSymbol()));
 			}
 
@@ -252,7 +252,7 @@ public class PsiToGrammarConverter {
 	private <T> ImmutableList<T> convertIdentifiers(TerminalDeclarations terminalDeclarations, Function<String, T> elementFactory) {
 		List<T> result = new ArrayList<>();
 		result.add(elementFactory.apply(getText(terminalDeclarations.getFirstIdentifier().getIdentifier())));
-		for (TerminalDeclarations_1 node : terminalDeclarations.getMoreIdentifiers().getAll()) {
+		for (TerminalDeclarations_MoreIdentifiers_1 node : terminalDeclarations.getMoreIdentifiers().getAll()) {
 			result.add(elementFactory.apply(getText(node.getIdentifier().getIdentifier())));
 		}
 		return ImmutableList.copyOf(result);
@@ -261,7 +261,7 @@ public class PsiToGrammarConverter {
 	private <T> ImmutableList<T> convertIdentifiers(NonemptyIdentifierList identifiers, Function<String, T> elementFactory) {
 		List<T> result = new ArrayList<>();
 		result.add(elementFactory.apply(getText(identifiers.getFirstIdentifier())));
-		for (NonemptyIdentifierList_1 node : identifiers.getMoreIdentifiers().getAll()) {
+		for (NonemptyIdentifierList_MoreIdentifiers_1 node : identifiers.getMoreIdentifiers().getAll()) {
 			result.add(elementFactory.apply(getText(node.getIdentifier())));
 		}
 		return ImmutableList.copyOf(result);

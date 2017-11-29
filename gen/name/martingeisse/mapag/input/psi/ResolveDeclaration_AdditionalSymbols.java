@@ -13,10 +13,10 @@ public abstract class ResolveDeclaration_AdditionalSymbols extends ASTWrapperPsi
 		super(node);
 	}
 
-	public abstract ImmutableList<ResolveDeclaration_1> getAll();
+	public abstract ImmutableList<ResolveDeclaration_AdditionalSymbols_1> getAll();
 
-	public abstract void addAllTo(List<ResolveDeclaration_1> list);
+	public abstract void addAllTo(List<ResolveDeclaration_AdditionalSymbols_1> list);
 
-	public abstract void addAllTo(ImmutableList.Builder<ResolveDeclaration_1> builder);
+	public abstract void addAllTo(ImmutableList.Builder<ResolveDeclaration_AdditionalSymbols_1> builder);
 
 }

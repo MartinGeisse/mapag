@@ -121,9 +121,15 @@ public class ParserClassGenerator {
 			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
 				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
 					int alternativeIndex = stateMachineEncoder.getAlternativeIndex(nonterminalDefinition.getName(), alternative);
+					String symbolVariable;
+					if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
+						symbolVariable = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
+					} else {
+						symbolVariable = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
+					}
 					alternativeEntries[alternativeIndex] = new AlternativeEntry(
 						alternative.getExpansion().getElements().size(),
-						IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative),
+						symbolVariable,
 						stateMachineEncoder.getSymbolIndex(nonterminalDefinition.getName())
 					);
 				}

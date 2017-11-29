@@ -5,9 +5,9 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import org.jetbrains.annotations.NotNull;
 
-public final class ResolveDeclaration_1 extends ASTWrapperPsiElement {
+public final class ResolveDeclaration_AdditionalSymbols_1 extends ASTWrapperPsiElement {
 
-	public ResolveDeclaration_1(@NotNull ASTNode node) {
+	public ResolveDeclaration_AdditionalSymbols_1(@NotNull ASTNode node) {
 		super(node);
 	}
 

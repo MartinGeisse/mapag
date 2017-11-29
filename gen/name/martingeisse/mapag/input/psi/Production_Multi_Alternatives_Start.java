@@ -12,14 +12,14 @@ public final class Production_Multi_Alternatives_Start extends Production_Multi_
 		super(node);
 	}
 
-	public ImmutableList<Production_Multi_1> getAll() {
+	public ImmutableList<Production_Multi_Alternatives_1> getAll() {
 		return ImmutableList.of();
 	}
 
-	public void addAllTo(List<Production_Multi_1> list) {
+	public void addAllTo(List<Production_Multi_Alternatives_1> list) {
 	}
 
-	public void addAllTo(ImmutableList.Builder<Production_Multi_1> builder) {
+	public void addAllTo(ImmutableList.Builder<Production_Multi_Alternatives_1> builder) {
 	}
 
 }

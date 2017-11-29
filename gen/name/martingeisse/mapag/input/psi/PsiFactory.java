@@ -11,6 +11,9 @@ public class PsiFactory {
 	public static PsiElement createPsiElement(ASTNode node) {
 		IElementType type = node.getElementType();
 
+		if (type == Symbols.nonemptyIdentifierList_MoreIdentifiers_1) {
+			return new NonemptyIdentifierList_MoreIdentifiers_1(node);
+		}
 		if (type == Symbols.production_SingleUnnamed) {
 			return new Production_SingleUnnamed(node);
 		}
@@ -38,35 +41,32 @@ public class PsiFactory {
 		if (type == Symbols.production_Multi_Alternatives_Next) {
 			return new Production_Multi_Alternatives_Next(node);
 		}
-		if (type == Symbols.resolveDeclaration_1) {
-			return new ResolveDeclaration_1(node);
+		if (type == Symbols.production_Multi_Alternatives_1_Unnamed) {
+			return new Production_Multi_Alternatives_1_Unnamed(node);
+		}
+		if (type == Symbols.production_Multi_Alternatives_1_Named) {
+			return new Production_Multi_Alternatives_1_Named(node);
+		}
+		if (type == Symbols.resolveDeclaration_AdditionalSymbols_1) {
+			return new ResolveDeclaration_AdditionalSymbols_1(node);
 		}
 		if (type == Symbols.grammar) {
 			return new Grammar(node);
 		}
-		if (type == Symbols.nonemptyIdentifierList_1) {
-			return new NonemptyIdentifierList_1(node);
+		if (type == Symbols.grammar_PrecedenceTable_PrecedenceDeclarations_Start) {
+			return new Grammar_PrecedenceTable_PrecedenceDeclarations_Start(node);
 		}
-		if (type == Symbols.grammar_1_PrecedenceDeclarations_Start) {
-			return new Grammar_1_PrecedenceDeclarations_Start(node);
-		}
-		if (type == Symbols.grammar_1_PrecedenceDeclarations_Next) {
-			return new Grammar_1_PrecedenceDeclarations_Next(node);
-		}
-		if (type == Symbols.production_Multi_1_Unnamed_Unnamed) {
-			return new Production_Multi_1_Unnamed_Unnamed(node);
-		}
-		if (type == Symbols.terminalDeclarations_1) {
-			return new TerminalDeclarations_1(node);
+		if (type == Symbols.grammar_PrecedenceTable_PrecedenceDeclarations_Next) {
+			return new Grammar_PrecedenceTable_PrecedenceDeclarations_Next(node);
 		}
 		if (type == Symbols.resolveDeclaration) {
 			return new ResolveDeclaration(node);
 		}
-		if (type == Symbols.grammar_PrecedenceTable_Absent) {
-			return new Grammar_PrecedenceTable_Absent(node);
+		if (type == Symbols.grammar_PrecedenceTable) {
+			return new Grammar_PrecedenceTable(node);
 		}
-		if (type == Symbols.grammar_PrecedenceTable_Present) {
-			return new Grammar_PrecedenceTable_Present(node);
+		if (type == Symbols.production_Multi_Alternatives_1_Unnamed_Unnamed) {
+			return new Production_Multi_Alternatives_1_Unnamed_Unnamed(node);
 		}
 		if (type == Symbols.alternativeAttribute_Precedence) {
 			return new AlternativeAttribute_Precedence(node);
@@ -85,9 +85,6 @@ public class PsiFactory {
 		}
 		if (type == Symbols.rightHandSide_Attributes_Next) {
 			return new RightHandSide_Attributes_Next(node);
-		}
-		if (type == Symbols.production_Multi_1_Named_Named) {
-			return new Production_Multi_1_Named_Named(node);
 		}
 		if (type == Symbols.rightHandSide) {
 			return new RightHandSide(node);
@@ -125,11 +122,8 @@ public class PsiFactory {
 		if (type == Symbols.resolveDeclaration_AdditionalSymbols_Next) {
 			return new ResolveDeclaration_AdditionalSymbols_Next(node);
 		}
-		if (type == Symbols.production_Multi_1_Unnamed) {
-			return new Production_Multi_1_Unnamed(node);
-		}
-		if (type == Symbols.production_Multi_1_Named) {
-			return new Production_Multi_1_Named(node);
+		if (type == Symbols.grammar_PrecedenceTable_Optional) {
+			return new Optional<Grammar_PrecedenceTable>(node);
 		}
 		if (type == Symbols.precedenceDeclaration) {
 			return new PrecedenceDeclaration(node);
@@ -140,14 +134,14 @@ public class PsiFactory {
 		if (type == Symbols.terminalDeclarations_MoreIdentifiers_Next) {
 			return new TerminalDeclarations_MoreIdentifiers_Next(node);
 		}
-		if (type == Symbols.grammar_1) {
-			return new Grammar_1(node);
-		}
 		if (type == Symbols.terminalDeclarations) {
 			return new TerminalDeclarations(node);
 		}
 		if (type == Symbols.nonemptyIdentifierList) {
 			return new NonemptyIdentifierList(node);
+		}
+		if (type == Symbols.terminalDeclarations_MoreIdentifiers_1) {
+			return new TerminalDeclarations_MoreIdentifiers_1(node);
 		}
 		if (type == Symbols.terminalDeclaration) {
 			return new TerminalDeclaration(node);
@@ -160,6 +154,9 @@ public class PsiFactory {
 		}
 		if (type == Symbols.precedenceDeclaration_Associativity_Nonassoc) {
 			return new PrecedenceDeclaration_Associativity_Nonassoc(node);
+		}
+		if (type == Symbols.production_Multi_Alternatives_1_Named_Named) {
+			return new Production_Multi_Alternatives_1_Named_Named(node);
 		}
 		if (type == Symbols.resolveDeclaration_Action_Shift) {
 			return new ResolveDeclaration_Action_Shift(node);

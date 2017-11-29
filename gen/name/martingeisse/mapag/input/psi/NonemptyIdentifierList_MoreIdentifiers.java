@@ -13,10 +13,10 @@ public abstract class NonemptyIdentifierList_MoreIdentifiers extends ASTWrapperP
 		super(node);
 	}
 
-	public abstract ImmutableList<NonemptyIdentifierList_1> getAll();
+	public abstract ImmutableList<NonemptyIdentifierList_MoreIdentifiers_1> getAll();
 
-	public abstract void addAllTo(List<NonemptyIdentifierList_1> list);
+	public abstract void addAllTo(List<NonemptyIdentifierList_MoreIdentifiers_1> list);
 
-	public abstract void addAllTo(ImmutableList.Builder<NonemptyIdentifierList_1> builder);
+	public abstract void addAllTo(ImmutableList.Builder<NonemptyIdentifierList_MoreIdentifiers_1> builder);
 
 }

@@ -16,22 +16,22 @@ public final class TerminalDeclarations_MoreIdentifiers_Next extends TerminalDec
 		return (TerminalDeclarations_MoreIdentifiers) InternalPsiUtil.getChild(this, 0);
 	}
 
-	public TerminalDeclarations_1 getElement() {
-		return (TerminalDeclarations_1) InternalPsiUtil.getChild(this, 1);
+	public TerminalDeclarations_MoreIdentifiers_1 getElement() {
+		return (TerminalDeclarations_MoreIdentifiers_1) InternalPsiUtil.getChild(this, 1);
 	}
 
-	public ImmutableList<TerminalDeclarations_1> getAll() {
-		ImmutableList.Builder<TerminalDeclarations_1> builder = ImmutableList.builder();
+	public ImmutableList<TerminalDeclarations_MoreIdentifiers_1> getAll() {
+		ImmutableList.Builder<TerminalDeclarations_MoreIdentifiers_1> builder = ImmutableList.builder();
 		addAllTo(builder);
 		return builder.build();
 	}
 
-	public void addAllTo(List<TerminalDeclarations_1> list) {
+	public void addAllTo(List<TerminalDeclarations_MoreIdentifiers_1> list) {
 		getPrevious().addAllTo(list);
 		list.add(getElement());
 	}
 
-	public void addAllTo(ImmutableList.Builder<TerminalDeclarations_1> builder) {
+	public void addAllTo(ImmutableList.Builder<TerminalDeclarations_MoreIdentifiers_1> builder) {
 		getPrevious().addAllTo(builder);
 		builder.add(getElement());
 	}

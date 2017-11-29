@@ -16,22 +16,22 @@ public final class Production_Multi_Alternatives_Next extends Production_Multi_A
 		return (Production_Multi_Alternatives) InternalPsiUtil.getChild(this, 0);
 	}
 
-	public Production_Multi_1 getElement() {
-		return (Production_Multi_1) InternalPsiUtil.getChild(this, 1);
+	public Production_Multi_Alternatives_1 getElement() {
+		return (Production_Multi_Alternatives_1) InternalPsiUtil.getChild(this, 1);
 	}
 
-	public ImmutableList<Production_Multi_1> getAll() {
-		ImmutableList.Builder<Production_Multi_1> builder = ImmutableList.builder();
+	public ImmutableList<Production_Multi_Alternatives_1> getAll() {
+		ImmutableList.Builder<Production_Multi_Alternatives_1> builder = ImmutableList.builder();
 		addAllTo(builder);
 		return builder.build();
 	}
 
-	public void addAllTo(List<Production_Multi_1> list) {
+	public void addAllTo(List<Production_Multi_Alternatives_1> list) {
 		getPrevious().addAllTo(list);
 		list.add(getElement());
 	}
 
-	public void addAllTo(ImmutableList.Builder<Production_Multi_1> builder) {
+	public void addAllTo(ImmutableList.Builder<Production_Multi_Alternatives_1> builder) {
 		getPrevious().addAllTo(builder);
 		builder.add(getElement());
 	}

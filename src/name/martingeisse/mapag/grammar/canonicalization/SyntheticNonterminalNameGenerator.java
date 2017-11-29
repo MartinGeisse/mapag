@@ -1,7 +1,5 @@
 package name.martingeisse.mapag.grammar.canonicalization;
 
-import name.martingeisse.mapag.grammar.extended.expression.Expression;
-
 import java.util.*;
 
 /**
@@ -42,16 +40,16 @@ public final class SyntheticNonterminalNameGenerator {
 		syntheticNamePrefix = syntheticNamePrefix + extension + '/';
 	}
 
-	public String createSyntheticName(Expression expression) {
-		if (expression.getName() != null) {
-			String syntheticName = syntheticNamePrefix + expression.getName();
+	public String createSyntheticName(String suggestedName) {
+		if (suggestedName != null) {
+			String syntheticName = syntheticNamePrefix + suggestedName;
 			if (knownSymbols.add(syntheticName)) {
 				return syntheticName;
 			}
 		}
 		String prefix = syntheticNamePrefix;
-		if (expression.getName() != null) {
-			prefix = prefix + expression.getName() + '/';
+		if (suggestedName != null) {
+			prefix = prefix + suggestedName + '/';
 		}
 		while (true) {
 			int syntheticNameCounter = syntheticNameCounters.getOrDefault(prefix, 0);

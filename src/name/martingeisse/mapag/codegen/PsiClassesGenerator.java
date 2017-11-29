@@ -400,7 +400,7 @@ public class PsiClassesGenerator {
 			if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
 				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
 				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
-				caseEntry.psiClass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
+				caseEntry.psiClass = "Optional<" + getEffectiveTypeForSymbol(recognizeOptionalStyledNonterminal(nonterminalDefinition).getSymbol()) + ">";
 				cases.add(caseEntry);
 			} else {
 				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {

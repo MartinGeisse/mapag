@@ -13,10 +13,10 @@ public abstract class Production_Multi_Alternatives extends ASTWrapperPsiElement
 		super(node);
 	}
 
-	public abstract ImmutableList<Production_Multi_1> getAll();
+	public abstract ImmutableList<Production_Multi_Alternatives_1> getAll();
 
-	public abstract void addAllTo(List<Production_Multi_1> list);
+	public abstract void addAllTo(List<Production_Multi_Alternatives_1> list);
 
-	public abstract void addAllTo(ImmutableList.Builder<Production_Multi_1> builder);
+	public abstract void addAllTo(ImmutableList.Builder<Production_Multi_Alternatives_1> builder);
 
 }

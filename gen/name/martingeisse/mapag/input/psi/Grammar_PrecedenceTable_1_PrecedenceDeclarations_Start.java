@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public final class Grammar_1_PrecedenceDeclarations_Start extends Grammar_1_PrecedenceDeclarations {
+public final class Grammar_PrecedenceTable_1_PrecedenceDeclarations_Start extends Grammar_PrecedenceTable_1_PrecedenceDeclarations {
 
-	public Grammar_1_PrecedenceDeclarations_Start(@NotNull ASTNode node) {
+	public Grammar_PrecedenceTable_1_PrecedenceDeclarations_Start(@NotNull ASTNode node) {
 		super(node);
 	}
 

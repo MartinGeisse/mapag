@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public abstract class Grammar_1_PrecedenceDeclarations extends ASTWrapperPsiElement {
+public abstract class Grammar_PrecedenceTable_1_PrecedenceDeclarations extends ASTWrapperPsiElement {
 
-	public Grammar_1_PrecedenceDeclarations(@NotNull ASTNode node) {
+	public Grammar_PrecedenceTable_1_PrecedenceDeclarations(@NotNull ASTNode node) {
 		super(node);
 	}
 

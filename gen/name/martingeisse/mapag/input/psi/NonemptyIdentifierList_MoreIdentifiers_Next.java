@@ -16,22 +16,22 @@ public final class NonemptyIdentifierList_MoreIdentifiers_Next extends NonemptyI
 		return (NonemptyIdentifierList_MoreIdentifiers) InternalPsiUtil.getChild(this, 0);
 	}
 
-	public NonemptyIdentifierList_1 getElement() {
-		return (NonemptyIdentifierList_1) InternalPsiUtil.getChild(this, 1);
+	public NonemptyIdentifierList_MoreIdentifiers_1 getElement() {
+		return (NonemptyIdentifierList_MoreIdentifiers_1) InternalPsiUtil.getChild(this, 1);
 	}
 
-	public ImmutableList<NonemptyIdentifierList_1> getAll() {
-		ImmutableList.Builder<NonemptyIdentifierList_1> builder = ImmutableList.builder();
+	public ImmutableList<NonemptyIdentifierList_MoreIdentifiers_1> getAll() {
+		ImmutableList.Builder<NonemptyIdentifierList_MoreIdentifiers_1> builder = ImmutableList.builder();
 		addAllTo(builder);
 		return builder.build();
 	}
 
-	public void addAllTo(List<NonemptyIdentifierList_1> list) {
+	public void addAllTo(List<NonemptyIdentifierList_MoreIdentifiers_1> list) {
 		getPrevious().addAllTo(list);
 		list.add(getElement());
 	}
 
-	public void addAllTo(ImmutableList.Builder<NonemptyIdentifierList_1> builder) {
+	public void addAllTo(ImmutableList.Builder<NonemptyIdentifierList_MoreIdentifiers_1> builder) {
 		getPrevious().addAllTo(builder);
 		builder.add(getElement());
 	}

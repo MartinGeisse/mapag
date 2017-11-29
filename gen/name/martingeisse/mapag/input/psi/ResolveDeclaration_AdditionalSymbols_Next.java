@@ -16,22 +16,22 @@ public final class ResolveDeclaration_AdditionalSymbols_Next extends ResolveDecl
 		return (ResolveDeclaration_AdditionalSymbols) InternalPsiUtil.getChild(this, 0);
 	}
 
-	public ResolveDeclaration_1 getElement() {
-		return (ResolveDeclaration_1) InternalPsiUtil.getChild(this, 1);
+	public ResolveDeclaration_AdditionalSymbols_1 getElement() {
+		return (ResolveDeclaration_AdditionalSymbols_1) InternalPsiUtil.getChild(this, 1);
 	}
 
-	public ImmutableList<ResolveDeclaration_1> getAll() {
-		ImmutableList.Builder<ResolveDeclaration_1> builder = ImmutableList.builder();
+	public ImmutableList<ResolveDeclaration_AdditionalSymbols_1> getAll() {
+		ImmutableList.Builder<ResolveDeclaration_AdditionalSymbols_1> builder = ImmutableList.builder();
 		addAllTo(builder);
 		return builder.build();
 	}
 
-	public void addAllTo(List<ResolveDeclaration_1> list) {
+	public void addAllTo(List<ResolveDeclaration_AdditionalSymbols_1> list) {
 		getPrevious().addAllTo(list);
 		list.add(getElement());
 	}
 
-	public void addAllTo(ImmutableList.Builder<ResolveDeclaration_1> builder) {
+	public void addAllTo(ImmutableList.Builder<ResolveDeclaration_AdditionalSymbols_1> builder) {
 		getPrevious().addAllTo(builder);
 		builder.add(getElement());
 	}

@@ -12,14 +12,14 @@ public final class NonemptyIdentifierList_MoreIdentifiers_Start extends Nonempty
 		super(node);
 	}
 
-	public ImmutableList<NonemptyIdentifierList_1> getAll() {
+	public ImmutableList<NonemptyIdentifierList_MoreIdentifiers_1> getAll() {
 		return ImmutableList.of();
 	}
 
-	public void addAllTo(List<NonemptyIdentifierList_1> list) {
+	public void addAllTo(List<NonemptyIdentifierList_MoreIdentifiers_1> list) {
 	}
 
-	public void addAllTo(ImmutableList.Builder<NonemptyIdentifierList_1> builder) {
+	public void addAllTo(ImmutableList.Builder<NonemptyIdentifierList_MoreIdentifiers_1> builder) {
 	}
 
 }

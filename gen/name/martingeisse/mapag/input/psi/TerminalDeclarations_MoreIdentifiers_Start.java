@@ -12,14 +12,14 @@ public final class TerminalDeclarations_MoreIdentifiers_Start extends TerminalDe
 		super(node);
 	}
 
-	public ImmutableList<TerminalDeclarations_1> getAll() {
+	public ImmutableList<TerminalDeclarations_MoreIdentifiers_1> getAll() {
 		return ImmutableList.of();
 	}
 
-	public void addAllTo(List<TerminalDeclarations_1> list) {
+	public void addAllTo(List<TerminalDeclarations_MoreIdentifiers_1> list) {
 	}
 
-	public void addAllTo(ImmutableList.Builder<TerminalDeclarations_1> builder) {
+	public void addAllTo(ImmutableList.Builder<TerminalDeclarations_MoreIdentifiers_1> builder) {
 	}
 
 }

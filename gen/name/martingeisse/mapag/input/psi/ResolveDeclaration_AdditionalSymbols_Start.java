@@ -12,14 +12,14 @@ public final class ResolveDeclaration_AdditionalSymbols_Start extends ResolveDec
 		super(node);
 	}
 
-	public ImmutableList<ResolveDeclaration_1> getAll() {
+	public ImmutableList<ResolveDeclaration_AdditionalSymbols_1> getAll() {
 		return ImmutableList.of();
 	}
 
-	public void addAllTo(List<ResolveDeclaration_1> list) {
+	public void addAllTo(List<ResolveDeclaration_AdditionalSymbols_1> list) {
 	}
 
-	public void addAllTo(ImmutableList.Builder<ResolveDeclaration_1> builder) {
+	public void addAllTo(ImmutableList.Builder<ResolveDeclaration_AdditionalSymbols_1> builder) {
 	}
 
 }

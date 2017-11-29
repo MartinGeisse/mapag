@@ -5,9 +5,9 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import org.jetbrains.annotations.NotNull;
 
-public final class NonemptyIdentifierList_1 extends ASTWrapperPsiElement {
+public final class NonemptyIdentifierList_MoreIdentifiers_1 extends ASTWrapperPsiElement {
 
-	public NonemptyIdentifierList_1(@NotNull ASTNode node) {
+	public NonemptyIdentifierList_MoreIdentifiers_1(@NotNull ASTNode node) {
 		super(node);
 	}
 
