@@ -36,8 +36,4 @@ public final class Production_SingleNamed extends Production {
 		PsiUtil.delete(this);
 	}
 
-	public void superclassDelete() throws IncorrectOperationException {
-		super.delete();
-	}
-
 }

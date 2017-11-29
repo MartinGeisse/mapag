@@ -332,11 +332,13 @@ public class PsiClassesGenerator {
 				context.put("isReference", false);
 			}
 
-			if (!isAbstract && (safeDeletableClasses.contains(className) || safeDeletableClasses.contains(superclass))) {
+			if (safeDeletableClasses.contains(className) || safeDeletableClasses.contains(superclass)) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
-				context.put("isSafeDeletable", true);
+				context.put("isSafeDeletableAbstract", isAbstract);
+				context.put("isSafeDeletableImplementation", !isAbstract);
 			} else {
-				context.put("isSafeDeletable", false);
+				context.put("isSafeDeletableAbstract", false);
+				context.put("isSafeDeletableImplementation", false);
 			}
 
 			try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {

@@ -22,12 +22,6 @@ final class PsiUtil {
 	// general
 	//
 
-	// TODO not needed, .getName() does the same
-	public static String getNonterminalName(Production production) {
-		PsiElement element = getNonterminalNameNode(production);
-		return (element == null ? null : element.getText());
-	}
-
 	// TODO support .getNameIdentifier() in the nodes themselves? Probably useful for PsiNameIdentifierOwner. Then remove this.
 	public static LeafPsiElement getNonterminalNameNode(Production production) {
 		if (production instanceof Production_SingleUnnamed) {
@@ -49,15 +43,6 @@ final class PsiUtil {
 		return (PsiElement) element.replaceWithText(newText);
 	}
 
-	public static List<String> convertNonemptyIdentifierListToStrings(NonemptyIdentifierList list) {
-		List<String> strings = new ArrayList<>();
-		strings.add(list.getFirstIdentifier().getText());
-		for (NonemptyIdentifierList_MoreIdentifiers_1 more : list.getMoreIdentifiers().getAll()) {
-			strings.add(more.getIdentifier().getText());
-		}
-		return strings;
-	}
-
 	public static <T> T getAncestor(PsiElement element, Class<T> nodeClass) {
 		while (true) {
 			if (nodeClass.isInstance(element)) {
@@ -68,26 +53,6 @@ final class PsiUtil {
 			}
 			element = element.getParent();
 		}
-	}
-
-	// TODO only used once -> inline
-	public static List<LeafPsiElement> getSymbolDefiningPsiElements(PsiElement anchor) {
-		Grammar grammar = getAncestor(anchor, Grammar.class);
-		if (grammar == null) {
-			return new ArrayList<>();
-		}
-		List<LeafPsiElement> result = new ArrayList<>();
-		result.add(grammar.getTerminals().getFirstIdentifier().getIdentifier());
-		for (TerminalDeclarations_MoreIdentifiers_1 more : grammar.getTerminals().getMoreIdentifiers().getAll()) {
-			result.add(more.getIdentifier().getIdentifier());
-		}
-		for (Production production : grammar.getProductions().getAll()) {
-			LeafPsiElement nonterminalName = getNonterminalNameNode(production);
-			if (nonterminalName != null) {
-				result.add(nonterminalName);
-			}
-		}
-		return result;
 	}
 
 	//
@@ -163,40 +128,11 @@ final class PsiUtil {
 	// safe delete
 	//
 
-	public static void delete(Production_SingleUnnamed node) {
-		// TODO this doesn't work yet -- we either have to modify the PSI correctly or force a reparse, but this code doesn't force a reparse
-		node.superclassDelete();
-		node.getContainingFile().subtreeChanged();
-	}
+	public static void delete(Production node) {
 
-	public static void delete(Production_SingleNamed node) {
-		node.superclassDelete();
-		node.getContainingFile().subtreeChanged();
-	}
-
-	public static void delete(Production_Multi node) {
-		node.superclassDelete();
-		node.getContainingFile().subtreeChanged();
-	}
-
-	public static void delete(Production_Error1 node) {
-		node.superclassDelete();
-		node.getContainingFile().subtreeChanged();
-	}
-
-	public static void delete(Production_Error2 node) {
-		node.superclassDelete();
-		node.getContainingFile().subtreeChanged();
-	}
-
-	public static void delete(Production_Error3 node) {
-		node.superclassDelete();
-		node.getContainingFile().subtreeChanged();
-	}
-
-	public static void delete(Production_Error4 node) {
-		node.superclassDelete();
-		node.getContainingFile().subtreeChanged();
+		PsiElement parent = node.getParent();
+		// node.superclassDelete();
+		// node.getContainingFile().subtreeChanged();
 	}
 
 }

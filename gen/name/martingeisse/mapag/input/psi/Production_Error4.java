@@ -28,8 +28,4 @@ public final class Production_Error4 extends Production {
 		PsiUtil.delete(this);
 	}
 
-	public void superclassDelete() throws IncorrectOperationException {
-		super.delete();
-	}
-
 }

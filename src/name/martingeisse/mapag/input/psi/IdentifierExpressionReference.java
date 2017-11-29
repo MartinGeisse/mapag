@@ -75,7 +75,7 @@ public class IdentifierExpressionReference implements PsiReference {
 	public PsiElement bindToElement(@NotNull PsiElement psiElement) throws IncorrectOperationException {
 		// binding to terminals is currently not supported
 		if (psiElement instanceof Production) {
-			String newName = PsiUtil.getNonterminalName((Production) psiElement);
+			String newName = ((Production) psiElement).getName();
 			if (newName != null) {
 				return PsiUtil.setText(expression.getIdentifier(), newName);
 			}
@@ -105,11 +105,30 @@ public class IdentifierExpressionReference implements PsiReference {
 	@NotNull
 	@Override
 	public Object[] getVariants() {
+
 		// note: if this returns PSI elements, they must be PsiNamedElement or contain the name in meta-data
-		List<Object> variants = new ArrayList<>();
-		for (LeafPsiElement element : PsiUtil.getSymbolDefiningPsiElements(expression)) {
-			variants.add(element.getText());
+
+		Grammar grammar = PsiUtil.getAncestor(expression, Grammar.class);
+		if (grammar == null) {
+			return new Object[0];
 		}
+
+		List<Object> variants = new ArrayList<>();
+
+		// terminals
+		variants.add(grammar.getTerminals().getFirstIdentifier().getIdentifier().getText());
+		for (TerminalDeclarations_MoreIdentifiers_1 more : grammar.getTerminals().getMoreIdentifiers().getAll()) {
+			variants.add(more.getIdentifier().getIdentifier().getText());
+		}
+
+		// nonterminals
+		for (Production production : grammar.getProductions().getAll()) {
+			LeafPsiElement nonterminalNameNode = PsiUtil.getNonterminalNameNode(production);
+			if (nonterminalNameNode != null) {
+				variants.add(nonterminalNameNode.getText());
+			}
+		}
+
 		return variants.toArray();
 	}
 

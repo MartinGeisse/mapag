@@ -11,4 +11,8 @@ public abstract class Production extends ASTWrapperPsiElement implements PsiName
 		super(node);
 	}
 
+	public void superclassDelete() throws IncorrectOperationException {
+		super.delete();
+	}
+
 }
