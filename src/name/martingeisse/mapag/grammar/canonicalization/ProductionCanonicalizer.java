@@ -165,7 +165,10 @@ public class ProductionCanonicalizer {
 
 			// An OptionalExpression gets extracted into a two-alternative nonterminal
 			Expression operand = ((OptionalExpression) expression).getOperand();
-			Expression replacementOperand = new SymbolReference(convertExpressionToSymbol(operand)).withName(operand.getName()).withFallbackName("it");
+			extendOperandNameStart(expression);
+			String operandSymbol = convertExpressionToSymbol(operand);
+			extendOperandNameEnd(expression);
+			Expression replacementOperand = new SymbolReference(operandSymbol).withName(operand.getName()).withFallbackName("it");
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				alternatives.add(syntheticAlternative("absent", new EmptyExpression()));
 				alternatives.add(syntheticAlternative("present", replacementOperand));
@@ -190,7 +193,10 @@ public class ProductionCanonicalizer {
 
 	// common handling for ZeroOrMoreExpression and OneOrMoreExpression
 	private String extractRepetition(Expression repetition, Expression operand, boolean zeroAllowed) {
-		Expression replacementOperand = new SymbolReference(convertExpressionToSymbol(operand)).withName(operand.getName()).withFallbackName("element");
+		extendOperandNameStart(repetition);
+		String operandSymbol = convertExpressionToSymbol(operand);
+		extendOperandNameEnd(repetition);
+		Expression replacementOperand = new SymbolReference(operandSymbol).withName(operand.getName()).withFallbackName("element");
 		NonterminalDefinition.PsiStyle psiStyle = (zeroAllowed ? NonterminalDefinition.PsiStyle.ZERO_OR_MORE : NonterminalDefinition.PsiStyle.ONE_OR_MORE);
 		return createSyntheticNonterminal(repetition, (repetitionSyntheticName, alternatives) -> {
 			alternatives.add(syntheticAlternative("start",
@@ -212,6 +218,26 @@ public class ProductionCanonicalizer {
 			return ImmutableList.<Expression>builder().addAll(leftOperands).addAll(rightOperands).build();
 		} else {
 			return ImmutableList.of(expression);
+		}
+	}
+
+	/**
+	 * This method is used for an outer expression that contains an operand expression, i.e. an optional or repetition.
+	 * Due to the way these are converted, the operand would normally be prefixed with the name of the original
+	 * nonterminal, but not with the name of the outer expression (if any). This method causes the outer expression's
+	 * name to be used too.
+	 */
+	//
+	private void extendOperandNameStart(Expression outerExpression) {
+		if (outerExpression.getName() != null) {
+			syntheticNonterminalNameGenerator.save();
+			syntheticNonterminalNameGenerator.extend(outerExpression.getName());
+		}
+	}
+
+	private void extendOperandNameEnd(Expression outerExpression) {
+		if (outerExpression.getName() != null) {
+			syntheticNonterminalNameGenerator.restore();
 		}
 	}
 

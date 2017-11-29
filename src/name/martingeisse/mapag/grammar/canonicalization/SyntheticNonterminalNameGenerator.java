@@ -12,6 +12,7 @@ public final class SyntheticNonterminalNameGenerator {
 	private final Set<String> knownSymbols = new HashSet<>();
 	private final Map<String, Integer> syntheticNameCounters = new HashMap<>();
 	private String syntheticNamePrefix;
+	private final Stack<String> savedSyntheticNamePrefixes = new Stack<>();
 
 	public void registerKnownSymbol(String symbol) {
 		knownSymbols.add(symbol);
@@ -27,6 +28,18 @@ public final class SyntheticNonterminalNameGenerator {
 		} else {
 			this.syntheticNamePrefix = nonterminalName + '/' + alternativeName + '/';
 		}
+	}
+
+	public void save() {
+		savedSyntheticNamePrefixes.push(syntheticNamePrefix);
+	}
+
+	public void restore() throws EmptyStackException {
+		syntheticNamePrefix = savedSyntheticNamePrefixes.pop();
+	}
+
+	public void extend(String extension) {
+		syntheticNamePrefix = syntheticNamePrefix + extension + '/';
 	}
 
 	public String createSyntheticName(Expression expression) {

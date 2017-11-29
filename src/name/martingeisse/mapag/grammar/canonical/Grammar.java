@@ -97,15 +97,16 @@ public final class Grammar {
 
 		System.out.println("nonterminals (start: " + startNonterminalName + "):");
 		for (NonterminalDefinition nonterminal : ListUtil.sorted(nonterminalDefinitions.values(), Comparator.comparing(NonterminalDefinition::getName))) {
-			System.out.println("* " + nonterminal.getName() + ":");
+			System.out.println(nonterminal.getName() + " ::= {");
 			for (Alternative alternative : nonterminal.getAlternatives()) {
-				System.out.print("  * ");
-				System.out.print(alternative.getName() + " ::= " + alternative.getExpansion());
+				System.out.print("    " + alternative.getName() + " ::= " + alternative.getExpansion());
 				if (!alternative.getAttributes().equals(AlternativeAttributes.EMPTY)) {
 					System.out.print("    " + alternative.getAttributes());
 				}
 				System.out.println();
 			}
+			System.out.println("}");
+			System.out.println();
 		}
 		System.out.println();
 
