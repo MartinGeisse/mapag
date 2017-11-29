@@ -60,11 +60,11 @@ public final class GrammarCanonicalizer {
 		for (Map.Entry<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternativesEntry : productionCanonicalizer.getNonterminalAlternatives().entrySet()) {
 			String nonterminalName = nonterminalAlternativesEntry.getKey();
 			ImmutableList<name.martingeisse.mapag.grammar.canonical.Alternative> alternatives = ImmutableList.copyOf(nonterminalAlternativesEntry.getValue());
-			NonterminalDefinition.PsiStyle annotation = productionCanonicalizer.getNonterminalPsiStyles().get(nonterminalName);
-			if (annotation == null) {
-				annotation = NonterminalDefinition.PsiStyle.NORMAL;
+			NonterminalDefinition.PsiStyle psiStyle = productionCanonicalizer.getNonterminalPsiStyles().get(nonterminalName);
+			if (psiStyle == null) {
+				psiStyle = NonterminalDefinition.PsiStyle.NORMAL;
 			}
-			NonterminalDefinition nonterminalDefinition = new NonterminalDefinition(nonterminalName, alternatives, annotation);
+			NonterminalDefinition nonterminalDefinition = new NonterminalDefinition(nonterminalName, alternatives, psiStyle);
 			nonterminalDefinitions.put(nonterminalName, nonterminalDefinition);
 		}
 
