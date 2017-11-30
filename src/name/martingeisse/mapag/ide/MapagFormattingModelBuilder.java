@@ -1,0 +1,129 @@
+package name.martingeisse.mapag.ide;
+
+import com.intellij.formatting.*;
+import com.intellij.json.JsonElementTypes;
+import com.intellij.json.JsonParserDefinition;
+import com.intellij.json.formatter.JsonBlock;
+import com.intellij.json.formatter.JsonCodeStyleSettings;
+import com.intellij.json.psi.JsonPsiUtil;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.TokenType;
+import com.intellij.psi.codeStyle.CodeStyleSettings;
+import com.intellij.psi.formatter.common.AbstractBlock;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.containers.ContainerUtil;
+import name.martingeisse.mapag.input.Symbols;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+/**
+ *
+ */
+public class MapagFormattingModelBuilder implements FormattingModelBuilder {
+
+	@NotNull
+	@Override
+	public FormattingModel createModel(PsiElement element, CodeStyleSettings settings) {
+
+
+		MyBlock block = new MyBlock(element.getNode(), null);
+		return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings);
+	}
+
+	@Nullable
+	@Override
+	public TextRange getRangeAffectingIndent(PsiFile psiFile, int i, ASTNode astNode) {
+		return null;
+	}
+
+	// TODO null indent means default indent -- check if this is sufficient
+	// TODO wrap is "always", "never" or "if line is too long" -- soudns logical
+	// TODO spacing says min/max spaces and whether line break. Can use SpacingBuilder.
+	// Note the difference: line break == this belongs into the next line; wrap == line is too long
+	// TODO alignment: align symbols in subsequent lines, e.g. colons in a JSON object. I hate that anyway.
+	// TODO getChildAttributes(): Supports indentation at the moment the user breaks a line manually
+	public static class MyBlock extends AbstractBlock {
+
+		public MyBlock(@NotNull ASTNode node, @Nullable Wrap wrap) {
+			super(node, wrap, null);
+		}
+
+		@Override
+		protected List<Block> buildChildren() {
+			return ContainerUtil.mapNotNull(myNode.getChildren(null), node -> {
+				if (node.getElementType() == TokenType.WHITE_SPACE || node.getTextLength() == 0) {
+					return null;
+				} else {
+					return buildChild(node);
+				}
+			});
+		}
+
+		private Block buildChild(ASTNode childNode) {
+			// TODO choose indent, spacing, wrap
+			return new MyBlock(childNode, null);
+		}
+
+		@Override
+		public Indent getIndent() {
+			IElementType type = myNode.getElementType();
+			IElementType parentType = (myNode.getTreeParent() == null ? null : myNode.getTreeParent().getElementType());
+
+			if (type == Symbols.terminalDeclarations) {
+				return Indent.getNormalIndent();
+			}
+			if (isInside(myNode, Symbols.terminalDeclaration)) {
+				return Indent.getNoneIndent();
+			}
+
+			if (type == Symbols.grammar_PrecedenceTable) {
+				return Indent.getNormalIndent();
+			}
+			if (isInside(myNode, Symbols.grammar_PrecedenceTable)) {
+				return Indent.getNoneIndent();
+			}
+
+			if (parentType == Symbols.grammar || parentType == Symbols.grammar_Productions_Start || parentType == Symbols.grammar_Productions_Next) {
+				return Indent.getNoneIndent();
+			}
+
+			if (parentType == Symbols.production_Multi_Alternatives_Start || parentType == Symbols.production_Multi_Alternatives_Next) {
+				return Indent.getNormalIndent();
+			}
+			if (isInside(myNode, Symbols.production_Multi_Alternatives_Start) || isInside(myNode, Symbols.production_Multi_Alternatives_Next)) {
+				return Indent.getNoneIndent();
+			}
+
+			return null;
+		}
+
+		private boolean isInside(ASTNode node, IElementType type) {
+			while (node != null) {
+				if (node.getElementType() == type) {
+					return true;
+				}
+				node = node.getTreeParent();
+			}
+			return false;
+		}
+
+		@Nullable
+		@Override
+		public Spacing getSpacing(@Nullable Block block, @NotNull Block block1) {
+			// TODO
+			return null;
+		}
+
+		@Override
+		public boolean isLeaf() {
+			return myNode.getFirstChildNode() == null;
+		}
+
+	}
+}

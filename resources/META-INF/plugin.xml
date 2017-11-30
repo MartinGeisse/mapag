@@ -24,6 +24,7 @@
     <lang.parserDefinition language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagParserDefinition" />
     <lang.findUsagesProvider language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagFindUsagesProvider" />
     <lang.refactoringSupport language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagRefactoringSupportProvider" />
+    <lang.formatter language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagFormattingModelBuilder" />
   </extensions>
 
   <actions>
