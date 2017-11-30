@@ -17,6 +17,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.containers.ContainerUtil;
 import name.martingeisse.mapag.input.Symbols;
+import name.martingeisse.mapag.input.psi.AlternativeAttribute_ResolveBlock_ResolveDeclarations_Next;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,6 +76,13 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 			IElementType type = myNode.getElementType();
 			IElementType parentType = (myNode.getTreeParent() == null ? null : myNode.getTreeParent().getElementType());
 
+			// relative to its parent, a closing brace is never indented
+			if (type == Symbols.CLOSING_CURLY_BRACE) {
+				return Indent.getNoneIndent();
+			}
+
+			// indent terminals inside their curly-braces block by one level, but no further indentation of terminals
+			// inside the terminal list (specifcally, no continuation indent -- the braces already delimit that list).
 			if (type == Symbols.terminalDeclarations) {
 				return Indent.getNormalIndent();
 			}
@@ -82,21 +90,33 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 				return Indent.getNoneIndent();
 			}
 
+			// Indent the precedence table inside its braces. Unlike the terminals, this table is separated into lines,
+			// so continuation indent is okay.
 			if (type == Symbols.grammar_PrecedenceTable) {
 				return Indent.getNormalIndent();
 			}
 			if (isInside(myNode, Symbols.grammar_PrecedenceTable)) {
+				return null;
+			}
+
+			// Indent the resolve declarations inside a resolve block, but not their list nodes
+			if (type == Symbols.resolveDeclaration) {
+				return Indent.getNormalIndent();
+			}
+			if (type == Symbols.alternativeAttribute_ResolveBlock_ResolveDeclarations_Start || type == Symbols.alternativeAttribute_ResolveBlock_ResolveDeclarations_Next) {
 				return Indent.getNoneIndent();
 			}
 
+			// don't indent any top-level elements (including productions and production list nodes)
 			if (parentType == Symbols.grammar || parentType == Symbols.grammar_Productions_Start || parentType == Symbols.grammar_Productions_Next) {
 				return Indent.getNoneIndent();
 			}
 
-			if (parentType == Symbols.production_Multi_Alternatives_Start || parentType == Symbols.production_Multi_Alternatives_Next) {
+			// indent the alternatives within a multi-alternative production, but not their list nodes
+			if (type == Symbols.production_Multi_Alternatives_1_Named || type == Symbols.production_Multi_Alternatives_1_Unnamed) {
 				return Indent.getNormalIndent();
 			}
-			if (isInside(myNode, Symbols.production_Multi_Alternatives_Start) || isInside(myNode, Symbols.production_Multi_Alternatives_Next)) {
+			if (type == Symbols.production_Multi_Alternatives_Start || type == Symbols.production_Multi_Alternatives_Next) {
 				return Indent.getNoneIndent();
 			}
 
