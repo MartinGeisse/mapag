@@ -64,7 +64,7 @@ public class ExpressionValidatorImplTest {
 	@Test(expected = IllegalStateException.class)
 	@UseDataProvider("getTestInvalidExpressionData")
 	public void testInvalidExpression(Expression expression) {
-		new ExpressionValidatorImpl(KNOWN_SYMBOLS).validateExpression(expression);
+		new ExpressionValidatorImpl(KNOWN_SYMBOLS).validateExpression(expression, ErrorReporter.ForExpressions.EXCEPTION_THROWER);
 	}
 
 	@DataProvider
@@ -97,7 +97,7 @@ public class ExpressionValidatorImplTest {
 	@Test
 	@UseDataProvider("getTestValidExpressionData")
 	public void testValidExpression(Expression expression) {
-		new ExpressionValidatorImpl(KNOWN_SYMBOLS).validateExpression(expression);
+		new ExpressionValidatorImpl(KNOWN_SYMBOLS).validateExpression(expression, ErrorReporter.ForExpressions.EXCEPTION_THROWER);
 	}
 
 }

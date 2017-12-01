@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.input;
 
 import com.google.common.collect.ImmutableList;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.ConflictResolution;
@@ -25,6 +26,8 @@ import java.util.function.Function;
  */
 public class PsiToGrammarConverter {
 
+	private final GrammarToPsiMap backMap = new GrammarToPsiMap();
+
 	public Grammar convert(MapagSourceFile mapagSourceFile) {
 		name.martingeisse.mapag.input.psi.Grammar psiGrammar = mapagSourceFile.getGrammar();
 		if (psiGrammar == null) {
@@ -36,16 +39,37 @@ public class PsiToGrammarConverter {
 	public Grammar convert(name.martingeisse.mapag.input.psi.Grammar psiGrammar) {
 
 		ImmutableList<TerminalDeclaration> terminalDeclarations =
-			convertIdentifiers(psiGrammar.getTerminals(), TerminalDeclaration::new);
+			convertTerminalDeclarations(psiGrammar.getTerminals());
 
 		PrecedenceTable precedenceTable =
 			convertPrecedenceTable(psiGrammar.getPrecedenceTable());
 
 		String startSymbol = getText(psiGrammar.getStartSymbolName());
+		backMap.startSymbol = psiGrammar.getStartSymbolName();
 
 		ImmutableList<Production> productions = convertProductions(psiGrammar.getProductions());
 
 		return new Grammar(terminalDeclarations, precedenceTable, startSymbol, productions);
+	}
+
+	private ImmutableList<TerminalDeclaration> convertTerminalDeclarations(TerminalDeclarations terminalDeclarations) {
+		List<TerminalDeclaration> result = new ArrayList<>();
+
+		{
+			String text = getText(terminalDeclarations.getFirstIdentifier().getIdentifier());
+			TerminalDeclaration terminalDeclaration = new TerminalDeclaration(text);
+			result.add(terminalDeclaration);
+			backMap.terminalDeclarations.put(terminalDeclaration, terminalDeclarations.getFirstIdentifier());
+		}
+
+		for (TerminalDeclarations_MoreIdentifiers_1 node : terminalDeclarations.getMoreIdentifiers().getAll()) {
+			String text = getText(node.getIdentifier().getIdentifier());
+			TerminalDeclaration terminalDeclaration = new TerminalDeclaration(text);
+			result.add(terminalDeclaration);
+			backMap.terminalDeclarations.put(terminalDeclaration, node.getIdentifier());
+		}
+
+		return ImmutableList.copyOf(result);
 	}
 
 	private PrecedenceTable convertPrecedenceTable(Optional<Grammar_PrecedenceTable> psiPrecedenceTable) {
@@ -54,7 +78,7 @@ public class PsiToGrammarConverter {
 		}
 		List<PrecedenceTable.Entry> convertedEntries = new ArrayList<>();
 		for (PrecedenceDeclaration precedenceDeclaration : psiPrecedenceTable.getIt().getPrecedenceDeclarations().getAll()) {
-			ImmutableList<String> identifiers = convertIdentifiers(precedenceDeclaration.getTerminals(), s -> s);
+			ImmutableList<String> identifiers = convertPrecedenceTableSymbols(precedenceDeclaration.getTerminals());
 			PrecedenceDeclaration_Associativity associativityNode = precedenceDeclaration.getAssociativity();
 			Associativity associativity;
 			if (associativityNode instanceof PrecedenceDeclaration_Associativity_Left) {
@@ -66,28 +90,40 @@ public class PsiToGrammarConverter {
 			} else {
 				throw new RuntimeException("unknown associativity PSI node: " + associativityNode);
 			}
-			convertedEntries.add(new PrecedenceTable.Entry(ImmutableList.copyOf(identifiers), associativity));
+			PrecedenceTable.Entry entry = new PrecedenceTable.Entry(ImmutableList.copyOf(identifiers), associativity);
+			convertedEntries.add(entry);
+			backMap.precedenceTableEntries.put(entry, precedenceDeclaration);
 		}
 		return new PrecedenceTable(ImmutableList.copyOf(convertedEntries));
+	}
+
+	private ImmutableList<String> convertPrecedenceTableSymbols(NonemptyIdentifierList identifiers) {
+		List<String> result = new ArrayList<>();
+		result.add(getText(identifiers.getFirstIdentifier()));
+		for (NonemptyIdentifierList_MoreIdentifiers_1 node : identifiers.getMoreIdentifiers().getAll()) {
+			result.add(getText(node.getIdentifier()));
+		}
+		return ImmutableList.copyOf(result);
 	}
 
 	private ImmutableList<Production> convertProductions(Grammar_Productions psiProductions) {
 		List<Production> productions = new ArrayList<>();
 		for (name.martingeisse.mapag.input.psi.Production psiProduction : psiProductions.getAll()) {
+			Production convertedProduction;
 			if (psiProduction instanceof Production_SingleUnnamed) {
 
 				Production_SingleUnnamed typed = (Production_SingleUnnamed) psiProduction;
 				String nonterminal = getText(typed.getNonterminalName());
-				Alternative alternative = convertAlternative(null, typed.getRightHandSide());
-				productions.add(new Production(nonterminal, ImmutableList.of(alternative)));
+				Alternative alternative = convertAlternative(typed.getRightHandSide(), null, typed.getRightHandSide());
+				convertedProduction = new Production(nonterminal, ImmutableList.of(alternative));
 
 			} else if (psiProduction instanceof Production_SingleNamed) {
 
 				Production_SingleNamed typed = (Production_SingleNamed) psiProduction;
 				String nonterminal = getText(typed.getNonterminalName());
 				String alternativeName = getText(typed.getAlternativeName());
-				Alternative alternative = convertAlternative(alternativeName, typed.getRightHandSide());
-				productions.add(new Production(nonterminal, ImmutableList.of(alternative)));
+				Alternative alternative = convertAlternative(typed.getRightHandSide(), alternativeName, typed.getRightHandSide());
+				convertedProduction = new Production(nonterminal, ImmutableList.of(alternative));
 
 			} else if (psiProduction instanceof Production_Multi) {
 
@@ -98,12 +134,16 @@ public class PsiToGrammarConverter {
 					if (element instanceof Production_Multi_Alternatives_1_Unnamed) {
 
 						Production_Multi_Alternatives_1_Unnamed typedElement = (Production_Multi_Alternatives_1_Unnamed) element;
-						alternatives.add(convertAlternative(null, typedElement.getUnnamed().getRightHandSide()));
+						alternatives.add(convertAlternative(
+							typedElement,
+							null,
+							typedElement.getUnnamed().getRightHandSide()));
 
 					} else if (element instanceof Production_Multi_Alternatives_1_Named) {
 
 						Production_Multi_Alternatives_1_Named typedElement = (Production_Multi_Alternatives_1_Named) element;
 						alternatives.add(convertAlternative(
+							typedElement,
 							getText(typedElement.getNamed().getAlternativeName()),
 							typedElement.getNamed().getRightHandSide()
 						));
@@ -112,7 +152,7 @@ public class PsiToGrammarConverter {
 						throw new RuntimeException("unknown multi-alternative production element node: " + element);
 					}
 				}
-				productions.add(new Production(nonterminal, ImmutableList.copyOf(alternatives)));
+				convertedProduction = new Production(nonterminal, ImmutableList.copyOf(alternatives));
 
 			} else if (psiProduction instanceof Production_Error1) {
 				throw new UserMessageException("grammar contains errors");
@@ -125,11 +165,13 @@ public class PsiToGrammarConverter {
 			} else {
 				throw new RuntimeException("unknown production PSI node: " + psiProduction);
 			}
+			productions.add(convertedProduction);
+			backMap.productions.put(convertedProduction, psiProduction);
 		}
 		return ImmutableList.copyOf(productions);
 	}
 
-	private Alternative convertAlternative(String alternativeName, RightHandSide rightHandSide) {
+	private Alternative convertAlternative(PsiElement psiElement, String alternativeName, RightHandSide rightHandSide) {
 		Expression expression = convertExpression(rightHandSide.getExpression());
 		String precedenceDefiningTerminal = null;
 		ResolveBlock resolveBlock = null;
@@ -159,7 +201,9 @@ public class PsiToGrammarConverter {
 
 			}
 		}
-		return new Alternative(alternativeName, expression, precedenceDefiningTerminal, resolveBlock, reduceOnError, reduceOnEofOnly);
+		Alternative convertedAlternative = new Alternative(alternativeName, expression, precedenceDefiningTerminal, resolveBlock, reduceOnError, reduceOnEofOnly);
+		backMap.alternatives.put(convertedAlternative, psiElement);
+		return convertedAlternative;
 	}
 
 	private ResolveBlock convertResolveBlock(ImmutableList<name.martingeisse.mapag.input.psi.ResolveDeclaration> psiResolveDeclarations) {
@@ -243,28 +287,6 @@ public class PsiToGrammarConverter {
 		} else {
 			throw new RuntimeException("unknown expression PSI node: " + psiExpression);
 		}
-	}
-
-	//
-	//
-	//
-
-	private <T> ImmutableList<T> convertIdentifiers(TerminalDeclarations terminalDeclarations, Function<String, T> elementFactory) {
-		List<T> result = new ArrayList<>();
-		result.add(elementFactory.apply(getText(terminalDeclarations.getFirstIdentifier().getIdentifier())));
-		for (TerminalDeclarations_MoreIdentifiers_1 node : terminalDeclarations.getMoreIdentifiers().getAll()) {
-			result.add(elementFactory.apply(getText(node.getIdentifier().getIdentifier())));
-		}
-		return ImmutableList.copyOf(result);
-	}
-
-	private <T> ImmutableList<T> convertIdentifiers(NonemptyIdentifierList identifiers, Function<String, T> elementFactory) {
-		List<T> result = new ArrayList<>();
-		result.add(elementFactory.apply(getText(identifiers.getFirstIdentifier())));
-		for (NonemptyIdentifierList_MoreIdentifiers_1 node : identifiers.getMoreIdentifiers().getAll()) {
-			result.add(elementFactory.apply(getText(node.getIdentifier())));
-		}
-		return ImmutableList.copyOf(result);
 	}
 
 	// prevents calling .getText() on non-leaf PSI nodes by accident

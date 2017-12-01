@@ -20,7 +20,7 @@ public class GrammarValidatorTest {
 	@Test
 	public void testValid() {
 		Grammar grammar = new Grammar(TERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
-		new GrammarValidator(grammar).validate();
+		new GrammarValidator(grammar).validate(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -28,7 +28,7 @@ public class GrammarValidatorTest {
 		TerminalDeclaration conflictingTerminalDeclaration = new TerminalDeclaration("foo");
 		ImmutableList<TerminalDeclaration> terminals = ImmutableList.of(TERMINAL_1, TERMINAL_2, TERMINAL_3, conflictingTerminalDeclaration);
 		Grammar grammar = new Grammar(terminals, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, PRODUCTIONS);
-		new GrammarValidator(grammar).validate();
+		new GrammarValidator(grammar).validate(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -36,7 +36,7 @@ public class GrammarValidatorTest {
 		Production conflictingProduction = new Production("nt2", ImmutableList.of(ALTERNATIVE_3));
 		ImmutableList<Production> productions = ImmutableList.of(PRODUCTION_1, PRODUCTION_2, PRODUCTION_3, conflictingProduction);
 		Grammar grammar = new Grammar(TERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
-		new GrammarValidator(grammar).validate();
+		new GrammarValidator(grammar).validate(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -44,7 +44,7 @@ public class GrammarValidatorTest {
 		Production conflictingProduction = new Production("foo", ImmutableList.of(ALTERNATIVE_3));
 		ImmutableList<Production> productions = ImmutableList.of(PRODUCTION_1, PRODUCTION_2, PRODUCTION_3, conflictingProduction);
 		Grammar grammar = new Grammar(TERMINALS, PRECEDENCE_TABLE_EMPTY, START_NONTERMINAL_NAME, productions);
-		new GrammarValidator(grammar).validate();
+		new GrammarValidator(grammar).validate(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -55,7 +55,7 @@ public class GrammarValidatorTest {
 		)
 		);
 		Grammar grammar = new Grammar(TERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
-		new GrammarValidator(grammar).validate();
+		new GrammarValidator(grammar).validate(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -67,13 +67,13 @@ public class GrammarValidatorTest {
 		)
 		);
 		Grammar grammar = new Grammar(TERMINALS, precedenceTable, START_NONTERMINAL_NAME, PRODUCTIONS);
-		new GrammarValidator(grammar).validate();
+		new GrammarValidator(grammar).validate(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownStartNonterminal() {
 		Grammar grammar = new Grammar(TERMINALS, PRECEDENCE_TABLE_EMPTY, "unknown", PRODUCTIONS);
-		new GrammarValidator(grammar).validate();
+		new GrammarValidator(grammar).validate(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class GrammarValidatorTest {
 				int counter = 0;
 
 				@Override
-				public void validateProduction(Production production) {
+				public void validateProduction(Production production, ErrorReporter errorReporter) {
 					if (counter == 0) {
 						Assert.assertEquals(PRODUCTION_1, production);
 					} else if (counter == 1) {
@@ -102,13 +102,13 @@ public class GrammarValidatorTest {
 				}
 
 				@Override
-				public void finish() {
+				public void finish(ErrorReporter errorReporter) {
 					Assert.assertEquals(3, counter);
 				}
 
 			};
 		};
-		new GrammarValidator(grammar, productionValidatorFactory).validate();
+		new GrammarValidator(grammar, productionValidatorFactory).validate(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 }

@@ -33,7 +33,9 @@ public final class GrammarCanonicalizer {
 		}
 
 		// make sure the input grammar is valid (don't trust the caller to do the validation)
-		new GrammarValidator(inputGrammar).validate();
+		new GrammarValidator(inputGrammar).validate((location, message) -> {
+			throw new IllegalStateException("invalid grammar: " + message + " at " + location);
+		});
 
 		// define terminals using defaults
 		this.terminalDefinitions = new HashMap<>();

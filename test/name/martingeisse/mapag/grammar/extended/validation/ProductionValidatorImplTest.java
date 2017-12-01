@@ -18,7 +18,7 @@ import org.junit.Test;
  */
 public class ProductionValidatorImplTest {
 
-	private static final ExpressionValidator NOP_EXPRESSION_VALIDATOR = e -> {
+	private static final ExpressionValidator NOP_EXPRESSION_VALIDATOR = (expression, reporter) -> {
 	};
 	private static final ImmutableSet<String> TERMINALS = ImmutableSet.of("foo", "bar");
 	private static final ImmutableSet<String> NONTERMINALS = ImmutableSet.of("abc", "def");
@@ -73,30 +73,30 @@ public class ProductionValidatorImplTest {
 	@Test
 	public void testValid() {
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_1)));
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_2)));
-		productionValidator.finish();
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_1)), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_2)), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.finish(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testNoProductionForStartSymbol() {
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "def", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_1)));
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_2)));
-		productionValidator.finish();
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_1)), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_2)), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.finish(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test
 	public void testNoProductionForStartSymbolGetsCheckedInFinishMethod() {
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "def", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_1)));
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_2)));
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_1)), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_2)), ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownLeftHandSideInProduction() {
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("xyz", ImmutableList.of(ALTERNATIVE_1)));
+		productionValidator.validateProduction(new Production("xyz", ImmutableList.of(ALTERNATIVE_1)), ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class ProductionValidatorImplTest {
 			private int counter = 0;
 
 			@Override
-			public void validateExpression(Expression expression) {
+			public void validateExpression(Expression expression, ErrorReporter.ForExpressions errorReporter) {
 				if (counter == 0) {
 					Assert.assertSame(ALTERNATIVE_1.getExpression(), expression);
 				} else if (counter == 1) {
@@ -119,39 +119,39 @@ public class ProductionValidatorImplTest {
 
 		};
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", expressionValidator);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_1)));
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_2)));
-		productionValidator.finish();
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_1)), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(ALTERNATIVE_2)), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.finish(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test
 	public void testValidPrecedenceDefiningTerminal() {
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), "foo", null, false, false))));
-		productionValidator.finish();
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), "foo", null, false, false))), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.finish(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnknownPrecedenceDefiningTerminal() {
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), "blub", null, false, false))));
-		productionValidator.finish();
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), "blub", null, false, false))), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.finish(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test
 	public void testValidResolveBlock() {
 		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of(new ResolveDeclaration(ConflictResolution.SHIFT, ImmutableList.of("foo"))));
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), null, resolveBlock, false, false))));
-		productionValidator.finish();
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), null, resolveBlock, false, false))), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.finish(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testResolveBlockWithUnknownTerminal() {
 		ResolveBlock resolveBlock = new ResolveBlock(ImmutableList.of(new ResolveDeclaration(ConflictResolution.SHIFT, ImmutableList.of("blub"))));
 		ProductionValidator productionValidator = new ProductionValidatorImpl(TERMINALS, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
-		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), null, resolveBlock, false, false))));
-		productionValidator.finish();
+		productionValidator.validateProduction(new Production("abc", ImmutableList.of(new Alternative(null, new SymbolReference("foo"), null, resolveBlock, false, false))), ErrorReporter.EXCEPTION_THROWER);
+		productionValidator.finish(ErrorReporter.EXCEPTION_THROWER);
 	}
 
 }
