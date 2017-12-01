@@ -26,6 +26,7 @@
     <lang.refactoringSupport language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagRefactoringSupportProvider" />
     <lang.formatter language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagFormattingModelBuilder" />
     <annotator language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagAnnotator" />
+    <lang.psiStructureViewFactory language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagStructureViewFactory" />
   </extensions>
 
   <actions>
