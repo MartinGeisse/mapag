@@ -36,6 +36,10 @@ public class PsiToGrammarConverter {
 		return convert(psiGrammar);
 	}
 
+	public GrammarToPsiMap getBackMap() {
+		return backMap;
+	}
+
 	public Grammar convert(name.martingeisse.mapag.input.psi.Grammar psiGrammar) {
 
 		ImmutableList<TerminalDeclaration> terminalDeclarations =
@@ -203,6 +207,7 @@ public class PsiToGrammarConverter {
 		}
 		Alternative convertedAlternative = new Alternative(alternativeName, expression, precedenceDefiningTerminal, resolveBlock, reduceOnError, reduceOnEofOnly);
 		backMap.alternatives.put(convertedAlternative, psiElement);
+		backMap.rightHandSides.put(convertedAlternative, rightHandSide);
 		return convertedAlternative;
 	}
 
@@ -226,67 +231,72 @@ public class PsiToGrammarConverter {
 				terminals.add(getText(elementNode.getSymbol()));
 			}
 
-			resolveDeclarations.add(new ResolveDeclaration(conflictResolution, ImmutableList.copyOf(terminals)));
+			ResolveDeclaration resolveDeclaration = new ResolveDeclaration(conflictResolution, ImmutableList.copyOf(terminals));
+			resolveDeclarations.add(resolveDeclaration);
+			backMap.resolveDeclarations.put(resolveDeclaration, psiResolveDeclaration);
 		}
 		return new ResolveBlock(ImmutableList.copyOf(resolveDeclarations));
 	}
 
 	private Expression convertExpression(name.martingeisse.mapag.input.psi.Expression psiExpression) {
+		Expression result;
 		if (psiExpression instanceof Expression_Named) {
 
 			Expression_Named typedExpression = (Expression_Named) psiExpression;
 			String name = getText(typedExpression.getExpressionName());
-			return convertExpression(typedExpression.getExpression()).withName(name);
+			result = convertExpression(typedExpression.getExpression()).withName(name);
 
 		} else if (psiExpression instanceof Expression_OneOrMore) {
 
 			Expression_OneOrMore typedExpression = (Expression_OneOrMore) psiExpression;
 			Expression operand = convertExpression(typedExpression.getOperand());
-			return new OneOrMoreExpression(operand);
+			result = new OneOrMoreExpression(operand);
 
 		} else if (psiExpression instanceof Expression_Sequence) {
 
 			Expression_Sequence typedExpression = (Expression_Sequence) psiExpression;
 			Expression left = convertExpression(typedExpression.getLeft());
 			Expression right = convertExpression(typedExpression.getRight());
-			return new SequenceExpression(left, right);
+			result = new SequenceExpression(left, right);
 
 		} else if (psiExpression instanceof Expression_Identifier) {
 
 			Expression_Identifier typedExpression = (Expression_Identifier) psiExpression;
-			return new SymbolReference(getText(typedExpression.getIdentifier()));
+			result = new SymbolReference(getText(typedExpression.getIdentifier()));
 
 		} else if (psiExpression instanceof Expression_Error) {
 
-			return new SymbolReference(SpecialSymbols.ERROR_SYMBOL_NAME);
+			result = new SymbolReference(SpecialSymbols.ERROR_SYMBOL_NAME);
 
 		} else if (psiExpression instanceof Expression_Parenthesized) {
 
 			Expression_Parenthesized typedExpression = (Expression_Parenthesized) psiExpression;
-			return convertExpression(typedExpression.getInner());
+			result = convertExpression(typedExpression.getInner());
 
 		} else if (psiExpression instanceof Expression_ZeroOrMore) {
 
 			Expression_ZeroOrMore typedExpression = (Expression_ZeroOrMore) psiExpression;
 			Expression operand = convertExpression(typedExpression.getOperand());
-			return new ZeroOrMoreExpression(operand);
+			result = new ZeroOrMoreExpression(operand);
 
 		} else if (psiExpression instanceof Expression_Or) {
 
 			Expression_Or typedExpression = (Expression_Or) psiExpression;
 			Expression left = convertExpression(typedExpression.getLeft());
 			Expression right = convertExpression(typedExpression.getRight());
-			return new OrExpression(left, right);
+			result = new OrExpression(left, right);
 
 		} else if (psiExpression instanceof Expression_Optional) {
 
 			Expression_Optional typedExpression = (Expression_Optional) psiExpression;
 			Expression operand = convertExpression(typedExpression.getOperand());
-			return new OptionalExpression(operand);
+			result = new OptionalExpression(operand);
 
 		} else {
 			throw new RuntimeException("unknown expression PSI node: " + psiExpression);
 		}
+		backMap.expressions.put(result, psiExpression);
+		return result;
 	}
 
 	// prevents calling .getText() on non-leaf PSI nodes by accident

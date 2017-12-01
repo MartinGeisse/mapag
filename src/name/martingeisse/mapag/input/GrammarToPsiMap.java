@@ -2,13 +2,11 @@ package name.martingeisse.mapag.input;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import name.martingeisse.mapag.grammar.extended.Alternative;
-import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
-import name.martingeisse.mapag.grammar.extended.Production;
-import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
+import name.martingeisse.mapag.grammar.extended.*;
 import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.ide.MapagAnnotator;
 import name.martingeisse.mapag.input.psi.PrecedenceDeclaration;
+import name.martingeisse.mapag.input.psi.RightHandSide;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,5 +22,7 @@ public final class GrammarToPsiMap {
 	public LeafPsiElement startSymbol;
 	public final Map<Production, name.martingeisse.mapag.input.psi.Production> productions = new HashMap<>();
 	public final Map<Alternative, PsiElement> alternatives = new HashMap<>();
+	public final Map<Alternative, RightHandSide> rightHandSides = new HashMap<>();
+	public final Map<ResolveDeclaration, name.martingeisse.mapag.input.psi.ResolveDeclaration> resolveDeclarations = new HashMap<>();
 	public final Map<Expression, name.martingeisse.mapag.input.psi.Expression> expressions = new HashMap<>();
 }
