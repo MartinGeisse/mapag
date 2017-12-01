@@ -21,7 +21,7 @@ public class ExpressionValidatorImplTest {
 		new ExpressionValidatorImpl(null);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testEmptyKnownSymbols() {
 		new ExpressionValidatorImpl(ImmutableSet.of());
 	}

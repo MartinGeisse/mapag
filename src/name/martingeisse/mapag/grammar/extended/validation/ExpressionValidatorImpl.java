@@ -5,15 +5,12 @@ import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;
 
-/**
- * TODO empty lists may be validation errors, not IllegalArgumentException
- */
 final class ExpressionValidatorImpl implements ExpressionValidator {
 
 	private final ImmutableSet<String> knownSymbols;
 
 	ExpressionValidatorImpl(ImmutableSet<String> knownSymbols) {
-		this.knownSymbols = ParameterUtil.ensureNotNullOrEmpty(knownSymbols, "knownSymbols");
+		this.knownSymbols = ParameterUtil.ensureNotNull(knownSymbols, "knownSymbols");
 		ParameterUtil.ensureNoNullOrEmptyElement(knownSymbols, "knownSymbols");
 	}
 

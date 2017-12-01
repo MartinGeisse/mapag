@@ -6,9 +6,6 @@ import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
 import name.martingeisse.mapag.util.ParameterUtil;
 
-/**
- * TODO empty lists may be validation errors, not IllegalArgumentException
- */
 class ProductionValidatorImpl implements ProductionValidator {
 
 	private final ImmutableSet<String> terminalNames;
@@ -18,9 +15,9 @@ class ProductionValidatorImpl implements ProductionValidator {
 	private boolean foundProductionForStartSymbol = false;
 
 	ProductionValidatorImpl(ImmutableSet<String> terminalNames, ImmutableSet<String> nonterminalNames, String startSymbol, ExpressionValidator expressionValidator) {
-		this.terminalNames = ParameterUtil.ensureNotNullOrEmpty(terminalNames, "terminalNames");
+		this.terminalNames = ParameterUtil.ensureNotNull(terminalNames, "terminalNames");
 		ParameterUtil.ensureNoNullOrEmptyElement(terminalNames, "terminalNames");
-		this.nonterminalNames = ParameterUtil.ensureNotNullOrEmpty(nonterminalNames, "nonterminalNames");
+		this.nonterminalNames = ParameterUtil.ensureNotNull(nonterminalNames, "nonterminalNames");
 		ParameterUtil.ensureNoNullOrEmptyElement(nonterminalNames, "nonterminalNames");
 		this.startSymbol = ParameterUtil.ensureNotNullOrEmpty(startSymbol, "startSymbol");
 		this.expressionValidator = ParameterUtil.ensureNotNull(expressionValidator, "expressionValidator");

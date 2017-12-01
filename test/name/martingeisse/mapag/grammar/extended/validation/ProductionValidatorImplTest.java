@@ -30,7 +30,7 @@ public class ProductionValidatorImplTest {
 		new ProductionValidatorImpl(null, NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testEmptyTerminals() {
 		new ProductionValidatorImpl(ImmutableSet.of(), NONTERMINALS, "abc", NOP_EXPRESSION_VALIDATOR);
 	}
@@ -45,7 +45,7 @@ public class ProductionValidatorImplTest {
 		new ProductionValidatorImpl(TERMINALS, null, "abc", NOP_EXPRESSION_VALIDATOR);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testEmptyNonterminals() {
 		new ProductionValidatorImpl(TERMINALS, ImmutableSet.of(), "abc", NOP_EXPRESSION_VALIDATOR);
 	}
