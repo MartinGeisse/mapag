@@ -27,13 +27,19 @@ public abstract class ErrorLocation {
 	public static final class PrecedenceTableEntry extends ErrorLocation {
 
 		private final PrecedenceTable.Entry entry;
+		private final int symbolIndex;
 
-		public PrecedenceTableEntry(PrecedenceTable.Entry entry) {
+		public PrecedenceTableEntry(PrecedenceTable.Entry entry, int symbolIndex) {
 			this.entry = entry;
+			this.symbolIndex = symbolIndex;
 		}
 
 		public PrecedenceTable.Entry getEntry() {
 			return entry;
+		}
+
+		public int getSymbolIndex() {
+			return symbolIndex;
 		}
 
 	}

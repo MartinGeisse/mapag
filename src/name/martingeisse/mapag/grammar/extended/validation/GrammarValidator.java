@@ -57,12 +57,14 @@ public final class GrammarValidator {
 
 		Map<String, PrecedenceTable.Entry> precedenceTableEntriesByName = new HashMap<>();
 		for (PrecedenceTable.Entry entry : grammar.getPrecedenceTable().getEntries()) {
+			int symbolIndex = 0;
 			for (String name : entry.getTerminalNames()) {
 				if (!terminalNames.contains(name)) {
-					errorReporter.reportError(new ErrorLocation.PrecedenceTableEntry(entry), "unknown terminal name: " + name);
+					errorReporter.reportError(new ErrorLocation.PrecedenceTableEntry(entry, symbolIndex), "unknown terminal name: " + name);
 				} else if (precedenceTableEntriesByName.put(name, entry) != null) {
-					errorReporter.reportError(new ErrorLocation.PrecedenceTableEntry(entry), "terminal appears twice in precedence table: " + name);
+					errorReporter.reportError(new ErrorLocation.PrecedenceTableEntry(entry, symbolIndex), "terminal appears twice in precedence table: " + name);
 				}
+				symbolIndex++;
 			}
 		}
 

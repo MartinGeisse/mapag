@@ -8,7 +8,7 @@ import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.extended.validation.ErrorLocation;
 import name.martingeisse.mapag.input.GrammarToPsiMap;
 import name.martingeisse.mapag.input.PsiToGrammarConverter;
-import name.martingeisse.mapag.input.psi.Grammar;
+import name.martingeisse.mapag.input.psi.*;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,15 +43,33 @@ public class MapagAnnotator implements Annotator {
 		if (location instanceof ErrorLocation.TerminalDeclaration) {
 			return backMap.terminalDeclarations.get(((ErrorLocation.TerminalDeclaration) location).getTerminalDeclaration());
 		} else if (location instanceof ErrorLocation.PrecedenceTableEntry) {
-			return backMap.precedenceTableEntries.get(((ErrorLocation.PrecedenceTableEntry) location).getEntry()); // TODO mark only the affected symbol
+			ErrorLocation.PrecedenceTableEntry typedLocation = (ErrorLocation.PrecedenceTableEntry)location;
+			PrecedenceDeclaration psiPrecedenceDeclaration = backMap.precedenceTableEntries.get(typedLocation.getEntry());
+			if (typedLocation.getSymbolIndex() == 0) {
+				return psiPrecedenceDeclaration.getTerminals().getFirstIdentifier();
+			} else {
+				return psiPrecedenceDeclaration.getTerminals().getMoreIdentifiers().getAll().get(typedLocation.getSymbolIndex() - 1).getIdentifier();
+			}
 		} else if (location instanceof ErrorLocation.StartSymbol) {
 			return backMap.startSymbol;
 		} else if (location instanceof ErrorLocation.ProductionLeftHandSide) {
 			return backMap.productions.get(((ErrorLocation.ProductionLeftHandSide) location).getProduction());
 		} else if (location instanceof ErrorLocation.PrecedenceDefiningTerminal) {
-			return backMap.rightHandSides.get(((ErrorLocation.PrecedenceDefiningTerminal) location).getAlternative()).getAttributes(); // TODO mark only the affected attribute, not all of them
+			RightHandSide_Attributes psiAttributes = backMap.rightHandSides.get(((ErrorLocation.PrecedenceDefiningTerminal) location).getAlternative()).getAttributes();
+			for (AlternativeAttribute attribute : psiAttributes.getAll()) {
+				if (attribute instanceof AlternativeAttribute_Precedence) {
+					return ((AlternativeAttribute_Precedence) attribute).getPrecedenceDefiningTerminal();
+				}
+			}
+			return null;
 		} else if (location instanceof ErrorLocation.SymbolInResolveDeclaration) {
-			return backMap.resolveDeclarations.get(((ErrorLocation.SymbolInResolveDeclaration) location).getResolveDeclaration()); // TODO mark only the affected symbol (using the symbol index!)
+			ErrorLocation.SymbolInResolveDeclaration typedLocation = (ErrorLocation.SymbolInResolveDeclaration)location;
+			ResolveDeclaration psiResolveDeclaration = backMap.resolveDeclarations.get(((ErrorLocation.SymbolInResolveDeclaration) location).getResolveDeclaration());
+			if (typedLocation.getSymbolIndex() == 0) {
+				return psiResolveDeclaration.getFirstSymbol();
+			} else {
+				return psiResolveDeclaration.getAdditionalSymbols().getAll().get(typedLocation.getSymbolIndex() - 1).getSymbol();
+			}
 		} else if (location instanceof ErrorLocation.Expression) {
 			return backMap.expressions.get(((ErrorLocation.Expression) location).getExpression());
 		} else {
