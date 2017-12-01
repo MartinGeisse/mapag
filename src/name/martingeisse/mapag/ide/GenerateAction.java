@@ -18,11 +18,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.ConfigurationException;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
-import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.input.PsiToGrammarConverter;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
@@ -32,7 +30,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Properties;
 import java.util.function.Consumer;
 

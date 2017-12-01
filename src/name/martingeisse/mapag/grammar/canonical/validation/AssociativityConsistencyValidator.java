@@ -5,7 +5,9 @@ import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
 import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.ParameterUtil;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * This validator checks that terminals with the same precedence index have equal associativity.

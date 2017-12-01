@@ -7,7 +7,6 @@ import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateElement;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 

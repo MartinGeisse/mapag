@@ -1,11 +1,6 @@
 package name.martingeisse.mapag.ide;
 
 import com.intellij.formatting.*;
-import com.intellij.json.JsonElementTypes;
-import com.intellij.json.JsonParserDefinition;
-import com.intellij.json.formatter.JsonBlock;
-import com.intellij.json.formatter.JsonCodeStyleSettings;
-import com.intellij.json.psi.JsonPsiUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -14,10 +9,8 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.formatter.common.AbstractBlock;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.containers.ContainerUtil;
 import name.martingeisse.mapag.input.Symbols;
-import name.martingeisse.mapag.input.psi.AlternativeAttribute_ResolveBlock_ResolveDeclarations_Next;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

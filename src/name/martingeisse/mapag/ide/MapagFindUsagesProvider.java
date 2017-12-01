@@ -4,14 +4,11 @@ import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.TokenSet;
 import name.martingeisse.mapag.input.MapagLexer;
 import name.martingeisse.mapag.input.Symbols;
 import name.martingeisse.mapag.input.psi.Expression_Identifier;
 import name.martingeisse.mapag.input.psi.Production;
-import name.martingeisse.mapag.input.psi.Production_SingleUnnamed;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -4,13 +4,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.impl.source.PsiFileImpl;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.FileContentUtil;
 import com.intellij.util.IncorrectOperationException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *

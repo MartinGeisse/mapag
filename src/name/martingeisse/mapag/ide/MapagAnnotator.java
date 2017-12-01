@@ -3,13 +3,10 @@ package name.martingeisse.mapag.ide;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.psi.PsiElement;
-import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
-import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.extended.validation.ErrorLocation;
 import name.martingeisse.mapag.input.GrammarToPsiMap;
 import name.martingeisse.mapag.input.PsiToGrammarConverter;
 import name.martingeisse.mapag.input.psi.*;
-import name.martingeisse.mapag.sm.StateMachineBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**

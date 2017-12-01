@@ -7,8 +7,11 @@ import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
-import name.martingeisse.mapag.grammar.extended.*;
-import name.martingeisse.mapag.grammar.extended.expression.*;
+import name.martingeisse.mapag.grammar.extended.Grammar;
+import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
+import name.martingeisse.mapag.grammar.extended.Production;
+import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
+import name.martingeisse.mapag.grammar.extended.expression.ZeroOrMoreExpression;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 
