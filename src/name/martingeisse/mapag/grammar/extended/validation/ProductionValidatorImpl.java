@@ -6,6 +6,9 @@ import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
 import name.martingeisse.mapag.util.ParameterUtil;
 
+/**
+ * TODO empty lists may be validation errors, not IllegalArgumentException
+ */
 class ProductionValidatorImpl implements ProductionValidator {
 
 	private final ImmutableSet<String> terminalNames;

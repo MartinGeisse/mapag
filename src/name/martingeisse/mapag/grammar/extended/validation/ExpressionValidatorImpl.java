@@ -5,6 +5,9 @@ import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;
 
+/**
+ * TODO empty lists may be validation errors, not IllegalArgumentException
+ */
 final class ExpressionValidatorImpl implements ExpressionValidator {
 
 	private final ImmutableSet<String> knownSymbols;

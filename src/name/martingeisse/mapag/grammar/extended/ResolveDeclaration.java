@@ -5,7 +5,7 @@ import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 /**
- *
+ * TODO empty lists may be validation errors, not IllegalArgumentException
  */
 public final class ResolveDeclaration {
 

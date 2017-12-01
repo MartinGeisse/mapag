@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 /**
- *
+ * TODO empty lists may be validation errors, not IllegalArgumentException
  */
 public final class Production {
 
