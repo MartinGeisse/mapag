@@ -6,9 +6,6 @@ import name.martingeisse.mapag.grammar.extended.expression.SymbolReference;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- *
- */
 public class ProductionTest {
 
 	private static final Alternative ALTERNATIVE = new Alternative(null, new SymbolReference("foo"), null, null, false, false);
@@ -54,8 +51,8 @@ public class ProductionTest {
 		new Production("nt1", null);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testEmptyRightHandSide() {
+	@Test
+	public void testEmptyAlternativeList() {
 		new Production("nt1", ImmutableList.of());
 	}
 

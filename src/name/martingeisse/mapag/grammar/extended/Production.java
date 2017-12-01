@@ -3,9 +3,6 @@ package name.martingeisse.mapag.grammar.extended;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.util.ParameterUtil;
 
-/**
- * TODO empty lists may be validation errors, not IllegalArgumentException
- */
 public final class Production {
 
 	private final String leftHandSide;
@@ -13,7 +10,7 @@ public final class Production {
 
 	public Production(String leftHandSide, ImmutableList<Alternative> alternatives) {
 		this.leftHandSide = ParameterUtil.ensureNotNullOrEmpty(leftHandSide, "leftHandSide");
-		this.alternatives = ParameterUtil.ensureNotNullOrEmpty(alternatives, "alternatives");
+		this.alternatives = ParameterUtil.ensureNotNull(alternatives, "alternatives");
 		ParameterUtil.ensureNoNullElement(alternatives, "alternatives");
 		if (leftHandSide.startsWith("%")) {
 			throw new IllegalArgumentException("cannot define a production for special symbol " + leftHandSide);
