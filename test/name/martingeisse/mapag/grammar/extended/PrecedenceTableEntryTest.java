@@ -18,7 +18,7 @@ public class PrecedenceTableEntryTest {
 		new PrecedenceTable.Entry(null, Associativity.NONASSOC);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testEmptyTerminalNames() {
 		new PrecedenceTable.Entry(ImmutableList.of(), Associativity.NONASSOC);
 	}

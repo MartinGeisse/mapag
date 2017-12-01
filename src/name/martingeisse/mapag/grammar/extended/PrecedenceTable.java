@@ -4,9 +4,6 @@ import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.util.ParameterUtil;
 
-/**
- * TODO empty lists may be validation errors, not IllegalArgumentException
- */
 public final class PrecedenceTable {
 
 	private final ImmutableList<Entry> entries;
@@ -27,7 +24,7 @@ public final class PrecedenceTable {
 		private final Associativity associativity;
 
 		public Entry(ImmutableList<String> terminalNames, Associativity associativity) {
-			ParameterUtil.ensureNotNullOrEmpty(terminalNames, "terminalNames");
+			ParameterUtil.ensureNotNull(terminalNames, "terminalNames");
 			ParameterUtil.ensureNoNullOrEmptyElement(terminalNames, "terminalNames");
 			ParameterUtil.ensureNotNull(associativity, "associativity");
 			for (String terminalName : terminalNames) {
