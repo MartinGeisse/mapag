@@ -27,6 +27,7 @@
     <lang.formatter language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagFormattingModelBuilder" />
     <annotator language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagAnnotator" />
     <lang.psiStructureViewFactory language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagStructureViewFactory" />
+    <lang.braceMatcher language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagBraceMatcher" />
   </extensions>
 
   <actions>
