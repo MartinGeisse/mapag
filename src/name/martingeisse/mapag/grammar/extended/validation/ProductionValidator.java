@@ -8,8 +8,8 @@ import name.martingeisse.mapag.grammar.extended.Production;
  */
 interface ProductionValidator {
 
-	void validateProduction(Production production);
+	void validateProduction(Production production, ErrorReporter errorReporter);
 
-	void finish();
+	void finish(ErrorReporter errorReporter);
 
 }

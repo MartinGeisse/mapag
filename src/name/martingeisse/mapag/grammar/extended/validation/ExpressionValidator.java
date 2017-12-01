@@ -8,6 +8,6 @@ import name.martingeisse.mapag.grammar.extended.expression.Expression;
  */
 interface ExpressionValidator {
 
-	void validateExpression(Expression expression);
+	void validateExpression(Expression expression, ErrorReporter.ForExpressions errorReporter);
 
 }

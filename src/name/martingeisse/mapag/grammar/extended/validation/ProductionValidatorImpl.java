@@ -23,39 +23,41 @@ class ProductionValidatorImpl implements ProductionValidator {
 		this.expressionValidator = ParameterUtil.ensureNotNull(expressionValidator, "expressionValidator");
 	}
 
-	public void validateProduction(Production production) {
+	public void validateProduction(Production production, ErrorReporter errorReporter) {
 		String leftHandSide = production.getLeftHandSide();
 		if (!nonterminalNames.contains(leftHandSide)) {
-			throw new IllegalStateException("left-hand symbol in production was not declared as a nonterminal: " + leftHandSide);
+			errorReporter.reportError(new ErrorLocation.ProductionLeftHandSide(production), leftHandSide + " was not declared as a nonterminal");
 		}
 		if (leftHandSide.equals(startSymbol)) {
 			foundProductionForStartSymbol = true;
 		}
 		for (Alternative alternative : production.getAlternatives()) {
-			expressionValidator.validateExpression(alternative.getExpression());
+			ErrorReporter.ForExpressions subReporter = (location, message) -> errorReporter.reportError(
+				new ErrorLocation.Expression(production, alternative, location), message);
+			expressionValidator.validateExpression(alternative.getExpression(), subReporter);
 			if (alternative.getPrecedenceDefiningTerminal() != null) {
 				if (!terminalNames.contains(alternative.getPrecedenceDefiningTerminal())) {
-					throw new IllegalStateException("unknown terminal name '" +
-						alternative.getPrecedenceDefiningTerminal() + " in rule precedence specification for nonterminal " + leftHandSide);
+					errorReporter.reportError(new ErrorLocation.PrecedenceDefiningTerminal(production, alternative), "unknown terminal name: " + alternative.getPrecedenceDefiningTerminal());
 				}
 			}
 			if (alternative.getResolveBlock() != null) {
 				for (ResolveDeclaration resolveDeclaration : alternative.getResolveBlock().getResolveDeclarations()) {
+					int symbolIndex = 0;
 					for (String symbol : resolveDeclaration.getTerminals()) {
 						if (!terminalNames.contains(symbol)) {
-							throw new IllegalStateException("unknown symbol '" + symbol +
-								"' in terminal list for resolve block in nonterminal " + production.getLeftHandSide() + ", " +
-								(alternative.getName() == null ? "unnamed alternative" : ("alternative " + alternative.getName())));
+							ErrorLocation location = new ErrorLocation.SymbolInResolveDeclaration(production, alternative, resolveDeclaration, symbolIndex);
+							errorReporter.reportError(location, "unknown terminal: " + symbol);
 						}
+						symbolIndex++;
 					}
 				}
 			}
 		}
 	}
 
-	public void finish() {
+	public void finish(ErrorReporter errorReporter) {
 		if (!foundProductionForStartSymbol) {
-			throw new IllegalStateException("no production found for start symbol");
+			errorReporter.reportError(new ErrorLocation.StartSymbol(), "no production found for start symbol");
 		}
 	}
 

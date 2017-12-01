@@ -14,32 +14,34 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 		ParameterUtil.ensureNoNullOrEmptyElement(knownSymbols, "knownSymbols");
 	}
 
-	public void validateExpression(Expression expression) {
+	public void validateExpression(Expression expression, ErrorReporter.ForExpressions errorReporter) {
 		if (expression.getName() != null && expression.getName().equals("name")) {
-			throw new IllegalStateException("The name 'name' is forbidden for expressions since IntelliJ PSI classes already use that name for something different.");
+			errorReporter.reportError(expression, "The name '" + expression.getName() +
+				"' is forbidden for expressions since IntelliJ PSI classes already use that name for something different.");
+			return;
 		}
 		if (expression instanceof EmptyExpression) {
 			// OK, nothing to do
 		} else if (expression instanceof OneOrMoreExpression) {
-			validateExpression(((OneOrMoreExpression) expression).getOperand());
+			validateExpression(((OneOrMoreExpression) expression).getOperand(), errorReporter);
 		} else if (expression instanceof OptionalExpression) {
-			validateExpression(((OptionalExpression) expression).getOperand());
+			validateExpression(((OptionalExpression) expression).getOperand(), errorReporter);
 		} else if (expression instanceof OrExpression) {
 			OrExpression orExpression = (OrExpression) expression;
-			validateExpression(orExpression.getLeftOperand());
-			validateExpression(orExpression.getRightOperand());
+			validateExpression(orExpression.getLeftOperand(), errorReporter);
+			validateExpression(orExpression.getRightOperand(), errorReporter);
 		} else if (expression instanceof SequenceExpression) {
 			SequenceExpression sequenceExpression = (SequenceExpression) expression;
-			validateExpression(sequenceExpression.getLeft());
-			validateExpression(sequenceExpression.getRight());
+			validateExpression(sequenceExpression.getLeft(), errorReporter);
+			validateExpression(sequenceExpression.getRight(), errorReporter);
 		} else if (expression instanceof SymbolReference) {
 			SymbolReference symbolReference = (SymbolReference) expression;
 			String symbolName = symbolReference.getSymbolName();
 			if (!knownSymbols.contains(symbolName) && !symbolName.equals(SpecialSymbols.ERROR_SYMBOL_NAME)) {
-				throw new IllegalStateException("unknown symbol used on the right-hand side of a production: " + symbolReference.getSymbolName());
+				errorReporter.reportError(expression, "unknown symbol");
 			}
 		} else if (expression instanceof ZeroOrMoreExpression) {
-			validateExpression(((ZeroOrMoreExpression) expression).getOperand());
+			validateExpression(((ZeroOrMoreExpression) expression).getOperand(), errorReporter);
 		} else {
 			throw new IllegalStateException("found unknown expression type: " + expression);
 		}

@@ -35,27 +35,23 @@ public final class GrammarValidator {
 	/**
 	 * This method may be called only once.
 	 */
-	public void validate() {
+	public void validate(ErrorReporter errorReporter) {
 
 		Set<String> terminalNames = new HashSet<>();
 		for (TerminalDeclaration terminalDeclaration : grammar.getTerminalDeclarations()) {
-			if (!terminalNames.add(terminalDeclaration.getName())) {
-				throw new IllegalStateException("redeclaration of terminal: " + terminalDeclaration.getName());
+			String name = terminalDeclaration.getName();
+			if (!terminalNames.add(name)) {
+				errorReporter.reportError(new ErrorLocation.TerminalDeclaration(terminalDeclaration), "redeclaration of terminal " + name);
 			}
 		}
 
 		Set<String> nonterminalNames = new HashSet<>();
 		for (Production production : grammar.getProductions()) {
-			if (!nonterminalNames.add(production.getLeftHandSide())) {
-				throw new IllegalStateException("redeclaration of nonterminal: " + production.getLeftHandSide());
-			}
-		}
-
-		{
-			Set<String> nameIntersection = new HashSet<>(terminalNames);
-			nameIntersection.retainAll(nonterminalNames);
-			if (!nameIntersection.isEmpty()) {
-				throw new IllegalStateException("redeclaration of terminals as nonterminals: " + nameIntersection);
+			String nonterminal = production.getLeftHandSide();
+			if (terminalNames.contains(nonterminal)) {
+				errorReporter.reportError(new ErrorLocation.ProductionLeftHandSide(production), "redeclaration of terminal " + nonterminal + " as nonterminal");
+			} else if (!nonterminalNames.add(nonterminal)) {
+				errorReporter.reportError(new ErrorLocation.ProductionLeftHandSide(production), "redeclaration of nonterminal " + nonterminal);
 			}
 		}
 
@@ -63,16 +59,15 @@ public final class GrammarValidator {
 		for (PrecedenceTable.Entry entry : grammar.getPrecedenceTable().getEntries()) {
 			for (String name : entry.getTerminalNames()) {
 				if (!terminalNames.contains(name)) {
-					throw new IllegalStateException("unknown terminal name in precedence table: " + name);
-				}
-				if (precedenceTableEntriesByName.put(name, entry) != null) {
-					throw new IllegalStateException("terminal appears twice in precedence table: " + name);
+					errorReporter.reportError(new ErrorLocation.PrecedenceTableEntry(entry), "unknown terminal name: " + name);
+				} else if (precedenceTableEntriesByName.put(name, entry) != null) {
+					errorReporter.reportError(new ErrorLocation.PrecedenceTableEntry(entry), "terminal appears twice in precedence table: " + name);
 				}
 			}
 		}
 
 		if (!nonterminalNames.contains(grammar.getStartNonterminalName())) {
-			throw new IllegalStateException("start symbol was not declared as a nonterminal: " + grammar.getStartNonterminalName());
+			errorReporter.reportError(new ErrorLocation.StartSymbol(), "start symbol was not declared as a nonterminal");
 		}
 
 		ProductionValidator productionValidator = productionValidatorFactory.createProductionValidator(
@@ -80,9 +75,9 @@ public final class GrammarValidator {
 			ImmutableSet.copyOf(nonterminalNames),
 			grammar.getStartNonterminalName());
 		for (Production production : grammar.getProductions()) {
-			productionValidator.validateProduction(production);
+			productionValidator.validateProduction(production, errorReporter);
 		}
-		productionValidator.finish();
+		productionValidator.finish(errorReporter);
 
 	}
 
