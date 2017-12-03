@@ -19,9 +19,6 @@ import org.junit.runner.RunWith;
 import java.util.List;
 import java.util.Map;
 
-/**
- * TODO tests are currently brokwn
- */
 @RunWith(DataProviderRunner.class)
 public class ProductionCanonicalizerTest {
 
@@ -181,9 +178,9 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/1"), new AlternativeAttributes("xyz", null, false, false))
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/optional"), new AlternativeAttributes("xyz", null, false, false))
 					),
-					"nt1/1", ImmutableList.of(
+					"nt1/optional", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("absent", TestUtil.expansion(), AlternativeAttributes.EMPTY),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("present", TestUtil.expansionWithNames("foo", "it"), AlternativeAttributes.EMPTY)
 					)
@@ -199,9 +196,9 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("foo", "nt1/1"), new AlternativeAttributes("xyz", null, false, false))
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("foo", "nt1/optional"), new AlternativeAttributes("xyz", null, false, false))
 					),
-					"nt1/1", ImmutableList.of(
+					"nt1/optional", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("absent", TestUtil.expansion(), AlternativeAttributes.EMPTY),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("present", TestUtil.expansionWithNames("bar", "it"), AlternativeAttributes.EMPTY)
 					)
@@ -217,12 +214,12 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/2"), new AlternativeAttributes("xyz", null, false, false))
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/optional"), new AlternativeAttributes("xyz", null, false, false))
 					),
 					"nt1/1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("a2", TestUtil.expansion("foo", "bar"), AlternativeAttributes.EMPTY)
 					),
-					"nt1/2", ImmutableList.of(
+					"nt1/optional", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("absent", TestUtil.expansion(), AlternativeAttributes.EMPTY),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("present", TestUtil.expansionWithNames("nt1/1", "it"), AlternativeAttributes.EMPTY)
 					)
@@ -242,13 +239,13 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/2"), new AlternativeAttributes("xyz", null, false, false))
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/optional"), new AlternativeAttributes("xyz", null, false, false))
 					),
 					"nt1/1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("a2", TestUtil.expansion("foo", "bar"), AlternativeAttributes.EMPTY),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("baz", "bazz"), AlternativeAttributes.EMPTY)
 					),
-					"nt1/2", ImmutableList.of(
+					"nt1/optional", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("absent", TestUtil.expansion(), AlternativeAttributes.EMPTY),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("present", TestUtil.expansionWithNames("nt1/1", "it"), AlternativeAttributes.EMPTY)
 					)
@@ -484,13 +481,13 @@ public class ProductionCanonicalizerTest {
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/1"), new AlternativeAttributes("xxx", null, false, false)),
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a2", TestUtil.expansion("nt1/2", "ddd"), new AlternativeAttributes("zzz", null, false, false))
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a2", TestUtil.expansion("nt1/optional", "ddd"), new AlternativeAttributes("zzz", null, false, false))
 					),
 					"nt1/1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("start", TestUtil.expansionWithNames("aaa", "element"), AlternativeAttributes.EMPTY),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/1", "previous", "aaa", "element"), AlternativeAttributes.EMPTY)
 					),
-					"nt1/2", ImmutableList.of(
+					"nt1/optional", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("absent", TestUtil.expansion(), AlternativeAttributes.EMPTY),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("present", TestUtil.expansionWithNames("ccc", "it"), AlternativeAttributes.EMPTY)
 					),
@@ -529,13 +526,13 @@ public class ProductionCanonicalizerTest {
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/1"), new AlternativeAttributes("xxx", null, false, false)),
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a2", TestUtil.expansion("nt1/2", "ddd"), new AlternativeAttributes("zzz", null, false, false))
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a2", TestUtil.expansion("nt1/optional", "ddd"), new AlternativeAttributes("zzz", null, false, false))
 					),
 					"nt1/1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("start", TestUtil.expansionWithNames("aaa", "element"), AlternativeAttributes.EMPTY),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/1", "previous", "aaa", "element"), AlternativeAttributes.EMPTY)
 					),
-					"nt1/2", ImmutableList.of(
+					"nt1/optional", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("absent", TestUtil.expansion(), AlternativeAttributes.EMPTY),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("present", TestUtil.expansionWithNames("ccc", "it"), AlternativeAttributes.EMPTY)
 					),

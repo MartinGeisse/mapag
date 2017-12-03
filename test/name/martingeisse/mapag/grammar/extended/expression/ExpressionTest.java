@@ -52,9 +52,9 @@ public class ExpressionTest {
 	@Test
 	public void testWithFallbackNameNull() {
 		Expression a = new EmptyExpression();
-		ExAssert.assertThrows(IllegalArgumentException.class, () -> a.withFallbackName(null));
+		Assert.assertNull(a.withFallbackName(null).getName());
 		Expression b = a.withName("foo");
-		ExAssert.assertThrows(IllegalArgumentException.class, () -> b.withFallbackName(null));
+		Assert.assertEquals("foo", b.withFallbackName(null).getName());
 	}
 
 	@Test

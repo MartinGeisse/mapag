@@ -23,8 +23,16 @@ public abstract class Expression {
 	 * Like withName(name), but if this expression already has a name then this method keeps it.
 	 */
 	public final Expression withFallbackName(String fallbackName) {
-		ParameterUtil.ensureNotNullOrEmpty(fallbackName, "fallbackName");
-		return (name == null ? withName(fallbackName) : this);
+		if (fallbackName != null && fallbackName.isEmpty()) {
+			throw new IllegalArgumentException("fallbackName cannot be empty");
+		}
+		if (name != null) {
+			return this;
+		}
+		if (fallbackName == null) {
+			return this;
+		}
+		return withName(fallbackName);
 	}
 
 	public String getName() {
