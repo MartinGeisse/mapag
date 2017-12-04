@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.codegen;
 
+import name.martingeisse.mapag.codegen.psi.PsiClassesGenerator;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.StateMachine;
 

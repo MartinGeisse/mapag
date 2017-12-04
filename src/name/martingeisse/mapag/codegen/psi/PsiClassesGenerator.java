@@ -1,6 +1,7 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.psi;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
@@ -86,7 +87,6 @@ public class PsiClassesGenerator {
 
 			case SEPARATED_ONE_OR_MORE:
 				throw new UnsupportedOperationException("TODO");
-				break;
 
 			case OPTIONAL_SEPARATED_ONE_OR_MORE:
 				throw new UnsupportedOperationException("TODO");
@@ -144,16 +144,6 @@ public class PsiClassesGenerator {
 		boolean isAbstract;
 		Alternative alternative;
 
-		String operandType;
-		boolean isRepetitionAbstract;
-		boolean isRepetitionBaseCase;
-		boolean isRepetitionNextCase;
-		boolean isZeroBasedRepetition;
-		boolean isOptionalAbstract;
-		boolean isOptionalAbsentCase;
-		boolean isOptionalPresentCase;
-		String optionalOperandGetterName;
-
 		void generate() throws ConfigurationException, IOException {
 
 			VelocityContext context = new VelocityContext();
@@ -161,15 +151,6 @@ public class PsiClassesGenerator {
 			context.put("className", className);
 			context.put("superclass", superclass);
 			context.put("classModifiers", isAbstract ? "abstract" : "final");
-			context.put("operandType", operandType);
-			context.put("isRepetitionAbstract", isRepetitionAbstract);
-			context.put("isRepetitionBaseCase", isRepetitionBaseCase);
-			context.put("isRepetitionNextCase", isRepetitionNextCase);
-			context.put("isZeroBasedRepetition", isZeroBasedRepetition);
-			context.put("isOptionalAbstract", isOptionalAbstract);
-			context.put("isOptionalAbsentCase", isOptionalAbsentCase);
-			context.put("isOptionalPresentCase", isOptionalPresentCase);
-			context.put("optionalOperandGetterName", optionalOperandGetterName);
 
 			List<NodeGetter> nodeGetters = new ArrayList<>();
 			if (alternative != null) {
@@ -179,7 +160,7 @@ public class PsiClassesGenerator {
 					if (expressionName != null) {
 						NodeGetter nodeGetter = new NodeGetter();
 						nodeGetter.childIndex = childIndex;
-						nodeGetter.nodeType = PsiGenerationUtil.getEffectiveTypeForSymbol(grammar, element.getSymbol());
+						nodeGetter.nodeType = TypeSelectionUtil.getEffectiveTypeForSymbol(grammar, element.getSymbol());
 						nodeGetter.getterName = "get" + StringUtils.capitalize(expressionName);
 						nodeGetters.add(nodeGetter);
 					}
@@ -317,7 +298,7 @@ public class PsiClassesGenerator {
 			if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
 				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
 				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
-				caseEntry.psiClass = PsiGenerationUtil.getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
+				caseEntry.psiClass = TypeSelectionUtil.getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
 				cases.add(caseEntry);
 
 				// TODO

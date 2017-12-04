@@ -1,5 +1,7 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.psi;
 
+import name.martingeisse.mapag.codegen.ConfigurationException;
+import name.martingeisse.mapag.codegen.IdentifierUtil;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
@@ -10,18 +12,18 @@ import java.io.IOException;
 /**
  * Utility methods to analyze the grammar structure with respect to PSI class generation.
  */
-class PsiGenerationUtil {
+final class GrammarAnalysisUtil {
 
 	// prevent instantiation
-	private PsiGenerationUtil() {
+	private GrammarAnalysisUtil() {
 	}
 
 	/**
 	 * Analyzes and validates the structure of the specified nonterminal to be a repetition, and returns the list elements' expansion element.
 	 */
-	private static ExpansionElement recognizeRepetitionStyledNonterminal(NonterminalDefinition nonterminalDefinition, boolean zeroBased, boolean hasSeparator) throws ConfigurationException, IOException {
-
-		// verify the nonterminal's structure and determine its element symbol and Java type
+	static ExpansionElement recognizeRepetitionStyledNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException {
+		boolean hasSeparator = (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.SEPARATED_ONE_OR_MORE);
+		boolean zeroBased = (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.ZERO_OR_MORE);
 		String nonterminalName = nonterminalDefinition.getName();
 		if (nonterminalDefinition.getAlternatives().size() != 2) {
 			throw new RuntimeException("repetition-styled nonterminal " + nonterminalName + " has " +
@@ -55,7 +57,7 @@ class PsiGenerationUtil {
 	/**
 	 * Analyzes and validates the structure of the specified nonterminal to be an optional, and returns the operand's expansion element.
 	 */
-	private static ExpansionElement recognizeOptionalStyledNonterminal(NonterminalDefinition nonterminalDefinition) {
+	static ExpansionElement recognizeOptionalStyledNonterminal(NonterminalDefinition nonterminalDefinition) {
 		String nonterminalName = nonterminalDefinition.getName();
 		if (nonterminalDefinition.getAlternatives().size() != 2) {
 			throw new RuntimeException("optional-styled nonterminal " + nonterminalName + " has " +
@@ -75,22 +77,5 @@ class PsiGenerationUtil {
 		return presentCaseAlternative.getExpansion().getElements().get(0);
 	}
 
-	public static String getEffectiveTypeForSymbol(Grammar grammar, String symbol) {
-		if (grammar.getTerminalDefinitions().get(symbol) != null) {
-			return "LeafPsiElement";
-		}
-		NonterminalDefinition nonterminalDefinition = grammar.getNonterminalDefinitions().get(symbol);
-		if (nonterminalDefinition == null) {
-			throw new RuntimeException("unknown symbol: " + symbol);
-		}
-		return getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
-	}
-
-	public static String getEffectiveTypeForSymbol(Grammar grammar, NonterminalDefinition nonterminalDefinition) {
-		if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
-			return "Optional<" + getEffectiveTypeForSymbol(grammar, recognizeOptionalStyledNonterminal(nonterminalDefinition).getSymbol()) + ">";
-		}
-		return IdentifierUtil.toIdentifier(nonterminalDefinition.getName(), true);
-	}
 
 }
