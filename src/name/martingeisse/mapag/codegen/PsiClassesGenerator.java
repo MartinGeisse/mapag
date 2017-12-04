@@ -83,6 +83,12 @@ public class PsiClassesGenerator {
 				handleRepetitionStyledNonterminal(nonterminalDefinition, false);
 				break;
 
+			case SEPARATED_ONE_OR_MORE:
+				throw new UnsupportedOperationException("TODO");
+
+			case OPTIONAL_SEPARATED_ONE_OR_MORE:
+				throw new UnsupportedOperationException("TODO");
+
 			default:
 				throw new RuntimeException("unknown PSI style: " + nonterminalDefinition.getPsiStyle());
 

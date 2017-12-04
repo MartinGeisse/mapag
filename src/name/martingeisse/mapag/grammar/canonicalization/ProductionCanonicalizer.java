@@ -188,6 +188,65 @@ public class ProductionCanonicalizer {
 			OneOrMoreExpression oneOrMoreExpression = (OneOrMoreExpression) expression;
 			return extractRepetition(oneOrMoreExpression, oneOrMoreExpression.getOperand(), false);
 
+		} else if (expression instanceof Repetition) {
+
+			// convert the element using the original name, then use that name as the basis for generating names
+			Repetition repetition = (Repetition)expression;
+			Expression namedElement = repetition.getElementExpression().withFallbackName(expression.getName());
+			Expression replacementElement = new SymbolReference(convertExpressionToSymbol(namedElement)).withName("element");
+			extendNameStart(namedElement);
+
+			// convert the separator, if any
+			Expression replacementSeparator;
+			if (repetition.getSeparatorExpression() == null) {
+				replacementSeparator = null;
+			} else {
+				replacementSeparator = new SymbolReference(convertExpressionToSymbol(repetition.getSeparatorExpression())).withName("separator");
+			}
+
+			// Convert the repetition, using _list for the name. We treat zero-or-more with separator as one-or-more
+			// with separator for now and handle it below.
+			NonterminalDefinition.PsiStyle repetitionPsiStyle;
+			String repetitionNonterminalNameSuggestion = "list";
+			if (replacementSeparator != null) {
+				repetitionPsiStyle = NonterminalDefinition.PsiStyle.SEPARATED_ONE_OR_MORE;
+				if (!repetition.isEmptyAllowed()) {
+					repetitionNonterminalNameSuggestion = "nonemptyList";
+				}
+			} else if (repetition.isEmptyAllowed()) {
+				repetitionPsiStyle = NonterminalDefinition.PsiStyle.ZERO_OR_MORE;
+			} else {
+				repetitionPsiStyle = NonterminalDefinition.PsiStyle.ONE_OR_MORE;
+			}
+			String repetitionNonterminal = createSyntheticNonterminal(repetitionNonterminalNameSuggestion, (repetitionSyntheticName, alternatives) -> {
+
+				// base case
+				boolean emptyBaseCase = repetition.isEmptyAllowed() && replacementSeparator == null;
+				alternatives.add(syntheticAlternative("start", emptyBaseCase ? new EmptyExpression() : replacementElement));
+
+				// repetition case
+				Expression repetitionDelta = replacementSeparator == null ? replacementElement : new SequenceExpression(replacementSeparator, replacementElement);
+				alternatives.add(syntheticAlternative("next",
+					new SequenceExpression(new SymbolReference(repetitionSyntheticName).withName("previous"), repetitionDelta))
+				);
+
+			}, repetitionPsiStyle);
+
+			// Now, if we have a zero-or-more repetition with separator, we must still handle the real base case
+			String resultingNonterminal;
+			if (repetition.isEmptyAllowed() && repetition.getSeparatorExpression() != null) {
+				resultingNonterminal = createSyntheticNonterminal("list", (syntheticName, alternatives) -> {
+					alternatives.add(syntheticAlternative("empty", new EmptyExpression()));
+					alternatives.add(syntheticAlternative("nonempty", new SymbolReference(repetitionNonterminal).withName("nonempty")));
+				}, NonterminalDefinition.PsiStyle.OPTIONAL_SEPARATED_ONE_OR_MORE);
+			} else {
+				resultingNonterminal = repetitionNonterminal;
+			}
+
+			// done -- reset naming
+			extendNameEnd(namedElement);
+			return resultingNonterminal;
+
 		} else {
 			throw new RuntimeException("unknown expression type: " + expression);
 		}
@@ -228,9 +287,17 @@ public class ProductionCanonicalizer {
 	 * prefix is already there.
 	 */
 	private void extendNameStart(Expression expression) {
-		if (expression.getName() != null) {
+		extendNameStart(expression.getName());
+	}
+
+	/**
+	 * Uses the specified name as the starting point for generating synthetic names, in addition to whatever
+	 * prefix is already there.
+	 */
+	private void extendNameStart(String name) {
+		if (name != null) {
 			syntheticNonterminalNameGenerator.save();
-			syntheticNonterminalNameGenerator.extend(expression.getName());
+			syntheticNonterminalNameGenerator.extend(name);
 		}
 	}
 
@@ -238,7 +305,14 @@ public class ProductionCanonicalizer {
 	 * Resets naming to the original behavior before calling extendNameStart().
 	 */
 	private void extendNameEnd(Expression expression) {
-		if (expression.getName() != null) {
+		extendNameEnd(expression.getName());
+	}
+
+	/**
+	 * Resets naming to the original behavior before calling extendNameStart().
+	 */
+	private void extendNameEnd(String name) {
+		if (name != null) {
 			syntheticNonterminalNameGenerator.restore();
 		}
 	}

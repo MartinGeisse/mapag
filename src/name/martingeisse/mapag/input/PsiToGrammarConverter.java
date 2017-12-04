@@ -251,6 +251,13 @@ public class PsiToGrammarConverter {
 			Expression operand = convertExpression(typedExpression.getOperand());
 			result = new OneOrMoreExpression(operand);
 
+		} else if (psiExpression instanceof Expression_SeparatedOneOrMore) {
+
+			Expression_SeparatedOneOrMore typedExpression = (Expression_SeparatedOneOrMore) psiExpression;
+			Expression elementExpression = convertExpression(typedExpression.getElement());
+			Expression separatorExpression = convertExpression(typedExpression.getSeparator());
+			result = new Repetition(elementExpression, separatorExpression, false);
+
 		} else if (psiExpression instanceof Expression_Sequence) {
 
 			Expression_Sequence typedExpression = (Expression_Sequence) psiExpression;
@@ -277,6 +284,13 @@ public class PsiToGrammarConverter {
 			Expression_ZeroOrMore typedExpression = (Expression_ZeroOrMore) psiExpression;
 			Expression operand = convertExpression(typedExpression.getOperand());
 			result = new ZeroOrMoreExpression(operand);
+
+		} else if (psiExpression instanceof Expression_SeparatedZeroOrMore) {
+
+			Expression_SeparatedZeroOrMore typedExpression = (Expression_SeparatedZeroOrMore) psiExpression;
+			Expression elementExpression = convertExpression(typedExpression.getElement());
+			Expression separatorExpression = convertExpression(typedExpression.getSeparator());
+			result = new Repetition(elementExpression, separatorExpression, true);
 
 		} else if (psiExpression instanceof Expression_Or) {
 

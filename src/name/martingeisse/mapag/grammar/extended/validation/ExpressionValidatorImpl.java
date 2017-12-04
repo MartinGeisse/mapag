@@ -42,6 +42,13 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 			}
 		} else if (expression instanceof ZeroOrMoreExpression) {
 			validateExpression(((ZeroOrMoreExpression) expression).getOperand(), errorReporter);
+		} else if (expression instanceof Repetition) {
+			// TODO test validation
+			Repetition repetition = (Repetition)expression;
+			validateExpression(repetition.getElementExpression(), errorReporter);
+			if (repetition.getSeparatorExpression() != null) {
+				validateExpression(repetition.getSeparatorExpression(), errorReporter);
+			}
 		} else {
 			throw new IllegalStateException("found unknown expression type: " + expression);
 		}
