@@ -270,11 +270,15 @@ public class $className implements PsiParser, LightPsiParser {
             builder.advanceLexer();
 	    } else if (what instanceof Object[]) {
 			Object[] reduction = (Object[]) what;
-			PsiBuilder.Marker marker = builder.mark();
+			if (reduction[0] != null) {
+				PsiBuilder.Marker marker = builder.mark();
+			}
 			for (int i = 1; i < reduction.length; i++) {
 				feedPsiBuilder(builder, reduction[i]);
 			}
-			marker.done((IElementType) reduction[0]);
+			if (reduction[0] != null) {
+				marker.done((IElementType) reduction[0]);
+			}
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
 			feedPsiBuilder(builder, ((List<?>)what).toArray());
