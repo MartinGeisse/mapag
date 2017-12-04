@@ -26,7 +26,7 @@ import java.util.List;
  * naming of the Parameter type of that utility method wouldn't be stable either. The cost of this is that the
  * author has to invent a new nonterminal for a dynamically named element if one doesn't exist yet, so that's
  * acceptable.
- *
+ * <p>
  * TODO PsiNameIdentifierOwner
  */
 public class PsiClassesGenerator {
@@ -38,7 +38,6 @@ public class PsiClassesGenerator {
 	public static final String SAFE_DELETABLE_CLASSES_PROPERTY = "psi.safeDeletableClasses";
 	public static final String PSI_UTIL_CLASS_PROPERTY = "psi.utilClass";
 
-	private final GrammarInfo grammarInfo;
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
@@ -47,7 +46,6 @@ public class PsiClassesGenerator {
 	private ImmutableList<String> safeDeletableClasses;
 
 	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
-		this.grammarInfo = grammarInfo;
 		this.grammar = grammarInfo.getGrammar();
 		this.configuration = configuration;
 		this.outputFileFactory = outputFileFactory;
@@ -62,7 +60,6 @@ public class PsiClassesGenerator {
 		}
 		generateOptionalClass();
 		generateListNodeClass();
-		generateFactoryClass();
 		generateInternalPsiUtilClass();
 	}
 
@@ -278,75 +275,6 @@ public class PsiClassesGenerator {
 			}
 		}
 
-	}
-
-	private void generateFactoryClass() throws ConfigurationException, IOException {
-
-		VelocityContext context = new VelocityContext();
-		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
-		if (!configuration.getRequired(SymbolHolderClassGenerator.PACKAGE_NAME_PROPERTY).equals(configuration.getRequired(PACKAGE_NAME_PROPERTY))) {
-			String symbolHolderPackage = configuration.getRequired(SymbolHolderClassGenerator.PACKAGE_NAME_PROPERTY);
-			String symbolHolderClass = configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY);
-			context.put("symbolHolderImport", "import " + symbolHolderPackage + '.' + symbolHolderClass + ';');
-		} else {
-			context.put("symbolHolderImport", "");
-		}
-		context.put("symbolHolder", configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY));
-
-		List<FactoryCaseEntry> cases = new ArrayList<>();
-		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
-			if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
-				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
-				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
-				caseEntry.psiClass = TypeSelectionUtil.getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
-				cases.add(caseEntry);
-
-				// TODO
-//			} else if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.ZERO_OR_MORE || nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.ONE_OR_MORE) {
-//				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
-//				String listElementSymbol = "...";
-//				String listElementType = getEffectiveTypeForSymbol(listElementSymbol);
-//				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
-//				caseEntry.psiClass = "ListNode<" + listElementType + ">";
-//				caseEntry.additionalConstructorArguments = "TokenSet., " + listElementType + ".class";
-//				cases.add(caseEntry);
-
-			} else {
-				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
-					FactoryCaseEntry caseEntry = new FactoryCaseEntry();
-					caseEntry.elementType = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
-					caseEntry.psiClass = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
-					cases.add(caseEntry);
-				}
-			}
-		}
-		context.put("cases", cases);
-
-		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "PsiFactory")) {
-			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("PsiFactory.vm").merge(context, outputStreamWriter);
-			}
-		}
-
-	}
-
-	public static class FactoryCaseEntry {
-
-		String elementType;
-		String psiClass;
-		String additionalConstructorArguments;
-
-		public String getElementType() {
-			return elementType;
-		}
-
-		public String getPsiClass() {
-			return psiClass;
-		}
-
-		public String getAdditionalConstructorArguments() {
-			return additionalConstructorArguments;
-		}
 	}
 
 	private void generateInternalPsiUtilClass() throws ConfigurationException, IOException {

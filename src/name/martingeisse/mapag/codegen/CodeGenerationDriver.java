@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.codegen;
 
 import name.martingeisse.mapag.codegen.psi.PsiClassesGenerator;
+import name.martingeisse.mapag.codegen.psi.PsiFactoryGenerator;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.StateMachine;
 
@@ -30,6 +31,7 @@ public class CodeGenerationDriver {
 		}
 		if (configuration.getRequired("psi.generate").equals("true")) {
 			new PsiClassesGenerator(grammarInfo, configuration, outputFileFactory).generate();
+			new PsiFactoryGenerator(grammarInfo, configuration, outputFileFactory).generate();
 		}
 	}
 
