@@ -1,12 +1,65 @@
 package name.martingeisse.mapag.ide;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.CodeDocumentationAwareCommenterEx;
 import com.intellij.lang.Commenter;
+import com.intellij.psi.JavaDocTokenType;
+import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
+import name.martingeisse.mapag.input.Symbols;
 import org.jetbrains.annotations.Nullable;
 
 /**
  *
  */
-public class MapagCommenter implements Commenter {
+public class MapagCommenter implements CodeDocumentationAwareCommenterEx {
+
+	@Override
+	public boolean isDocumentationCommentText(PsiElement element) {
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public IElementType getLineCommentTokenType() {
+		return Symbols.LINE_COMMENT;
+	}
+
+	@Nullable
+	@Override
+	public IElementType getBlockCommentTokenType() {
+		return Symbols.BLOCK_COMMENT;
+	}
+
+	@Nullable
+	@Override
+	public IElementType getDocumentationCommentTokenType() {
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public String getDocumentationCommentPrefix() {
+		return "/**";
+	}
+
+	@Nullable
+	@Override
+	public String getDocumentationCommentLinePrefix() {
+		return "*";
+	}
+
+	@Nullable
+	@Override
+	public String getDocumentationCommentSuffix() {
+		return "*/";
+	}
+
+	@Override
+	public boolean isDocumentationComment(PsiComment psiComment) {
+		return false;
+	}
 
 	@Nullable
 	@Override
