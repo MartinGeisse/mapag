@@ -84,7 +84,7 @@ public final class GrammarBuilder {
 	public Grammar build() {
 		List<NonterminalDefinition> nonterminalDefinitions = new ArrayList<>();
 		for (Map.Entry<String, List<Alternative>> entry : this.nonterminalDefinitions.entrySet()) {
-			nonterminalDefinitions.add(new NonterminalDefinition(entry.getKey(), ImmutableList.copyOf(entry.getValue()), NonterminalDefinition.PsiStyle.NORMAL));
+			nonterminalDefinitions.add(new NonterminalDefinition(entry.getKey(), ImmutableList.copyOf(entry.getValue()), PsiStyle.Normal.INSTANCE));
 		}
 		return new Grammar(terminalDefinitions, nonterminalDefinitions, startNonterminalName);
 	}

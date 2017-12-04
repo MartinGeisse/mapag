@@ -36,46 +36,4 @@ public final class NonterminalDefinition extends SymbolDefinition {
 		return getName() + " ::= " + StringUtils.join(alternatives, " | ") + " [PSI style: " + psiStyle + "]";
 	}
 
-	/**
-	 * TODO turn this into a class that holds the element and separator symbols directly. No need to drop that
-	 * information, then re-detect it through grammar analysis!
-	 */
-	public enum PsiStyle {
-
-		// all user-defined nonterminal
-		NORMAL(true, false),
-
-		// implicitly defined using the question-mark operator
-		OPTIONAL(false, false),
-
-		// non-separated zero-or-more repetition
-		ZERO_OR_MORE(true, true),
-
-		// non-separated one-or-more repetition
-		ONE_OR_MORE(true, true),
-
-		// separated one-or-more repetition
-		SEPARATED_ONE_OR_MORE(true, true),
-
-		// helper for separated zero-or-more; works as an OPTIONAL that encloses a SEPARATED_ONE_OR_MORE
-		OPTIONAL_SEPARATED_ONE_OR_MORE(true, false);
-
-		private final boolean distinctSymbolPerAlternative;
-		private final boolean usingListNodes;
-
-		PsiStyle(boolean distinctSymbolPerAlternative, boolean usingListNodes) {
-			this.distinctSymbolPerAlternative = distinctSymbolPerAlternative;
-			this.usingListNodes = usingListNodes;
-		}
-
-		public boolean isDistinctSymbolPerAlternative() {
-			return distinctSymbolPerAlternative;
-		}
-
-		public boolean isUsingListNodes() {
-			return usingListNodes;
-		}
-
-	}
-
 }

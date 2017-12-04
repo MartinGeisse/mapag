@@ -6,7 +6,7 @@ import name.martingeisse.mapag.grammar.ConflictResolution;
 import name.martingeisse.mapag.grammar.canonical.AlternativeAttributes;
 import name.martingeisse.mapag.grammar.canonical.Expansion;
 import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+import name.martingeisse.mapag.grammar.canonical.PsiStyle;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
 import name.martingeisse.mapag.grammar.extended.expression.*;
@@ -20,7 +20,7 @@ public class ProductionCanonicalizer {
 	private final List<Production> pendingProductions;
 	private final List<Production> nextPendingBatch;
 	private final Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
-	private final Map<String, NonterminalDefinition.PsiStyle> nonterminalPsiStyles;
+	private final Map<String, PsiStyle> nonterminalPsiStyles;
 	private final SyntheticNonterminalNameGenerator syntheticNonterminalNameGenerator;
 
 	public ProductionCanonicalizer(Collection<String> terminals, ImmutableList<Production> inputProductions) {
@@ -49,7 +49,7 @@ public class ProductionCanonicalizer {
 		return nonterminalAlternatives;
 	}
 
-	public Map<String, NonterminalDefinition.PsiStyle> getNonterminalPsiStyles() {
+	public Map<String, PsiStyle> getNonterminalPsiStyles() {
 		return nonterminalPsiStyles;
 	}
 
@@ -137,7 +137,7 @@ public class ProductionCanonicalizer {
 			// we must create a synthetic nonterminal with empty content
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				alternatives.add(syntheticAlternative(null, expression));
-			}, NonterminalDefinition.PsiStyle.NORMAL);
+			}, PsiStyle.Normal.INSTANCE);
 
 		} else if (expression instanceof SymbolReference) {
 
@@ -151,7 +151,7 @@ public class ProductionCanonicalizer {
 				for (Expression orOperand : getOrOperands(expression)) {
 					alternatives.add(syntheticAlternative(orOperand.getName(), orOperand));
 				}
-			}, NonterminalDefinition.PsiStyle.NORMAL);
+			}, PsiStyle.Normal.INSTANCE);
 
 		} else if (expression instanceof SequenceExpression) {
 
@@ -159,7 +159,7 @@ public class ProductionCanonicalizer {
 			// nonterminal -- otherwise we'd push it out to an infinite loop of new nonterminals.
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				alternatives.add(syntheticAlternative(null, expression.withName(null)));
-			}, NonterminalDefinition.PsiStyle.NORMAL);
+			}, PsiStyle.Normal.INSTANCE);
 
 		} else if (expression instanceof OptionalExpression) {
 
@@ -172,7 +172,7 @@ public class ProductionCanonicalizer {
 			String syntheticNonterminal = createSyntheticNonterminal("optional", (syntheticName, alternatives) -> {
 				alternatives.add(syntheticAlternative("absent", new EmptyExpression()));
 				alternatives.add(syntheticAlternative("present", replacementOperand));
-			}, NonterminalDefinition.PsiStyle.OPTIONAL);
+			}, new PsiStyle.Optional(operandSymbol));
 			extendNameEnd(namedOperand);
 			return syntheticNonterminal;
 
@@ -181,30 +181,28 @@ public class ProductionCanonicalizer {
 			// convert the element using the original name, then use that name as the basis for generating names
 			Repetition repetition = (Repetition)expression;
 			Expression namedElement = repetition.getElementExpression().withFallbackName(expression.getName());
-			Expression replacementElement = new SymbolReference(convertExpressionToSymbol(namedElement)).withName("element");
+			String elementSymbol = convertExpressionToSymbol(namedElement);
+			Expression replacementElement = new SymbolReference(elementSymbol).withName("element");
 			extendNameStart(namedElement);
 
 			// convert the separator, if any
+			String separatorSymbol;
 			Expression replacementSeparator;
 			if (repetition.getSeparatorExpression() == null) {
+				separatorSymbol = null;
 				replacementSeparator = null;
 			} else {
-				replacementSeparator = new SymbolReference(convertExpressionToSymbol(repetition.getSeparatorExpression())).withName("separator");
+				separatorSymbol = convertExpressionToSymbol(repetition.getSeparatorExpression());
+				replacementSeparator = new SymbolReference(separatorSymbol).withName("separator");
 			}
 
 			// Convert the repetition, using _list for the name. We treat zero-or-more with separator as one-or-more
 			// with separator for now and handle it below.
-			NonterminalDefinition.PsiStyle repetitionPsiStyle;
+			PsiStyle repetitionPsiStyle = new PsiStyle.Repetition(elementSymbol, separatorSymbol);
 			String repetitionNonterminalNameSuggestion = "list";
-			if (replacementSeparator != null) {
-				repetitionPsiStyle = NonterminalDefinition.PsiStyle.SEPARATED_ONE_OR_MORE;
-				if (!repetition.isEmptyAllowed()) {
-					repetitionNonterminalNameSuggestion = "nonemptyList";
-				}
-			} else if (repetition.isEmptyAllowed()) {
-				repetitionPsiStyle = NonterminalDefinition.PsiStyle.ZERO_OR_MORE;
-			} else {
-				repetitionPsiStyle = NonterminalDefinition.PsiStyle.ONE_OR_MORE;
+			if (repetition.isEmptyAllowed() && repetition.getSeparatorExpression() != null) {
+				repetitionPsiStyle = PsiStyle.Transparent.INSTANCE;
+				repetitionNonterminalNameSuggestion = "nonemptyList";
 			}
 			String repetitionNonterminal = createSyntheticNonterminal(repetitionNonterminalNameSuggestion, (repetitionSyntheticName, alternatives) -> {
 
@@ -226,7 +224,7 @@ public class ProductionCanonicalizer {
 				resultingNonterminal = createSyntheticNonterminal("list", (syntheticName, alternatives) -> {
 					alternatives.add(syntheticAlternative("empty", new EmptyExpression()));
 					alternatives.add(syntheticAlternative("nonempty", new SymbolReference(repetitionNonterminal).withName("nonempty")));
-				}, NonterminalDefinition.PsiStyle.OPTIONAL_SEPARATED_ONE_OR_MORE);
+				}, new PsiStyle.Repetition(elementSymbol, separatorSymbol));
 			} else {
 				resultingNonterminal = repetitionNonterminal;
 			}
@@ -296,7 +294,7 @@ public class ProductionCanonicalizer {
 	private String createSyntheticNonterminal(
 		Expression expression,
 		BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder,
-		NonterminalDefinition.PsiStyle psiStyle) {
+		PsiStyle psiStyle) {
 
 		return createSyntheticNonterminal(expression.getName(), alternativesAdder, psiStyle);
 	}
@@ -310,7 +308,7 @@ public class ProductionCanonicalizer {
 	private String createSyntheticNonterminal(
 		String suggestedName,
 		BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder,
-		NonterminalDefinition.PsiStyle psiStyle) {
+		PsiStyle psiStyle) {
 
 		String syntheticName = syntheticNonterminalNameGenerator.createSyntheticName(suggestedName);
 		List<name.martingeisse.mapag.grammar.extended.Alternative> alternatives = new ArrayList<>();

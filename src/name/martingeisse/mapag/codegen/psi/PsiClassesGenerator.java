@@ -2,10 +2,7 @@ package name.martingeisse.mapag.codegen.psi;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.*;
-import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
-import name.martingeisse.mapag.grammar.canonical.Grammar;
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.Comparators;
 import name.martingeisse.mapag.util.UserMessageException;
@@ -64,46 +61,16 @@ public class PsiClassesGenerator {
 	}
 
 	private void handleNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
-		switch (nonterminalDefinition.getPsiStyle()) {
-
-			case NORMAL:
-				handleNormalStyledNonterminal(nonterminalDefinition);
-				break;
-
-			case OPTIONAL:
-				// nothing to generate -- we use the generic "Optional" class instead
-				break;
-
-			case ZERO_OR_MORE:
-				// nothing to generate -- we use the generic "ListNode" class instead
-				break;
-
-			case ONE_OR_MORE:
-				// nothing to generate -- we use the generic "ListNode" class instead
-				break;
-
-			case SEPARATED_ONE_OR_MORE:
-				// nothing to generate -- we use the generic "ListNode" class instead
-				break;
-
-			case OPTIONAL_SEPARATED_ONE_OR_MORE:
-				throw new UnsupportedOperationException("TODO");
-
-			default:
-				throw new RuntimeException("unknown PSI style: " + nonterminalDefinition.getPsiStyle());
-
-		}
-	}
-
-	private void handleNormalStyledNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
-		if (nonterminalDefinition.getAlternatives().size() == 1) {
-			generateSingleAlternativeClass(nonterminalDefinition, nonterminalDefinition.getAlternatives().get(0));
-		} else {
-			generateMultiAlternativeBaseClass(nonterminalDefinition);
-			List<Alternative> sortedAlternatives = new ArrayList<>(nonterminalDefinition.getAlternatives());
-			sortedAlternatives.sort(Comparators.alternativeComparator);
-			for (Alternative alternative : sortedAlternatives) {
-				generateMultiAlternativeCaseClass(nonterminalDefinition, alternative);
+		if (nonterminalDefinition.getPsiStyle() instanceof PsiStyle.Normal) {
+			if (nonterminalDefinition.getAlternatives().size() == 1) {
+				generateSingleAlternativeClass(nonterminalDefinition, nonterminalDefinition.getAlternatives().get(0));
+			} else {
+				generateMultiAlternativeBaseClass(nonterminalDefinition);
+				List<Alternative> sortedAlternatives = new ArrayList<>(nonterminalDefinition.getAlternatives());
+				sortedAlternatives.sort(Comparators.alternativeComparator);
+				for (Alternative alternative : sortedAlternatives) {
+					generateMultiAlternativeCaseClass(nonterminalDefinition, alternative);
+				}
 			}
 		}
 	}
