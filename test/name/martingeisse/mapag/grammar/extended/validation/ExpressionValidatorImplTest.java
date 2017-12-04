@@ -41,10 +41,22 @@ public class ExpressionValidatorImplTest {
 				new OptionalExpression(new SymbolReference("abc")),
 			},
 			{
-				new ZeroOrMoreExpression(new SymbolReference("abc")),
+				new Repetition(new SymbolReference("abc"), null, false),
 			},
 			{
-				new OneOrMoreExpression(new SymbolReference("abc")),
+				new Repetition(new SymbolReference("abc"), null, true),
+			},
+			{
+				new Repetition(new SymbolReference("abc"), new SymbolReference("foo"), false),
+			},
+			{
+				new Repetition(new SymbolReference("abc"), new SymbolReference("foo"), true),
+			},
+			{
+				new Repetition(new SymbolReference("foo"), new SymbolReference("abc"), false),
+			},
+			{
+				new Repetition(new SymbolReference("foo"), new SymbolReference("abc"), true),
 			},
 			{
 				new OrExpression(new SymbolReference("abc"), new SymbolReference("foo")),
@@ -77,10 +89,16 @@ public class ExpressionValidatorImplTest {
 				new OptionalExpression(new SymbolReference("foo")),
 			},
 			{
-				new ZeroOrMoreExpression(new SymbolReference("foo")),
+				new Repetition(new SymbolReference("foo"), null, false),
 			},
 			{
-				new OneOrMoreExpression(new SymbolReference("foo")),
+				new Repetition(new SymbolReference("foo"), null, true),
+			},
+			{
+				new Repetition(new SymbolReference("foo"), new SymbolReference("bar"), false),
+			},
+			{
+				new Repetition(new SymbolReference("foo"), new SymbolReference("bar"), true),
 			},
 			{
 				new OrExpression(new SymbolReference("foo"), new SymbolReference("bar")),

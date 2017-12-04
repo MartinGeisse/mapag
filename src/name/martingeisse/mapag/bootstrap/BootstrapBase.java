@@ -54,12 +54,12 @@ public class BootstrapBase {
 		return new OptionalExpression(sequence(expressions));
 	}
 
-	public static ZeroOrMoreExpression zeroOrMore(Expression... expressions) {
-		return new ZeroOrMoreExpression(sequence(expressions));
+	public static Repetition zeroOrMore(Expression... expressions) {
+		return new Repetition(sequence(expressions), null, true);
 	}
 
-	public static OneOrMoreExpression oneOrMore(Expression... expressions) {
-		return new OneOrMoreExpression(sequence(expressions));
+	public static Repetition oneOrMore(Expression... expressions) {
+		return new Repetition(sequence(expressions), null, false);
 	}
 
 	public static Alternative alternative(String name, Expression expression) {

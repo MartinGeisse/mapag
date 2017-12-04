@@ -39,4 +39,13 @@ public final class Repetition extends Expression {
 		return new Repetition(name, elementExpression, separatorExpression, emptyAllowed);
 	}
 
+	@Override
+	public String toString() {
+		if (separatorExpression == null) {
+			return "(" + elementExpression + (isEmptyAllowed() ? ")*" : ")+");
+		} else {
+			return "(" + elementExpression + ", " + separatorExpression + (isEmptyAllowed() ? ")*" : ")+");
+		}
+	}
+
 }

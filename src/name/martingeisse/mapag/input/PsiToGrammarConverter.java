@@ -249,7 +249,7 @@ public class PsiToGrammarConverter {
 
 			Expression_OneOrMore typedExpression = (Expression_OneOrMore) psiExpression;
 			Expression operand = convertExpression(typedExpression.getOperand());
-			result = new OneOrMoreExpression(operand);
+			result = new Repetition(operand, null, false);
 
 		} else if (psiExpression instanceof Expression_SeparatedOneOrMore) {
 
@@ -283,7 +283,7 @@ public class PsiToGrammarConverter {
 
 			Expression_ZeroOrMore typedExpression = (Expression_ZeroOrMore) psiExpression;
 			Expression operand = convertExpression(typedExpression.getOperand());
-			result = new ZeroOrMoreExpression(operand);
+			result = new Repetition(operand, null, true);
 
 		} else if (psiExpression instanceof Expression_SeparatedZeroOrMore) {
 

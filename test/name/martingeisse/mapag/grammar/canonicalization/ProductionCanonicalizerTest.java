@@ -263,7 +263,7 @@ public class ProductionCanonicalizerTest {
 							new SequenceExpression(
 								new SequenceExpression(
 									new SymbolReference("foo"),
-									new ZeroOrMoreExpression(new SymbolReference("bar"))
+									new Repetition(new SymbolReference("bar"), null, true)
 								),
 								new SymbolReference("baz")
 							), "xyz", null, false, false
@@ -272,11 +272,11 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("foo", "nt1/1", "baz"), new AlternativeAttributes("xyz", null, false, false))
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("foo", "nt1/list", "baz"), new AlternativeAttributes("xyz", null, false, false))
 					),
-					"nt1/1", ImmutableList.of(
+					"nt1/list", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("start", TestUtil.expansion(), AlternativeAttributes.EMPTY),
-						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/1", "previous", "bar", "element"), AlternativeAttributes.EMPTY)
+						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/list", "previous", "bar", "element"), AlternativeAttributes.EMPTY)
 					)
 				)
 			},
@@ -287,11 +287,11 @@ public class ProductionCanonicalizerTest {
 							new SequenceExpression(
 								new SequenceExpression(
 									new SymbolReference("aaa"),
-									new ZeroOrMoreExpression(
+									new Repetition(
 										new SequenceExpression(
 											new SymbolReference("bbb"),
 											new SymbolReference("ccc")
-										)
+										), null, true
 									)
 								),
 								new SymbolReference("ddd")
@@ -301,14 +301,14 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("aaa", "nt1/2", "ddd"), new AlternativeAttributes("xyz", null, false, false))
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("aaa", "nt1/list", "ddd"), new AlternativeAttributes("xyz", null, false, false))
 					),
 					"nt1/1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("bbb", "ccc"), AlternativeAttributes.EMPTY)
 					),
-					"nt1/2", ImmutableList.of(
+					"nt1/list", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("start", TestUtil.expansion(), AlternativeAttributes.EMPTY),
-						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/2", "previous", "nt1/1", "element"), AlternativeAttributes.EMPTY)
+						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/list", "previous", "nt1/1", "element"), AlternativeAttributes.EMPTY)
 					)
 				)
 			},
@@ -324,7 +324,7 @@ public class ProductionCanonicalizerTest {
 							new SequenceExpression(
 								new SequenceExpression(
 									new SymbolReference("foo"),
-									new OneOrMoreExpression(new SymbolReference("bar"))
+									new Repetition(new SymbolReference("bar"), null, false)
 								),
 								new SymbolReference("baz")
 							), "xyz", null, false, false
@@ -333,11 +333,11 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("foo", "nt1/1", "baz"), new AlternativeAttributes("xyz", null, false, false))
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("foo", "nt1/list", "baz"), new AlternativeAttributes("xyz", null, false, false))
 					),
-					"nt1/1", ImmutableList.of(
+					"nt1/list", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("start", TestUtil.expansionWithNames("bar", "element"), AlternativeAttributes.EMPTY),
-						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/1", "previous", "bar", "element"), AlternativeAttributes.EMPTY)
+						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/list", "previous", "bar", "element"), AlternativeAttributes.EMPTY)
 					)
 				)
 			},
@@ -348,11 +348,11 @@ public class ProductionCanonicalizerTest {
 							new SequenceExpression(
 								new SequenceExpression(
 									new SymbolReference("aaa"),
-									new OneOrMoreExpression(
+									new Repetition(
 										new SequenceExpression(
 											new SymbolReference("bbb"),
 											new SymbolReference("ccc")
-										)
+										), null, false
 									)
 								),
 								new SymbolReference("ddd")
@@ -362,14 +362,14 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("aaa", "nt1/2", "ddd"), new AlternativeAttributes("xyz", null, false, false))
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("aaa", "nt1/list", "ddd"), new AlternativeAttributes("xyz", null, false, false))
 					),
 					"nt1/1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("bbb", "ccc"), AlternativeAttributes.EMPTY)
 					),
-					"nt1/2", ImmutableList.of(
+					"nt1/list", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("start", TestUtil.expansionWithNames("nt1/1", "element"), AlternativeAttributes.EMPTY),
-						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/2", "previous", "nt1/1", "element"), AlternativeAttributes.EMPTY)
+						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/list", "previous", "nt1/1", "element"), AlternativeAttributes.EMPTY)
 					)
 				)
 			},
@@ -462,7 +462,7 @@ public class ProductionCanonicalizerTest {
 				ImmutableList.of(
 					new Production("nt1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.extended.Alternative(null,
-							new OneOrMoreExpression(new SymbolReference("aaa")), "xxx", null, false, false
+							new Repetition(new SymbolReference("aaa"), null, false), "xxx", null, false, false
 						),
 						new name.martingeisse.mapag.grammar.extended.Alternative(null,
 							new SequenceExpression(
@@ -480,12 +480,12 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/1"), new AlternativeAttributes("xxx", null, false, false)),
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/list"), new AlternativeAttributes("xxx", null, false, false)),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("a2", TestUtil.expansion("nt1/optional", "ddd"), new AlternativeAttributes("zzz", null, false, false))
 					),
-					"nt1/1", ImmutableList.of(
+					"nt1/list", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("start", TestUtil.expansionWithNames("aaa", "element"), AlternativeAttributes.EMPTY),
-						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/1", "previous", "aaa", "element"), AlternativeAttributes.EMPTY)
+						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/list", "previous", "aaa", "element"), AlternativeAttributes.EMPTY)
 					),
 					"nt1/optional", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("absent", TestUtil.expansion(), AlternativeAttributes.EMPTY),
@@ -505,7 +505,7 @@ public class ProductionCanonicalizerTest {
 				ImmutableList.of(
 					new Production("nt1", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.extended.Alternative(null,
-							new OneOrMoreExpression(new SymbolReference("aaa")), "xxx", null, false, false
+							new Repetition(new SymbolReference("aaa"), null, false), "xxx", null, false, false
 						)
 					)),
 					new Production("nt2", ImmutableList.of(
@@ -525,12 +525,12 @@ public class ProductionCanonicalizerTest {
 				),
 				ImmutableMap.of(
 					"nt1", ImmutableList.of(
-						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/1"), new AlternativeAttributes("xxx", null, false, false)),
+						new name.martingeisse.mapag.grammar.canonical.Alternative("a1", TestUtil.expansion("nt1/list"), new AlternativeAttributes("xxx", null, false, false)),
 						new name.martingeisse.mapag.grammar.canonical.Alternative("a2", TestUtil.expansion("nt1/optional", "ddd"), new AlternativeAttributes("zzz", null, false, false))
 					),
-					"nt1/1", ImmutableList.of(
+					"nt1/list", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("start", TestUtil.expansionWithNames("aaa", "element"), AlternativeAttributes.EMPTY),
-						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/1", "previous", "aaa", "element"), AlternativeAttributes.EMPTY)
+						new name.martingeisse.mapag.grammar.canonical.Alternative("next", TestUtil.expansionWithNames("nt1/list", "previous", "aaa", "element"), AlternativeAttributes.EMPTY)
 					),
 					"nt1/optional", ImmutableList.of(
 						new name.martingeisse.mapag.grammar.canonical.Alternative("absent", TestUtil.expansion(), AlternativeAttributes.EMPTY),

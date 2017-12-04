@@ -176,18 +176,6 @@ public class ProductionCanonicalizer {
 			extendNameEnd(namedOperand);
 			return syntheticNonterminal;
 
-		} else if (expression instanceof ZeroOrMoreExpression) {
-
-			// a repetition gets extracted into a two-alternative nonterminal
-			ZeroOrMoreExpression zeroOrMoreExpression = (ZeroOrMoreExpression) expression;
-			return extractRepetition(zeroOrMoreExpression, zeroOrMoreExpression.getOperand(), true);
-
-		} else if (expression instanceof OneOrMoreExpression) {
-
-			// a repetition gets extracted into a two-alternative nonterminal
-			OneOrMoreExpression oneOrMoreExpression = (OneOrMoreExpression) expression;
-			return extractRepetition(oneOrMoreExpression, oneOrMoreExpression.getOperand(), false);
-
 		} else if (expression instanceof Repetition) {
 
 			// convert the element using the original name, then use that name as the basis for generating names
@@ -250,24 +238,6 @@ public class ProductionCanonicalizer {
 		} else {
 			throw new RuntimeException("unknown expression type: " + expression);
 		}
-	}
-
-	// common handling for ZeroOrMoreExpression and OneOrMoreExpression
-	private String extractRepetition(Expression repetition, Expression operand, boolean zeroAllowed) {
-		extendNameStart(repetition);
-		String operandSymbol = convertExpressionToSymbol(operand);
-		extendNameEnd(repetition);
-		Expression replacementOperand = new SymbolReference(operandSymbol).withName(operand.getName()).withFallbackName("element");
-		NonterminalDefinition.PsiStyle psiStyle = (zeroAllowed ? NonterminalDefinition.PsiStyle.ZERO_OR_MORE : NonterminalDefinition.PsiStyle.ONE_OR_MORE);
-		return createSyntheticNonterminal(repetition, (repetitionSyntheticName, alternatives) -> {
-			alternatives.add(syntheticAlternative("start",
-				zeroAllowed ? new EmptyExpression() : replacementOperand));
-			alternatives.add(syntheticAlternative("next",
-				new SequenceExpression(
-					new SymbolReference(repetitionSyntheticName).withName("previous"),
-					replacementOperand
-				)));
-		}, psiStyle);
 	}
 
 	// flattens a top-level OrExpression tree (if any) into a list of OR operands

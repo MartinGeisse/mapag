@@ -11,7 +11,6 @@ import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
-import name.martingeisse.mapag.grammar.extended.expression.ZeroOrMoreExpression;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 
@@ -62,7 +61,7 @@ public class CalculatorParserGenerationMain extends BootstrapBase {
 
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("calculation", ImmutableList.of(
-				alternative(null, new ZeroOrMoreExpression(symbol("statement")).withName("statements"))
+				alternative(null, zeroOrMore(symbol("statement")).withName("statements"))
 			)),
 			new Production("statement", ImmutableList.of(
 				alternative("expression", sequence(symbol("expression").withName("expression"), symbol("SEMICOLON"))),

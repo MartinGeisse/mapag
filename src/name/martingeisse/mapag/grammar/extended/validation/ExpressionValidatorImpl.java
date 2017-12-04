@@ -22,8 +22,6 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 		}
 		if (expression instanceof EmptyExpression) {
 			// OK, nothing to do
-		} else if (expression instanceof OneOrMoreExpression) {
-			validateExpression(((OneOrMoreExpression) expression).getOperand(), errorReporter);
 		} else if (expression instanceof OptionalExpression) {
 			validateExpression(((OptionalExpression) expression).getOperand(), errorReporter);
 		} else if (expression instanceof OrExpression) {
@@ -40,8 +38,6 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 			if (!knownSymbols.contains(symbolName) && !symbolName.equals(SpecialSymbols.ERROR_SYMBOL_NAME)) {
 				errorReporter.reportError(expression, "unknown symbol");
 			}
-		} else if (expression instanceof ZeroOrMoreExpression) {
-			validateExpression(((ZeroOrMoreExpression) expression).getOperand(), errorReporter);
 		} else if (expression instanceof Repetition) {
 			// TODO test validation
 			Repetition repetition = (Repetition)expression;
