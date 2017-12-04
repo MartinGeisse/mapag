@@ -123,16 +123,20 @@ public class ParserClassGenerator {
 			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
 				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
 					int alternativeIndex = stateMachineEncoder.getAlternativeIndex(nonterminalDefinition.getName(), alternative);
-					String symbolVariable;
+					String parseNodeHead;
 					String symbolHolderPrefix = configuration.getRequired(SYMBOL_HOLDER_PACKAGE_NAME_PROPERTY) + '.' + configuration.getRequired(SYMBOL_HOLDER_CLASS_NAME_PROPERTY);
-					if (nonterminalDefinition.getPsiStyle().isDistinctSymbolPerAlternative()) {
-						symbolVariable = symbolHolderPrefix + '.' + IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
+
+					if (nonterminalDefinition.getPsiStyle().isUsingListNodes()) {
+						String symbol = symbolHolderPrefix + '.' + IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
+						parseNodeHead = "new ListNodeGenerationWrapper(" + symbol + ")";
+					} else if (nonterminalDefinition.getPsiStyle().isDistinctSymbolPerAlternative()) {
+						parseNodeHead = symbolHolderPrefix + '.' + IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
 					} else {
-						symbolVariable = symbolHolderPrefix + '.' + IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
+						parseNodeHead = symbolHolderPrefix + '.' + IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
 					}
 					alternativeEntries[alternativeIndex] = new AlternativeEntry(
 						alternative.getExpansion().getElements().size(),
-						symbolVariable,
+						parseNodeHead,
 						stateMachineEncoder.getSymbolIndex(nonterminalDefinition.getName())
 					);
 				}

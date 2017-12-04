@@ -197,7 +197,7 @@ public class $className implements PsiParser, LightPsiParser {
 			// either the Lexer returned an explicit EOF (which it shouldn't) or this is a bug in the parser generator
 			throw new RuntimeException("unexpected stack size after accepting start symbol");
 		}
-		feedPsiBuilder(psiBuilder, parseTreeStack[0]);
+		feedPsiBuilder(psiBuilder, parseTreeStack[0], null);
 
 		// Before we consider the file parsed, we must advance the lexer once more so it consumes end-of-file
 		// whitespace and comments as part of the root AST node.
@@ -265,23 +265,35 @@ public class $className implements PsiParser, LightPsiParser {
 
 	}
 
-	private void feedPsiBuilder(PsiBuilder builder, Object what) {
+	private void feedPsiBuilder(PsiBuilder builder, Object what, IElementType parentElementType) {
 	    if (what == null) {
             builder.advanceLexer();
 	    } else if (what instanceof Object[]) {
 			Object[] reduction = (Object[]) what;
-			if (reduction[0] != null) {
+			IElementType elementType;
+			if (reduction[0] == null) {
+				elementType = null;
+			} else if (reduction[0] instanceof ListNodeGenerationWrapper) {
+				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
+				elementType = listNodeGenerationWrapper.elementType;
+				if (elementType == parentElementType) {
+					elementType = null;
+				}
+			} else {
+				elementType = (IElementType)reduction[0];
+			}
+			if (elementType != null) {
 				PsiBuilder.Marker marker = builder.mark();
 			}
 			for (int i = 1; i < reduction.length; i++) {
 				feedPsiBuilder(builder, reduction[i]);
 			}
-			if (reduction[0] != null) {
-				marker.done((IElementType) reduction[0]);
+			if (elementType != null) {
+				marker.done(elementType);
 			}
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
-			feedPsiBuilder(builder, ((List<?>)what).toArray());
+			feedPsiBuilder(builder, ((List<?>)what).toArray(), parentElementType);
 		} else if (what instanceof ErrorLocationIndicator) {
 		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
 			builder.error("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
@@ -407,5 +419,15 @@ public class $className implements PsiParser, LightPsiParser {
     private static class ErrorLocationIndicator {
         int state;
     }
+
+	private static class ListNodeGenerationWrapper {
+
+		IElementType elementType;
+
+		ListNodeGenerationWrapper(IElementType elementType) {
+			this.elementType = elementType;
+		}
+
+	}
 
 }
