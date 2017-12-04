@@ -60,6 +60,7 @@ public class PsiClassesGenerator {
 			handleNonterminal(nonterminalDefinition);
 		}
 		generateOptionalClass();
+		generateListNodeClass();
 		generateFactoryClass();
 		generateInternalPsiUtilClass();
 	}
@@ -76,15 +77,15 @@ public class PsiClassesGenerator {
 				break;
 
 			case ZERO_OR_MORE:
-				handleRepetitionStyledNonterminal(nonterminalDefinition, true, false);
+				// nothing to generate -- we use the generic "ListNode" class instead
 				break;
 
 			case ONE_OR_MORE:
-				handleRepetitionStyledNonterminal(nonterminalDefinition, false, false);
+				// nothing to generate -- we use the generic "ListNode" class instead
 				break;
 
 			case SEPARATED_ONE_OR_MORE:
-				handleRepetitionStyledNonterminal(nonterminalDefinition, false, true);
+				throw new UnsupportedOperationException("TODO");
 				break;
 
 			case OPTIONAL_SEPARATED_ONE_OR_MORE:
@@ -136,113 +137,6 @@ public class PsiClassesGenerator {
 		classGenerator.generate();
 	}
 
-	private void handleRepetitionStyledNonterminal(NonterminalDefinition nonterminalDefinition, boolean zeroBased, boolean hasSeparator) throws ConfigurationException, IOException {
-
-		// verify the nonterminal's structure and determine its element symbol and Java type
-		String nonterminalName = nonterminalDefinition.getName();
-		if (nonterminalDefinition.getAlternatives().size() != 2) {
-			throw new RuntimeException("repetition-styled nonterminal " + nonterminalName + " has " +
-				nonterminalDefinition.getAlternatives().size() + " alternatives, expected 2");
-		}
-		int repetitionCaseLength = (hasSeparator ? 3 : 2);
-		Alternative baseCaseAlternative, repetitionCaseAlternative;
-		if (nonterminalDefinition.getAlternatives().get(0).getExpansion().getElements().size() == repetitionCaseLength) {
-			repetitionCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
-			baseCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
-		} else if (nonterminalDefinition.getAlternatives().get(1).getExpansion().getElements().size() == repetitionCaseLength) {
-			baseCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
-			repetitionCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
-		} else {
-			throw new RuntimeException("could not find alternative with expansion length " + repetitionCaseLength + " as repetition case for repetition-styled nonterminal " + nonterminalName);
-		}
-		if (baseCaseAlternative.getExpansion().getElements().size() != (zeroBased ? 0 : 1)) {
-			throw new RuntimeException("could not recognize base case for repetition-styled nonterminal " + nonterminalName);
-		}
-		if (!repetitionCaseAlternative.getExpansion().getElements().get(0).getSymbol().equals(nonterminalName)) {
-			throw new RuntimeException("could not find left-recursion for repetition-styled nonterminal " + nonterminalName);
-		}
-		String elementSymbol = repetitionCaseAlternative.getExpansion().getElements().get(hasSeparator ? 2 : 1).getSymbol();
-		if (!zeroBased && !baseCaseAlternative.getExpansion().getElements().get(0).getSymbol().equals(elementSymbol)) {
-			throw new RuntimeException("base-case uses different element symbol than repetition case for nonterminal " + elementSymbol);
-		}
-		String operandType = getEffectiveTypeForSymbol(elementSymbol);
-
-		// generate abstract class
-		{
-			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
-			classGenerator.superclass = "ASTWrapperPsiElement";
-			classGenerator.isAbstract = true;
-			classGenerator.alternative = null;
-			classGenerator.isRepetitionAbstract = true;
-			classGenerator.operandType = operandType;
-			classGenerator.isZeroBasedRepetition = zeroBased;
-			classGenerator.generate();
-		}
-
-		// generate base case class
-		{
-			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, baseCaseAlternative);
-			classGenerator.superclass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
-			classGenerator.isAbstract = false;
-			classGenerator.alternative = baseCaseAlternative;
-			classGenerator.isRepetitionBaseCase = true;
-			classGenerator.operandType = operandType;
-			classGenerator.isZeroBasedRepetition = zeroBased;
-			classGenerator.generate();
-		}
-
-		// generate repetition case class
-		{
-			PsiClassGenerator classGenerator = new PsiClassGenerator();
-			classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, repetitionCaseAlternative);
-			classGenerator.superclass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
-			classGenerator.isAbstract = false;
-			classGenerator.alternative = repetitionCaseAlternative;
-			classGenerator.isRepetitionNextCase = true;
-			classGenerator.operandType = operandType;
-			classGenerator.isZeroBasedRepetition = zeroBased;
-			classGenerator.generate();
-		}
-
-	}
-
-	// analyzes and validates the structure of the specified nonterminal to be an optional, and returns the operand's expansion element
-	private ExpansionElement recognizeOptionalStyledNonterminal(NonterminalDefinition nonterminalDefinition) {
-		String nonterminalName = nonterminalDefinition.getName();
-		if (nonterminalDefinition.getAlternatives().size() != 2) {
-			throw new RuntimeException("optional-styled nonterminal " + nonterminalName + " has " +
-				nonterminalDefinition.getAlternatives().size() + " alternatives, expected 2");
-		}
-		Alternative presentCaseAlternative;
-		if (nonterminalDefinition.getAlternatives().get(0).getExpansion().getElements().size() == 0) {
-			presentCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
-		} else if (nonterminalDefinition.getAlternatives().get(1).getExpansion().getElements().size() == 0) {
-			presentCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
-		} else {
-			throw new RuntimeException("could not find alternative with expansion length 0 as absent case for optional-styled nonterminal " + nonterminalName);
-		}
-		if (presentCaseAlternative.getExpansion().getElements().size() != 1) {
-			throw new RuntimeException("could not recognize present case for optional-styled nonterminal " + nonterminalName);
-		}
-		return presentCaseAlternative.getExpansion().getElements().get(0);
-	}
-
-	public String getEffectiveTypeForSymbol(String symbol) {
-		if (grammar.getTerminalDefinitions().get(symbol) != null) {
-			return "LeafPsiElement";
-		}
-		NonterminalDefinition nonterminalDefinition = grammar.getNonterminalDefinitions().get(symbol);
-		if (nonterminalDefinition == null) {
-			throw new RuntimeException("unknown symbol: " + symbol);
-		}
-		if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
-			return "Optional<" + getEffectiveTypeForSymbol(recognizeOptionalStyledNonterminal(nonterminalDefinition).getSymbol()) + ">";
-		}
-		return IdentifierUtil.toIdentifier(symbol, true);
-	}
-
 	private class PsiClassGenerator {
 
 		String className;
@@ -285,7 +179,7 @@ public class PsiClassesGenerator {
 					if (expressionName != null) {
 						NodeGetter nodeGetter = new NodeGetter();
 						nodeGetter.childIndex = childIndex;
-						nodeGetter.nodeType = getEffectiveTypeForSymbol(element.getSymbol());
+						nodeGetter.nodeType = PsiGenerationUtil.getEffectiveTypeForSymbol(grammar, element.getSymbol());
 						nodeGetter.getterName = "get" + StringUtils.capitalize(expressionName);
 						nodeGetters.add(nodeGetter);
 					}
@@ -392,6 +286,19 @@ public class PsiClassesGenerator {
 
 	}
 
+	private void generateListNodeClass() throws ConfigurationException, IOException {
+
+		VelocityContext context = new VelocityContext();
+		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+
+		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "ListNode")) {
+			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+				MapagVelocityEngine.engine.getTemplate("ListNode.vm").merge(context, outputStreamWriter);
+			}
+		}
+
+	}
+
 	private void generateFactoryClass() throws ConfigurationException, IOException {
 
 		VelocityContext context = new VelocityContext();
@@ -410,7 +317,7 @@ public class PsiClassesGenerator {
 			if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
 				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
 				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
-				caseEntry.psiClass = "Optional<" + getEffectiveTypeForSymbol(recognizeOptionalStyledNonterminal(nonterminalDefinition).getSymbol()) + ">";
+				caseEntry.psiClass = PsiGenerationUtil.getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
 				cases.add(caseEntry);
 
 				// TODO
