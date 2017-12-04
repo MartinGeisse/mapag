@@ -83,7 +83,8 @@ public class PsiClassesGenerator {
 				break;
 
 			case SEPARATED_ONE_OR_MORE:
-				throw new UnsupportedOperationException("TODO");
+				// nothing to generate -- we use the generic "ListNode" class instead
+				break;
 
 			case OPTIONAL_SEPARATED_ONE_OR_MORE:
 				throw new UnsupportedOperationException("TODO");
