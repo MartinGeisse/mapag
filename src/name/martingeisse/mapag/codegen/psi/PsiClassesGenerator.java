@@ -58,9 +58,9 @@ public class PsiClassesGenerator {
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			handleNonterminal(nonterminalDefinition);
 		}
-		generateOptionalClass();
-		generateListNodeClass();
-		generateInternalPsiUtilClass();
+		generateVerbatimClass("Optional");
+		generateVerbatimClass("ListNode");
+		generateVerbatimClass("InternalPsiUtil");
 	}
 
 	private void handleNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
@@ -251,43 +251,18 @@ public class PsiClassesGenerator {
 
 	}
 
-	private void generateOptionalClass() throws ConfigurationException, IOException {
-
-		VelocityContext context = new VelocityContext();
-		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
-
-		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "Optional")) {
-			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("Optional.vm").merge(context, outputStreamWriter);
-			}
-		}
-
-	}
-
-	private void generateListNodeClass() throws ConfigurationException, IOException {
-
-		VelocityContext context = new VelocityContext();
-		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
-
-		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "ListNode")) {
-			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("ListNode.vm").merge(context, outputStreamWriter);
-			}
-		}
-
-	}
-
-	private void generateInternalPsiUtilClass() throws ConfigurationException, IOException {
+	private void generateVerbatimClass(String className) throws ConfigurationException, IOException {
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 		context.put("parserDefinitionClass", configuration.getRequired(PARSER_DEFINITION_CLASS_PROPERTY));
 
-		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "InternalPsiUtil")) {
+		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("InternalPsiUtil.vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate(className + ".vm").merge(context, outputStreamWriter);
 			}
 		}
 
 	}
+
 }
