@@ -28,6 +28,7 @@
     <annotator language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagAnnotator" />
     <lang.psiStructureViewFactory language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagStructureViewFactory" />
     <lang.braceMatcher language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagBraceMatcher" />
+    <lang.foldingBuilder language="MAPAG" implementationClass="name.martingeisse.mapag.ide.MapagFoldingBuilder" />
   </extensions>
 
   <actions>
