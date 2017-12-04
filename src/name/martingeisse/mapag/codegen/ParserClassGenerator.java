@@ -122,10 +122,10 @@ public class ParserClassGenerator {
 				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
 					int alternativeIndex = stateMachineEncoder.getAlternativeIndex(nonterminalDefinition.getName(), alternative);
 					String symbolVariable;
-					if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
-						symbolVariable = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
-					} else {
+					if (nonterminalDefinition.getPsiStyle().isDistinctSymbolPerAlternative()) {
 						symbolVariable = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
+					} else {
+						symbolVariable = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
 					}
 					alternativeEntries[alternativeIndex] = new AlternativeEntry(
 						alternative.getExpansion().getElements().size(),

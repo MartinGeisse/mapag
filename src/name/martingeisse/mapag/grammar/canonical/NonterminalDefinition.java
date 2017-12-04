@@ -39,23 +39,33 @@ public final class NonterminalDefinition extends SymbolDefinition {
 	public enum PsiStyle {
 
 		// all user-defined nonterminal
-		NORMAL,
+		NORMAL(true),
 
 		// implicitly defined using the question-mark operator
-		OPTIONAL,
+		OPTIONAL(false),
 
 		// non-separated zero-or-more repetition
-		ZERO_OR_MORE,
+		ZERO_OR_MORE(true),
 
 		// non-separated one-or-more repetition
-		ONE_OR_MORE,
+		ONE_OR_MORE(true),
 
 		// separated one-or-more repetition
-		SEPARATED_ONE_OR_MORE,
+		SEPARATED_ONE_OR_MORE(true),
 
 		// helper for separated zero-or-more; works as an OPTIONAL that encloses a SEPARATED_ONE_OR_MORE
-		OPTIONAL_SEPARATED_ONE_OR_MORE
+		OPTIONAL_SEPARATED_ONE_OR_MORE(true);
 
+		private final boolean distinctSymbolPerAlternative;
+
+		PsiStyle(boolean distinctSymbolPerAlternative) {
+			this.distinctSymbolPerAlternative = distinctSymbolPerAlternative;
+		}
+
+		public boolean isDistinctSymbolPerAlternative() {
+			return distinctSymbolPerAlternative;
+		}
+		
 	}
 
 }

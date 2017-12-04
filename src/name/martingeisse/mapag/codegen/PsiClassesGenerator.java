@@ -412,6 +412,17 @@ public class PsiClassesGenerator {
 				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
 				caseEntry.psiClass = "Optional<" + getEffectiveTypeForSymbol(recognizeOptionalStyledNonterminal(nonterminalDefinition).getSymbol()) + ">";
 				cases.add(caseEntry);
+
+				// TODO
+//			} else if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.ZERO_OR_MORE || nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.ONE_OR_MORE) {
+//				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
+//				String listElementSymbol = "...";
+//				String listElementType = getEffectiveTypeForSymbol(listElementSymbol);
+//				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
+//				caseEntry.psiClass = "ListNode<" + listElementType + ">";
+//				caseEntry.additionalConstructorArguments = "TokenSet., " + listElementType + ".class";
+//				cases.add(caseEntry);
+
 			} else {
 				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
 					FactoryCaseEntry caseEntry = new FactoryCaseEntry();
@@ -435,6 +446,7 @@ public class PsiClassesGenerator {
 
 		String elementType;
 		String psiClass;
+		String additionalConstructorArguments;
 
 		public String getElementType() {
 			return elementType;
@@ -444,6 +456,9 @@ public class PsiClassesGenerator {
 			return psiClass;
 		}
 
+		public String getAdditionalConstructorArguments() {
+			return additionalConstructorArguments;
+		}
 	}
 
 	private void generateInternalPsiUtilClass() throws ConfigurationException, IOException {

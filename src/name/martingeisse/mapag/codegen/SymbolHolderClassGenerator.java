@@ -42,12 +42,12 @@ public class SymbolHolderClassGenerator {
 
 		List<String> nonterminalAlternatives = new ArrayList<>();
 		for (NonterminalDefinition nonterminal : grammar.getNonterminalDefinitions().values()) {
-			if (nonterminal.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
-				nonterminalAlternatives.add(IdentifierUtil.getNonterminalVariableIdentifier(nonterminal));
-			} else {
+			if (nonterminal.getPsiStyle().isDistinctSymbolPerAlternative()) {
 				for (Alternative alternative : nonterminal.getAlternatives()) {
 					nonterminalAlternatives.add(IdentifierUtil.getAlternativeVariableIdentifier(nonterminal, alternative));
 				}
+			} else {
+				nonterminalAlternatives.add(IdentifierUtil.getNonterminalVariableIdentifier(nonterminal));
 			}
 		}
 		Collections.sort(nonterminalAlternatives);

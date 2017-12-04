@@ -41,13 +41,11 @@ public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
         InternalPsiUtil.foreachChild(child -> {
             if (elementTypes.contains(child.getElementType())) {
                 consumer.accept(elementClass.cast(child));
-            }
-            if (child instanceof ListNode<?>) {
+            } else if (child instanceof ListNode<?> && child.getElementType() == getElementType) {
                 ListNode<?> typedChild = (ListNode<?>)child;
-                // TODO
+                typedChild.cast(elementClass).foreach(consumer);
             }
         });
-
     }
 
 }
