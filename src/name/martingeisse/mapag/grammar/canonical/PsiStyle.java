@@ -11,9 +11,19 @@ public abstract class PsiStyle {
 	private PsiStyle() {
 	}
 
+	public boolean isDistinctSymbolPerAlternative() {
+		return false;
+	}
+
 	// normal treatment for user-defined nonterminals
 	public static final class Normal extends PsiStyle {
+
 		public static final Normal INSTANCE = new Normal();
+
+		public boolean isDistinctSymbolPerAlternative() {
+			return true;
+		}
+
 	}
 
 	// symbol doesn't generate an AST node, i.e. all children are added to the node's parent directly

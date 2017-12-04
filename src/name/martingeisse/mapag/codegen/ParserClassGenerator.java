@@ -4,6 +4,7 @@ import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+import name.martingeisse.mapag.grammar.canonical.PsiStyle;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.Action;
 import name.martingeisse.mapag.sm.State;
@@ -126,7 +127,7 @@ public class ParserClassGenerator {
 					String parseNodeHead;
 					String symbolHolderPrefix = configuration.getRequired(SYMBOL_HOLDER_PACKAGE_NAME_PROPERTY) + '.' + configuration.getRequired(SYMBOL_HOLDER_CLASS_NAME_PROPERTY);
 
-					if (nonterminalDefinition.getPsiStyle().isUsingListNodes()) {
+					if (nonterminalDefinition.getPsiStyle() instanceof PsiStyle.Repetition) {
 						String symbol = symbolHolderPrefix + '.' + IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
 						parseNodeHead = "new ListNodeGenerationWrapper(" + symbol + ")";
 					} else if (nonterminalDefinition.getPsiStyle().isDistinctSymbolPerAlternative()) {

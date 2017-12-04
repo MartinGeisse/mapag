@@ -19,13 +19,13 @@ public class TestGrammarObjects {
 		new Alternative("a1", TestUtil.expansion(), AlternativeAttributes.EMPTY),
 		new Alternative("a2", TestUtil.expansion("foo", "bar"), AlternativeAttributes.EMPTY),
 		new Alternative("a3", TestUtil.expansion("foo", "baz"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 	public static final NonterminalDefinition NONTERMINAL_2 = new NonterminalDefinition("nt2", ImmutableList.of(
 		new Alternative("a1", TestUtil.expansion("dummyStart", "dummyStart"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 	public static final NonterminalDefinition NONTERMINAL_3 = new NonterminalDefinition("dummyStart", ImmutableList.of(
 		new Alternative("a1", TestUtil.expansion("nt1", "nt2", "baz"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 	public static final ImmutableList<NonterminalDefinition> NONTERMINALS = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3);
 
 	// prevent instantiation

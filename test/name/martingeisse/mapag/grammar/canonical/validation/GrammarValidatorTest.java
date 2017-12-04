@@ -3,6 +3,7 @@ package name.martingeisse.mapag.grammar.canonical.validation;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+import name.martingeisse.mapag.grammar.canonical.PsiStyle;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ public class GrammarValidatorTest {
 		NonterminalDefinition conflictingNonterminal = new NonterminalDefinition(
 			TERMINAL_1.getName(),
 			NONTERMINAL_1.getAlternatives(),
-			NonterminalDefinition.PsiStyle.NORMAL);
+			PsiStyle.Normal.INSTANCE);
 		ImmutableList<NonterminalDefinition> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminal);
 		Grammar grammar = new Grammar(TERMINALS, nonterminals, START_NONTERMINAL_NAME);
 		new MyGrammarValidator(grammar).validate();

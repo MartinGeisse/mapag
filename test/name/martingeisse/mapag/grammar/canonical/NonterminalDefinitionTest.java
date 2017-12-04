@@ -15,43 +15,43 @@ public class NonterminalDefinitionTest {
 
 	@Test
 	public void testConstructorGetter() {
-		NonterminalDefinition nonterminalDefinition = new NonterminalDefinition("nt", ALTERNATIVES, NonterminalDefinition.PsiStyle.NORMAL);
+		NonterminalDefinition nonterminalDefinition = new NonterminalDefinition("nt", ALTERNATIVES, PsiStyle.Normal.INSTANCE);
 		Assert.assertEquals("nt", nonterminalDefinition.getName());
 		Assert.assertEquals(ALTERNATIVES, nonterminalDefinition.getAlternatives());
-		Assert.assertEquals(NonterminalDefinition.PsiStyle.NORMAL, nonterminalDefinition.getPsiStyle());
+		Assert.assertEquals(PsiStyle.Normal.INSTANCE, nonterminalDefinition.getPsiStyle());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullName() {
-		new NonterminalDefinition(null, ALTERNATIVES, NonterminalDefinition.PsiStyle.NORMAL);
+		new NonterminalDefinition(null, ALTERNATIVES, PsiStyle.Normal.INSTANCE);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyName() {
-		new NonterminalDefinition("", ALTERNATIVES, NonterminalDefinition.PsiStyle.NORMAL);
+		new NonterminalDefinition("", ALTERNATIVES, PsiStyle.Normal.INSTANCE);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullAlternatives() {
-		new NonterminalDefinition("nt", null, NonterminalDefinition.PsiStyle.NORMAL);
+		new NonterminalDefinition("nt", null, PsiStyle.Normal.INSTANCE);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyAlternatives() {
-		new NonterminalDefinition("nt", ImmutableList.of(), NonterminalDefinition.PsiStyle.NORMAL);
+		new NonterminalDefinition("nt", ImmutableList.of(), PsiStyle.Normal.INSTANCE);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testPercentSignInNameNotAllowed() {
-		new NonterminalDefinition("%foo", ALTERNATIVES, NonterminalDefinition.PsiStyle.NORMAL);
+		new NonterminalDefinition("%foo", ALTERNATIVES, PsiStyle.Normal.INSTANCE);
 	}
 
 	@Test
 	public void testDifferentPsiStyle() {
-		NonterminalDefinition nonterminalDefinition = new NonterminalDefinition("nt", ALTERNATIVES, NonterminalDefinition.PsiStyle.OPTIONAL);
+		NonterminalDefinition nonterminalDefinition = new NonterminalDefinition("nt", ALTERNATIVES, new PsiStyle.Optional("foo"));
 		Assert.assertEquals("nt", nonterminalDefinition.getName());
 		Assert.assertEquals(ALTERNATIVES, nonterminalDefinition.getAlternatives());
-		Assert.assertEquals(NonterminalDefinition.PsiStyle.OPTIONAL, nonterminalDefinition.getPsiStyle());
+		Assert.assertTrue(nonterminalDefinition.getPsiStyle() instanceof PsiStyle.Optional);
 	}
 
 }

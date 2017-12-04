@@ -29,8 +29,8 @@ public class NonterminalDefinitionValidatorTest {
 	}
 
 	private static final Map<String, NonterminalDefinition> SIMPLE_NONTERMINALS = ImmutableMap.of(
-		"x", new NonterminalDefinition("x", ImmutableList.of(new Alternative("a1", TestUtil.expansion(), AlternativeAttributes.EMPTY)), NonterminalDefinition.PsiStyle.NORMAL),
-		"y", new NonterminalDefinition("y", ImmutableList.of(new Alternative("a2", TestUtil.expansion(), AlternativeAttributes.EMPTY)), NonterminalDefinition.PsiStyle.NORMAL)
+		"x", new NonterminalDefinition("x", ImmutableList.of(new Alternative("a1", TestUtil.expansion(), AlternativeAttributes.EMPTY)), PsiStyle.Normal.INSTANCE),
+		"y", new NonterminalDefinition("y", ImmutableList.of(new Alternative("a2", TestUtil.expansion(), AlternativeAttributes.EMPTY)), PsiStyle.Normal.INSTANCE)
 	);
 
 	@Test

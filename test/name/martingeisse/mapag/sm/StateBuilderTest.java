@@ -26,37 +26,37 @@ public class StateBuilderTest {
 
 	private static final NonterminalDefinition START_SYMBOL_1 = new NonterminalDefinition("startSymbol", ImmutableList.of(
 		new Alternative("a1", TestUtil.expansion("t1"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 
 	private static final NonterminalDefinition START_SYMBOL_2 = new NonterminalDefinition("startSymbol", ImmutableList.of(
 		new Alternative("a1", TestUtil.expansion("t1"), AlternativeAttributes.EMPTY),
 		new Alternative("a2", TestUtil.expansion("t2"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 
 	private static final NonterminalDefinition START_SYMBOL_3 = new NonterminalDefinition("startSymbol", ImmutableList.of(
 		new Alternative("a1", TestUtil.expansion("t3"), AlternativeAttributes.EMPTY),
 		new Alternative("a2", TestUtil.expansion("nt1"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 
 	private static final NonterminalDefinition NONTERMINAL_1 = new NonterminalDefinition("nt1", ImmutableList.of(
 		new Alternative("a1", TestUtil.expansion("t1"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 
 	private static final NonterminalDefinition NONTERMINAL_2 = new NonterminalDefinition("nt2", ImmutableList.of(
 		new Alternative("a1", TestUtil.expansion("t2"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 
 	private static final NonterminalDefinition NONTERMINAL_3 = new NonterminalDefinition("nt3", ImmutableList.of(
 		new Alternative("a1", TestUtil.expansion("t1", "nt1", "t2", "t2"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 
 	private static final NonterminalDefinition NONTERMINAL_4 = new NonterminalDefinition("nt4", ImmutableList.of(
 		new Alternative("a1", TestUtil.expansion("t1", "nt1", "t2", "t3"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 
 	private static final NonterminalDefinition NONTERMINAL_5 = new NonterminalDefinition("nt5", ImmutableList.of(
 		new Alternative("a1", TestUtil.expansion("t1", "nt1", "t3", "t3"), AlternativeAttributes.EMPTY)
-	), NonterminalDefinition.PsiStyle.NORMAL);
+	), PsiStyle.Normal.INSTANCE);
 
 	//
 	// ----------------------------------------------------------------------------------------------------------------

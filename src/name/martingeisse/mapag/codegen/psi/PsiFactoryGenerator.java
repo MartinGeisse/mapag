@@ -43,29 +43,18 @@ public class PsiFactoryGenerator {
 
 		List<FactoryCaseEntry> cases = new ArrayList<>();
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
-			if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
+			if (nonterminalDefinition.getPsiStyle().isDistinctSymbolPerAlternative()) {
+				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
+					FactoryCaseEntry caseEntry = new FactoryCaseEntry();
+					caseEntry.elementType = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
+					caseEntry.psiClass = TypeSelectionUtil.getEffectiveTypeForAlternative(grammar, nonterminalDefinition, alternative);
+					cases.add(caseEntry);
+				}
+			} else {
 				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
 				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
 				caseEntry.psiClass = TypeSelectionUtil.getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
 				cases.add(caseEntry);
-
-				// TODO
-//			} else if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.ZERO_OR_MORE || nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.ONE_OR_MORE) {
-//				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
-//				String listElementSymbol = "...";
-//				String listElementType = getEffectiveTypeForSymbol(listElementSymbol);
-//				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
-//				caseEntry.psiClass = "ListNode<" + listElementType + ">";
-//				caseEntry.additionalConstructorArguments = "TokenSet., " + listElementType + ".class";
-//				cases.add(caseEntry);
-
-			} else {
-				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
-					FactoryCaseEntry caseEntry = new FactoryCaseEntry();
-					caseEntry.elementType = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
-					caseEntry.psiClass = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
-					cases.add(caseEntry);
-				}
 			}
 		}
 		context.put("cases", cases);

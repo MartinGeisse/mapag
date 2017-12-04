@@ -79,7 +79,7 @@ public class GrammarTest {
 	public void testTwoNonterminalsNameCollisionEqual() {
 		NonterminalDefinition conflictingNonterminal = new NonterminalDefinition("nt2", ImmutableList.of(
 			new Alternative("a", TestUtil.expansion("nt3", "nt3"), AlternativeAttributes.EMPTY)
-		), NonterminalDefinition.PsiStyle.NORMAL);
+		), PsiStyle.Normal.INSTANCE);
 		ImmutableList<NonterminalDefinition> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminal);
 		new Grammar(TERMINALS, nonterminals, START_NONTERMINAL_NAME);
 	}
@@ -88,7 +88,7 @@ public class GrammarTest {
 	public void testTwoNonterminalsNameCollisionDifferent() {
 		NonterminalDefinition conflictingNonterminal = new NonterminalDefinition("nt2", ImmutableList.of(
 			new Alternative("a1", TestUtil.expansion("nt1", "nt1"), AlternativeAttributes.EMPTY)
-		), NonterminalDefinition.PsiStyle.NORMAL);
+		), PsiStyle.Normal.INSTANCE);
 		ImmutableList<NonterminalDefinition> nonterminals = ImmutableList.of(NONTERMINAL_1, NONTERMINAL_2, NONTERMINAL_3, conflictingNonterminal);
 		new Grammar(TERMINALS, nonterminals, START_NONTERMINAL_NAME);
 	}

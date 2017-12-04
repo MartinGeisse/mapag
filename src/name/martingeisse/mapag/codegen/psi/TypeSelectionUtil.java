@@ -1,9 +1,7 @@
 package name.martingeisse.mapag.codegen.psi;
 
 import name.martingeisse.mapag.codegen.IdentifierUtil;
-import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
-import name.martingeisse.mapag.grammar.canonical.Grammar;
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+import name.martingeisse.mapag.grammar.canonical.*;
 
 /**
  *
@@ -26,20 +24,31 @@ final class TypeSelectionUtil {
 	}
 
 	static String getEffectiveTypeForSymbol(Grammar grammar, NonterminalDefinition nonterminalDefinition) {
-		if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.OPTIONAL) {
-			String operandSymbol = GrammarAnalysisUtil.recognizeOptionalStyledNonterminal(nonterminalDefinition).getSymbol();
+		PsiStyle psiStyle = nonterminalDefinition.getPsiStyle();
+		if (psiStyle instanceof PsiStyle.Normal) {
+			return IdentifierUtil.toIdentifier(nonterminalDefinition.getName(), true);
+		} else if (psiStyle instanceof PsiStyle.Optional) {
+			String operandSymbol = ((PsiStyle.Optional) psiStyle).getOperandSymbol();
 			String operandType = getEffectiveTypeForSymbol(grammar, operandSymbol);
 			return "Optional<" + operandType + ">";
-		}
-		if (nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.ZERO_OR_MORE ||
-			nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.ONE_OR_MORE ||
-			nonterminalDefinition.getPsiStyle() == NonterminalDefinition.PsiStyle.SEPARATED_ONE_OR_MORE) {
-
-			String listElementSymbol = GrammarAnalysisUtil.recognizeRepetitionStyledNonterminal(nonterminalDefinition).getSymbol();
+		} else if (psiStyle instanceof PsiStyle.Repetition) {
+			String listElementSymbol = ((PsiStyle.Repetition) psiStyle).getElementSymbol();
 			String listElementType = getEffectiveTypeForSymbol(grammar, listElementSymbol);
 			return "ListNode<" + listElementType + ">";
+		} else if (psiStyle instanceof PsiStyle.Transparent) {
+			throw new RuntimeException("trying to determine the effective type for PsiStyle=transparent nonterminal " + nonterminalDefinition.getName());
+		} else {
+			throw new RuntimeException("unknown PsiStyle subclass: " + psiStyle);
 		}
-		return IdentifierUtil.toIdentifier(nonterminalDefinition.getName(), true);
+	}
+
+	static String getEffectiveTypeForAlternative(Grammar grammar, NonterminalDefinition nonterminalDefinition, Alternative alternative) {
+		PsiStyle psiStyle = nonterminalDefinition.getPsiStyle();
+		if (psiStyle.isDistinctSymbolPerAlternative()) {
+			return IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
+		} else {
+			return getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
+		}
 	}
 
 }
