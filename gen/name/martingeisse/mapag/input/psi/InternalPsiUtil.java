@@ -4,9 +4,18 @@ import com.intellij.extapi.psi.ASTDelegatePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 
+import java.util.function.Consumer;
+
 public final class InternalPsiUtil {
 
 	private static TokenSet ignoredElementTypes;
+
+	private static void initializeIgnoredElementTypes() {
+		if (ignoredElementTypes == null) {
+			name.martingeisse.mapag.ide.MapagParserDefinition parserDefinition = new name.martingeisse.mapag.ide.MapagParserDefinition();
+			ignoredElementTypes = TokenSet.orSet(parserDefinition.getWhitespaceTokens(), parserDefinition.getCommentTokens());
+		}
+	}
 
 	// prevent instantiation
 	private InternalPsiUtil() {
@@ -17,15 +26,24 @@ public final class InternalPsiUtil {
 	 * subclasses of CompositeElement.
 	 */
 	public static PsiElement getChild(ASTDelegatePsiElement parent, int childIndex) {
-		if (ignoredElementTypes == null) {
-			name.martingeisse.mapag.ide.MapagParserDefinition parserDefinition = new name.martingeisse.mapag.ide.MapagParserDefinition();
-			ignoredElementTypes = TokenSet.orSet(parserDefinition.getWhitespaceTokens(), parserDefinition.getCommentTokens());
-		}
+		initializeIgnoredElementTypes();
 		PsiElement child = skipWhitespace(parent.getFirstChild());
 		for (int i = 0; i < childIndex; i++) {
 			child = skipWhitespace(child.getNextSibling());
 		}
 		return child;
+	}
+
+	/**
+	 * Invokes the specified consumer on the children returned by getChild().
+	 */
+	public static void foreachChild(ASTDelegatePsiElement parent, Consumer<PsiElement> consumer) {
+		initializeIgnoredElementTypes();
+		PsiElement child = skipWhitespace(parent.getFirstChild());
+		while (child != null) {
+			consumer.accept(child);
+			child = skipWhitespace(child.getNextSibling());
+		}
 	}
 
 	private static PsiElement skipWhitespace(PsiElement element) {

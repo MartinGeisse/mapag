@@ -76,15 +76,16 @@ public class PsiClassesGenerator {
 				break;
 
 			case ZERO_OR_MORE:
-				handleRepetitionStyledNonterminal(nonterminalDefinition, true);
+				handleRepetitionStyledNonterminal(nonterminalDefinition, true, false);
 				break;
 
 			case ONE_OR_MORE:
-				handleRepetitionStyledNonterminal(nonterminalDefinition, false);
+				handleRepetitionStyledNonterminal(nonterminalDefinition, false, false);
 				break;
 
 			case SEPARATED_ONE_OR_MORE:
-				throw new UnsupportedOperationException("TODO");
+				handleRepetitionStyledNonterminal(nonterminalDefinition, false, true);
+				break;
 
 			case OPTIONAL_SEPARATED_ONE_OR_MORE:
 				throw new UnsupportedOperationException("TODO");
@@ -135,7 +136,7 @@ public class PsiClassesGenerator {
 		classGenerator.generate();
 	}
 
-	private void handleRepetitionStyledNonterminal(NonterminalDefinition nonterminalDefinition, boolean zeroBased) throws ConfigurationException, IOException {
+	private void handleRepetitionStyledNonterminal(NonterminalDefinition nonterminalDefinition, boolean zeroBased, boolean hasSeparator) throws ConfigurationException, IOException {
 
 		// verify the nonterminal's structure and determine its element symbol and Java type
 		String nonterminalName = nonterminalDefinition.getName();
@@ -143,15 +144,16 @@ public class PsiClassesGenerator {
 			throw new RuntimeException("repetition-styled nonterminal " + nonterminalName + " has " +
 				nonterminalDefinition.getAlternatives().size() + " alternatives, expected 2");
 		}
+		int repetitionCaseLength = (hasSeparator ? 3 : 2);
 		Alternative baseCaseAlternative, repetitionCaseAlternative;
-		if (nonterminalDefinition.getAlternatives().get(0).getExpansion().getElements().size() == 2) {
+		if (nonterminalDefinition.getAlternatives().get(0).getExpansion().getElements().size() == repetitionCaseLength) {
 			repetitionCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
 			baseCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
-		} else if (nonterminalDefinition.getAlternatives().get(1).getExpansion().getElements().size() == 2) {
+		} else if (nonterminalDefinition.getAlternatives().get(1).getExpansion().getElements().size() == repetitionCaseLength) {
 			baseCaseAlternative = nonterminalDefinition.getAlternatives().get(0);
 			repetitionCaseAlternative = nonterminalDefinition.getAlternatives().get(1);
 		} else {
-			throw new RuntimeException("could not find alternative with expansion length 2 as repetition case for repetition-styled nonterminal " + nonterminalName);
+			throw new RuntimeException("could not find alternative with expansion length " + repetitionCaseLength + " as repetition case for repetition-styled nonterminal " + nonterminalName);
 		}
 		if (baseCaseAlternative.getExpansion().getElements().size() != (zeroBased ? 0 : 1)) {
 			throw new RuntimeException("could not recognize base case for repetition-styled nonterminal " + nonterminalName);
@@ -159,7 +161,7 @@ public class PsiClassesGenerator {
 		if (!repetitionCaseAlternative.getExpansion().getElements().get(0).getSymbol().equals(nonterminalName)) {
 			throw new RuntimeException("could not find left-recursion for repetition-styled nonterminal " + nonterminalName);
 		}
-		String elementSymbol = repetitionCaseAlternative.getExpansion().getElements().get(1).getSymbol();
+		String elementSymbol = repetitionCaseAlternative.getExpansion().getElements().get(hasSeparator ? 2 : 1).getSymbol();
 		if (!zeroBased && !baseCaseAlternative.getExpansion().getElements().get(0).getSymbol().equals(elementSymbol)) {
 			throw new RuntimeException("base-case uses different element symbol than repetition case for nonterminal " + elementSymbol);
 		}

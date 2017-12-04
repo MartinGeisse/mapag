@@ -1,0 +1,53 @@
+package $packageName;
+
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import org.jetbrains.annotations.NotNull;
+
+public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
+
+    private final TokenSet elementTypes;
+    private final Class<T> elementClass;
+
+    public ListNode(@NotNull ASTNode node, TokenSet elementTypes, Class<T> elementClass) {
+        super(node);
+        this.elementTypes = elementTypes;
+        this.elementClass = elementClass;
+    }
+
+    public <S extends T> ListNode<S> cast(Class<S> subclass) {
+        if (!elementClass.isAssignableFrom(subclass)) {
+            throw new ClassCastException(subclass.getName() + " is not a subclass of " + elementClass.getName());
+        }
+        return (ListNode)this;
+    }
+
+	public final ImmutableList<T> getAll() {
+		ImmutableList.Builder<ResolveDeclaration> builder = ImmutableList.builder();
+		addAllTo(builder);
+		return builder.build();
+	}
+
+	public final void addAllTo(List<T> list) {
+        foreach(list::add);
+	}
+
+	public final void addAllTo(ImmutableList.Builder<T> builder) {
+        foreach(builder::add);
+	}
+
+    public final void foreach(Consumer<T> consumer) {
+        InternalPsiUtil.foreachChild(child -> {
+            if (elementTypes.contains(child.getElementType())) {
+                consumer.accept(elementClass.cast(child));
+            }
+            if (child instanceof ListNode<?>) {
+                ListNode<?> typedChild = (ListNode<?>)child;
+                // TODO
+            }
+        });
+
+    }
+
+}
