@@ -51,6 +51,8 @@ public class Symbols {
 	public static final MapagElementType expression_Optional = new MapagElementType("expression_Optional");
 	public static final MapagElementType expression_Or = new MapagElementType("expression_Or");
 	public static final MapagElementType expression_Parenthesized = new MapagElementType("expression_Parenthesized");
+	public static final MapagElementType expression_SeparatedOneOrMore = new MapagElementType("expression_SeparatedOneOrMore");
+	public static final MapagElementType expression_SeparatedZeroOrMore = new MapagElementType("expression_SeparatedZeroOrMore");
 	public static final MapagElementType expression_Sequence = new MapagElementType("expression_Sequence");
 	public static final MapagElementType expression_ZeroOrMore = new MapagElementType("expression_ZeroOrMore");
 	public static final MapagElementType grammar = new MapagElementType("grammar");

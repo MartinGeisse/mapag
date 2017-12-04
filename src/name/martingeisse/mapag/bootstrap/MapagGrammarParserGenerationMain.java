@@ -263,6 +263,22 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 					symbol("expression").withName("operand"),
 					symbol("PLUS")
 				)),
+				alternative("separatedZeroOrMore", sequence(
+					symbol("OPENING_PARENTHESIS"),
+					symbol("expression").withName("element"),
+					symbol("COMMA"),
+					symbol("expression").withName("separator"),
+					symbol("OPENING_PARENTHESIS"),
+					symbol("ASTERISK")
+				)),
+				alternative("separatedOneOrMore", sequence(
+					symbol("OPENING_PARENTHESIS"),
+					symbol("expression").withName("element"),
+					symbol("COMMA"),
+					symbol("expression").withName("separator"),
+					symbol("OPENING_PARENTHESIS"),
+					symbol("PLUS")
+				)),
 				alternative("optional", sequence(
 					symbol("expression").withName("operand"),
 					symbol("QUESTION_MARK")

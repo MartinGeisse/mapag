@@ -107,6 +107,12 @@ public class PsiFactory {
 		if (type == Symbols.expression_OneOrMore) {
 			return new Expression_OneOrMore(node);
 		}
+		if (type == Symbols.expression_SeparatedZeroOrMore) {
+			return new Expression_SeparatedZeroOrMore(node);
+		}
+		if (type == Symbols.expression_SeparatedOneOrMore) {
+			return new Expression_SeparatedOneOrMore(node);
+		}
 		if (type == Symbols.expression_Optional) {
 			return new Expression_Optional(node);
 		}
