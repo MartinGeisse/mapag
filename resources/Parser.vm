@@ -47,9 +47,9 @@ public class $className implements PsiParser, LightPsiParser {
             $alternativeEntry.rightHandSideLength,
         #end
 	};
-	private static final IElementType[] ALTERNATIVE_INDEX_TO_NONTERMINAL_ELEMENT_TYPE = {
+	private static final Object[] ALTERNATIVE_INDEX_TO_PARSE_NODE_HEAD = {
         #foreach($alternativeEntry in $alternativeEntries)
-            Symbols.$alternativeEntry.nonterminalName,
+            $alternativeEntry.parseNodeHead,
         #end
 	};
 	private static final int[] ALTERNATIVE_INDEX_TO_NONTERMINAL_SYMBOL_CODE = {
@@ -244,7 +244,7 @@ public class $className implements PsiParser, LightPsiParser {
 
 		// determine the reduction (nonterminal + alternative) to reduce
 		int rightHandSideLength = ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH[alternativeIndex];
-		IElementType nonterminalElementType = ALTERNATIVE_INDEX_TO_NONTERMINAL_ELEMENT_TYPE[alternativeIndex];
+		Object parseNodeHead = ALTERNATIVE_INDEX_TO_PARSE_NODE_HEAD[alternativeIndex];
 		int nonterminalSymbolCode = ALTERNATIVE_INDEX_TO_NONTERMINAL_SYMBOL_CODE[alternativeIndex];
 
 		// pop (rightHandSideLength) states off the state stack
@@ -255,7 +255,7 @@ public class $className implements PsiParser, LightPsiParser {
 
 		// build a parse tree node from the nonterminal element type and the subtrees in the parse tree stack
 		Object[] reduction = new Object[rightHandSideLength + 1];
-		reduction[0] = nonterminalElementType;
+		reduction[0] = parseNodeHead;
 		System.arraycopy(parseTreeStack, stackSize, reduction, 1, rightHandSideLength);
 
 		// shift the nonterminal (errors cannot occur here in LR(1) parsing)

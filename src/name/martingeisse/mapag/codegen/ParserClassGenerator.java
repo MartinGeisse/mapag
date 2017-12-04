@@ -24,6 +24,8 @@ public class ParserClassGenerator {
 	public static final String PACKAGE_NAME_PROPERTY = "parser.package";
 	public static final String CLASS_NAME_PROPERTY = "parser.class";
 	public static final String FILE_ELEMENT_TYPE_PROPERTY = "parser.fileElementType";
+	public static final String SYMBOL_HOLDER_PACKAGE_NAME_PROPERTY = "symbolHolder.package";
+	public static final String SYMBOL_HOLDER_CLASS_NAME_PROPERTY = "symbolHolder.class";
 
 	private final GrammarInfo grammarInfo;
 	private final Grammar grammar;
@@ -122,10 +124,11 @@ public class ParserClassGenerator {
 				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
 					int alternativeIndex = stateMachineEncoder.getAlternativeIndex(nonterminalDefinition.getName(), alternative);
 					String symbolVariable;
+					String symbolHolderPrefix = configuration.getRequired(SYMBOL_HOLDER_PACKAGE_NAME_PROPERTY) + '.' + configuration.getRequired(SYMBOL_HOLDER_CLASS_NAME_PROPERTY);
 					if (nonterminalDefinition.getPsiStyle().isDistinctSymbolPerAlternative()) {
-						symbolVariable = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
+						symbolVariable = symbolHolderPrefix + '.' + IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
 					} else {
-						symbolVariable = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
+						symbolVariable = symbolHolderPrefix + '.' + IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
 					}
 					alternativeEntries[alternativeIndex] = new AlternativeEntry(
 						alternative.getExpansion().getElements().size(),
@@ -157,12 +160,12 @@ public class ParserClassGenerator {
 	public static class AlternativeEntry {
 
 		private final int rightHandSideLength;
-		private final String nonterminalName;
+		private final String parseNodeHead;
 		private final int nonterminalSymbolCode;
 
-		public AlternativeEntry(int rightHandSideLength, String nonterminalName, int nonterminalSymbolCode) {
+		public AlternativeEntry(int rightHandSideLength, String parseNodeHead, int nonterminalSymbolCode) {
 			this.rightHandSideLength = rightHandSideLength;
-			this.nonterminalName = nonterminalName;
+			this.parseNodeHead = parseNodeHead;
 			this.nonterminalSymbolCode = nonterminalSymbolCode;
 		}
 
@@ -170,8 +173,8 @@ public class ParserClassGenerator {
 			return rightHandSideLength;
 		}
 
-		public String getNonterminalName() {
-			return nonterminalName;
+		public String getParseNodeHead() {
+			return parseNodeHead;
 		}
 
 		public int getNonterminalSymbolCode() {
