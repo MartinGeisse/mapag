@@ -70,6 +70,24 @@ public class ExpressionValidatorImplTest {
 			{
 				new SequenceExpression(new SymbolReference("foo"), new SymbolReference("abc")),
 			},
+			{
+				new Repetition(new SymbolReference("abc"), null, false),
+			},
+			{
+				new Repetition(new SymbolReference("abc"), null, true),
+			},
+			{
+				new Repetition(new SymbolReference("abc"), new SymbolReference("foo"), false),
+			},
+			{
+				new Repetition(new SymbolReference("abc"), new SymbolReference("foo"), true),
+			},
+			{
+				new Repetition(new SymbolReference("foo"), new SymbolReference("abc"), false),
+			},
+			{
+				new Repetition(new SymbolReference("foo"), new SymbolReference("abc"), true),
+			}
 		};
 	}
 
@@ -108,6 +126,18 @@ public class ExpressionValidatorImplTest {
 			},
 			{
 				new EmptyExpression()
+			},
+			{
+				new Repetition(new SymbolReference("foo"), null, false),
+			},
+			{
+				new Repetition(new SymbolReference("foo"), null, true),
+			},
+			{
+				new Repetition(new SymbolReference("foo"), new SymbolReference("bar"), false),
+			},
+			{
+				new Repetition(new SymbolReference("foo"), new SymbolReference("bar"), true),
 			}
 		};
 	}

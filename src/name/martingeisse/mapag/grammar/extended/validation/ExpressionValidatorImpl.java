@@ -39,7 +39,6 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 				errorReporter.reportError(expression, "unknown symbol");
 			}
 		} else if (expression instanceof Repetition) {
-			// TODO test validation
 			Repetition repetition = (Repetition)expression;
 			validateExpression(repetition.getElementExpression(), errorReporter);
 			if (repetition.getSeparatorExpression() != null) {
