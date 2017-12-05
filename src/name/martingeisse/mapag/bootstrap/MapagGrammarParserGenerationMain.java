@@ -260,7 +260,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 					symbol("expression").withName("element"),
 					symbol("COMMA"),
 					symbol("expression").withName("separator"),
-					symbol("OPENING_PARENTHESIS"),
+					symbol("CLOSING_PARENTHESIS"),
 					symbol("ASTERISK")
 				)),
 				alternative("separatedOneOrMore", sequence(
@@ -268,7 +268,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 					symbol("expression").withName("element"),
 					symbol("COMMA"),
 					symbol("expression").withName("separator"),
-					symbol("OPENING_PARENTHESIS"),
+					symbol("CLOSING_PARENTHESIS"),
 					symbol("PLUS")
 				)),
 				alternative("optional", sequence(
