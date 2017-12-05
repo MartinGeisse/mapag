@@ -60,7 +60,12 @@ public class MapagAnnotator implements Annotator {
 			ResolveDeclaration psiResolveDeclaration = backMap.resolveDeclarations.get(((ErrorLocation.SymbolInResolveDeclaration) location).getResolveDeclaration());
 			return psiResolveDeclaration.getSymbols().getAll().get(typedLocation.getSymbolIndex());
 		} else if (location instanceof ErrorLocation.Expression) {
-			return backMap.expressions.get(((ErrorLocation.Expression) location).getExpression());
+			Expression expression = backMap.expressions.get(((ErrorLocation.Expression) location).getExpression());
+			if (expression instanceof Expression_Named) {
+				return ((Expression_Named) expression).getExpression();
+			} else {
+				return expression;
+			}
 		} else {
 			return null;
 		}

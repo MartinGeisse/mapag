@@ -36,7 +36,7 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 			SymbolReference symbolReference = (SymbolReference) expression;
 			String symbolName = symbolReference.getSymbolName();
 			if (!knownSymbols.contains(symbolName) && !symbolName.equals(SpecialSymbols.ERROR_SYMBOL_NAME)) {
-				errorReporter.reportError(expression, "unknown symbol");
+				errorReporter.reportError(expression, "unknown symbol: " + symbolName);
 			}
 		} else if (expression instanceof Repetition) {
 			Repetition repetition = (Repetition)expression;
