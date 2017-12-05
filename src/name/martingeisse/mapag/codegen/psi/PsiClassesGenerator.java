@@ -30,17 +30,17 @@ public class PsiClassesGenerator {
 
 	public static final String PACKAGE_NAME_PROPERTY = "psi.package";
 	public static final String PARSER_DEFINITION_CLASS_PROPERTY = "context.parserDefinitionClass";
-	public static final String DYNAMICALLY_NAMED_CLASSES_PROPERTY = "psi.dynamicallyNamedClasses";
-	public static final String REFERENCE_CLASSES_PROPERTY = "psi.referenceClasses";
-	public static final String SAFE_DELETABLE_CLASSES_PROPERTY = "psi.safeDeletableClasses";
+	public static final String CLASSES_SUPPORT_PSI_NAMED_ELEMENT = "psi.supports.psiNamedElement";
+	public static final String CLASSES_SUPPORT_GET_REFERENCE = "psi.supports.getReference";
+	public static final String CLASSES_SUPPORT_SAFE_DELETE = "psi.supports.safeDelete";
 	public static final String PSI_UTIL_CLASS_PROPERTY = "psi.utilClass";
 
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
-	private ImmutableList<String> dynamicallyNamedClasses;
-	private ImmutableList<String> referenceClasses;
-	private ImmutableList<String> safeDeletableClasses;
+	private ImmutableList<String> classesSupportPsiNamedElement;
+	private ImmutableList<String> classesSupportGetReference;
+	private ImmutableList<String> classesSupportSafeDelete;
 
 	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammar = grammarInfo.getGrammar();
@@ -49,9 +49,9 @@ public class PsiClassesGenerator {
 	}
 
 	public void generate() throws ConfigurationException, IOException {
-		dynamicallyNamedClasses = configuration.getStringList(DYNAMICALLY_NAMED_CLASSES_PROPERTY);
-		referenceClasses = configuration.getStringList(REFERENCE_CLASSES_PROPERTY);
-		safeDeletableClasses = configuration.getStringList(SAFE_DELETABLE_CLASSES_PROPERTY);
+		classesSupportPsiNamedElement = configuration.getStringList(CLASSES_SUPPORT_PSI_NAMED_ELEMENT);
+		classesSupportGetReference = configuration.getStringList(CLASSES_SUPPORT_GET_REFERENCE);
+		classesSupportSafeDelete = configuration.getStringList(CLASSES_SUPPORT_SAFE_DELETE);
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			handleNonterminal(nonterminalDefinition);
 		}
@@ -134,24 +134,24 @@ public class PsiClassesGenerator {
 			}
 			context.put("nodeGetters", nodeGetters);
 
-			if (dynamicallyNamedClasses.contains(className)) {
+			if (classesSupportPsiNamedElement.contains(className)) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 				if (isAbstract) {
 
 					// this is a dynamically named multi-alternative nonterminal class
-					context.put("dynamicallyNamedAbstract", true);
-					context.put("dynamicallyNamedImplementation", false);
+					context.put("psiNamedElementAbstract", true);
+					context.put("psiNamedElementImplementation", false);
 
 				} else {
 
 					// this is either a dynamically named single-alternative nonterminal class or a
 					// directly dynamically named alternative class from a multialternative nonterminal (the latter
 					// is useful if only this alternative is dynamically named, and the others aren't)
-					context.put("dynamicallyNamedAbstract", false);
-					context.put("dynamicallyNamedImplementation", true);
+					context.put("psiNamedElementAbstract", false);
+					context.put("psiNamedElementImplementation", true);
 
 				}
-			} else if (dynamicallyNamedClasses.contains(superclass)) {
+			} else if (classesSupportPsiNamedElement.contains(superclass)) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 				if (isAbstract) {
 
@@ -161,32 +161,32 @@ public class PsiClassesGenerator {
 				} else {
 
 					// this is an alternative of a dynamically named nonterminal, so the naming is inherited
-					context.put("dynamicallyNamedAbstract", false);
-					context.put("dynamicallyNamedImplementation", true);
+					context.put("psiNamedElementAbstract", false);
+					context.put("psiNamedElementImplementation", true);
 
 				}
 			} else {
 
 				// this class is not dynamically named
-				context.put("dynamicallyNamedAbstract", false);
-				context.put("dynamicallyNamedImplementation", false);
+				context.put("psiNamedElementAbstract", false);
+				context.put("psiNamedElementImplementation", false);
 
 			}
 
-			if (!isAbstract && (referenceClasses.contains(className) || referenceClasses.contains(superclass))) {
+			if (!isAbstract && (classesSupportGetReference.contains(className) || classesSupportGetReference.contains(superclass))) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
-				context.put("isReference", true);
+				context.put("supportsGetReference", true);
 			} else {
-				context.put("isReference", false);
+				context.put("supportsGetReference", false);
 			}
 
-			if (safeDeletableClasses.contains(className) || safeDeletableClasses.contains(superclass)) {
+			if (classesSupportSafeDelete.contains(className) || classesSupportSafeDelete.contains(superclass)) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
-				context.put("isSafeDeletableAbstract", isAbstract);
-				context.put("isSafeDeletableImplementation", !isAbstract);
+				context.put("safeDeletableAbstract", isAbstract);
+				context.put("safeDeletableImplementation", !isAbstract);
 			} else {
-				context.put("isSafeDeletableAbstract", false);
-				context.put("isSafeDeletableImplementation", false);
+				context.put("safeDeletableAbstract", false);
+				context.put("safeDeletableImplementation", false);
 			}
 
 			try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
