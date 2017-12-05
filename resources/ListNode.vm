@@ -1,9 +1,14 @@
 package $packageName;
 
+import com.google.common.collect.ImmutableList;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
 
@@ -39,9 +44,9 @@ public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
 
     public final void foreach(Consumer<T> consumer) {
         InternalPsiUtil.foreachChild(child -> {
-            if (elementTypes.contains(child.getElementType())) {
+            if (elementTypes.contains(child.getNode().getElementType())) {
                 consumer.accept(elementClass.cast(child));
-            } else if (child instanceof ListNode<?> && child.getElementType() == getElementType) {
+            } else if (child instanceof ListNode<?> && child.getNode().getElementType() == getElementType) {
                 ListNode<?> typedChild = (ListNode<?>)child;
                 typedChild.cast(elementClass).foreach(consumer);
             }
