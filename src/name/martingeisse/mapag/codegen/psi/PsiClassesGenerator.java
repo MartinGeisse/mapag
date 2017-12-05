@@ -31,6 +31,7 @@ public class PsiClassesGenerator {
 	public static final String PACKAGE_NAME_PROPERTY = "psi.package";
 	public static final String PARSER_DEFINITION_CLASS_PROPERTY = "context.parserDefinitionClass";
 	public static final String CLASSES_SUPPORT_PSI_NAMED_ELEMENT = "psi.supports.psiNamedElement";
+	public static final String CLASSES_SUPPORT_PSI_NAME_IDENTIFIER_OWNER = "psi.supports.psiNameIdentifierOwner";
 	public static final String CLASSES_SUPPORT_GET_REFERENCE = "psi.supports.getReference";
 	public static final String CLASSES_SUPPORT_SAFE_DELETE = "psi.supports.safeDelete";
 	public static final String PSI_UTIL_CLASS_PROPERTY = "psi.utilClass";
@@ -39,6 +40,7 @@ public class PsiClassesGenerator {
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
 	private ImmutableList<String> classesSupportPsiNamedElement;
+	private ImmutableList<String> classesSupportPsiNameIdentifierOwner;
 	private ImmutableList<String> classesSupportGetReference;
 	private ImmutableList<String> classesSupportSafeDelete;
 
@@ -50,6 +52,7 @@ public class PsiClassesGenerator {
 
 	public void generate() throws ConfigurationException, IOException {
 		classesSupportPsiNamedElement = configuration.getStringList(CLASSES_SUPPORT_PSI_NAMED_ELEMENT);
+		classesSupportPsiNameIdentifierOwner = configuration.getStringList(CLASSES_SUPPORT_PSI_NAME_IDENTIFIER_OWNER);
 		classesSupportGetReference = configuration.getStringList(CLASSES_SUPPORT_GET_REFERENCE);
 		classesSupportSafeDelete = configuration.getStringList(CLASSES_SUPPORT_SAFE_DELETE);
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
@@ -138,15 +141,16 @@ public class PsiClassesGenerator {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 				if (isAbstract) {
 
-					// this is a dynamically named multi-alternative nonterminal class
+					// this is a multi-alternative nonterminal class that implements PsiNamedElement
 					context.put("psiNamedElementAbstract", true);
 					context.put("psiNamedElementImplementation", false);
 
 				} else {
 
-					// this is either a dynamically named single-alternative nonterminal class or a
-					// directly dynamically named alternative class from a multialternative nonterminal (the latter
-					// is useful if only this alternative is dynamically named, and the others aren't)
+					// this is either a single-alternative nonterminal class that implements PsiNamedElement, or an
+					// alternative class that directly implements PsiNamedElement and which belongs to a
+					// multi-alternative nonterminal (the latter is useful if only this alternative implements
+					// PsiNamedElement, and the others aren't)
 					context.put("psiNamedElementAbstract", false);
 					context.put("psiNamedElementImplementation", true);
 
@@ -155,21 +159,61 @@ public class PsiClassesGenerator {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 				if (isAbstract) {
 
-					throw new UserMessageException("Found an abstract PSI class whose base class is " +
-						"dynamically named: " + className + " -- this doesn't make sense");
+					throw new UserMessageException("Found an abstract PSI class whose base class implements " +
+						"PsiNamedElement: " + className + " -- this doesn't make sense");
 
 				} else {
 
-					// this is an alternative of a dynamically named nonterminal, so the naming is inherited
+					// this is an alternative of a nonterminal that implements PsiNamedElement, so the naming is inherited
 					context.put("psiNamedElementAbstract", false);
 					context.put("psiNamedElementImplementation", true);
 
 				}
 			} else {
 
-				// this class is not dynamically named
+				// this class does not implement PsiNamedElement
 				context.put("psiNamedElementAbstract", false);
 				context.put("psiNamedElementImplementation", false);
+
+			}
+
+			if (classesSupportPsiNameIdentifierOwner.contains(className)) {
+				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
+				if (isAbstract) {
+
+					// this is a multi-alternative nonterminal class that implements PsiNameIdentifierOwner
+					context.put("psiNameIdentifierOwnerAbstract", true);
+					context.put("psiNameIdentifierOwnerImplementation", false);
+
+				} else {
+
+					// this is either a single-alternative nonterminal class that implements PsiNameIdentifierOwner, or an
+					// alternative class that directly implements PsiNameIdentifierOwner and which belongs to a
+					// multi-alternative nonterminal (the latter is useful if only this alternative implements
+					// PsiNameIdentifierOwner, and the others aren't)
+					context.put("psiNameIdentifierOwnerAbstract", false);
+					context.put("psiNameIdentifierOwnerImplementation", true);
+
+				}
+			} else if (classesSupportPsiNameIdentifierOwner.contains(superclass)) {
+				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
+				if (isAbstract) {
+
+					throw new UserMessageException("Found an abstract PSI class whose base class implements " +
+						"PsiNameIdentifierOwner: " + className + " -- this doesn't make sense");
+
+				} else {
+
+					// this is an alternative of a nonterminal that implements PsiNameIdentifierOwner, so the naming is inherited
+					context.put("psiNameIdentifierOwnerAbstract", false);
+					context.put("psiNameIdentifierOwnerImplementation", true);
+
+				}
+			} else {
+
+				// this class does not implement PsiNameIdentifierOwner
+				context.put("psiNameIdentifierOwnerAbstract", false);
+				context.put("psiNameIdentifierOwnerImplementation", false);
 
 			}
 
