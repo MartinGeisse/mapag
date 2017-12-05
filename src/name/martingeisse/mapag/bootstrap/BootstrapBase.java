@@ -58,8 +58,24 @@ public class BootstrapBase {
 		return new Repetition(sequence(expressions), null, true);
 	}
 
+	public static Repetition zeroOrMoreWithSeparator(String separator, Expression... expressions) {
+		return zeroOrMoreWithSeparator(symbol(separator), expressions);
+	}
+
+	public static Repetition zeroOrMoreWithSeparator(Expression separator, Expression... expressions) {
+		return new Repetition(sequence(expressions), separator, true);
+	}
+
 	public static Repetition oneOrMore(Expression... expressions) {
 		return new Repetition(sequence(expressions), null, false);
+	}
+
+	public static Repetition oneOrMoreWithSeparator(String separator, Expression... expressions) {
+		return oneOrMoreWithSeparator(symbol(separator), expressions);
+	}
+
+	public static Repetition oneOrMoreWithSeparator(Expression separator, Expression... expressions) {
+		return new Repetition(sequence(expressions), separator, false);
 	}
 
 	public static Alternative alternative(String name, Expression expression) {

@@ -64,10 +64,10 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		codeGenerationProperties.setProperty("parser.error.BLOCK_COMMENT", "/*");
 		codeGenerationProperties.setProperty("parser.error.LINE_COMMENT", "//");
 		codeGenerationProperties.setProperty("parser.error.precedenceDeclaration", "precedence-declaration");
+		codeGenerationProperties.setProperty("parser.error.precedenceDeclaration_terminals", "identifier(s)");
 		codeGenerationProperties.setProperty("parser.error.production", "production");
 		codeGenerationProperties.setProperty("parser.error.expression", "expression");
 		codeGenerationProperties.setProperty("parser.error.resolveDeclaration", "resolve-declaration");
-		codeGenerationProperties.setProperty("parser.error.nonemptyIdentifierList", "identifier(s)");
 		codeGenerationProperties.setProperty("symbolHolder.generate", "true");
 		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.mapag.input");
 		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");
@@ -135,13 +135,9 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 				))
 			)),
 			new Production("terminalDeclarations", ImmutableList.of(
-				alternative(null, sequence(
-					symbol("terminalDeclaration").withName("firstIdentifier"),
-					zeroOrMore(
-						symbol("COMMA"),
-						symbol("terminalDeclaration").withName("identifier")
-					).withName("moreIdentifiers")
-				))
+				alternative(null,
+					oneOrMoreWithSeparator("COMMA", symbol("terminalDeclaration")).withName("identifiers")
+				)
 			)),
 			new Production("terminalDeclaration", ImmutableList.of(
 				alternative(null, symbol("IDENTIFIER").withName("identifier"))
@@ -149,7 +145,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 			new Production("precedenceDeclaration", ImmutableList.of(
 				alternative(null, sequence(
 					or(symbol("KW_LEFT").withName("left"), symbol("KW_RIGHT").withName("right"), symbol("KW_NONASSOC").withName("nonassoc")).withName("associativity"),
-					symbol("nonemptyIdentifierList").withName("terminals"),
+					oneOrMoreWithSeparator("COMMA", symbol("IDENTIFIER")).withName("terminals"),
 					symbol("SEMICOLON")
 				))
 			)),
@@ -235,11 +231,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 			new Production("resolveDeclaration", ImmutableList.of(
 				alternative(null, sequence(
 					or(symbol("KW_SHIFT").withName("shift"), symbol("KW_REDUCE").withName("reduce")).withName("action"),
-					symbol("IDENTIFIER").withName("firstSymbol"),
-					zeroOrMore(
-						symbol("COMMA"),
-						symbol("IDENTIFIER").withName("symbol")
-					).withName("additionalSymbols"),
+					oneOrMoreWithSeparator("COMMA", symbol("IDENTIFIER")).withName("symbols"),
 					symbol("SEMICOLON")
 				))
 			)),
@@ -292,15 +284,6 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 					symbol("expression").withName("expression"),
 					symbol("COLON"),
 					symbol("IDENTIFIER").withName("expressionName")
-				))
-			)),
-			new Production("nonemptyIdentifierList", ImmutableList.of(
-				alternative(null, sequence(
-					symbol("IDENTIFIER").withName("firstIdentifier"),
-					zeroOrMore(
-						symbol("COMMA"),
-						symbol("IDENTIFIER").withName("identifier")
-					).withName("moreIdentifiers")
 				))
 			))
 		);
