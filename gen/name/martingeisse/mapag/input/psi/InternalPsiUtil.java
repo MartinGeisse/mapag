@@ -47,7 +47,7 @@ public final class InternalPsiUtil {
 	}
 
 	private static PsiElement skipWhitespace(PsiElement element) {
-		while (ignoredElementTypes.contains(element.getNode().getElementType())) {
+		while (element != null && ignoredElementTypes.contains(element.getNode().getElementType())) {
 			element = element.getNextSibling();
 		}
 		return element;
