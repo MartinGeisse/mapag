@@ -1,9 +1,6 @@
 package name.martingeisse.mapag.ide;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.lang.CodeDocumentationAwareCommenterEx;
-import com.intellij.lang.Commenter;
-import com.intellij.psi.JavaDocTokenType;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -11,7 +8,7 @@ import name.martingeisse.mapag.input.Symbols;
 import org.jetbrains.annotations.Nullable;
 
 /**
- *
+ * TODO currently broken -- hitting enter after an opening slash-asterisk does not auto-close.
  */
 public class MapagCommenter implements CodeDocumentationAwareCommenterEx {
 

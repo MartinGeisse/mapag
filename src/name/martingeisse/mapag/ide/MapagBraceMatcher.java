@@ -1,10 +1,9 @@
 package name.martingeisse.mapag.ide;
 
-import com.intellij.codeInsight.hint.DeclarationRangeUtil;
 import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import name.martingeisse.mapag.input.Symbols;
 import name.martingeisse.mapag.input.psi.*;

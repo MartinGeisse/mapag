@@ -1,6 +1,5 @@
 package name.martingeisse.mapag.codegen.psi;
 
-import com.intellij.psi.tree.TokenSet;
 import name.martingeisse.mapag.codegen.IdentifierUtil;
 import name.martingeisse.mapag.grammar.canonical.*;
 

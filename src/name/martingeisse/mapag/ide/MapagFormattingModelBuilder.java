@@ -10,7 +10,6 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.formatter.common.AbstractBlock;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ContainerUtil;
-import name.martingeisse.mapag.input.Symbols;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
