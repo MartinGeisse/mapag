@@ -10,12 +10,8 @@ public final class TerminalDeclarations extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public TerminalDeclaration getFirstIdentifier() {
-		return (TerminalDeclaration) InternalPsiUtil.getChild(this, 0);
-	}
-
-	public TerminalDeclarations_MoreIdentifiers getMoreIdentifiers() {
-		return (TerminalDeclarations_MoreIdentifiers) InternalPsiUtil.getChild(this, 1);
+	public ListNode<TerminalDeclaration> getIdentifiers() {
+		return (ListNode<TerminalDeclaration>) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

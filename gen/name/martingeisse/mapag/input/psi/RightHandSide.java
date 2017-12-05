@@ -14,8 +14,8 @@ public final class RightHandSide extends ASTWrapperPsiElement {
 		return (Expression) InternalPsiUtil.getChild(this, 0);
 	}
 
-	public RightHandSide_Attributes getAttributes() {
-		return (RightHandSide_Attributes) InternalPsiUtil.getChild(this, 1);
+	public ListNode<AlternativeAttribute> getAttributes() {
+		return (ListNode<AlternativeAttribute>) InternalPsiUtil.getChild(this, 1);
 	}
 
 }

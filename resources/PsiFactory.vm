@@ -5,6 +5,7 @@ import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
@@ -22,7 +23,7 @@ public class PsiFactory {
 
         #foreach($case in $cases)
             if (type == ${symbolHolder}.${case.elementType}) {
-                return new ${case.psiClass}(node);
+                return new ${case.psiClass}(node${case.additionalConstructorArguments});
             }
         #end
 		if (type == ${symbolHolder}.__PARSED_FRAGMENT) {

@@ -16,8 +16,8 @@ public final class Production_Multi extends Production {
 		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
-	public Production_Multi_Alternatives getAlternatives() {
-		return (Production_Multi_Alternatives) InternalPsiUtil.getChild(this, 3);
+	public ListNode<Production_Multi_Alternatives> getAlternatives() {
+		return (ListNode<Production_Multi_Alternatives>) InternalPsiUtil.getChild(this, 3);
 	}
 
 	public String getName() {

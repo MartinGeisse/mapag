@@ -278,7 +278,7 @@ public class $className implements PsiParser, LightPsiParser {
 			} else if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
 				elementType = listNodeGenerationWrapper.elementType;
-				buildMarker = (parentElementType == null || elementType != parentElementType) {
+				buildMarker = (parentElementType == null || elementType != parentElementType);
 			} else {
 				elementType = (IElementType)reduction[0];
 				buildMarker = true;

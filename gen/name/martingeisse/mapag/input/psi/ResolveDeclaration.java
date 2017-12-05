@@ -15,12 +15,8 @@ public final class ResolveDeclaration extends ASTWrapperPsiElement {
 		return (ResolveDeclaration_Action) InternalPsiUtil.getChild(this, 0);
 	}
 
-	public LeafPsiElement getFirstSymbol() {
-		return (LeafPsiElement) InternalPsiUtil.getChild(this, 1);
-	}
-
-	public ResolveDeclaration_AdditionalSymbols getAdditionalSymbols() {
-		return (ResolveDeclaration_AdditionalSymbols) InternalPsiUtil.getChild(this, 2);
+	public ListNode<LeafPsiElement> getSymbols() {
+		return (ListNode<LeafPsiElement>) InternalPsiUtil.getChild(this, 1);
 	}
 
 }

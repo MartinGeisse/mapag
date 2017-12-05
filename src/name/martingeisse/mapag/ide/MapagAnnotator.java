@@ -42,17 +42,13 @@ public class MapagAnnotator implements Annotator {
 		} else if (location instanceof ErrorLocation.PrecedenceTableEntry) {
 			ErrorLocation.PrecedenceTableEntry typedLocation = (ErrorLocation.PrecedenceTableEntry)location;
 			PrecedenceDeclaration psiPrecedenceDeclaration = backMap.precedenceTableEntries.get(typedLocation.getEntry());
-			if (typedLocation.getSymbolIndex() == 0) {
-				return psiPrecedenceDeclaration.getTerminals().getFirstIdentifier();
-			} else {
-				return psiPrecedenceDeclaration.getTerminals().getMoreIdentifiers().getAll().get(typedLocation.getSymbolIndex() - 1).getIdentifier();
-			}
+			return psiPrecedenceDeclaration.getTerminals().getAll().get(typedLocation.getSymbolIndex());
 		} else if (location instanceof ErrorLocation.StartSymbol) {
 			return backMap.startSymbol;
 		} else if (location instanceof ErrorLocation.ProductionLeftHandSide) {
 			return backMap.productions.get(((ErrorLocation.ProductionLeftHandSide) location).getProduction());
 		} else if (location instanceof ErrorLocation.PrecedenceDefiningTerminal) {
-			RightHandSide_Attributes psiAttributes = backMap.rightHandSides.get(((ErrorLocation.PrecedenceDefiningTerminal) location).getAlternative()).getAttributes();
+			ListNode<AlternativeAttribute> psiAttributes = backMap.rightHandSides.get(((ErrorLocation.PrecedenceDefiningTerminal) location).getAlternative()).getAttributes();
 			for (AlternativeAttribute attribute : psiAttributes.getAll()) {
 				if (attribute instanceof AlternativeAttribute_Precedence) {
 					return ((AlternativeAttribute_Precedence) attribute).getPrecedenceDefiningTerminal();
@@ -62,11 +58,7 @@ public class MapagAnnotator implements Annotator {
 		} else if (location instanceof ErrorLocation.SymbolInResolveDeclaration) {
 			ErrorLocation.SymbolInResolveDeclaration typedLocation = (ErrorLocation.SymbolInResolveDeclaration)location;
 			ResolveDeclaration psiResolveDeclaration = backMap.resolveDeclarations.get(((ErrorLocation.SymbolInResolveDeclaration) location).getResolveDeclaration());
-			if (typedLocation.getSymbolIndex() == 0) {
-				return psiResolveDeclaration.getFirstSymbol();
-			} else {
-				return psiResolveDeclaration.getAdditionalSymbols().getAll().get(typedLocation.getSymbolIndex() - 1).getSymbol();
-			}
+			return psiResolveDeclaration.getSymbols().getAll().get(typedLocation.getSymbolIndex());
 		} else if (location instanceof ErrorLocation.Expression) {
 			return backMap.expressions.get(((ErrorLocation.Expression) location).getExpression());
 		} else {

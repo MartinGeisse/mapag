@@ -116,9 +116,8 @@ public class IdentifierExpressionReference implements PsiReference {
 		List<Object> variants = new ArrayList<>();
 
 		// terminals
-		variants.add(grammar.getTerminals().getFirstIdentifier().getIdentifier().getText());
-		for (TerminalDeclarations_MoreIdentifiers_1 more : grammar.getTerminals().getMoreIdentifiers().getAll()) {
-			variants.add(more.getIdentifier().getIdentifier().getText());
+		for (TerminalDeclaration more : grammar.getTerminals().getIdentifiers().getAll()) {
+			variants.add(more.getIdentifier().getText());
 		}
 
 		// nonterminals

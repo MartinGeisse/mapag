@@ -9,8 +9,8 @@ public final class AlternativeAttribute_ResolveBlock extends AlternativeAttribut
 		super(node);
 	}
 
-	public AlternativeAttribute_ResolveBlock_ResolveDeclarations getResolveDeclarations() {
-		return (AlternativeAttribute_ResolveBlock_ResolveDeclarations) InternalPsiUtil.getChild(this, 2);
+	public ListNode<ResolveDeclaration> getResolveDeclarations() {
+		return (ListNode<ResolveDeclaration>) InternalPsiUtil.getChild(this, 2);
 	}
 
 }

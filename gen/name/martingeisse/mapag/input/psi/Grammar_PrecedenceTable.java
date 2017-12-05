@@ -10,8 +10,8 @@ public final class Grammar_PrecedenceTable extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public Grammar_PrecedenceTable_PrecedenceDeclarations getPrecedenceDeclarations() {
-		return (Grammar_PrecedenceTable_PrecedenceDeclarations) InternalPsiUtil.getChild(this, 2);
+	public ListNode<PrecedenceDeclaration> getPrecedenceDeclarations() {
+		return (ListNode<PrecedenceDeclaration>) InternalPsiUtil.getChild(this, 2);
 	}
 
 }

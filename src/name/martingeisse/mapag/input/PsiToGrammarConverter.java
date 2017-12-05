@@ -57,21 +57,12 @@ public class PsiToGrammarConverter {
 
 	private ImmutableList<TerminalDeclaration> convertTerminalDeclarations(TerminalDeclarations terminalDeclarations) {
 		List<TerminalDeclaration> result = new ArrayList<>();
-
-		{
-			String text = getText(terminalDeclarations.getFirstIdentifier().getIdentifier());
+		for (name.martingeisse.mapag.input.psi.TerminalDeclaration node : terminalDeclarations.getIdentifiers().getAll()) {
+			String text = getText(node.getIdentifier());
 			TerminalDeclaration terminalDeclaration = new TerminalDeclaration(text);
 			result.add(terminalDeclaration);
-			backMap.terminalDeclarations.put(terminalDeclaration, terminalDeclarations.getFirstIdentifier());
+			backMap.terminalDeclarations.put(terminalDeclaration, node);
 		}
-
-		for (TerminalDeclarations_MoreIdentifiers_1 node : terminalDeclarations.getMoreIdentifiers().getAll()) {
-			String text = getText(node.getIdentifier().getIdentifier());
-			TerminalDeclaration terminalDeclaration = new TerminalDeclaration(text);
-			result.add(terminalDeclaration);
-			backMap.terminalDeclarations.put(terminalDeclaration, node.getIdentifier());
-		}
-
 		return ImmutableList.copyOf(result);
 	}
 
@@ -100,16 +91,15 @@ public class PsiToGrammarConverter {
 		return new PrecedenceTable(ImmutableList.copyOf(convertedEntries));
 	}
 
-	private ImmutableList<String> convertPrecedenceTableSymbols(NonemptyIdentifierList identifiers) {
+	private ImmutableList<String> convertPrecedenceTableSymbols(ListNode<LeafPsiElement> identifiers) {
 		List<String> result = new ArrayList<>();
-		result.add(getText(identifiers.getFirstIdentifier()));
-		for (NonemptyIdentifierList_MoreIdentifiers_1 node : identifiers.getMoreIdentifiers().getAll()) {
-			result.add(getText(node.getIdentifier()));
+		for (LeafPsiElement node : identifiers.getAll()) {
+			result.add(getText(node));
 		}
 		return ImmutableList.copyOf(result);
 	}
 
-	private ImmutableList<Production> convertProductions(Grammar_Productions psiProductions) {
+	private ImmutableList<Production> convertProductions(ListNode<name.martingeisse.mapag.input.psi.Production> psiProductions) {
 		List<Production> productions = new ArrayList<>();
 		for (name.martingeisse.mapag.input.psi.Production psiProduction : psiProductions.getAll()) {
 			Production convertedProduction;
@@ -133,18 +123,18 @@ public class PsiToGrammarConverter {
 				Production_Multi typed = (Production_Multi) psiProduction;
 				String nonterminal = getText(typed.getNonterminalName());
 				List<Alternative> alternatives = new ArrayList<>();
-				for (Production_Multi_Alternatives_1 element : typed.getAlternatives().getAll()) {
-					if (element instanceof Production_Multi_Alternatives_1_Unnamed) {
+				for (Production_Multi_Alternatives element : typed.getAlternatives().getAll()) {
+					if (element instanceof Production_Multi_Alternatives_Unnamed) {
 
-						Production_Multi_Alternatives_1_Unnamed typedElement = (Production_Multi_Alternatives_1_Unnamed) element;
+						Production_Multi_Alternatives_Unnamed typedElement = (Production_Multi_Alternatives_Unnamed) element;
 						alternatives.add(convertAlternative(
 							typedElement,
 							null,
 							typedElement.getUnnamed().getRightHandSide()));
 
-					} else if (element instanceof Production_Multi_Alternatives_1_Named) {
+					} else if (element instanceof Production_Multi_Alternatives_Named) {
 
-						Production_Multi_Alternatives_1_Named typedElement = (Production_Multi_Alternatives_1_Named) element;
+						Production_Multi_Alternatives_Named typedElement = (Production_Multi_Alternatives_Named) element;
 						alternatives.add(convertAlternative(
 							typedElement,
 							getText(typedElement.getNamed().getAlternativeName()),
@@ -225,9 +215,8 @@ public class PsiToGrammarConverter {
 			}
 
 			List<String> terminals = new ArrayList<>();
-			terminals.add(getText(psiResolveDeclaration.getFirstSymbol()));
-			for (ResolveDeclaration_AdditionalSymbols_1 elementNode : psiResolveDeclaration.getAdditionalSymbols().getAll()) {
-				terminals.add(getText(elementNode.getSymbol()));
+			for (LeafPsiElement elementNode : psiResolveDeclaration.getSymbols().getAll()) {
+				terminals.add(getText(elementNode));
 			}
 
 			ResolveDeclaration resolveDeclaration = new ResolveDeclaration(conflictResolution, ImmutableList.copyOf(terminals));

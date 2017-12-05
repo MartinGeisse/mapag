@@ -21,7 +21,7 @@ public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
         this.elementClass = elementClass;
     }
 
-    public <S extends T> ListNode<S> cast(Class<S> subclass) {
+    public <S extends PsiElement> ListNode<S> cast(Class<S> subclass) {
         if (!elementClass.isAssignableFrom(subclass)) {
             throw new ClassCastException(subclass.getName() + " is not a subclass of " + elementClass.getName());
         }
@@ -29,7 +29,7 @@ public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
     }
 
 	public final ImmutableList<T> getAll() {
-		ImmutableList.Builder<ResolveDeclaration> builder = ImmutableList.builder();
+		ImmutableList.Builder<T> builder = ImmutableList.builder();
 		addAllTo(builder);
 		return builder.build();
 	}
@@ -43,10 +43,10 @@ public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
 	}
 
     public final void foreach(Consumer<T> consumer) {
-        InternalPsiUtil.foreachChild(child -> {
+        InternalPsiUtil.foreachChild(this, child -> {
             if (elementTypes.contains(child.getNode().getElementType())) {
                 consumer.accept(elementClass.cast(child));
-            } else if (child instanceof ListNode<?> && child.getNode().getElementType() == getElementType) {
+            } else if (child instanceof ListNode<?> && child.getNode().getElementType() == getNode().getElementType()) {
                 ListNode<?> typedChild = (ListNode<?>)child;
                 typedChild.cast(elementClass).foreach(consumer);
             }

@@ -23,8 +23,8 @@ public final class Grammar extends ASTWrapperPsiElement {
 		return (LeafPsiElement) InternalPsiUtil.getChild(this, 6);
 	}
 
-	public Grammar_Productions getProductions() {
-		return (Grammar_Productions) InternalPsiUtil.getChild(this, 8);
+	public ListNode<Production> getProductions() {
+		return (ListNode<Production>) InternalPsiUtil.getChild(this, 8);
 	}
 
 }

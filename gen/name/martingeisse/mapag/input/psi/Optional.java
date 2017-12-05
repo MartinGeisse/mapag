@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
-public class Optional<T extends PsiElement> extends ASTWrapperPsiElement {
+public final class Optional<T extends PsiElement> extends ASTWrapperPsiElement {
 
 	public Optional(@NotNull ASTNode node) {
 		super(node);
