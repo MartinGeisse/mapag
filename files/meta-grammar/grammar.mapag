@@ -57,7 +57,7 @@ production ::= {
 	error1 ::= %error SEMICOLON;
 	error2 ::= %error %eof;
 	error3 ::= IDENTIFIER:nonterminalName EXPANDS_TO %error SEMICOLON;
-	error4 ::= IDENTIFIER:nonterminalName EXPANDS_TO %eof;
+	error4 ::= IDENTIFIER:nonterminalName EXPANDS_TO %error %eof;
 }
 
 rightHandSide ::= expression:expression alternativeAttribute*:attributes;
@@ -69,7 +69,7 @@ alternativeAttribute ::= {
 	eof ::= KW_EOF;
 }
 
-resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce):action (IDENTIFIER, COMMA):symbols SEMICOLON;
+resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce):action (IDENTIFIER, COMMA)+:symbols SEMICOLON;
 
 expression ::= {
     identifier ::= IDENTIFIER:identifier %reduceOnError;
