@@ -271,25 +271,26 @@ public class $className implements PsiParser, LightPsiParser {
 	    } else if (what instanceof Object[]) {
 			Object[] reduction = (Object[]) what;
 			IElementType elementType;
+			boolean buildMarker;
 			if (reduction[0] == null) {
 				elementType = null;
+				buildMarker = false;
 			} else if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
 				elementType = listNodeGenerationWrapper.elementType;
-				if (elementType == parentElementType) {
-					elementType = null;
-				}
+				buildMarker = (parentElementType == null || elementType != parentElementType) {
 			} else {
 				elementType = (IElementType)reduction[0];
+				buildMarker = true;
 			}
 			PsiBuilder.Marker marker = null;
-			if (elementType != null) {
+			if (buildMarker) {
 				marker = builder.mark();
 			}
 			for (int i = 1; i < reduction.length; i++) {
-				feedPsiBuilder(builder, reduction[i]);
+				feedPsiBuilder(builder, reduction[i], elementType);
 			}
-			if (elementType != null) {
+			if (buildMarker) {
 				marker.done(elementType);
 			}
 		} else if (what instanceof List<?>) {
