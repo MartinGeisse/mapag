@@ -36,11 +36,11 @@ grammar ::=
 	production+:productions
 	;
 
-terminalDeclarations ::= terminalDeclaration:firstIdentifier (COMMA terminalDeclaration:identifier)*:moreIdentifiers;
+terminalDeclarations ::= (terminalDeclaration, COMMA)+:identifiers;
 
 terminalDeclaration ::= IDENTIFIER:identifier;
 
-precedenceDeclaration ::= (KW_LEFT:left | KW_RIGHT:right | KW_NONASSOC:nonassoc):associativity nonemptyIdentifierList:terminals SEMICOLON;
+precedenceDeclaration ::= (KW_LEFT:left | KW_RIGHT:right | KW_NONASSOC:nonassoc):associativity (IDENTIFIER, COMMA)+:terminals SEMICOLON;
 
 
 //
@@ -50,10 +50,14 @@ precedenceDeclaration ::= (KW_LEFT:left | KW_RIGHT:right | KW_NONASSOC:nonassoc)
 production ::= {
 	singleUnnamed ::= IDENTIFIER:nonterminalName EXPANDS_TO rightHandSide:rightHandSide SEMICOLON;
 	singleNamed ::= IDENTIFIER:nonterminalName COLON IDENTIFIER:alternativeName EXPANDS_TO rightHandSide:rightHandSide SEMICOLON;
-	multi ::= IDENTIFIER:nonterminalName EXPANDS_TO OPENING_CURLY_BRACE
-		((rightHandSide:rightHandSide SEMICOLON):unnamed | (IDENTIFIER:alternativeName EXPANDS_TO rightHandSide:rightHandSide SEMICOLON):named)*:alternatives
-		CLOSING_CURLY_BRACE;
-	error ::= %error SEMICOLON;
+	multi ::= IDENTIFIER:nonterminalName EXPANDS_TO OPENING_CURLY_BRACE (
+	        (rightHandSide:rightHandSide SEMICOLON):unnamed |
+	        (IDENTIFIER:alternativeName EXPANDS_TO rightHandSide:rightHandSide SEMICOLON):named
+	    )*:alternatives CLOSING_CURLY_BRACE;
+	error1 ::= %error SEMICOLON;
+	error2 ::= %error %eof;
+	error3 ::= IDENTIFIER:nonterminalName EXPANDS_TO %error SEMICOLON;
+	error4 ::= IDENTIFIER:nonterminalName EXPANDS_TO %eof;
 }
 
 rightHandSide ::= expression:expression alternativeAttribute*:attributes;
@@ -65,10 +69,10 @@ alternativeAttribute ::= {
 	eof ::= KW_EOF;
 }
 
-resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce):action IDENTIFIER:firstSymbol (COMMA IDENTIFIER:symbol)*:additionalSymbols SEMICOLON;
+resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce):action (IDENTIFIER, COMMA):symbols SEMICOLON;
 
 expression ::= {
-    identifier ::= IDENTIFIER:identifier;
+    identifier ::= IDENTIFIER:identifier %reduceOnError;
     error ::= KW_ERROR;
     sequence ::= expression:left expression:right %resolve {
 		%shift QUESTION_MARK, ASTERISK, PLUS, COLON;
@@ -80,13 +84,9 @@ expression ::= {
     };
     zeroOrMore ::= expression:operand ASTERISK;
     oneOrMore ::= expression:operand PLUS;
+    separatedZeroOrMore ::= OPENING_PARENTHESIS expression:element COMMA expression:separator CLOSING_PARENTHESIS ASTERISK;
+    separatedOneOrMore ::= OPENING_PARENTHESIS expression:element COMMA expression:separator CLOSING_PARENTHESIS PLUS;
     optional ::= expression:operand QUESTION_MARK;
     parenthesized ::= OPENING_PARENTHESIS expression:inner CLOSING_PARENTHESIS;
     named ::= expression:expression COLON IDENTIFIER:expressionName;
 }
-
-//
-// helpers
-//
-
-nonemptyIdentifierList ::= IDENTIFIER:firstIdentifier (COMMA IDENTIFIER:identifier)*:moreIdentifiers;
