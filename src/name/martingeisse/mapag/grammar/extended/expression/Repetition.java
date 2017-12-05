@@ -2,9 +2,6 @@ package name.martingeisse.mapag.grammar.extended.expression;
 
 import name.martingeisse.mapag.util.ParameterUtil;
 
-/**
- * TODO test this class
- */
 public final class Repetition extends Expression {
 
 	private final Expression elementExpression;
