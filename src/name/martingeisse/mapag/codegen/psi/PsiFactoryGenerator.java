@@ -39,7 +39,8 @@ public class PsiFactoryGenerator {
 		} else {
 			context.put("symbolHolderImport", "");
 		}
-		context.put("symbolHolder", configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY));
+		String symbolHolder = configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY);
+		context.put("symbolHolder", symbolHolder);
 
 		List<FactoryCaseEntry> cases = new ArrayList<>();
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
@@ -48,12 +49,14 @@ public class PsiFactoryGenerator {
 					FactoryCaseEntry caseEntry = new FactoryCaseEntry();
 					caseEntry.elementType = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
 					caseEntry.psiClass = TypeSelectionUtil.getEffectiveTypeForAlternative(grammar, nonterminalDefinition, alternative);
+					caseEntry.additionalConstructorArguments = "";
 					cases.add(caseEntry);
 				}
 			} else {
 				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
 				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
 				caseEntry.psiClass = TypeSelectionUtil.getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
+				caseEntry.additionalConstructorArguments = TypeSelectionUtil.getAdditionalConstructorArgumentsForSymbol(grammar, nonterminalDefinition, symbolHolder);
 				cases.add(caseEntry);
 			}
 		}

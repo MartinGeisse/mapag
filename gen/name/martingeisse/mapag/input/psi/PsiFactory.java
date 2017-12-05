@@ -3,7 +3,9 @@ package name.martingeisse.mapag.input.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import name.martingeisse.mapag.input.Symbols;
 
 public class PsiFactory {
@@ -75,28 +77,28 @@ public class PsiFactory {
 			return new Production_Multi_Alternatives_Named(node);
 		}
 		if (type == Symbols.terminalDeclarations_Identifiers_List) {
-//                return new ListNode<TerminalDeclaration>(node);
+			return new ListNode<TerminalDeclaration>(node, TokenSet.create(Symbols.terminalDeclaration), TerminalDeclaration.class);
 		}
 		if (type == Symbols.rightHandSide_Attributes_List) {
-//                return new ListNode<AlternativeAttribute>(node);
+			return new ListNode<AlternativeAttribute>(node, TokenSet.create(Symbols.alternativeAttribute_Precedence, Symbols.alternativeAttribute_ResolveBlock, Symbols.alternativeAttribute_ReduceOnError, Symbols.alternativeAttribute_Eof), AlternativeAttribute.class);
 		}
 		if (type == Symbols.precedenceDeclaration_Terminals_List) {
-//                return new ListNode<LeafPsiElement>(node);
+			return new ListNode<LeafPsiElement>(node, TokenSet.create(Symbols.IDENTIFIER), LeafPsiElement.class);
 		}
 		if (type == Symbols.grammar_PrecedenceTable_Optional) {
 			return new Optional<Grammar_PrecedenceTable>(node);
 		}
 		if (type == Symbols.grammar_Productions_List) {
-//                return new ListNode<Production>(node);
+			return new ListNode<Production>(node, TokenSet.create(Symbols.production_SingleUnnamed, Symbols.production_SingleNamed, Symbols.production_Multi, Symbols.production_Error1, Symbols.production_Error2, Symbols.production_Error3, Symbols.production_Error4), Production.class);
 		}
 		if (type == Symbols.grammar_PrecedenceTable_PrecedenceDeclarations_List) {
-//                return new ListNode<PrecedenceDeclaration>(node);
+			return new ListNode<PrecedenceDeclaration>(node, TokenSet.create(Symbols.precedenceDeclaration), PrecedenceDeclaration.class);
 		}
 		if (type == Symbols.precedenceDeclaration) {
 			return new PrecedenceDeclaration(node);
 		}
 		if (type == Symbols.production_Multi_Alternatives_List) {
-//                return new ListNode<Production_Multi_Alternatives>(node);
+			return new ListNode<Production_Multi_Alternatives>(node, TokenSet.create(Symbols.production_Multi_Alternatives_Unnamed, Symbols.production_Multi_Alternatives_Named), Production_Multi_Alternatives.class);
 		}
 		if (type == Symbols.grammar) {
 			return new Grammar(node);
@@ -105,7 +107,7 @@ public class PsiFactory {
 			return new TerminalDeclarations(node);
 		}
 		if (type == Symbols.resolveDeclaration_Symbols_List) {
-//                return new ListNode<LeafPsiElement>(node);
+			return new ListNode<LeafPsiElement>(node, TokenSet.create(Symbols.IDENTIFIER), LeafPsiElement.class);
 		}
 		if (type == Symbols.production_Multi_Alternatives_Named_Named) {
 			return new Production_Multi_Alternatives_Named_Named(node);
@@ -123,7 +125,7 @@ public class PsiFactory {
 			return new PrecedenceDeclaration_Associativity_Nonassoc(node);
 		}
 		if (type == Symbols.alternativeAttribute_ResolveBlock_ResolveDeclarations_List) {
-//                return new ListNode<ResolveDeclaration>(node);
+			return new ListNode<ResolveDeclaration>(node, TokenSet.create(Symbols.resolveDeclaration), ResolveDeclaration.class);
 		}
 		if (type == Symbols.resolveDeclaration_Action_Shift) {
 			return new ResolveDeclaration_Action_Shift(node);

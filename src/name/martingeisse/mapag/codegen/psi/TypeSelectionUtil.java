@@ -1,5 +1,6 @@
 package name.martingeisse.mapag.codegen.psi;
 
+import com.intellij.psi.tree.TokenSet;
 import name.martingeisse.mapag.codegen.IdentifierUtil;
 import name.martingeisse.mapag.grammar.canonical.*;
 
@@ -39,6 +40,46 @@ final class TypeSelectionUtil {
 			throw new RuntimeException("trying to determine the effective type for PsiStyle=transparent nonterminal " + nonterminalDefinition.getName());
 		} else {
 			throw new RuntimeException("unknown PsiStyle subclass: " + psiStyle);
+		}
+	}
+
+	static String getAdditionalConstructorArgumentsForSymbol(Grammar grammar, NonterminalDefinition nonterminalDefinition, String symbolHolder) {
+		PsiStyle psiStyle = nonterminalDefinition.getPsiStyle();
+		if (psiStyle instanceof PsiStyle.Repetition) {
+			String listElementSymbol = ((PsiStyle.Repetition) psiStyle).getElementSymbol();
+			String listElementType = getEffectiveTypeForSymbol(grammar, listElementSymbol);
+			TerminalDefinition terminalElementDefinition = grammar.getTerminalDefinitions().get(listElementSymbol);
+			if (terminalElementDefinition != null) {
+				return ", TokenSet.create(" + getAstNodeType(terminalElementDefinition, symbolHolder) + "), " + listElementType + ".class";
+			}
+			NonterminalDefinition nonterminalElementDefinition = grammar.getNonterminalDefinitions().get(listElementSymbol);
+			if (nonterminalElementDefinition != null) {
+				return ", TokenSet.create(" + getCommaSeparatedAstNodeTypes(nonterminalElementDefinition, symbolHolder) + "), " + listElementType + ".class";
+			}
+			throw new RuntimeException("unknown symbol: " + listElementSymbol);
+		} else {
+			return "";
+		}
+	}
+
+	private static String getAstNodeType(TerminalDefinition terminal, String symbolHolder) {
+		return symbolHolder + '.' + terminal.getName();
+	}
+
+	private static String getCommaSeparatedAstNodeTypes(NonterminalDefinition nonterminal, String symbolHolder) {
+		if (nonterminal.getPsiStyle().isDistinctSymbolPerAlternative()) {
+			String result = null;
+			for (Alternative alternative : nonterminal.getAlternatives()) {
+				if (result == null) {
+					result = "";
+				} else {
+					result += ", ";
+				}
+				result += symbolHolder + '.' + IdentifierUtil.getAlternativeVariableIdentifier(nonterminal, alternative);
+			}
+			return result;
+		} else {
+			return symbolHolder + '.' + IdentifierUtil.getNonterminalVariableIdentifier(nonterminal);
 		}
 	}
 
