@@ -242,6 +242,9 @@ public class $className implements PsiParser, LightPsiParser {
 		while (true) { // looped on reduce
 			int action = ACTION_TABLE[state * ACTION_TABLE_WIDTH + symbolCode];
 			if (action == Integer.MIN_VALUE) { // accept
+#if($debug)
+                System.out.println("Action: accept);
+#end
 				return true;
 			} else if (action > 0) { // shift
 				shift(symbolData, action - 1);
@@ -249,12 +252,18 @@ public class $className implements PsiParser, LightPsiParser {
 			} else if (action < 0) { // reduce, then continue with the original symbol
 				reduce(-action - 1);
 			} else { // syntax error
+#if($debug)
+                System.out.println("Action: error);
+#end
 				return false;
 			}
 		}
 	}
 
 	private void shift(Object data, int newState) {
+#if($debug)
+        System.out.println("Action: shift state " + newState);
+#end
 		if (stackSize == stateStack.length) {
 			stackSize = stackSize * 2;
 			stateStack = Arrays.copyOf(stateStack, stackSize);
@@ -272,6 +281,10 @@ public class $className implements PsiParser, LightPsiParser {
 		int rightHandSideLength = ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH[alternativeIndex];
 		Object parseNodeHead = ALTERNATIVE_INDEX_TO_PARSE_NODE_HEAD[alternativeIndex];
 		int nonterminalSymbolCode = ALTERNATIVE_INDEX_TO_NONTERMINAL_SYMBOL_CODE[alternativeIndex];
+
+#if($debug)
+        System.out.println("Action: reduce to " + parseNodeHead + ", symbol code: " + nonterminalSymbolCode + ", length: " + rightHandSideLength);
+#end
 
 		// pop (rightHandSideLength) states off the state stack
 		if (rightHandSideLength > 0) {
@@ -454,6 +467,10 @@ public class $className implements PsiParser, LightPsiParser {
 
 		ListNodeGenerationWrapper(IElementType elementType) {
 			this.elementType = elementType;
+		}
+
+		public String toString() {
+		    return "LIST(" + elementType + ")";
 		}
 
 	}
