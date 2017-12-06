@@ -79,42 +79,45 @@ public final class State {
 			}
 		}
 
-		// TODO the handling below is sub-optimal: if we have multiple state elements that could reduce, and we could
-		// also shift, and all reducible elements disappear due to conflict resolution, then the reduce/reduce conflict
-		// also disappears. It should be clarified, however, if
-		//
-		// (1) the terminal must be shiftable to make reducible elements disappear, or if we can make them disappear even
-		//     if the terminal is not shiftable, so only one reducible element remains
-		//
-		// (2) whether it is allowed to have a remaining reducible element reduce, or if the only allowed situation is
-		//     all reducible elements disappear and the terminal gets shifted. (2) implies (1).
+		// handle cases without reducible elements
+		if (elementsThatWantToReduce.isEmpty()) {
+			if (elementsThatWantToShift.isEmpty()) {
+				return getError();
+			} else {
+				return getShift(grammarInfo, elementsThatWantToShift);
+			}
+		}
+
+		// Now we have reducible elements. If we cannot shift, we can either reduce, or have an unresolvable R/R
+		// conflict. See the comment below for an explanation why precedence and resolve blocks cannot resolve this.
+		if (elementsThatWantToShift.isEmpty()) {
+			if (elementsThatWantToReduce.size() > 1) {
+				throw new StateMachineException.ReduceReduceConflict(this, terminalOrEof, ImmutableSet.copyOf(elementsThatWantToReduce));
+			} else {
+				return getReduce(elementsThatWantToReduce.iterator().next());
+			}
+		}
+
+		// Now we have reducible elements but we can also shift. We can handle a special case of reduce-reduce conflict
+		// through precedence / resolve blocks in such a case: If we are able to shift the terminal, but also reduce to
+		// at least two different alternatives, then we have a reduce-reduce conflict in principle. However, if
+		// conflict resolution determines to shift the terminal for all of them, the conflict disappears and we can
+		// shift. This logic can never result in reducing though, since both precedence and resolve blocks lack the
+		// expressive power to make sufficiently clear which of the alternatives should be reduced unter which
+		// circumstances. The latter is also the reason why, if we cannot shift, any R/R conflict is unresolvable.
+		// Future extensions may provide more power.
 
 
-		
+		// TODO below; implement as described in the comment above
+
+
+
+
 
 		// All state elements are at the end and have the specified terminal as their follow-terminal. So they can
 		// only differ in their left side or alternative. Either case is a reduce/reduce conflict. Note that equal
 		// duplicates have been filtered out since StateElement has proper hashCode()/equals() support and the elements
 		// are stored in a Set<>.
-		if (elementsThatWantToReduce.size() > 1) {
-			throw new StateMachineException.ReduceReduceConflict(this, terminalOrEof, ImmutableSet.copyOf(elementsThatWantToReduce));
-		}
-		StateElement elementThatWantsToReduce = (elementsThatWantToReduce.isEmpty() ? null : elementsThatWantToReduce.iterator().next());
-
-		// handle non-conflict cases
-		if (elementsThatWantToShift.isEmpty()) {
-			if (elementsThatWantToReduce.isEmpty()) {
-				return getError();
-			} else {
-				return getReduce(elementThatWantsToReduce);
-			}
-		} else {
-			if (elementsThatWantToReduce.isEmpty()) {
-				return getShift(grammarInfo, elementsThatWantToShift);
-			} else {
-				// shift/reduce conflict resolution, see below
-			}
-		}
 
 		// handle shift/reduce conflicts by resolution
 		AlternativeAttributes attributes = elementThatWantsToReduce.getAlternative().getAttributes();
