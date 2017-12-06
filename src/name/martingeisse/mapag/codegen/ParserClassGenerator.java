@@ -56,7 +56,7 @@ public class ParserClassGenerator {
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
-		context.put("debug", configuration.getRequired(DEBUG_PROPERTY));
+		context.put("debug", "true".equals(configuration.getOptional(DEBUG_PROPERTY)));
 		{
 			String[] terminalNames = new String[numberOfTerminals];
 			for (String terminal : grammar.getTerminalDefinitions().keySet()) {
