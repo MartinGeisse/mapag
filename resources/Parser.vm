@@ -383,6 +383,9 @@ public class $className implements PsiParser, LightPsiParser {
                     }
                 }
             }
+			if (reduceActionCode == 0) {
+				break;
+			}
 
             // Make sure we don't remove a state from the stack that could consume %error. At depth
             // (rightHandSideLength) on the state stack lies the state to reveal by reducing (and before shifting
