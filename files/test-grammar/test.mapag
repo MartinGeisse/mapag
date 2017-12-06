@@ -31,3 +31,12 @@ rightHandSide  ::= IDENTIFIER IDENTIFIER;
 //   the case, then implicit reduceOnError is a bad idea in general; otherwise we must restrict it to the case where
 //   no shift action is possible.
 //
+// Idea for a solution:
+// - do not implement reduce-on-error in class State, but at run-time by scanning the parse table. (Check if the
+//   parse table contains all necessary information)
+// - when doing reduce-on-error, do not reduce if any of the popped states could consume %error
+// - then, if a syntax error occurs (either because ROE failed because multiple alternatives could be reduced, or
+//   because ROE failed because we'd have to pop a state that could consume %error), cause an error and start normal
+//   error recovery.
+//
+
