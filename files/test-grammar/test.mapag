@@ -1,0 +1,17 @@
+
+%terminals {
+	IDENTIFIER
+}
+
+%start grammar;
+
+foo ::= production;
+
+production ::= {
+	error4 ::= IDENTIFIER;
+}
+		}
+
+grammar ::= foo;
+
+rightHandSide  ::= IDENTIFIER IDENTIFIER;
