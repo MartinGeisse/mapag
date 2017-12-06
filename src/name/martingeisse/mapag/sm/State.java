@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.ConflictResolution;
+import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.AlternativeAttributes;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
@@ -208,7 +209,7 @@ public final class State {
 		Set<Pair<String, Alternative>> nonterminalsAndAlternativesThatCouldReduce = new HashSet<>();
 		Set<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce = new HashSet<>();
 		for (StateElement element : elements) {
-			if (element.isAtEnd()) {
+			if (!element.getLeftSide().equals(SpecialSymbols.ROOT_SYMBOL_NAME) && element.isAtEnd()) {
 				Pair<String, Alternative> pair = Pair.of(element.getLeftSide(), element.getAlternative());
 				nonterminalsAndAlternativesThatCouldReduce.add(pair);
 				if (element.getAlternative().getAttributes().isReduceOnError()) {
