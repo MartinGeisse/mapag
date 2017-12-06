@@ -98,7 +98,7 @@ public class StateTest {
 				new StateElement("p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0), 0, "c"),
 				new StateElement("q", grammar.getNonterminalDefinitions().get("q").getAlternatives().get(0), 0, "c")
 			)), state0);
-			expectSyntaxError(grammarInfo, state0, "b", "d");
+			// You might expect this, but it's circumvented by implicit %reduceOnError: expectSyntaxError(grammarInfo, state0, "b", "d");
 			expectReduceOnTerminal(grammarInfo, state0, "c", "q", grammar.getNonterminalDefinitions().get("q").getAlternatives().get(0));
 
 			//
