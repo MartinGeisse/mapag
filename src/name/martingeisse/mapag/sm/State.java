@@ -108,7 +108,23 @@ public final class State {
 		// Future extensions may provide more power.
 
 		// Note that the elementsThatWantToReduce are equivalent to the alternatives that want to reduce, since all
-		// of them are "at the end" and have the terminalOrEof as their follow terminal.
+		// of them are "at the end" and have the terminalOrEof as their follow terminal, so they can only differ
+		// in the alternative to reduce.
+
+		// handle the case of a single reducible element (no R/R conflict) -- resolve or S/R conflict
+		// TODO
+
+		// handle the case of multiple elements that all want to shift -- so we can shift
+		// TODO
+
+		// Multiple elements and at least one of them wants to reduce. This is an R/R conflict as explained above.
+		// In the future, we might say that it's only an R/R conflict if multiple elements want to reduce:
+		// If all but one element prefer shift over reduce, and one prefers reduce over shift, then we have
+		// reduce that one > shift > reduce others, so the conflict could be resolved in favor if reducing that one
+		// alternative. But I'm hesitant in resolving R/R conflicts as long as the need is not clear, because most of
+		// the time they are errors in the grammar.
+		// TODO
+
 
 		// TODO below; implement as described in the comment above; use resolveConflict()
 
@@ -122,69 +138,24 @@ public final class State {
 		// are stored in a Set<>.
 
 		// handle shift/reduce conflicts by resolution
-		AlternativeAttributes attributes = elementThatWantsToReduce.getAlternative().getAttributes();
-		if (attributes != null) {
+		ConflictResolution resolution = elementThatWantsToReduce.getAlternative().getAttributes();
+		if (resolution != null) {
+			switch (resolution) {
 
-			if (attributes.getEffectivePrecedenceTerminal() != null) {
-				TerminalDefinition shiftPrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(terminalOrEof);
-				if (shiftPrecedenceDefinition == null) {
-					throw new RuntimeException("cannot determine terminal definition for terminal " + terminalOrEof);
-				}
-				String reducePrecedenceTerminal = attributes.getEffectivePrecedenceTerminal();
-				TerminalDefinition reducePrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(reducePrecedenceTerminal);
-				if (reducePrecedenceDefinition != null) {
-					if (shiftPrecedenceDefinition.getPrecedenceIndex() != null && reducePrecedenceDefinition.getPrecedenceIndex() != null) {
+				case SHIFT:
+					return getShift(grammarInfo, elementsThatWantToShift);
 
-						// if the incoming terminal has higher precedence, then shift
-						if (shiftPrecedenceDefinition.getPrecedenceIndex() > reducePrecedenceDefinition.getPrecedenceIndex()) {
-							return getShift(grammarInfo, elementsThatWantToShift);
-						}
+				case REDUCE:
+					return getReduce(elementThatWantsToReduce);
 
-						// if the incoming terminal has lower precedence, then reduce
-						if (shiftPrecedenceDefinition.getPrecedenceIndex() < reducePrecedenceDefinition.getPrecedenceIndex()) {
-							return getReduce(elementThatWantsToReduce);
-						}
+				default:
+					throw new RuntimeException("unknown conflict resolution: " + resolution);
 
-						// sanity check: same precedence implies same associativity
-						if (shiftPrecedenceDefinition.getAssociativity() != reducePrecedenceDefinition.getAssociativity()) {
-							throw new RuntimeException("terminals have same precedence but different associativity: " + terminalOrEof + " and " + reducePrecedenceTerminal);
-						}
-
-						// on same precedence and left-associativity, reduce
-						if (shiftPrecedenceDefinition.getAssociativity() == Associativity.LEFT) {
-							return getReduce(elementThatWantsToReduce);
-						}
-
-						// on same precedence and right-associativity, shift
-						if (shiftPrecedenceDefinition.getAssociativity() == Associativity.RIGHT) {
-							return getShift(grammarInfo, elementsThatWantToShift);
-						}
-
-					}
-				}
 			}
-
-			if (attributes.getTerminalToResolution() != null) {
-				ConflictResolution resolution = attributes.getTerminalToResolution().get(terminalOrEof);
-				if (resolution != null) {
-					switch (resolution) {
-
-						case SHIFT:
-							return getShift(grammarInfo, elementsThatWantToShift);
-
-						case REDUCE:
-							return getReduce(elementThatWantsToReduce);
-
-						default:
-							throw new RuntimeException("unknown conflict resolution: " + resolution);
-
-					}
-				}
-			}
-
 		}
 
-		// resolution was not successful
+
+		// resolution was not successful TODO can be an RR conflict
 		throw new StateMachineException.ShiftReduceConflict(this, terminalOrEof,
 			ImmutableSet.copyOf(elementsThatWantToShift), ImmutableSet.copyOf(elementsThatWantToReduce));
 
