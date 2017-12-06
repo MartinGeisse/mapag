@@ -107,8 +107,10 @@ public final class State {
 		// circumstances. The latter is also the reason why, if we cannot shift, any R/R conflict is unresolvable.
 		// Future extensions may provide more power.
 
+		// Note that the elementsThatWantToReduce are equivalent to the alternatives that want to reduce, since all
+		// of them are "at the end" and have the terminalOrEof as their follow terminal.
 
-		// TODO below; implement as described in the comment above
+		// TODO below; implement as described in the comment above; use resolveConflict()
 
 
 
@@ -186,6 +188,64 @@ public final class State {
 		throw new StateMachineException.ShiftReduceConflict(this, terminalOrEof,
 			ImmutableSet.copyOf(elementsThatWantToShift), ImmutableSet.copyOf(elementsThatWantToReduce));
 
+	}
+
+	private static ConflictResolution resolveConflict(GrammarInfo grammarInfo, AlternativeAttributes attributes, String terminalOrEof) {
+		if (attributes == null) {
+			return null;
+		}
+		if (attributes.getEffectivePrecedenceTerminal() != null) {
+
+			TerminalDefinition shiftPrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(terminalOrEof);
+			if (shiftPrecedenceDefinition == null) {
+				throw new RuntimeException("cannot determine terminal definition for terminal " + terminalOrEof);
+			}
+
+			String reducePrecedenceTerminal = attributes.getEffectivePrecedenceTerminal();
+			TerminalDefinition reducePrecedenceDefinition = grammarInfo.getGrammar().getTerminalDefinitions().get(reducePrecedenceTerminal);
+			if (reducePrecedenceDefinition == null) {
+				throw new RuntimeException("cannot determine terminal definition for terminal " + reducePrecedenceTerminal);
+			}
+
+			if (shiftPrecedenceDefinition.getPrecedenceIndex() != null && reducePrecedenceDefinition.getPrecedenceIndex() != null) {
+
+				// if the incoming terminal has higher precedence, then shift
+				if (shiftPrecedenceDefinition.getPrecedenceIndex() > reducePrecedenceDefinition.getPrecedenceIndex()) {
+					return ConflictResolution.SHIFT;
+				}
+
+				// if the incoming terminal has lower precedence, then reduce
+				if (shiftPrecedenceDefinition.getPrecedenceIndex() < reducePrecedenceDefinition.getPrecedenceIndex()) {
+					return ConflictResolution.REDUCE;
+				}
+
+				// sanity check: same precedence implies same associativity
+				if (shiftPrecedenceDefinition.getAssociativity() != reducePrecedenceDefinition.getAssociativity()) {
+					throw new RuntimeException("terminals have same precedence but different associativity: " + terminalOrEof + " and " + reducePrecedenceTerminal);
+				}
+
+				// on same precedence and left-associativity, reduce
+				if (shiftPrecedenceDefinition.getAssociativity() == Associativity.LEFT) {
+					return ConflictResolution.REDUCE;
+				}
+
+				// on same precedence and right-associativity, shift
+				if (shiftPrecedenceDefinition.getAssociativity() == Associativity.RIGHT) {
+					return ConflictResolution.SHIFT;
+				}
+
+			}
+
+		}
+
+		if (attributes.getTerminalToResolution() != null) {
+			ConflictResolution resolution = attributes.getTerminalToResolution().get(terminalOrEof);
+			if (resolution != null) {
+				return resolution;
+			}
+		}
+
+		return null;
 	}
 
 	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elements) {
