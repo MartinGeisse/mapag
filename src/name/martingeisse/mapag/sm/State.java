@@ -198,23 +198,19 @@ public final class State {
 	}
 
 	/**
-	 * Returns the action in case of a syntax error. This gives %reduceOnError a chance, as well as an implicit
-	 * %reduceOnError if there is only one alternative to reduce. Returns null to indicate an actual syntax error.
+	 * Returns the action in case of a syntax error. This gives %reduceOnError a chance. Returns null to indicate
+	 * that implicit reduce-on-error might be attempted, or an actual syntax error (that distinction is made at runtime).
 	 */
 	public Action getError() {
 
 		// Here we must deal with the fact that the same alternative my appear in multiple state elements with
 		// different lookahead terminals. That's not a conflict since it is the alternative that reduces on error,
 		// not individual elements (since the error-causing lookahead token is irrelevant for the decision)
-		Set<Pair<String, Alternative>> nonterminalsAndAlternativesThatCouldReduce = new HashSet<>();
 		Set<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce = new HashSet<>();
 		for (StateElement element : elements) {
-			if (!element.getLeftSide().equals(SpecialSymbols.ROOT_SYMBOL_NAME) && element.isAtEnd()) {
+			if (element.getAlternative().getAttributes().isReduceOnError()) {
 				Pair<String, Alternative> pair = Pair.of(element.getLeftSide(), element.getAlternative());
-				nonterminalsAndAlternativesThatCouldReduce.add(pair);
-				if (element.getAlternative().getAttributes().isReduceOnError()) {
-					nonterminalsAndAlternativesThatWantToReduce.add(pair);
-				}
+				nonterminalsAndAlternativesThatWantToReduce.add(pair);
 			}
 		}
 
@@ -231,13 +227,7 @@ public final class State {
 			return new Action.Reduce(nonterminalAndAlternative.getLeft(), nonterminalAndAlternative.getRight());
 		}
 
-		// check if we have an implicit candidate
-		if (nonterminalsAndAlternativesThatCouldReduce.size() == 1) {
-			Pair<String, Alternative> nonterminalAndAlternative = nonterminalsAndAlternativesThatCouldReduce.iterator().next();
-			return new Action.Reduce(nonterminalAndAlternative.getLeft(), nonterminalAndAlternative.getRight());
-		}
-
-		// syntax error
+		// syntax error or implicit reduce-on-error
 		return null;
 
 	}

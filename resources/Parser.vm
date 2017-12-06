@@ -361,6 +361,45 @@ public class $className implements PsiParser, LightPsiParser {
 
 	private void recoverFromError(PsiBuilder psiBuilder) throws UnrecoverableSyntaxException {
 
+    	// First, attempt implicit reduce-on-error to reduce a nonterminal that was actually completed directly before
+    	// the error, but not yet reduced since LR(1) would demand the right lookahead token to reduce. We want
+    	// to reduce that nonterminal to give other IDE parts a better partial PSI to work with. However, we must
+    	// make sure that we don't reduce a state away from the stack that could accept the error symbol, because
+    	// we would prevent subsequent error recovery. Also, we obviously cannot reduce "the" alternative if there
+    	// are multiple ones. Note that specifying %reduceOnError overrides any of these concerns, but doing so places
+    	// the reductions into the parse table, so once we're here, we can ignore that modifier.
+    	// Note that we might be able to reduce multiple times before we have to start error recovery.
+    	outerLoop: while (true) {
+
+    	    // look for a unique reduce action code in the action table
+            int reduceActionCode = 0;
+            for (int i = 0; i < ACTION_TABLE_WIDTH; i++) {
+                int action = ACTION_TABLE[state * ACTION_TABLE_WIDTH + i];
+                if (action < 0) {
+                    if (reduceActionCode == 0) {
+                        reduceActionCode = action; // found a reduce action
+                    } else if (reduceActionCode != action) {
+                        break outerLoop; // found a different reduce action, so we cannot reduce
+                    }
+                }
+            }
+
+            // make sure we don't remove a state from the stack that could consume %error
+            int alternativeIndex = -reduceActionCode - 1;
+            int rightHandSideLength = ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH[alternativeIndex];
+            int probeState = state, depth = 0;
+            do {
+                if (ACTION_TABLE[state * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] != 0) {
+                    break outerLoop;
+                }
+                depth++;
+                probeState = stateStack[stackSize - depth];
+            } while (depth < rightHandSideLength); // TODO fence post?
+
+            TODO reduce(alternativeIndex);
+    	}
+
+
 		// Attempt error recovery. For now, this parser uses the same logic as Java CUP: find the first state from the
 		// stack that can shift an error symbol, then throw away input terminals until parsing succeeds for
 		// RECOVERY_SYNC_LENGTH terminals. This is okay-ish but it will never find recovery-capable states deeper in
