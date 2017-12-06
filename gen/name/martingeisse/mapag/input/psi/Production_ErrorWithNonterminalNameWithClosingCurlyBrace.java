@@ -6,9 +6,9 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 
-public final class Production_Error3 extends Production {
+public final class Production_ErrorWithNonterminalNameWithClosingCurlyBrace extends Production {
 
-	public Production_Error3(@NotNull ASTNode node) {
+	public Production_ErrorWithNonterminalNameWithClosingCurlyBrace(@NotNull ASTNode node) {
 		super(node);
 	}
 

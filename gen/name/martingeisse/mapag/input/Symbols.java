@@ -64,10 +64,12 @@ public class Symbols {
 	public static final MapagElementType precedenceDeclaration_Associativity_Nonassoc = new MapagElementType("precedenceDeclaration_Associativity_Nonassoc");
 	public static final MapagElementType precedenceDeclaration_Associativity_Right = new MapagElementType("precedenceDeclaration_Associativity_Right");
 	public static final MapagElementType precedenceDeclaration_Terminals_List = new MapagElementType("precedenceDeclaration_Terminals_List");
-	public static final MapagElementType production_Error1 = new MapagElementType("production_Error1");
-	public static final MapagElementType production_Error2 = new MapagElementType("production_Error2");
-	public static final MapagElementType production_Error3 = new MapagElementType("production_Error3");
-	public static final MapagElementType production_Error4 = new MapagElementType("production_Error4");
+	public static final MapagElementType production_ErrorWithNonterminalNameAtEof = new MapagElementType("production_ErrorWithNonterminalNameAtEof");
+	public static final MapagElementType production_ErrorWithNonterminalNameWithClosingCurlyBrace = new MapagElementType("production_ErrorWithNonterminalNameWithClosingCurlyBrace");
+	public static final MapagElementType production_ErrorWithNonterminalNameWithSemicolon = new MapagElementType("production_ErrorWithNonterminalNameWithSemicolon");
+	public static final MapagElementType production_ErrorWithoutNonterminalNameAtEof = new MapagElementType("production_ErrorWithoutNonterminalNameAtEof");
+	public static final MapagElementType production_ErrorWithoutNonterminalNameWithClosingCurlyBrace = new MapagElementType("production_ErrorWithoutNonterminalNameWithClosingCurlyBrace");
+	public static final MapagElementType production_ErrorWithoutNonterminalNameWithSemicolon = new MapagElementType("production_ErrorWithoutNonterminalNameWithSemicolon");
 	public static final MapagElementType production_Multi = new MapagElementType("production_Multi");
 	public static final MapagElementType production_Multi_Alternatives_List = new MapagElementType("production_Multi_Alternatives_List");
 	public static final MapagElementType production_Multi_Alternatives_Named = new MapagElementType("production_Multi_Alternatives_Named");

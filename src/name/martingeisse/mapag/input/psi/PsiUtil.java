@@ -29,10 +29,12 @@ final class PsiUtil {
 			return ((Production_SingleNamed) production).getNonterminalName();
 		} else if (production instanceof Production_Multi) {
 			return ((Production_Multi) production).getNonterminalName();
-		} else if (production instanceof Production_Error3) {
-			return ((Production_Error3) production).getNonterminalName();
-		} else if (production instanceof Production_Error4) {
-			return ((Production_Error4) production).getNonterminalName();
+		} else if (production instanceof Production_ErrorWithNonterminalNameWithSemicolon) {
+			return ((Production_ErrorWithNonterminalNameWithSemicolon) production).getNonterminalName();
+		} else if (production instanceof Production_ErrorWithNonterminalNameWithClosingCurlyBrace) {
+			return ((Production_ErrorWithNonterminalNameWithClosingCurlyBrace) production).getNonterminalName();
+		} else if (production instanceof Production_ErrorWithNonterminalNameAtEof) {
+			return ((Production_ErrorWithNonterminalNameAtEof) production).getNonterminalName();
 		} else {
 			return null;
 		}
@@ -91,35 +93,51 @@ final class PsiUtil {
 		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
 	}
 
-	public static String getName(Production_Error1 node) {
+	public static String getName(Production_ErrorWithoutNonterminalNameWithSemicolon node) {
 		return null;
 	}
 
-	public static String getName(Production_Error2 node) {
+	public static String getName(Production_ErrorWithoutNonterminalNameWithClosingCurlyBrace node) {
 		return null;
 	}
 
-	public static String getName(Production_Error3 node) {
+	public static String getName(Production_ErrorWithoutNonterminalNameAtEof node) {
+		return null;
+	}
+
+	public static String getName(Production_ErrorWithNonterminalNameWithSemicolon node) {
 		return node.getNonterminalName().getText();
 	}
 
-	public static String getName(Production_Error4 node) {
+	public static String getName(Production_ErrorWithNonterminalNameWithClosingCurlyBrace node) {
 		return node.getNonterminalName().getText();
 	}
 
-	public static PsiElement setName(Production_Error1 node, String newName) throws IncorrectOperationException {
+	public static String getName(Production_ErrorWithNonterminalNameAtEof node) {
+		return node.getNonterminalName().getText();
+	}
+
+	public static PsiElement setName(Production_ErrorWithoutNonterminalNameWithSemicolon node, String newName) throws IncorrectOperationException {
 		throw new IncorrectOperationException("grammar contains errors");
 	}
 
-	public static PsiElement setName(Production_Error2 node, String newName) throws IncorrectOperationException {
+	public static PsiElement setName(Production_ErrorWithoutNonterminalNameWithClosingCurlyBrace node, String newName) throws IncorrectOperationException {
 		throw new IncorrectOperationException("grammar contains errors");
 	}
 
-	public static PsiElement setName(Production_Error3 node, String newName) throws IncorrectOperationException {
+	public static PsiElement setName(Production_ErrorWithoutNonterminalNameAtEof node, String newName) throws IncorrectOperationException {
+		throw new IncorrectOperationException("grammar contains errors");
+	}
+
+	public static PsiElement setName(Production_ErrorWithNonterminalNameWithSemicolon node, String newName) throws IncorrectOperationException {
 		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
 	}
 
-	public static PsiElement setName(Production_Error4 node, String newName) throws IncorrectOperationException {
+	public static PsiElement setName(Production_ErrorWithNonterminalNameWithClosingCurlyBrace node, String newName) throws IncorrectOperationException {
+		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
+	}
+
+	public static PsiElement setName(Production_ErrorWithNonterminalNameAtEof node, String newName) throws IncorrectOperationException {
 		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
 	}
 

@@ -58,17 +58,23 @@ public class PsiFactory {
 		if (type == Symbols.production_Multi) {
 			return new Production_Multi(node);
 		}
-		if (type == Symbols.production_Error1) {
-			return new Production_Error1(node);
+		if (type == Symbols.production_ErrorWithoutNonterminalNameWithSemicolon) {
+			return new Production_ErrorWithoutNonterminalNameWithSemicolon(node);
 		}
-		if (type == Symbols.production_Error2) {
-			return new Production_Error2(node);
+		if (type == Symbols.production_ErrorWithoutNonterminalNameWithClosingCurlyBrace) {
+			return new Production_ErrorWithoutNonterminalNameWithClosingCurlyBrace(node);
 		}
-		if (type == Symbols.production_Error3) {
-			return new Production_Error3(node);
+		if (type == Symbols.production_ErrorWithoutNonterminalNameAtEof) {
+			return new Production_ErrorWithoutNonterminalNameAtEof(node);
 		}
-		if (type == Symbols.production_Error4) {
-			return new Production_Error4(node);
+		if (type == Symbols.production_ErrorWithNonterminalNameWithSemicolon) {
+			return new Production_ErrorWithNonterminalNameWithSemicolon(node);
+		}
+		if (type == Symbols.production_ErrorWithNonterminalNameWithClosingCurlyBrace) {
+			return new Production_ErrorWithNonterminalNameWithClosingCurlyBrace(node);
+		}
+		if (type == Symbols.production_ErrorWithNonterminalNameAtEof) {
+			return new Production_ErrorWithNonterminalNameAtEof(node);
 		}
 		if (type == Symbols.production_Multi_Alternatives_Unnamed) {
 			return new Production_Multi_Alternatives_Unnamed(node);
@@ -89,7 +95,7 @@ public class PsiFactory {
 			return new Optional<Grammar_PrecedenceTable>(node);
 		}
 		if (type == Symbols.grammar_Productions_List) {
-			return new ListNode<Production>(node, TokenSet.create(Symbols.production_SingleUnnamed, Symbols.production_SingleNamed, Symbols.production_Multi, Symbols.production_Error1, Symbols.production_Error2, Symbols.production_Error3, Symbols.production_Error4), Production.class);
+			return new ListNode<Production>(node, TokenSet.create(Symbols.production_SingleUnnamed, Symbols.production_SingleNamed, Symbols.production_Multi, Symbols.production_ErrorWithoutNonterminalNameWithSemicolon, Symbols.production_ErrorWithoutNonterminalNameWithClosingCurlyBrace, Symbols.production_ErrorWithoutNonterminalNameAtEof, Symbols.production_ErrorWithNonterminalNameWithSemicolon, Symbols.production_ErrorWithNonterminalNameWithClosingCurlyBrace, Symbols.production_ErrorWithNonterminalNameAtEof), Production.class);
 		}
 		if (type == Symbols.grammar_PrecedenceTable_PrecedenceDeclarations_List) {
 			return new ListNode<PrecedenceDeclaration>(node, TokenSet.create(Symbols.precedenceDeclaration), PrecedenceDeclaration.class);

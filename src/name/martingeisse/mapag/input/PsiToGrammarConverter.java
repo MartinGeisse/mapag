@@ -147,13 +147,12 @@ public class PsiToGrammarConverter {
 				}
 				convertedProduction = new Production(nonterminal, ImmutableList.copyOf(alternatives));
 
-			} else if (psiProduction instanceof Production_Error1) {
-				throw new UserMessageException("grammar contains errors");
-			} else if (psiProduction instanceof Production_Error2) {
-				throw new UserMessageException("grammar contains errors");
-			} else if (psiProduction instanceof Production_Error3) {
-				throw new UserMessageException("grammar contains errors");
-			} else if (psiProduction instanceof Production_Error4) {
+			} else if (psiProduction instanceof Production_ErrorWithNonterminalNameWithSemicolon
+				|| psiProduction instanceof Production_ErrorWithNonterminalNameWithClosingCurlyBrace
+				|| psiProduction instanceof Production_ErrorWithNonterminalNameAtEof
+				|| psiProduction instanceof Production_ErrorWithoutNonterminalNameWithSemicolon
+				|| psiProduction instanceof Production_ErrorWithoutNonterminalNameWithClosingCurlyBrace
+				|| psiProduction instanceof Production_ErrorWithoutNonterminalNameAtEof) {
 				throw new UserMessageException("grammar contains errors");
 			} else {
 				throw new RuntimeException("unknown production PSI node: " + psiProduction);

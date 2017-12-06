@@ -2,13 +2,18 @@ package name.martingeisse.mapag.input.psi;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 
-public final class Production_Error1 extends Production {
+public final class Production_ErrorWithNonterminalNameWithSemicolon extends Production {
 
-	public Production_Error1(@NotNull ASTNode node) {
+	public Production_ErrorWithNonterminalNameWithSemicolon(@NotNull ASTNode node) {
 		super(node);
+	}
+
+	public LeafPsiElement getNonterminalName() {
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public String getName() {
