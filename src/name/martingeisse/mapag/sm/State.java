@@ -79,6 +79,19 @@ public final class State {
 			}
 		}
 
+		// TODO the handling below is sub-optimal: if we have multiple state elements that could reduce, and we could
+		// also shift, and all reducible elements disappear due to conflict resolution, then the reduce/reduce conflict
+		// also disappears. It should be clarified, however, if
+		//
+		// (1) the terminal must be shiftable to make reducible elements disappear, or if we can make them disappear even
+		//     if the terminal is not shiftable, so only one reducible element remains
+		//
+		// (2) whether it is allowed to have a remaining reducible element reduce, or if the only allowed situation is
+		//     all reducible elements disappear and the terminal gets shifted. (2) implies (1).
+
+
+		
+
 		// All state elements are at the end and have the specified terminal as their follow-terminal. So they can
 		// only differ in their left side or alternative. Either case is a reduce/reduce conflict. Note that equal
 		// duplicates have been filtered out since StateElement has proper hashCode()/equals() support and the elements

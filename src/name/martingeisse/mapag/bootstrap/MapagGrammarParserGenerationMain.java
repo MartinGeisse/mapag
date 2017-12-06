@@ -10,6 +10,7 @@ import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
+import name.martingeisse.mapag.grammar.extended.expression.EmptyExpression;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 import name.martingeisse.mapag.sm.StateMachineException;
@@ -247,6 +248,9 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 				))
 			)),
 			new Production("expression", ImmutableList.of(
+				alternativeWithResolution("empty", new EmptyExpression(),
+					ImmutableList.of("IDENTIFIER", "KW_ERROR", "OPENING_PARENTHESIS", "CLOSING_PARENTHESIS", "COMMA", "COLON", "BAR", "QUESTION_MARK", "ASTERISK", "PLUS"), ImmutableList.of()
+				),
 				alternativeWithReduceOnError("identifier", symbol("IDENTIFIER").withName("identifier")),
 				alternative("error", symbol("KW_ERROR")),
 				alternativeWithResolution("sequence", sequence(

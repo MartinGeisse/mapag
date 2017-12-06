@@ -74,6 +74,9 @@ alternativeAttribute ::= {
 resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce):action (IDENTIFIER, COMMA)+:symbols SEMICOLON;
 
 expression ::= {
+	empty ::= %resolve {
+		%shift IDENTIFIER, KW_ERROR, OPENING_PARENTHESIS;
+	};
     identifier ::= IDENTIFIER:identifier %reduceOnError;
     error ::= KW_ERROR;
     sequence ::= expression:left expression:right %resolve {
