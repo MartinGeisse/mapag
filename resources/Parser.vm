@@ -364,11 +364,11 @@ public class $className implements PsiParser, LightPsiParser {
     	// First, attempt implicit reduce-on-error to reduce a nonterminal that was actually completed directly before
     	// the error, but not yet reduced since LR(1) would demand the right lookahead token to reduce. We want
     	// to reduce that nonterminal to give other IDE parts a better partial PSI to work with. However, we must
-    	// make sure that we don't reduce a state away from the stack that could accept the error symbol, because
+    	// make sure that we don't reduce a state away from the stack that could handle the error symbol, because
     	// we would prevent subsequent error recovery. Also, we obviously cannot reduce "the" alternative if there
     	// are multiple ones. Note that specifying %reduceOnError overrides any of these concerns, but doing so places
-    	// the reductions into the parse table, so once we're here, we can ignore that modifier.
-    	// Note that we might be able to reduce multiple times before we have to start error recovery.
+    	// the corresponding reductions into the parse table, so once we're here, we can ignore that modifier.
+    	// Note that we might be able to reduce multiple times before we have to start error recovery, hence the loop.
     	outerLoop: while (true) {
 
     	    // look for a unique reduce action code in the action table
@@ -384,21 +384,27 @@ public class $className implements PsiParser, LightPsiParser {
                 }
             }
 
-            // make sure we don't remove a state from the stack that could consume %error
+            // Make sure we don't remove a state from the stack that could consume %error. At depth
+            // (rightHandSideLength) on the state stack lies the state to reveal by reducing (and before shifting
+            // the nonterminal), so that state is NOT checked here -- even if it can handle %error, reducing won't
+            // prevent that. Only the states above it on the stack are checked. As an implicit special case, we can
+            // always reduce an alternative with a zero-length right hand side, no matter the current state and stack
+            // contents.
             int alternativeIndex = -reduceActionCode - 1;
             int rightHandSideLength = ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH[alternativeIndex];
             int probeState = state, depth = 0;
-            do {
-                if (ACTION_TABLE[state * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] != 0) {
-                    break outerLoop;
+            while (depth < rightHandSideLength) {
+                if (ACTION_TABLE[probeState * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] != 0) {
+                    break outerLoop; // found error-handling state
                 }
                 depth++;
                 probeState = stateStack[stackSize - depth];
-            } while (depth < rightHandSideLength); // TODO fence post?
+            }
 
-            TODO reduce(alternativeIndex);
+            // no state found that could recover, so let's reduce
+            reduce(alternativeIndex);
+
     	}
-
 
 		// Attempt error recovery. For now, this parser uses the same logic as Java CUP: find the first state from the
 		// stack that can shift an error symbol, then throw away input terminals until parsing succeeds for
