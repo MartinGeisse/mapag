@@ -15,3 +15,19 @@ production ::= {
 grammar ::= foo;
 
 rightHandSide  ::= IDENTIFIER IDENTIFIER;
+
+
+//
+// the problem here is the implicit reduceOnError. With that, the stray closing brace causes everything before it
+// to be reduced to "grammar", followed by a give-up syntax error. The key point here is that implicit reduceOnError
+// does more harm than good in this case:
+//
+// - We could shift another "production" nonterminal instead of reducing to grammar. This implies that we may also shift
+//   any terminal from the first-set of that nonterminal. Maybe it's not a good idea to do an implicit reduceOnError
+//   if there are any shift actions for the same state.
+//
+// - Reducing to grammar removes an error recovery capable state from the state stack. This problem may (?) even happen
+//   if we are starting in a state that can only reduce, not shift, and only a single alternative. If that is in fact
+//   the case, then implicit reduceOnError is a bad idea in general; otherwise we must restrict it to the case where
+//   no shift action is possible.
+//

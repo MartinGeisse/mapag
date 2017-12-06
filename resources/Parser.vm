@@ -6,6 +6,9 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+#if($debug)
+import org.apache.commons.lang3.StringUtils;
+#end
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,9 +151,9 @@ public class $className implements PsiParser, LightPsiParser {
 
 #if($debug)
         System.out.println();
-        System.out.println("-------------------------------------------------------------------------------------"
+        System.out.println("-------------------------------------------------------------------------------------");
         System.out.println("begin parsing");
-        System.out.println("-------------------------------------------------------------------------------------"
+        System.out.println("-------------------------------------------------------------------------------------");
         System.out.println();
 #end
 
@@ -172,7 +175,8 @@ public class $className implements PsiParser, LightPsiParser {
            		}
 #if($debug)
                 System.out.println("New state: " + state);
-                System.out.println("State stack: " + Arrays.copyOf(stateStack, stackSize));
+                System.out.println("State stack: " + StringUtils.join(Arrays.copyOf(stateStack, stackSize), ','));
+                System.out.println();
 #end
             }
 
@@ -189,9 +193,18 @@ public class $className implements PsiParser, LightPsiParser {
                         throw new UnrecoverableSyntaxException(state);
                     }
                 }
+#if($debug)
+                System.out.println("New state: " + state);
+                System.out.println("State stack: " + StringUtils.join(Arrays.copyOf(stateStack, stackSize), ','));
+                System.out.println();
+#end
             }
 
         } catch (UnrecoverableSyntaxException e) {
+
+#if($debug)
+            System.out.println("unrecoverable syntax error: " + e);
+#end
 
             // Build a "code fragment" node that contains the parsed and partially reduced part (i.e. the parse tree
             // stack), then the exception. This will report the error properly and also consume the remaining tokens.
@@ -224,9 +237,9 @@ public class $className implements PsiParser, LightPsiParser {
 
 #if($debug)
         System.out.println();
-        System.out.println("-------------------------------------------------------------------------------------"
+        System.out.println("-------------------------------------------------------------------------------------");
         System.out.println("end parsing");
-        System.out.println("-------------------------------------------------------------------------------------"
+        System.out.println("-------------------------------------------------------------------------------------");
         System.out.println();
 #end
 
@@ -243,7 +256,7 @@ public class $className implements PsiParser, LightPsiParser {
 			int action = ACTION_TABLE[state * ACTION_TABLE_WIDTH + symbolCode];
 			if (action == Integer.MIN_VALUE) { // accept
 #if($debug)
-                System.out.println("Action: accept);
+                System.out.println("Action: accept");
 #end
 				return true;
 			} else if (action > 0) { // shift
@@ -253,7 +266,7 @@ public class $className implements PsiParser, LightPsiParser {
 				reduce(-action - 1);
 			} else { // syntax error
 #if($debug)
-                System.out.println("Action: error);
+                System.out.println("Action: error");
 #end
 				return false;
 			}
