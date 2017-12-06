@@ -208,7 +208,7 @@ public final class State {
 		// not individual elements (since the error-causing lookahead token is irrelevant for the decision)
 		Set<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce = new HashSet<>();
 		for (StateElement element : elements) {
-			if (element.getAlternative().getAttributes().isReduceOnError()) {
+			if (element.isAtEnd() && element.getAlternative().getAttributes().isReduceOnError()) {
 				Pair<String, Alternative> pair = Pair.of(element.getLeftSide(), element.getAlternative());
 				nonterminalsAndAlternativesThatWantToReduce.add(pair);
 			}
