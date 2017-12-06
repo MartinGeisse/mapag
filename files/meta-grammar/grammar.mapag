@@ -54,10 +54,12 @@ production ::= {
 	        (rightHandSide:rightHandSide SEMICOLON):unnamed |
 	        (IDENTIFIER:alternativeName EXPANDS_TO rightHandSide:rightHandSide SEMICOLON):named
 	    )*:alternatives CLOSING_CURLY_BRACE;
-	error1 ::= %error SEMICOLON;
-	error2 ::= %error %eof;
-	error3 ::= IDENTIFIER:nonterminalName EXPANDS_TO %error SEMICOLON;
-	error4 ::= IDENTIFIER:nonterminalName EXPANDS_TO %error %eof;
+	errorWithoutNonterminalNameWithSemicolon ::= %error SEMICOLON;
+	errorWithoutNonterminalNameWithClosingCurlyBrace ::= %error CLOSING_CURLY_BRACE;
+	errorWithoutNonterminalNameAtEof ::= %error %eof;
+	errorWithNonterminalNameWithSemicolon ::= IDENTIFIER:nonterminalName EXPANDS_TO %error SEMICOLON;
+	errorWithNonterminalNameWithClosingCurlyBrace ::= IDENTIFIER:nonterminalName EXPANDS_TO %error CLOSING_CURLY_BRACE;
+	errorWithNonterminalNameAtEof ::= IDENTIFIER:nonterminalName EXPANDS_TO %error %eof;
 }
 
 rightHandSide ::= expression:expression alternativeAttribute*:attributes;

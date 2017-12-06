@@ -188,25 +188,35 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 					).withName("alternatives"),
 					symbol("CLOSING_CURLY_BRACE")
 				)),
-				alternative("error1", sequence(
+				alternative("errorWithoutNonterminalNameWithSemicolon", sequence(
 					symbol("%error"),
 					symbol("SEMICOLON")
 				)),
-				alternativeWithReduceOnEofOnly("error2", sequence(
+				alternative("errorWithoutNonterminalNameWithClosingCurlyBrace", sequence(
+					symbol("%error"),
+					symbol("CLOSING_CURLY_BRACE")
+				)),
+				alternativeWithReduceOnEofOnly("errorWithoutNonterminalNameAtEof", sequence(
 					symbol("%error")
 				)),
-				alternative("error3", sequence(
+
+				alternative("errorWithNonterminalNameWithSemicolon", sequence(
 					symbol("IDENTIFIER").withName("nonterminalName"),
 					symbol("EXPANDS_TO"),
 					symbol("%error"),
 					symbol("SEMICOLON")
 				)),
-				alternativeWithReduceOnEofOnly("error4", sequence(
+				alternative("errorWithNonterminalNameWithClosingCurlyBrace", sequence(
+					symbol("IDENTIFIER").withName("nonterminalName"),
+					symbol("EXPANDS_TO"),
+					symbol("%error"),
+					symbol("CLOSING_CURLY_BRACE")
+				)),
+				alternativeWithReduceOnEofOnly("errorWithNonterminalNameAtEof", sequence(
 					symbol("IDENTIFIER").withName("nonterminalName"),
 					symbol("EXPANDS_TO"),
 					symbol("%error")
 				))
-
 			)),
 			new Production("rightHandSide", ImmutableList.of(
 				alternative(null, sequence(

@@ -89,3 +89,36 @@ Fazit:
 Fehlermeldung in Parser erzeugen
 sem. An. muss Fehlermarker produzieren können
 
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Weitere Verbesserungen:
+- wenn alle State Elements eines State dieselbe Alternative haben (damit auch dasselbe Nichtterminal) und alle am Ende
+    stehen, dann gibt es nur REDUCE und ERROR. Dann sollte auch im Fehlerfall reduziert werden, also implizites %reduceOnError.
+    - Frage: Soll das auch passieren, wenn es zusätzlich Zustände gibt, die unter anderen Terminalen SHIFTen würden? Das
+        ist nicht mehr so klar, weil im Fehlerfall der Benutzer beides gemeint haben könnte. Trotzdem gibt es vermutlich
+        auf diese art bessere Fehlermeldungen.
+    - Also: Wenn in einem Zustand von denjenigen Elements, die "am Ende" sind, alle dieselbe Alternative haben, dann
+        hat diese Alternative in diesem Zustand implizit %reduceOnError.
+- damit ist der aktuelle Fehler aber noch nicht vollständig erklärt:
+
+        %terminals {
+            IDENTIFIER
+        }
+
+        %start grammar;
+
+        production ::= {
+            error4 ::= IDENTIFIER; }
+        }
+
+        rightHandSide ::= IDENTIFIER ) IDENTIFIER;
+
+    Es ist nur erklärt, warum das Nichtterminal "production" nicht reduziert werden kann, aber nicht, warum der
+    davon unabhängige Fehler im Nichtterminal "rightHandSide" nicht erkannt wird.
+    -->
+    Das liegt daran, dass die Fehlerproduktionen für "production" ein Semikolon als Trennzeichen erwarten, es aber
+    bei einer Multi-Alternative-Produktion kein Semikolon am Ende gibt. Hier sollte zusätzlich die geschweifte
+    Klammer-zu als Trennzeichen erlaubt sein.
