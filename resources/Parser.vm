@@ -146,6 +146,14 @@ public class $className implements PsiParser, LightPsiParser {
 		// initialize static parser information
 		initializeStatic();
 
+#if($debug)
+        System.out.println();
+        System.out.println("-------------------------------------------------------------------------------------"
+        System.out.println("begin parsing");
+        System.out.println("-------------------------------------------------------------------------------------"
+        System.out.println();
+#end
+
         // handle unrecoverable syntax errors
         PsiBuilder.Marker wholeFileMarker = psiBuilder.mark();
         PsiBuilder.Marker preParseMarker = psiBuilder.mark();
@@ -154,16 +162,26 @@ public class $className implements PsiParser, LightPsiParser {
             // Parse the input using the generated machine to build a parse tree. The state machine cannot execute the
             // accept action here since the input cannot contain EOF.
             while (!psiBuilder.eof()) {
+#if($debug)
+                System.out.println("Next token: " + psiBuilder.getTokenType() + ", symbol code: " + getSymbolCodeForElementType(psiBuilder.getTokenType()));
+#end
            		if (consumeSymbol(getSymbolCodeForElementType(psiBuilder.getTokenType()), null)) {
                 	psiBuilder.advanceLexer();
            		} else {
            			recoverFromError(psiBuilder);
            		}
+#if($debug)
+                System.out.println("New state: " + state);
+                System.out.println("State stack: " + Arrays.copyOf(stateStack, stackSize));
+#end
             }
 
             // Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
             // a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
             {
+#if($debug)
+                System.out.println("Next token: %eof, symbol code: " + EOF_SYMBOL_CODE);
+#end
                 int originalState = state;
                 if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
                     recoverFromError(psiBuilder);
@@ -203,6 +221,14 @@ public class $className implements PsiParser, LightPsiParser {
 		// whitespace and comments as part of the root AST node.
 		psiBuilder.advanceLexer();
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
+
+#if($debug)
+        System.out.println();
+        System.out.println("-------------------------------------------------------------------------------------"
+        System.out.println("end parsing");
+        System.out.println("-------------------------------------------------------------------------------------"
+        System.out.println();
+#end
 
 	}
 

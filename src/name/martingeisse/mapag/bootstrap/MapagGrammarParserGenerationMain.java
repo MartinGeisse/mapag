@@ -36,6 +36,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		codeGenerationProperties.setProperty("parser.package", "name.martingeisse.mapag.input");
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
 		codeGenerationProperties.setProperty("parser.fileElementType", "name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE");
+		codeGenerationProperties.setProperty("parser.debug", "true");
 		codeGenerationProperties.setProperty("parser.error.KW_TERMINALS", "%terminals");
 		codeGenerationProperties.setProperty("parser.error.KW_PRECEDENCE", "%precedence");
 		codeGenerationProperties.setProperty("parser.error.KW_LEFT", "%left");

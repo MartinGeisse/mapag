@@ -24,6 +24,7 @@ public class ParserClassGenerator {
 
 	public static final String PACKAGE_NAME_PROPERTY = "parser.package";
 	public static final String CLASS_NAME_PROPERTY = "parser.class";
+	public static final String DEBUG_PROPERTY = "parser.debug";
 	public static final String FILE_ELEMENT_TYPE_PROPERTY = "parser.fileElementType";
 	public static final String SYMBOL_HOLDER_PACKAGE_NAME_PROPERTY = "symbolHolder.package";
 	public static final String SYMBOL_HOLDER_CLASS_NAME_PROPERTY = "symbolHolder.class";
@@ -55,6 +56,7 @@ public class ParserClassGenerator {
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
+		context.put("debug", configuration.getRequired(DEBUG_PROPERTY));
 		{
 			String[] terminalNames = new String[numberOfTerminals];
 			for (String terminal : grammar.getTerminalDefinitions().keySet()) {
