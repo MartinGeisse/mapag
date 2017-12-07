@@ -21,7 +21,7 @@ public final class Production_ErrorWithoutNonterminalNameWithClosingCurlyBrace e
 	}
 
 	public PsiElement setName(String newName) throws IncorrectOperationException {
-		return (LeafPsiElement) getNameIdentifier().replaceWithText(newName);
+		return null;
 	}
 
 	public void delete() throws IncorrectOperationException {

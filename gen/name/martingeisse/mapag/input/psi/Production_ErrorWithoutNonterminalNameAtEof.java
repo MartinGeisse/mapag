@@ -21,7 +21,7 @@ public final class Production_ErrorWithoutNonterminalNameAtEof extends Productio
 	}
 
 	public PsiElement setName(String newName) throws IncorrectOperationException {
-		return (LeafPsiElement) getNameIdentifier().replaceWithText(newName);
+		return null;
 	}
 
 	public void delete() throws IncorrectOperationException {

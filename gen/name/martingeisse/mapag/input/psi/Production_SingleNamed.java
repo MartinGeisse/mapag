@@ -33,7 +33,7 @@ public final class Production_SingleNamed extends Production {
 	}
 
 	public PsiElement setName(String newName) throws IncorrectOperationException {
-		return (LeafPsiElement) getNameIdentifier().replaceWithText(newName);
+		return null;
 	}
 
 	public void delete() throws IncorrectOperationException {

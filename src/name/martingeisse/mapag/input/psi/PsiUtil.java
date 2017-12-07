@@ -68,77 +68,40 @@ final class PsiUtil {
 	// naming support
 	//
 
-	public static String getName(Production_SingleUnnamed node) {
-		return node.getNonterminalName().getText();
+	public static LeafPsiElement getNameIdentifier(Production_SingleUnnamed node) {
+		return node.getNonterminalName();
 	}
 
-	public static PsiElement setName(Production_SingleUnnamed node, String newName) throws IncorrectOperationException {
-		// rawReplaceWithText()? The docs don't tell the difference.
-		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
+	public static LeafPsiElement getNameIdentifier(Production_SingleNamed node) {
+		return node.getNonterminalName();
 	}
 
-	public static String getName(Production_SingleNamed node) {
-		return node.getNonterminalName().getText();
+	public static LeafPsiElement getNameIdentifier(Production_Multi node) {
+		return node.getNonterminalName();
 	}
 
-	public static PsiElement setName(Production_SingleNamed node, String newName) throws IncorrectOperationException {
-		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
-	}
-
-	public static String getName(Production_Multi node) {
-		return node.getNonterminalName().getText();
-	}
-
-	public static PsiElement setName(Production_Multi node, String newName) throws IncorrectOperationException {
-		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
-	}
-
-	public static String getName(Production_ErrorWithoutNonterminalNameWithSemicolon node) {
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithoutNonterminalNameWithSemicolon node) {
 		return null;
 	}
 
-	public static String getName(Production_ErrorWithoutNonterminalNameWithClosingCurlyBrace node) {
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithoutNonterminalNameWithClosingCurlyBrace node) {
 		return null;
 	}
 
-	public static String getName(Production_ErrorWithoutNonterminalNameAtEof node) {
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithoutNonterminalNameAtEof node) {
 		return null;
 	}
 
-	public static String getName(Production_ErrorWithNonterminalNameWithSemicolon node) {
-		return node.getNonterminalName().getText();
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithNonterminalNameWithSemicolon node) {
+		return node.getNonterminalName();
 	}
 
-	public static String getName(Production_ErrorWithNonterminalNameWithClosingCurlyBrace node) {
-		return node.getNonterminalName().getText();
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithNonterminalNameWithClosingCurlyBrace node) {
+		return node.getNonterminalName();
 	}
 
-	public static String getName(Production_ErrorWithNonterminalNameAtEof node) {
-		return node.getNonterminalName().getText();
-	}
-
-	public static PsiElement setName(Production_ErrorWithoutNonterminalNameWithSemicolon node, String newName) throws IncorrectOperationException {
-		throw new IncorrectOperationException("grammar contains errors");
-	}
-
-	public static PsiElement setName(Production_ErrorWithoutNonterminalNameWithClosingCurlyBrace node, String newName) throws IncorrectOperationException {
-		throw new IncorrectOperationException("grammar contains errors");
-	}
-
-	public static PsiElement setName(Production_ErrorWithoutNonterminalNameAtEof node, String newName) throws IncorrectOperationException {
-		throw new IncorrectOperationException("grammar contains errors");
-	}
-
-	public static PsiElement setName(Production_ErrorWithNonterminalNameWithSemicolon node, String newName) throws IncorrectOperationException {
-		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
-	}
-
-	public static PsiElement setName(Production_ErrorWithNonterminalNameWithClosingCurlyBrace node, String newName) throws IncorrectOperationException {
-		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
-	}
-
-	public static PsiElement setName(Production_ErrorWithNonterminalNameAtEof node, String newName) throws IncorrectOperationException {
-		return (LeafPsiElement) node.getNonterminalName().replaceWithText(newName);
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithNonterminalNameAtEof node) {
+		return node.getNonterminalName();
 	}
 
 	//

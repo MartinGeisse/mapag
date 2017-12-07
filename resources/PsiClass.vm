@@ -46,7 +46,7 @@ public $classModifiers class $className extends $superclass $interfaces {
 	#end
 	#if($customNameIdentifierImplementation)
 
-        public PsiElement getNameIdentifier() {
+        public LeafPsiElement getNameIdentifier() {
 			return ${psiUtilClass}.getNameIdentifier(this);
         }
 
