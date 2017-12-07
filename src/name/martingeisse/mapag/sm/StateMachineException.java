@@ -119,6 +119,56 @@ public class StateMachineException extends RuntimeException {
 
 	}
 
+	public static final class ConflictResolutionDisagreement extends Conflict {
+
+		private final ImmutableSet<StateElement> elementsThatWantToShiftNormally;
+		private final ImmutableSet<StateElement> elementsThatWantToShiftAsResolution;
+		private final ImmutableSet<StateElement> elementsThatWantToReduceAsResolution;
+
+		public ConflictResolutionDisagreement(State state, String terminal, ImmutableSet<StateElement> elementsThatWantToShiftNormally, ImmutableSet<StateElement> elementsThatWantToShiftAsResolution, ImmutableSet<StateElement> elementsThatWantToReduceAsResolution) {
+			super("conflict resolution disagreement", state, terminal);
+			this.elementsThatWantToShiftNormally = elementsThatWantToShiftNormally;
+			this.elementsThatWantToShiftAsResolution = elementsThatWantToShiftAsResolution;
+			this.elementsThatWantToReduceAsResolution = elementsThatWantToReduceAsResolution;
+		}
+
+		public ImmutableSet<StateElement> getElementsThatWantToShiftNormally() {
+			return elementsThatWantToShiftNormally;
+		}
+
+		public ImmutableSet<StateElement> getElementsThatWantToShiftAsResolution() {
+			return elementsThatWantToShiftAsResolution;
+		}
+
+		public ImmutableSet<StateElement> getElementsThatWantToReduceAsResolution() {
+			return elementsThatWantToReduceAsResolution;
+		}
+
+		public void describe(PrintWriter out) {
+			out.print("conflict resolution disagreement on terminal " + getTerminal());
+			out.println();
+			out.println();
+			out.println("state elements that want to shift normally:");
+			for (StateElement stateElement : elementsThatWantToShiftNormally) {
+				out.println("    " + stateElement);
+			}
+			out.println("state elements that wanted to reduce, but now want others to shift as conflict resolution:");
+			for (StateElement stateElement : elementsThatWantToShiftAsResolution) {
+				out.println("    " + stateElement);
+			}
+			out.println("state elements that wanted to reduce, and still want to reduce as conflict resolution:");
+			for (StateElement stateElement : elementsThatWantToReduceAsResolution) {
+				out.println("    " + stateElement);
+			}
+			out.println();
+			out.println("---------------------------------------------------------------------------------");
+			out.println("complete state:");
+			out.println(getState());
+			out.println();
+		}
+
+	}
+
 	public static final class OnErrorReduceReduceConflict extends Conflict {
 
 		private final ImmutableSet<Pair<String, Alternative>> nonterminalsAndAlternativesThatWantToReduce;
