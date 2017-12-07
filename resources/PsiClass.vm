@@ -54,11 +54,16 @@ public $classModifiers class $className extends $superclass $interfaces {
 	#if($customNameIdentifierImplementation && !$customNameImplementation)
 
 		public String getName() {
-			return getNameIdentifier().getText();
+			LeafPsiElement nameIdentifier = getNameIdentifier();
+			return (nameIdentifier == null ? null : nameIdentifier.getText());
 		}
 
 		public PsiElement setName(String newName) throws IncorrectOperationException {
-			return (LeafPsiElement) getNameIdentifier().replaceWithText(newName);
+			LeafPsiElement nameIdentifier = getNameIdentifier();
+			if (nameIdentifier == null) {
+				throw new IncorrectOperationException("name identifier not found");
+			}
+			return (LeafPsiElement) nameIdentifier.replaceWithText(newName);
 		}
 
 	#end

@@ -24,16 +24,21 @@ public final class Production_SingleNamed extends Production {
 		return (RightHandSide) InternalPsiUtil.getChild(this, 4);
 	}
 
-	public PsiElement getNameIdentifier() {
+	public LeafPsiElement getNameIdentifier() {
 		return PsiUtil.getNameIdentifier(this);
 	}
 
 	public String getName() {
-		return getNameIdentifier().getText();
+		LeafPsiElement nameIdentifier = getNameIdentifier();
+		return (nameIdentifier == null ? null : nameIdentifier.getText());
 	}
 
 	public PsiElement setName(String newName) throws IncorrectOperationException {
-		return null;
+		LeafPsiElement nameIdentifier = getNameIdentifier();
+		if (nameIdentifier == null) {
+			throw new IncorrectOperationException("name identifier not found");
+		}
+		return (LeafPsiElement) nameIdentifier.replaceWithText(newName);
 	}
 
 	public void delete() throws IncorrectOperationException {
