@@ -6,7 +6,6 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -606,12 +605,6 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		// initialize static parser information
 		initializeStatic();
 
-		System.out.println();
-		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println("begin parsing");
-		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println();
-
 		// handle unrecoverable syntax errors
 		PsiBuilder.Marker wholeFileMarker = psiBuilder.mark();
 		PsiBuilder.Marker preParseMarker = psiBuilder.mark();
@@ -620,21 +613,16 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			// Parse the input using the generated machine to build a parse tree. The state machine cannot execute the
 			// accept action here since the input cannot contain EOF.
 			while (!psiBuilder.eof()) {
-				System.out.println("Next token: " + psiBuilder.getTokenType() + ", symbol code: " + getSymbolCodeForElementType(psiBuilder.getTokenType()));
 				if (consumeSymbol(getSymbolCodeForElementType(psiBuilder.getTokenType()), null)) {
 					psiBuilder.advanceLexer();
 				} else {
 					recoverFromError(psiBuilder);
 				}
-				System.out.println("New state: " + state);
-				System.out.println("State stack: " + StringUtils.join(Arrays.copyOf(stateStack, stackSize), ','));
-				System.out.println();
 			}
 
 			// Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
 			// a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
 			{
-				System.out.println("Next token: %eof, symbol code: " + EOF_SYMBOL_CODE);
 				int originalState = state;
 				if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
 					recoverFromError(psiBuilder);
@@ -642,14 +630,9 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 						throw new UnrecoverableSyntaxException(state);
 					}
 				}
-				System.out.println("New state: " + state);
-				System.out.println("State stack: " + StringUtils.join(Arrays.copyOf(stateStack, stackSize), ','));
-				System.out.println();
 			}
 
 		} catch (UnrecoverableSyntaxException e) {
-
-			System.out.println("unrecoverable syntax error: " + e);
 
 			// Build a "code fragment" node that contains the parsed and partially reduced part (i.e. the parse tree
 			// stack), then the exception. This will report the error properly and also consume the remaining tokens.
@@ -680,12 +663,6 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		psiBuilder.advanceLexer();
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
 
-		System.out.println();
-		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println("end parsing");
-		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println();
-
 	}
 
 	/**
@@ -698,7 +675,6 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		while (true) { // looped on reduce
 			int action = ACTION_TABLE[state * ACTION_TABLE_WIDTH + symbolCode];
 			if (action == Integer.MIN_VALUE) { // accept
-				System.out.println("Action: accept");
 				return true;
 			} else if (action > 0) { // shift
 				shift(symbolData, action - 1);
@@ -706,14 +682,12 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			} else if (action < 0) { // reduce, then continue with the original symbol
 				reduce(-action - 1);
 			} else { // syntax error
-				System.out.println("Action: error");
 				return false;
 			}
 		}
 	}
 
 	private void shift(Object data, int newState) {
-		System.out.println("Action: shift state " + newState);
 		if (stackSize == stateStack.length) {
 			stackSize = stackSize * 2;
 			stateStack = Arrays.copyOf(stateStack, stackSize);
@@ -731,8 +705,6 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		int rightHandSideLength = ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH[alternativeIndex];
 		Object parseNodeHead = ALTERNATIVE_INDEX_TO_PARSE_NODE_HEAD[alternativeIndex];
 		int nonterminalSymbolCode = ALTERNATIVE_INDEX_TO_NONTERMINAL_SYMBOL_CODE[alternativeIndex];
-
-		System.out.println("Action: reduce to " + parseNodeHead + ", symbol code: " + nonterminalSymbolCode + ", length: " + rightHandSideLength);
 
 		// pop (rightHandSideLength) states off the state stack
 		if (rightHandSideLength > 0) {

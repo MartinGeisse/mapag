@@ -24,6 +24,10 @@ public final class Production_ErrorWithNonterminalNameAtEof extends Production {
 		return PsiUtil.setName(this, newName);
 	}
 
+	public PsiElement getNameIdentifier() {
+		return PsiUtil.getNameIdentifier(this);
+	}
+
 	public void delete() throws IncorrectOperationException {
 		PsiUtil.delete(this);
 	}
