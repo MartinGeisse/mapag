@@ -688,7 +688,7 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 					case 50:
 						break;
 					case 21: {
-						return null;
+						return Symbols.KW_EMPTY;
 					}
 					case 51:
 						break;
