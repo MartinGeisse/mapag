@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.ConflictResolution;
-import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.AlternativeAttributes;
 import name.martingeisse.mapag.grammar.canonical.TerminalDefinition;
@@ -55,6 +54,8 @@ public final class State {
 
 	// Returns null to indicate a run-time syntax error
 	public Action determineActionForTerminalOrEof(GrammarInfo grammarInfo, String terminalOrEof) {
+
+		// determine which elements want to shift that terminal, and which want to reduce when seeing that terminal
 		Set<StateElement> elementsThatWantToShift = new HashSet<>();
 		Set<StateElement> elementsThatWantToReduce = new HashSet<>();
 		elementLoop:
@@ -79,7 +80,7 @@ public final class State {
 			}
 		}
 
-		// handle cases without reducible elements
+		// handle cases without reducible elements (shift or error)
 		if (elementsThatWantToReduce.isEmpty()) {
 			if (elementsThatWantToShift.isEmpty()) {
 				return getError();
@@ -88,8 +89,7 @@ public final class State {
 			}
 		}
 
-		// Now we have reducible elements. If we cannot shift, we can either reduce, or have an unresolvable R/R
-		// conflict. See the comment below for an explanation why precedence and resolve blocks cannot resolve this.
+		// handle cases without shifting elements (reduce single element; R/R conflict if multiple elements)
 		if (elementsThatWantToShift.isEmpty()) {
 			if (elementsThatWantToReduce.size() > 1) {
 				throw new StateMachineException.ReduceReduceConflict(this, terminalOrEof, ImmutableSet.copyOf(elementsThatWantToReduce));
@@ -98,48 +98,32 @@ public final class State {
 			}
 		}
 
-		// Now we have reducible elements but we can also shift. We can handle a special case of reduce-reduce conflict
-		// through precedence / resolve blocks in such a case: If we are able to shift the terminal, but also reduce to
-		// at least two different alternatives, then we have a reduce-reduce conflict in principle. However, if
-		// conflict resolution determines to shift the terminal for all of them, the conflict disappears and we can
-		// shift. This logic can never result in reducing though, since both precedence and resolve blocks lack the
-		// expressive power to make sufficiently clear which of the alternatives should be reduced unter which
-		// circumstances. The latter is also the reason why, if we cannot shift, any R/R conflict is unresolvable.
-		// Future extensions may provide more power.
-
+		// Now we have at least one reducible element (but possibly more than one), and we could also shift. That means
+		// we now have a shift-reduce conflict, and if there is more than one reducible element then we also have a
+		// reduce-reduce conflict.
+		//
+		// S/R conflicts can be handled by precedence and resolve blocks, if present. R/R conflicts in general cannot
+		// be solved by those since they lack the expressive power to make sufficiently clear which of the alternatives
+		// should be reduced unter which circumstances.
+		//
+		// However, there is one special case of R/R conflict that can still be resolved IF there is also an S/R
+		// conflict, as is the case here -- observe that R/R conflicts without a simultaneous S/R conflict would have
+		// thrown an exception above already. If we have multiple reducible elements, and if conflict resolution
+		// determines to allow other elements to shift the terminal for all of them, the conflict disappears and we can
+		// shift. This logic can never result in reducing though.
+		//
 		// Note that the elementsThatWantToReduce are equivalent to the alternatives that want to reduce, since all
 		// of them are "at the end" and have the terminalOrEof as their follow terminal, so they can only differ
 		// in the alternative to reduce.
 
-		// handle the case of a single reducible element (no R/R conflict) -- resolve or S/R conflict
-		// TODO
-
-		// handle the case of multiple elements that all want to shift -- so we can shift
-		// TODO
-
-		// Multiple elements and at least one of them wants to reduce. This is an R/R conflict as explained above.
-		// In the future, we might say that it's only an R/R conflict if multiple elements want to reduce:
-		// If all but one element prefer shift over reduce, and one prefers reduce over shift, then we have
-		// reduce that one > shift > reduce others, so the conflict could be resolved in favor if reducing that one
-		// alternative. But I'm hesitant in resolving R/R conflicts as long as the need is not clear, because most of
-		// the time they are errors in the grammar.
-		// TODO
-
-
-		// TODO below; implement as described in the comment above; use resolveConflict()
-
-
-
-
-
-		// All state elements are at the end and have the specified terminal as their follow-terminal. So they can
-		// only differ in their left side or alternative. Either case is a reduce/reduce conflict. Note that equal
-		// duplicates have been filtered out since StateElement has proper hashCode()/equals() support and the elements
-		// are stored in a Set<>.
-
-		// handle shift/reduce conflicts by resolution
-		ConflictResolution resolution = elementThatWantsToReduce.getAlternative().getAttributes();
-		if (resolution != null) {
+		// handle the case of a single reducible element (no R/R conflict), i.e. a possibly resolvable S/R conflict
+		if (elementsThatWantToReduce.size() == 1) {
+			StateElement elementThatWantsToReduce = elementsThatWantToReduce.iterator().next();
+			ConflictResolution resolution = resolveConflict(grammarInfo, elementThatWantsToReduce.getAlternative().getAttributes(), terminalOrEof);
+			if (resolution == null) {
+				throw new StateMachineException.ShiftReduceConflict(this, terminalOrEof,
+					ImmutableSet.copyOf(elementsThatWantToShift), ImmutableSet.copyOf(elementsThatWantToReduce));
+			}
 			switch (resolution) {
 
 				case SHIFT:
@@ -154,10 +138,38 @@ public final class State {
 			}
 		}
 
+		// Now we have multiple reducible elements (R/R conflict). Check which kinds of conflict resolution the elements allow.
+		Set<StateElement> reducibleElementsWithShiftResolution = new HashSet<>();
+		Set<StateElement> reducibleElementsWithReduceResolution = new HashSet<>();
+		Set<StateElement> reducibleElementsWithoutResolution = new HashSet<>();
+		for (StateElement elementThatWantsToReduce : elementsThatWantToReduce) {
+			ConflictResolution resolution = resolveConflict(grammarInfo, elementThatWantsToReduce.getAlternative().getAttributes(), terminalOrEof);
+			if (resolution == null) {
+				reducibleElementsWithoutResolution.add(elementThatWantsToReduce);
+			} else if (resolution == ConflictResolution.SHIFT) {
+				reducibleElementsWithShiftResolution.add(elementThatWantsToReduce);
+			} else if (resolution == ConflictResolution.REDUCE) {
+				reducibleElementsWithReduceResolution.add(elementThatWantsToReduce);
+			}
+		}
 
-		// resolution was not successful TODO can be an RR conflict
-		throw new StateMachineException.ShiftReduceConflict(this, terminalOrEof,
-			ImmutableSet.copyOf(elementsThatWantToShift), ImmutableSet.copyOf(elementsThatWantToReduce));
+		// If all reducible elements agree to shift, then the R/R conflict disappears.
+		if (reducibleElementsWithoutResolution.isEmpty() && reducibleElementsWithReduceResolution.isEmpty()) {
+			return getShift(grammarInfo, elementsThatWantToShift);
+		}
+
+		// At this point we have an unresolvable R/R conflict. We now check for reducible elements that disagree in
+		// their conflict resolution because then we want to show a more descriptive error message to the user.
+		if (!reducibleElementsWithShiftResolution.isEmpty() && !reducibleElementsWithReduceResolution.isEmpty()) {
+			throw new StateMachineException.ConflictResolutionDisagreement(this, terminalOrEof,
+				ImmutableSet.copyOf(elementsThatWantToShift),
+				ImmutableSet.copyOf(reducibleElementsWithShiftResolution),
+				ImmutableSet.copyOf(reducibleElementsWithReduceResolution)
+			);
+		}
+
+		// No conflict resolution disagreement, so we have a normal R/R conflict.
+		throw new StateMachineException.ReduceReduceConflict(this, terminalOrEof, ImmutableSet.copyOf(elementsThatWantToReduce));
 
 	}
 
@@ -219,16 +231,16 @@ public final class State {
 		return null;
 	}
 
-	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elements) {
+	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elementsThatWantToShift) {
 		StateBuilder builder = new StateBuilder(grammarInfo);
-		for (StateElement element : elements) {
+		for (StateElement element : elementsThatWantToShift) {
 			builder.addElementClosure(element.getShifted());
 		}
 		return new Action.Shift(builder.build());
 	}
 
-	private Action getReduce(StateElement element) {
-		return new Action.Reduce(element.getLeftSide(), element.getAlternative()).checkForAcceptingRootSymbol();
+	private Action getReduce(StateElement elementThatWantsToReduce) {
+		return new Action.Reduce(elementThatWantsToReduce.getLeftSide(), elementThatWantsToReduce.getAlternative()).checkForAcceptingRootSymbol();
 	}
 
 	// Returns null if that nonterminal would cause a syntax error. This corresponds to an empty table entry and
