@@ -253,6 +253,10 @@ public class PsiToGrammarConverter {
 			Expression right = convertExpression(typedExpression.getRight());
 			result = new SequenceExpression(left, right);
 
+		} else if (psiExpression instanceof Expression_Empty) {
+
+			result = new EmptyExpression();
+
 		} else if (psiExpression instanceof Expression_Identifier) {
 
 			Expression_Identifier typedExpression = (Expression_Identifier) psiExpression;
