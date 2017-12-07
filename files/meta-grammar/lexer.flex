@@ -48,6 +48,7 @@ Identifier = ([:jletter:] | "_" ) ([:jletterdigit:] | [:jletter:] | "_" )*
 	"%eof" { return Symbols.KW_EOF; }
 	"%error" { return Symbols.KW_ERROR; }
 	"%reduceOnError" { return Symbols.KW_REDUCE_ON_ERROR; }
+	"%empty" { return Symbols.KW_EMPTY; }
 
 	// braces and parentheses
 	"{" { return Symbols.OPENING_CURLY_BRACE; }
