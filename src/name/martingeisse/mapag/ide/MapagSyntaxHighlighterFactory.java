@@ -62,6 +62,10 @@ public class MapagSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
 						return MapagTextAttributeKeys.KEYWORD;
 					} else if (tokenType == Symbols.KW_ERROR) {
 						return MapagTextAttributeKeys.KEYWORD;
+					} else if (tokenType == Symbols.KW_REDUCE_ON_ERROR) {
+						return MapagTextAttributeKeys.KEYWORD;
+					} else if (tokenType == Symbols.KW_EMPTY) {
+						return MapagTextAttributeKeys.KEYWORD;
 					} else if (tokenType == Symbols.OPENING_CURLY_BRACE) {
 						return MapagTextAttributeKeys.PARENTHESES;
 					} else if (tokenType == Symbols.CLOSING_CURLY_BRACE) {
