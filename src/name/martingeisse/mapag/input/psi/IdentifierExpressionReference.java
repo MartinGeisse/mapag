@@ -122,9 +122,9 @@ public class IdentifierExpressionReference implements PsiReference {
 
 		// nonterminals
 		for (Production production : grammar.getProductions().getAll()) {
-			LeafPsiElement nonterminalNameNode = PsiUtil.getNonterminalNameNode(production);
-			if (nonterminalNameNode != null) {
-				variants.add(nonterminalNameNode.getText());
+			PsiElement nameIdentifier = production.getNameIdentifier();
+			if (nameIdentifier != null) {
+				variants.add(nameIdentifier.getText());
 			}
 		}
 

@@ -21,25 +21,6 @@ final class PsiUtil {
 	// general
 	//
 
-	// TODO support .getNameIdentifier() in the nodes themselves? Probably useful for PsiNameIdentifierOwner. Then remove this.
-	public static LeafPsiElement getNonterminalNameNode(Production production) {
-		if (production instanceof Production_SingleUnnamed) {
-			return ((Production_SingleUnnamed) production).getNonterminalName();
-		} else if (production instanceof Production_SingleNamed) {
-			return ((Production_SingleNamed) production).getNonterminalName();
-		} else if (production instanceof Production_Multi) {
-			return ((Production_Multi) production).getNonterminalName();
-		} else if (production instanceof Production_ErrorWithNonterminalNameWithSemicolon) {
-			return ((Production_ErrorWithNonterminalNameWithSemicolon) production).getNonterminalName();
-		} else if (production instanceof Production_ErrorWithNonterminalNameWithClosingCurlyBrace) {
-			return ((Production_ErrorWithNonterminalNameWithClosingCurlyBrace) production).getNonterminalName();
-		} else if (production instanceof Production_ErrorWithNonterminalNameAtEof) {
-			return ((Production_ErrorWithNonterminalNameAtEof) production).getNonterminalName();
-		} else {
-			return null;
-		}
-	}
-
 	public static PsiElement setText(LeafPsiElement element, String newText) {
 		return (PsiElement) element.replaceWithText(newText);
 	}
