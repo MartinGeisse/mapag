@@ -796,6 +796,8 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 	private void recoverFromError(PsiBuilder psiBuilder) throws UnrecoverableSyntaxException {
 
+		int originalState = state; // used for error messages
+
 		// First, attempt implicit reduce-on-error to reduce a nonterminal that was actually completed directly before
 		// the error, but not yet reduced since LR(1) would demand the right lookahead token to reduce. We want
 		// to reduce that nonterminal to give other IDE parts a better partial PSI to work with. However, we must
@@ -855,8 +857,6 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		//
 		// Note the edge cases: Both the current state (at the current stack size) and the start state (with an empty
 		// stack) could be able to consume the error symbol.
-
-		int originalState = state; // used for error messages
 
 		// dig up a recovery-capable state from the stack
 		int originalStackSize = stackSize;
