@@ -2,6 +2,7 @@ package name.martingeisse.mapag.input.psi;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,16 +12,16 @@ public final class Production_ErrorWithoutNonterminalNameAtEof extends Productio
 		super(node);
 	}
 
+	public PsiElement getNameIdentifier() {
+		return PsiUtil.getNameIdentifier(this);
+	}
+
 	public String getName() {
-		return PsiUtil.getName(this);
+		return getNameIdentifier().getText();
 	}
 
 	public PsiElement setName(String newName) throws IncorrectOperationException {
-		return PsiUtil.setName(this, newName);
-	}
-
-	public PsiElement getNameIdentifier() {
-		return PsiUtil.getNameIdentifier(this);
+		return (LeafPsiElement) getNameIdentifier().replaceWithText(newName);
 	}
 
 	public void delete() throws IncorrectOperationException {

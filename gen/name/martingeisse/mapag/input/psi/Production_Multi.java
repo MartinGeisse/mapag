@@ -20,16 +20,16 @@ public final class Production_Multi extends Production {
 		return (ListNode<Production_Multi_Alternatives>) InternalPsiUtil.getChild(this, 3);
 	}
 
+	public PsiElement getNameIdentifier() {
+		return PsiUtil.getNameIdentifier(this);
+	}
+
 	public String getName() {
-		return PsiUtil.getName(this);
+		return getNameIdentifier().getText();
 	}
 
 	public PsiElement setName(String newName) throws IncorrectOperationException {
-		return PsiUtil.setName(this, newName);
-	}
-
-	public PsiElement getNameIdentifier() {
-		return PsiUtil.getNameIdentifier(this);
+		return (LeafPsiElement) getNameIdentifier().replaceWithText(newName);
 	}
 
 	public void delete() throws IncorrectOperationException {

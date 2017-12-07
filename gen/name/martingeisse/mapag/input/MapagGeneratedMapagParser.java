@@ -535,19 +535,10 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 	// static table, but has to be initialized at startup since element type indices aren't compile-time constants
 	private static int[] elementTypeIndexToSymbolCode;
-	private boolean used = false;
-	private int[] stateStack = new int[256];
-
-	// ------------------------------------------------------------------------------------------------
-	// --- non-generated stuff
-	// ------------------------------------------------------------------------------------------------
-	private Object[] parseTreeStack = new Object[256];
-	private int stackSize = 0;
-	private int state = START_STATE;
 
 	/**
-	 * This method initializes static tables on the first parse run -- we need element type indices to be initialized
-	 * before doing this.
+	 * This method initializes static tables on the first parse run -- we need element type
+	 * indices to be initialized before doing this.
 	 */
 	private static void initializeStatic() {
 		if (elementTypeIndexToSymbolCode != null) {
@@ -581,6 +572,16 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		}
 		throw new RuntimeException("unknown token: " + elementType);
 	}
+
+	// ------------------------------------------------------------------------------------------------
+	// --- non-generated stuff
+	// ------------------------------------------------------------------------------------------------
+
+	private boolean used = false;
+	private int[] stateStack = new int[256];
+	private Object[] parseTreeStack = new Object[256];
+	private int stackSize = 0;
+	private int state = START_STATE;
 
 	@Override
 	public ASTNode parse(IElementType type, PsiBuilder psiBuilder) {
