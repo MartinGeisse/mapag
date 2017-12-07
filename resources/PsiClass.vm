@@ -74,13 +74,13 @@ public $classModifiers class $className extends $superclass $interfaces {
 		}
 	#end
 
-	#if($safeDeletableAbstract)
+	#if($safeDeleteBase)
 		public void superclassDelete() throws IncorrectOperationException {
 			super.delete();
 		}
 	#end
 
-	#if($safeDeletableImplementation)
+	#if($safeDeleteImplementation)
 		public void delete() throws IncorrectOperationException {
 			${psiUtilClass}.delete(this);
 		}

@@ -35,6 +35,10 @@ public final class TerminalDeclaration extends ASTWrapperPsiElement implements P
 		return (LeafPsiElement) nameIdentifier.replaceWithText(newName);
 	}
 
+	public void superclassDelete() throws IncorrectOperationException {
+		super.delete();
+	}
+
 	public void delete() throws IncorrectOperationException {
 		PsiUtil.delete(this);
 	}

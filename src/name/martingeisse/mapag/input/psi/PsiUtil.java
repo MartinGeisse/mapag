@@ -49,6 +49,10 @@ final class PsiUtil {
 	// naming support
 	//
 
+	public static LeafPsiElement getNameIdentifier(TerminalDeclaration node) {
+		return node.getIdentifier();
+	}
+
 	public static LeafPsiElement getNameIdentifier(Production_SingleUnnamed node) {
 		return node.getNonterminalName();
 	}
@@ -88,6 +92,19 @@ final class PsiUtil {
 	//
 	// safe delete
 	//
+
+	public static void delete(TerminalDeclaration node) throws IncorrectOperationException {
+		PsiFile psiFile = node.getContainingFile();
+		if (psiFile != null) {
+			VirtualFile virtualFile = psiFile.getVirtualFile();
+			if (virtualFile != null) {
+				// TODO node.superclassDelete();
+				FileContentUtil.reparseFiles(virtualFile);
+				return;
+			}
+		}
+		throw new IncorrectOperationException("could not determine containing virtual file to reparse after safe delete");
+	}
 
 	public static void delete(Production node) throws IncorrectOperationException {
 		PsiFile psiFile = node.getContainingFile();
