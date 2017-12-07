@@ -15,6 +15,7 @@ public class Symbols {
 	public static final MapagElementType COMMA = new MapagElementType("COMMA");
 	public static final MapagElementType EXPANDS_TO = new MapagElementType("EXPANDS_TO");
 	public static final MapagElementType IDENTIFIER = new MapagElementType("IDENTIFIER");
+	public static final MapagElementType KW_EMPTY = new MapagElementType("KW_EMPTY");
 	public static final MapagElementType KW_EOF = new MapagElementType("KW_EOF");
 	public static final MapagElementType KW_ERROR = new MapagElementType("KW_ERROR");
 	public static final MapagElementType KW_LEFT = new MapagElementType("KW_LEFT");
@@ -43,6 +44,7 @@ public class Symbols {
 	public static final MapagElementType alternativeAttribute_ReduceOnError = new MapagElementType("alternativeAttribute_ReduceOnError");
 	public static final MapagElementType alternativeAttribute_ResolveBlock = new MapagElementType("alternativeAttribute_ResolveBlock");
 	public static final MapagElementType alternativeAttribute_ResolveBlock_ResolveDeclarations_List = new MapagElementType("alternativeAttribute_ResolveBlock_ResolveDeclarations_List");
+	public static final MapagElementType expression_Empty = new MapagElementType("expression_Empty");
 	public static final MapagElementType expression_Error = new MapagElementType("expression_Error");
 	public static final MapagElementType expression_Identifier = new MapagElementType("expression_Identifier");
 	public static final MapagElementType expression_Named = new MapagElementType("expression_Named");

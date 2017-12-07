@@ -256,12 +256,12 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 				alternativeWithResolution("sequence", sequence(
 					symbol("expression").withName("left"),
 					symbol("expression").withName("right")
-				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON"), ImmutableList.of("OPENING_PARENTHESIS", "IDENTIFIER", "KW_ERROR", "BAR")),
+				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON"), ImmutableList.of("OPENING_PARENTHESIS", "KW_EMPTY", "IDENTIFIER", "KW_ERROR", "BAR")),
 				alternativeWithResolution("or", sequence(
 					symbol("expression").withName("left"),
 					symbol("BAR"),
 					symbol("expression").withName("right")
-				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON", "OPENING_PARENTHESIS", "IDENTIFIER", "KW_ERROR"), ImmutableList.of("BAR")),
+				), ImmutableList.of("QUESTION_MARK", "ASTERISK", "PLUS", "COLON", "OPENING_PARENTHESIS", "KW_EMPTY", "IDENTIFIER", "KW_ERROR"), ImmutableList.of("BAR")),
 				alternative("zeroOrMore", sequence(
 					symbol("expression").withName("operand"),
 					symbol("ASTERISK")

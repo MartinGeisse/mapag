@@ -16,6 +16,9 @@ public class PsiFactory {
 		if (type == Symbols.rightHandSide) {
 			return new RightHandSide(node);
 		}
+		if (type == Symbols.expression_Empty) {
+			return new Expression_Empty(node);
+		}
 		if (type == Symbols.expression_Identifier) {
 			return new Expression_Identifier(node);
 		}
