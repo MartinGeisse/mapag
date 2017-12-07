@@ -1,0 +1,7 @@
+
+- improve syntax highlighting
+- add configuration page for syntax highlighting (?)
+- use NameIdentifierOwner for Production (instead of PsiNamedElement)
+- implement NameIdentifierOwner and References for terminals
+
+- re-check starting at "references and resolve"
