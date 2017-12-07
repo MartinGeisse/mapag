@@ -5,7 +5,7 @@
     KW_TERMINALS, KW_PRECEDENCE, KW_LEFT, KW_RIGHT, KW_NONASSOC, KW_START,
 
     // production keywords
-    KW_RESOLVE, KW_SHIFT, KW_REDUCE, KW_EOF, KW_ERROR, KW_REDUCE_ON_ERROR,
+    KW_RESOLVE, KW_SHIFT, KW_REDUCE, KW_EOF, KW_ERROR, KW_REDUCE_ON_ERROR, KW_EMPTY,
 
 	// parentheses, braces and brackets
     OPENING_CURLY_BRACE, CLOSING_CURLY_BRACE, OPENING_PARENTHESIS, CLOSING_PARENTHESIS,
@@ -74,9 +74,7 @@ alternativeAttribute ::= {
 resolveDeclaration ::= (KW_SHIFT:shift | KW_REDUCE:reduce):action (IDENTIFIER, COMMA)+:symbols SEMICOLON;
 
 expression ::= {
-	empty ::= %resolve {
-		%shift IDENTIFIER, KW_ERROR, OPENING_PARENTHESIS;
-	};
+	empty ::= KW_EMPTY;
     identifier ::= IDENTIFIER:identifier %reduceOnError;
     error ::= KW_ERROR;
     sequence ::= expression:left expression:right %resolve {

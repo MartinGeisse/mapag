@@ -73,7 +73,7 @@ public final class StateElement {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(leftSide).append(" ::= ");
+		builder.append(leftSide).append(':').append(alternative.getName()).append(" ::= ");
 		int i = 0;
 		for (ExpansionElement element : alternative.getExpansion().getElements()) {
 			if (i == position) {

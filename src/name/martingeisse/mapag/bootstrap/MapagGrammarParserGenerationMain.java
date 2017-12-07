@@ -50,6 +50,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		codeGenerationProperties.setProperty("parser.error.KW_EOF", "%eof");
 		codeGenerationProperties.setProperty("parser.error.KW_ERROR", "%error");
 		codeGenerationProperties.setProperty("parser.error.KW_REDUCE_ON_ERROR", "%reduceOnError");
+		codeGenerationProperties.setProperty("parser.error.KW_EMPTY", "%empty");
 		codeGenerationProperties.setProperty("parser.error.OPENING_CURLY_BRACE", "{");
 		codeGenerationProperties.setProperty("parser.error.CLOSING_CURLY_BRACE", "}");
 		codeGenerationProperties.setProperty("parser.error.OPENING_PARENTHESIS", "(");
@@ -96,6 +97,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 			new TerminalDeclaration("KW_EOF"),
 			new TerminalDeclaration("KW_ERROR"),
 			new TerminalDeclaration("KW_REDUCE_ON_ERROR"),
+			new TerminalDeclaration("KW_EMPTY"),
 			new TerminalDeclaration("OPENING_CURLY_BRACE"),
 			new TerminalDeclaration("CLOSING_CURLY_BRACE"),
 			new TerminalDeclaration("OPENING_PARENTHESIS"),
@@ -248,9 +250,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 				))
 			)),
 			new Production("expression", ImmutableList.of(
-				alternativeWithResolution("empty", new EmptyExpression(),
-					ImmutableList.of("IDENTIFIER", "KW_ERROR", "OPENING_PARENTHESIS", "CLOSING_PARENTHESIS", "COMMA", "COLON", "BAR", "QUESTION_MARK", "ASTERISK", "PLUS"), ImmutableList.of()
-				),
+				alternative("empty", symbol("KW_EMPTY")),
 				alternativeWithReduceOnError("identifier", symbol("IDENTIFIER").withName("identifier")),
 				alternative("error", symbol("KW_ERROR")),
 				alternativeWithResolution("sequence", sequence(
