@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-public $classModifiers class $className extends $superclass #if($psiNamedElementAbstract || $psiNameIdentifierOwnerAbstract) implements #end #if($psiNamedElementAbstract) PsiNamedElement #end #if($psiNameIdentifierOwnerAbstract) PsiNameIdentifierOwner #end {
+public $classModifiers class $className extends $superclass $interfaces {
 
     public $className(@NotNull ASTNode node) {
         super(node);
@@ -33,7 +33,7 @@ public $classModifiers class $className extends $superclass #if($psiNamedElement
         }
     #end
 
-	#if($psiNamedElementImplementation || $psiNameIdentifierOwnerImplementation)
+	#if($customNameImplementation)
 
 		public String getName() {
 			return ${psiUtilClass}.getName(this);
@@ -44,12 +44,22 @@ public $classModifiers class $className extends $superclass #if($psiNamedElement
 		}
 
 	#end
-
-	#if($psiNameIdentifierOwnerImplementation)
+	#if($customNameIdentifierImplementation)
 
         public PsiElement getNameIdentifier() {
 			return ${psiUtilClass}.getNameIdentifier(this);
         }
+
+	#end
+	#if($customNameIdentifierImplementation && !$customNameImplementation)
+
+		public String getName() {
+			return getNameIdentifier().getText();
+		}
+
+		public PsiElement setName(String newName) throws IncorrectOperationException {
+			return (LeafPsiElement) getNameIdentifier().replaceWithText(newName);
+		}
 
 	#end
 

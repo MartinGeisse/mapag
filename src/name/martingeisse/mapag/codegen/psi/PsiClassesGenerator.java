@@ -137,85 +137,42 @@ public class PsiClassesGenerator {
 			}
 			context.put("nodeGetters", nodeGetters);
 
+			List<String> interfaces = new ArrayList<>();
+			boolean customNameImplementation = false;
+			boolean customNameIdentifierImplementation = false;
+
 			if (classesSupportPsiNamedElement.contains(className)) {
-				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
-				if (isAbstract) {
-
-					// this is a multi-alternative nonterminal class that implements PsiNamedElement
-					context.put("psiNamedElementAbstract", true);
-					context.put("psiNamedElementImplementation", false);
-
-				} else {
-
-					// this is either a single-alternative nonterminal class that implements PsiNamedElement, or an
-					// alternative class that directly implements PsiNamedElement and which belongs to a
-					// multi-alternative nonterminal (the latter is useful if only this alternative implements
-					// PsiNamedElement, and the others aren't)
-					context.put("psiNamedElementAbstract", false);
-					context.put("psiNamedElementImplementation", true);
-
+				interfaces.add("PsiNamedElement");
+				if (!isAbstract) {
+					customNameImplementation = true;
 				}
 			} else if (classesSupportPsiNamedElement.contains(superclass)) {
-				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
-				if (isAbstract) {
-
-					throw new UserMessageException("Found an abstract PSI class whose base class implements " +
-						"PsiNamedElement: " + className + " -- this doesn't make sense");
-
-				} else {
-
-					// this is an alternative of a nonterminal that implements PsiNamedElement, so the naming is inherited
-					context.put("psiNamedElementAbstract", false);
-					context.put("psiNamedElementImplementation", true);
-
+				if (!isAbstract) {
+					customNameImplementation = true;
 				}
-			} else {
-
-				// this class does not implement PsiNamedElement
-				context.put("psiNamedElementAbstract", false);
-				context.put("psiNamedElementImplementation", false);
-
 			}
 
 			if (classesSupportPsiNameIdentifierOwner.contains(className)) {
-				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
-				if (isAbstract) {
-
-					// this is a multi-alternative nonterminal class that implements PsiNameIdentifierOwner
-					context.put("psiNameIdentifierOwnerAbstract", true);
-					context.put("psiNameIdentifierOwnerImplementation", false);
-
-				} else {
-
-					// this is either a single-alternative nonterminal class that implements PsiNameIdentifierOwner, or an
-					// alternative class that directly implements PsiNameIdentifierOwner and which belongs to a
-					// multi-alternative nonterminal (the latter is useful if only this alternative implements
-					// PsiNameIdentifierOwner, and the others aren't)
-					context.put("psiNameIdentifierOwnerAbstract", false);
-					context.put("psiNameIdentifierOwnerImplementation", true);
-
+				interfaces.add("PsiNameIdentifierOwner");
+				if (!isAbstract) {
+					customNameIdentifierImplementation = true;
 				}
 			} else if (classesSupportPsiNameIdentifierOwner.contains(superclass)) {
-				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
-				if (isAbstract) {
-
-					throw new UserMessageException("Found an abstract PSI class whose base class implements " +
-						"PsiNameIdentifierOwner: " + className + " -- this doesn't make sense");
-
-				} else {
-
-					// this is an alternative of a nonterminal that implements PsiNameIdentifierOwner, so the naming is inherited
-					context.put("psiNameIdentifierOwnerAbstract", false);
-					context.put("psiNameIdentifierOwnerImplementation", true);
-
+				if (!isAbstract) {
+					customNameIdentifierImplementation = true;
 				}
-			} else {
-
-				// this class does not implement PsiNameIdentifierOwner
-				context.put("psiNameIdentifierOwnerAbstract", false);
-				context.put("psiNameIdentifierOwnerImplementation", false);
-
 			}
+
+			if (customNameImplementation || customNameIdentifierImplementation) {
+				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
+			}
+			if (interfaces.isEmpty()) {
+				context.put("interfaces", "");
+			} else {
+				context.put("interfaces", "implements " + StringUtils.join(interfaces, ','));
+			}
+			context.put("customNameImplementation", customNameImplementation);
+			context.put("customNameIdentifierImplementation", customNameIdentifierImplementation);
 
 			if (!isAbstract && (classesSupportGetReference.contains(className) || classesSupportGetReference.contains(superclass))) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
