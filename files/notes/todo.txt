@@ -1,5 +1,4 @@
 
-- use NameIdentifierOwner for Production (instead of PsiNamedElement)
 - implement NameIdentifierOwner and References for terminals
 
 - re-check starting at "references and resolve"
