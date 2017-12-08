@@ -5,7 +5,9 @@ import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
+import name.martingeisse.mapag.input.psi.Grammar_PrecedenceTable;
 import name.martingeisse.mapag.input.psi.Production;
+import name.martingeisse.mapag.input.psi.TerminalDeclarations;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +28,7 @@ public class MapagFoldingBuilder implements FoldingBuilder {
 	}
 
 	private void collectFoldingRegions(PsiElement psiElement, List<FoldingDescriptor> destination) {
-		if (psiElement instanceof Production) {
+		if (psiElement instanceof TerminalDeclarations || psiElement instanceof Grammar_PrecedenceTable || psiElement instanceof Production) {
 			destination.add(new FoldingDescriptor(psiElement.getNode(), psiElement.getTextRange()));
 		}
 		for (PsiElement child : psiElement.getChildren()) {
@@ -38,6 +40,12 @@ public class MapagFoldingBuilder implements FoldingBuilder {
 	@Override
 	public String getPlaceholderText(@NotNull ASTNode astNode) {
 		PsiElement psiElement = astNode.getPsi();
+		if (psiElement instanceof TerminalDeclarations) {
+			return "(terminal declarations)";
+		}
+		if (psiElement instanceof Grammar_PrecedenceTable) {
+			return "(precedence table)";
+		}
 		if (psiElement instanceof Production) {
 			return ((Production) psiElement).getName() + " ::= ";
 		} else {
