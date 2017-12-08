@@ -64,6 +64,7 @@ public class Symbols {
 	public static final MapagElementType grammar_TerminalDeclarations = new MapagElementType("grammar_TerminalDeclarations");
 	public static final MapagElementType grammar_TerminalDeclarations_Identifiers_List = new MapagElementType("grammar_TerminalDeclarations_Identifiers_List");
 	public static final MapagElementType precedenceDeclaration = new MapagElementType("precedenceDeclaration");
+	public static final MapagElementType precedenceDeclarationSymbol = new MapagElementType("precedenceDeclarationSymbol");
 	public static final MapagElementType precedenceDeclaration_Associativity_Left = new MapagElementType("precedenceDeclaration_Associativity_Left");
 	public static final MapagElementType precedenceDeclaration_Associativity_Nonassoc = new MapagElementType("precedenceDeclaration_Associativity_Nonassoc");
 	public static final MapagElementType precedenceDeclaration_Associativity_Right = new MapagElementType("precedenceDeclaration_Associativity_Right");
