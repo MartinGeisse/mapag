@@ -25,7 +25,12 @@ import java.util.List;
  */
 public class PsiToGrammarConverter {
 
+	private final boolean failOnErrors;
 	private final GrammarToPsiMap backMap = new GrammarToPsiMap();
+
+	public PsiToGrammarConverter(boolean failOnErrors) {
+		this.failOnErrors = failOnErrors;
+	}
 
 	public Grammar convert(MapagSourceFile mapagSourceFile) {
 		name.martingeisse.mapag.input.psi.Grammar psiGrammar = mapagSourceFile.getGrammar();
@@ -82,7 +87,11 @@ public class PsiToGrammarConverter {
 			} else if (associativityNode instanceof PrecedenceDeclaration_Associativity_Nonassoc) {
 				associativity = Associativity.NONASSOC;
 			} else {
-				throw new RuntimeException("unknown associativity PSI node: " + associativityNode);
+				if (failOnErrors) {
+					throw new RuntimeException("unknown associativity PSI node: " + associativityNode);
+				} else {
+					continue;
+				}
 			}
 			PrecedenceTable.Entry entry = new PrecedenceTable.Entry(ImmutableList.copyOf(identifiers), associativity);
 			convertedEntries.add(entry);
@@ -142,7 +151,9 @@ public class PsiToGrammarConverter {
 						));
 
 					} else {
-						throw new RuntimeException("unknown multi-alternative production element node: " + element);
+						if (failOnErrors) {
+							throw new RuntimeException("unknown multi-alternative production element node: " + element);
+						}
 					}
 				}
 				convertedProduction = new Production(nonterminal, ImmutableList.copyOf(alternatives));
@@ -153,9 +164,19 @@ public class PsiToGrammarConverter {
 				|| psiProduction instanceof Production_ErrorWithoutNonterminalNameWithSemicolon
 				|| psiProduction instanceof Production_ErrorWithoutNonterminalNameWithClosingCurlyBrace
 				|| psiProduction instanceof Production_ErrorWithoutNonterminalNameAtEof) {
-				throw new UserMessageException("grammar contains errors");
+
+				if (failOnErrors) {
+					throw new UserMessageException("grammar contains errors");
+				} else {
+					continue;
+				}
+
 			} else {
-				throw new RuntimeException("unknown production PSI node: " + psiProduction);
+				if (failOnErrors) {
+					throw new RuntimeException("unknown production PSI node: " + psiProduction);
+				} else {
+					continue;
+				}
 			}
 			productions.add(convertedProduction);
 			backMap.productions.put(convertedProduction, psiProduction);
@@ -189,8 +210,9 @@ public class PsiToGrammarConverter {
 				reduceOnEofOnly = true;
 
 			} else {
-				throw new RuntimeException("unknown right-hand side attribute PSI node: " + attribute);
-
+				if (failOnErrors) {
+					throw new RuntimeException("unknown right-hand side attribute PSI node: " + attribute);
+				}
 			}
 		}
 		Alternative convertedAlternative = new Alternative(alternativeName, expression, precedenceDefiningTerminal, resolveBlock, reduceOnError, reduceOnEofOnly);
@@ -210,7 +232,11 @@ public class PsiToGrammarConverter {
 			} else if (action instanceof ResolveDeclaration_Action_Reduce) {
 				conflictResolution = ConflictResolution.REDUCE;
 			} else {
-				throw new RuntimeException("unknown resolve declaration action node: " + action);
+				if (failOnErrors) {
+					throw new RuntimeException("unknown resolve declaration action node: " + action);
+				} else {
+					continue;
+				}
 			}
 
 			List<String> terminals = new ArrayList<>();
@@ -298,7 +324,11 @@ public class PsiToGrammarConverter {
 			result = new OptionalExpression(operand);
 
 		} else {
-			throw new RuntimeException("unknown expression PSI node: " + psiExpression);
+			if (failOnErrors) {
+				throw new RuntimeException("unknown expression PSI node: " + psiExpression);
+			} else {
+				result = new EmptyExpression();
+			}
 		}
 		backMap.expressions.put(result, psiExpression);
 		return result;

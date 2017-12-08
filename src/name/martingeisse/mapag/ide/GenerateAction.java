@@ -90,7 +90,7 @@ public class GenerateAction extends AnAction {
 		// do it!
 		try {
 			name.martingeisse.mapag.grammar.extended.Grammar extendedGrammar =
-				new PsiToGrammarConverter().convert((MapagSourceFile) psiFile);
+				new PsiToGrammarConverter(true).convert((MapagSourceFile) psiFile);
 			name.martingeisse.mapag.grammar.canonical.Grammar canonicalGrammar =
 				new GrammarCanonicalizer(extendedGrammar).run().getResult();
 			GrammarInfo grammarInfo = new GrammarInfo(canonicalGrammar);

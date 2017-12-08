@@ -21,7 +21,7 @@ public class MapagAnnotator implements Annotator {
 	public void annotate(@NotNull PsiElement psiElement, @NotNull AnnotationHolder annotationHolder) {
 		if (psiElement instanceof Grammar) {
 			Grammar psiGrammar = (Grammar)psiElement;
-			PsiToGrammarConverter converter = new PsiToGrammarConverter();
+			PsiToGrammarConverter converter = new PsiToGrammarConverter(false);
 			name.martingeisse.mapag.grammar.extended.Grammar extendedGrammar = converter.convert(psiGrammar);
 			name.martingeisse.mapag.grammar.extended.validation.GrammarValidator extendedValidator =
 				new name.martingeisse.mapag.grammar.extended.validation.GrammarValidator(extendedGrammar);
