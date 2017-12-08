@@ -11,20 +11,20 @@ public final class Grammar extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public TerminalDeclarations getTerminals() {
-		return (TerminalDeclarations) InternalPsiUtil.getChild(this, 2);
+	public Grammar_TerminalDeclarations getTerminalDeclarations() {
+		return (Grammar_TerminalDeclarations) InternalPsiUtil.getChild(this, 0);
 	}
 
 	public Optional<Grammar_PrecedenceTable> getPrecedenceTable() {
-		return (Optional<Grammar_PrecedenceTable>) InternalPsiUtil.getChild(this, 4);
+		return (Optional<Grammar_PrecedenceTable>) InternalPsiUtil.getChild(this, 1);
 	}
 
 	public LeafPsiElement getStartSymbolName() {
-		return (LeafPsiElement) InternalPsiUtil.getChild(this, 6);
+		return (LeafPsiElement) InternalPsiUtil.getChild(this, 3);
 	}
 
 	public ListNode<Production> getProductions() {
-		return (ListNode<Production>) InternalPsiUtil.getChild(this, 8);
+		return (ListNode<Production>) InternalPsiUtil.getChild(this, 5);
 	}
 
 }

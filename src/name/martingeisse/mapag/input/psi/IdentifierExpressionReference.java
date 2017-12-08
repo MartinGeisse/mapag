@@ -43,7 +43,7 @@ public class IdentifierExpressionReference implements PsiReference {
 		String identifier = expression.getIdentifier().getText();
 
 		// terminals
-		for (TerminalDeclaration terminalDeclaration : grammar.getTerminals().getIdentifiers().getAll()) {
+		for (TerminalDeclaration terminalDeclaration : grammar.getTerminalDeclarations().getIdentifiers().getAll()) {
 			String terminalName = terminalDeclaration.getName();
 			if (terminalName != null && terminalName.equals(identifier)) {
 				return terminalDeclaration;
@@ -134,7 +134,7 @@ public class IdentifierExpressionReference implements PsiReference {
 		List<Object> variants = new ArrayList<>();
 
 		// terminals
-		for (TerminalDeclaration more : grammar.getTerminals().getIdentifiers().getAll()) {
+		for (TerminalDeclaration more : grammar.getTerminalDeclarations().getIdentifiers().getAll()) {
 			variants.add(more.getIdentifier().getText());
 		}
 

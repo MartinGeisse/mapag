@@ -8,10 +8,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import name.martingeisse.mapag.input.psi.Grammar;
-import name.martingeisse.mapag.input.psi.Grammar_PrecedenceTable;
-import name.martingeisse.mapag.input.psi.Production;
-import name.martingeisse.mapag.input.psi.TerminalDeclarations;
+import name.martingeisse.mapag.input.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +22,7 @@ import java.util.List;
 public class MapagStructureViewFactory implements PsiStructureViewFactory {
 
 	private static boolean shouldInclude(PsiElement element) {
-		if (element instanceof TerminalDeclarations) {
+		if (element instanceof Grammar_TerminalDeclarations) {
 			return true;
 		}
 		if (element instanceof Grammar_PrecedenceTable) {
@@ -96,11 +93,11 @@ public class MapagStructureViewFactory implements PsiStructureViewFactory {
 		@Nullable
 		@Override
 		public String getPresentableText() {
-			if (element instanceof TerminalDeclarations) {
-				return "(terminals)";
+			if (element instanceof Grammar_TerminalDeclarations) {
+				return "%terminals {...}";
 			}
 			if (element instanceof Grammar_PrecedenceTable) {
-				return "(precedence table)";
+				return "%precedence {...}";
 			}
 			if (element instanceof Production) {
 				String name = ((Production) element).getName();

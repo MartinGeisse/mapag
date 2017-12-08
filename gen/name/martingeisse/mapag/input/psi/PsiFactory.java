@@ -13,6 +13,9 @@ public class PsiFactory {
 	public static PsiElement createPsiElement(ASTNode node) {
 		IElementType type = node.getElementType();
 
+		if (type == Symbols.grammar_TerminalDeclarations_Identifiers_List) {
+			return new ListNode<TerminalDeclaration>(node, TokenSet.create(Symbols.terminalDeclaration), TerminalDeclaration.class);
+		}
 		if (type == Symbols.rightHandSide) {
 			return new RightHandSide(node);
 		}
@@ -85,8 +88,8 @@ public class PsiFactory {
 		if (type == Symbols.production_Multi_Alternatives_Named) {
 			return new Production_Multi_Alternatives_Named(node);
 		}
-		if (type == Symbols.terminalDeclarations_Identifiers_List) {
-			return new ListNode<TerminalDeclaration>(node, TokenSet.create(Symbols.terminalDeclaration), TerminalDeclaration.class);
+		if (type == Symbols.grammar_TerminalDeclarations) {
+			return new Grammar_TerminalDeclarations(node);
 		}
 		if (type == Symbols.rightHandSide_Attributes_List) {
 			return new ListNode<AlternativeAttribute>(node, TokenSet.create(Symbols.alternativeAttribute_Precedence, Symbols.alternativeAttribute_ResolveBlock, Symbols.alternativeAttribute_ReduceOnError, Symbols.alternativeAttribute_Eof), AlternativeAttribute.class);
@@ -111,9 +114,6 @@ public class PsiFactory {
 		}
 		if (type == Symbols.grammar) {
 			return new Grammar(node);
-		}
-		if (type == Symbols.terminalDeclarations) {
-			return new TerminalDeclarations(node);
 		}
 		if (type == Symbols.resolveDeclaration_Symbols_List) {
 			return new ListNode<LeafPsiElement>(node, TokenSet.create(Symbols.IDENTIFIER), LeafPsiElement.class);

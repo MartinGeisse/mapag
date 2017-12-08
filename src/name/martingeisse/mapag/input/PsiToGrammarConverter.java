@@ -11,8 +11,8 @@ import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.ResolveDeclaration;
 import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
-import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.grammar.extended.expression.*;
+import name.martingeisse.mapag.grammar.extended.expression.Expression;
 import name.martingeisse.mapag.ide.MapagSourceFile;
 import name.martingeisse.mapag.input.psi.*;
 import name.martingeisse.mapag.util.UserMessageException;
@@ -42,7 +42,7 @@ public class PsiToGrammarConverter {
 	public Grammar convert(name.martingeisse.mapag.input.psi.Grammar psiGrammar) {
 
 		ImmutableList<TerminalDeclaration> terminalDeclarations =
-			convertTerminalDeclarations(psiGrammar.getTerminals());
+			convertTerminalDeclarations(psiGrammar.getTerminalDeclarations());
 
 		PrecedenceTable precedenceTable =
 			convertPrecedenceTable(psiGrammar.getPrecedenceTable());
@@ -55,7 +55,7 @@ public class PsiToGrammarConverter {
 		return new Grammar(terminalDeclarations, precedenceTable, startSymbol, productions);
 	}
 
-	private ImmutableList<TerminalDeclaration> convertTerminalDeclarations(TerminalDeclarations terminalDeclarations) {
+	private ImmutableList<TerminalDeclaration> convertTerminalDeclarations(Grammar_TerminalDeclarations terminalDeclarations) {
 		List<TerminalDeclaration> result = new ArrayList<>();
 		for (name.martingeisse.mapag.input.psi.TerminalDeclaration node : terminalDeclarations.getIdentifiers().getAll()) {
 			String text = getText(node.getIdentifier());

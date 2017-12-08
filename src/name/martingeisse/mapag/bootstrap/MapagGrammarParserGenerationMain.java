@@ -122,10 +122,12 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		ImmutableList<Production> productions = ImmutableList.of(
 			new Production("grammar", ImmutableList.of(
 				alternative(null, sequence(
-					symbol("KW_TERMINALS"),
-					symbol("OPENING_CURLY_BRACE"),
-					symbol("terminalDeclarations").withName("terminals"),
-					symbol("CLOSING_CURLY_BRACE"),
+					sequence(
+						symbol("KW_TERMINALS"),
+						symbol("OPENING_CURLY_BRACE"),
+						oneOrMoreWithSeparator("COMMA", symbol("terminalDeclaration")).withName("identifiers"),
+						symbol("CLOSING_CURLY_BRACE")
+					).withName("terminalDeclarations"),
 					optional(
 						symbol("KW_PRECEDENCE"),
 						symbol("OPENING_CURLY_BRACE"),
@@ -137,11 +139,6 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 					symbol("SEMICOLON"),
 					oneOrMore(symbol("production")).withName("productions")
 				))
-			)),
-			new Production("terminalDeclarations", ImmutableList.of(
-				alternative(null,
-					oneOrMoreWithSeparator("COMMA", symbol("terminalDeclaration")).withName("identifiers")
-				)
 			)),
 			new Production("terminalDeclaration", ImmutableList.of(
 				alternative(null, symbol("IDENTIFIER").withName("identifier"))
