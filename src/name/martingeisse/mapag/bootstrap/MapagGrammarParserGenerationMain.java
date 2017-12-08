@@ -144,11 +144,13 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 				alternative(null, symbol("IDENTIFIER").withName("identifier"))
 			)),
 			new Production("precedenceDeclaration", ImmutableList.of(
-				alternative(null, sequence(
+				alternative("normal", sequence(
 					or(symbol("KW_LEFT").withName("left"), symbol("KW_RIGHT").withName("right"), symbol("KW_NONASSOC").withName("nonassoc")).withName("associativity"),
 					oneOrMoreWithSeparator("COMMA", symbol("precedenceDeclarationSymbol")).withName("terminals"),
 					symbol("SEMICOLON")
-				))
+				)),
+				alternative("errorWithSemicolon", sequence(symbol("%error"), symbol("SEMICOLON"))),
+				alternative("errorWithoutSemicolon", symbol("%error"))
 			)),
 			// precedenceDeclarationSymbol is extracted to a nonterminal because each symbol in the precedence table
 			// needs a nonterminal AST node to support referencing and auto-complete

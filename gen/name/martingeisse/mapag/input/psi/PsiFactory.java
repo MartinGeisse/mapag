@@ -49,14 +49,11 @@ public class PsiFactory {
 		if (type == Symbols.rightHandSide_Attributes_List) {
 			return new ListNode<AlternativeAttribute>(node, TokenSet.create(Symbols.alternativeAttribute_Precedence, Symbols.alternativeAttribute_ResolveBlock, Symbols.alternativeAttribute_ReduceOnError, Symbols.alternativeAttribute_Eof), AlternativeAttribute.class);
 		}
-		if (type == Symbols.precedenceDeclaration_Terminals_List) {
-			return new ListNode<PrecedenceDeclarationSymbol>(node, TokenSet.create(Symbols.precedenceDeclarationSymbol), PrecedenceDeclarationSymbol.class);
-		}
 		if (type == Symbols.grammar_Productions_List) {
 			return new ListNode<Production>(node, TokenSet.create(Symbols.production_SingleUnnamed, Symbols.production_SingleNamed, Symbols.production_Multi, Symbols.production_ErrorWithoutNonterminalNameWithSemicolon, Symbols.production_ErrorWithoutNonterminalNameWithClosingCurlyBrace, Symbols.production_ErrorWithoutNonterminalNameAtEof, Symbols.production_ErrorWithNonterminalNameWithSemicolon, Symbols.production_ErrorWithNonterminalNameWithClosingCurlyBrace, Symbols.production_ErrorWithNonterminalNameAtEof), Production.class);
 		}
 		if (type == Symbols.grammar_PrecedenceTable_PrecedenceDeclarations_List) {
-			return new ListNode<PrecedenceDeclaration>(node, TokenSet.create(Symbols.precedenceDeclaration), PrecedenceDeclaration.class);
+			return new ListNode<PrecedenceDeclaration>(node, TokenSet.create(Symbols.precedenceDeclaration_Normal, Symbols.precedenceDeclaration_ErrorWithSemicolon, Symbols.precedenceDeclaration_ErrorWithoutSemicolon), PrecedenceDeclaration.class);
 		}
 		if (type == Symbols.grammar) {
 			return new Grammar(node);
@@ -78,6 +75,15 @@ public class PsiFactory {
 		}
 		if (type == Symbols.alternativeAttribute_Eof) {
 			return new AlternativeAttribute_Eof(node);
+		}
+		if (type == Symbols.precedenceDeclaration_Normal_Associativity_Left) {
+			return new PrecedenceDeclaration_Normal_Associativity_Left(node);
+		}
+		if (type == Symbols.precedenceDeclaration_Normal_Associativity_Right) {
+			return new PrecedenceDeclaration_Normal_Associativity_Right(node);
+		}
+		if (type == Symbols.precedenceDeclaration_Normal_Associativity_Nonassoc) {
+			return new PrecedenceDeclaration_Normal_Associativity_Nonassoc(node);
 		}
 		if (type == Symbols.grammar_TerminalDeclarations_Identifiers_List) {
 			return new ListNode<TerminalDeclaration>(node, TokenSet.create(Symbols.terminalDeclaration), TerminalDeclaration.class);
@@ -127,8 +133,17 @@ public class PsiFactory {
 		if (type == Symbols.grammar_PrecedenceTable_Optional) {
 			return new Optional<Grammar_PrecedenceTable>(node);
 		}
-		if (type == Symbols.precedenceDeclaration) {
-			return new PrecedenceDeclaration(node);
+		if (type == Symbols.precedenceDeclaration_Normal_Terminals_List) {
+			return new ListNode<PrecedenceDeclarationSymbol>(node, TokenSet.create(Symbols.precedenceDeclarationSymbol), PrecedenceDeclarationSymbol.class);
+		}
+		if (type == Symbols.precedenceDeclaration_Normal) {
+			return new PrecedenceDeclaration_Normal(node);
+		}
+		if (type == Symbols.precedenceDeclaration_ErrorWithSemicolon) {
+			return new PrecedenceDeclaration_ErrorWithSemicolon(node);
+		}
+		if (type == Symbols.precedenceDeclaration_ErrorWithoutSemicolon) {
+			return new PrecedenceDeclaration_ErrorWithoutSemicolon(node);
 		}
 		if (type == Symbols.production_Multi_Alternatives_List) {
 			return new ListNode<Production_Multi_Alternatives>(node, TokenSet.create(Symbols.production_Multi_Alternatives_Unnamed, Symbols.production_Multi_Alternatives_Named), Production_Multi_Alternatives.class);
@@ -144,15 +159,6 @@ public class PsiFactory {
 		}
 		if (type == Symbols.precedenceDeclarationSymbol) {
 			return new PrecedenceDeclarationSymbol(node);
-		}
-		if (type == Symbols.precedenceDeclaration_Associativity_Left) {
-			return new PrecedenceDeclaration_Associativity_Left(node);
-		}
-		if (type == Symbols.precedenceDeclaration_Associativity_Right) {
-			return new PrecedenceDeclaration_Associativity_Right(node);
-		}
-		if (type == Symbols.precedenceDeclaration_Associativity_Nonassoc) {
-			return new PrecedenceDeclaration_Associativity_Nonassoc(node);
 		}
 		if (type == Symbols.alternativeAttribute_ResolveBlock_ResolveDeclarations_List) {
 			return new ListNode<ResolveDeclaration>(node, TokenSet.create(Symbols.resolveDeclaration), ResolveDeclaration.class);

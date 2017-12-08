@@ -42,7 +42,11 @@ public class MapagAnnotator implements Annotator {
 		} else if (location instanceof ErrorLocation.PrecedenceTableEntry) {
 			ErrorLocation.PrecedenceTableEntry typedLocation = (ErrorLocation.PrecedenceTableEntry)location;
 			PrecedenceDeclaration psiPrecedenceDeclaration = backMap.precedenceTableEntries.get(typedLocation.getEntry());
-			return psiPrecedenceDeclaration.getTerminals().getAll().get(typedLocation.getSymbolIndex());
+			if (psiPrecedenceDeclaration instanceof PrecedenceDeclaration_Normal) {
+				return ((PrecedenceDeclaration_Normal) psiPrecedenceDeclaration).getTerminals().getAll().get(typedLocation.getSymbolIndex());
+			} else {
+				return psiPrecedenceDeclaration;
+			}
 		} else if (location instanceof ErrorLocation.StartSymbol) {
 			return backMap.startSymbol;
 		} else if (location instanceof ErrorLocation.ProductionLeftHandSide) {

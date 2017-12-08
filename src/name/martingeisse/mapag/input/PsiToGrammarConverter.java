@@ -77,25 +77,32 @@ public class PsiToGrammarConverter {
 		}
 		List<PrecedenceTable.Entry> convertedEntries = new ArrayList<>();
 		for (PrecedenceDeclaration precedenceDeclaration : psiPrecedenceTable.getIt().getPrecedenceDeclarations().getAll()) {
-			ImmutableList<String> identifiers = convertPrecedenceTableSymbols(precedenceDeclaration.getTerminals());
-			PrecedenceDeclaration_Associativity associativityNode = precedenceDeclaration.getAssociativity();
-			Associativity associativity;
-			if (associativityNode instanceof PrecedenceDeclaration_Associativity_Left) {
-				associativity = Associativity.LEFT;
-			} else if (associativityNode instanceof PrecedenceDeclaration_Associativity_Right) {
-				associativity = Associativity.RIGHT;
-			} else if (associativityNode instanceof PrecedenceDeclaration_Associativity_Nonassoc) {
-				associativity = Associativity.NONASSOC;
+			if (precedenceDeclaration instanceof PrecedenceDeclaration_Normal) {
+				PrecedenceDeclaration_Normal typedPrecedenceDeclaration = (PrecedenceDeclaration_Normal)precedenceDeclaration;
+				ImmutableList<String> identifiers = convertPrecedenceTableSymbols(typedPrecedenceDeclaration.getTerminals());
+				PrecedenceDeclaration_Normal_Associativity associativityNode = typedPrecedenceDeclaration.getAssociativity();
+				Associativity associativity;
+				if (associativityNode instanceof PrecedenceDeclaration_Normal_Associativity_Left) {
+					associativity = Associativity.LEFT;
+				} else if (associativityNode instanceof PrecedenceDeclaration_Normal_Associativity_Right) {
+					associativity = Associativity.RIGHT;
+				} else if (associativityNode instanceof PrecedenceDeclaration_Normal_Associativity_Nonassoc) {
+					associativity = Associativity.NONASSOC;
+				} else {
+					if (failOnErrors) {
+						throw new RuntimeException("unknown associativity PSI node: " + associativityNode);
+					} else {
+						continue;
+					}
+				}
+				PrecedenceTable.Entry entry = new PrecedenceTable.Entry(ImmutableList.copyOf(identifiers), associativity);
+				convertedEntries.add(entry);
+				backMap.precedenceTableEntries.put(entry, precedenceDeclaration);
 			} else {
 				if (failOnErrors) {
-					throw new RuntimeException("unknown associativity PSI node: " + associativityNode);
-				} else {
-					continue;
+					throw new UserMessageException("grammar contains errors");
 				}
 			}
-			PrecedenceTable.Entry entry = new PrecedenceTable.Entry(ImmutableList.copyOf(identifiers), associativity);
-			convertedEntries.add(entry);
-			backMap.precedenceTableEntries.put(entry, precedenceDeclaration);
 		}
 		return new PrecedenceTable(ImmutableList.copyOf(convertedEntries));
 	}
