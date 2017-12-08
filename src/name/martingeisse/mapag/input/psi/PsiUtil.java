@@ -98,7 +98,7 @@ final class PsiUtil {
 		if (psiFile != null) {
 			VirtualFile virtualFile = psiFile.getVirtualFile();
 			if (virtualFile != null) {
-				// TODO node.superclassDelete();
+				node.superclassDelete();
 				FileContentUtil.reparseFiles(virtualFile);
 				return;
 			}

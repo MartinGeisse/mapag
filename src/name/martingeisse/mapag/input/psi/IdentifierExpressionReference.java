@@ -3,7 +3,6 @@ package name.martingeisse.mapag.input.psi;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,11 +42,13 @@ public class IdentifierExpressionReference implements PsiReference {
 
 		String identifier = expression.getIdentifier().getText();
 
-		// TODO terminals
-//				result.add(grammar.getTerminals().getFirstIdentifier());
-//				for (NonemptyIdentifierList_1 more : grammar.getTerminals().getMoreIdentifiers().getAll()) {
-//					result.add(more.getIdentifier());
-//				}
+		// terminals
+		for (TerminalDeclaration terminalDeclaration : grammar.getTerminals().getIdentifiers().getAll()) {
+			String terminalName = terminalDeclaration.getName();
+			if (terminalName != null && terminalName.equals(identifier)) {
+				return terminalDeclaration;
+			}
+		}
 
 		// nonterminals / productions
 		for (Production production : grammar.getProductions().getAll()) {
@@ -73,20 +74,37 @@ public class IdentifierExpressionReference implements PsiReference {
 
 	@Override
 	public PsiElement bindToElement(@NotNull PsiElement psiElement) throws IncorrectOperationException {
-		// binding to terminals is currently not supported
+
+		if (psiElement instanceof TerminalDeclaration) {
+			String newName = ((TerminalDeclaration) psiElement).getName();
+			if (newName != null) {
+				return PsiUtil.setText(expression.getIdentifier(), newName);
+			}
+		}
+
 		if (psiElement instanceof Production) {
 			String newName = ((Production) psiElement).getName();
 			if (newName != null) {
 				return PsiUtil.setText(expression.getIdentifier(), newName);
 			}
 		}
+
 		throw new IncorrectOperationException();
 	}
 
 	@Override
 	public boolean isReferenceTo(PsiElement psiElement) {
 
-		// TODO terminals
+		if (psiElement instanceof TerminalDeclaration) {
+			String terminalName = ((TerminalDeclaration) psiElement).getName();
+			if (terminalName != null) {
+				String id = getCanonicalText();
+				if (id.equals(terminalName)) {
+					PsiElement resolved = resolve();
+					return (resolved != null && resolved.equals(psiElement));
+				}
+			}
+		}
 
 		if (psiElement instanceof Production) {
 			String productionName = ((Production) psiElement).getName();

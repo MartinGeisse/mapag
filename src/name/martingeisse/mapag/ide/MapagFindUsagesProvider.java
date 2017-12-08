@@ -9,6 +9,7 @@ import name.martingeisse.mapag.input.MapagLexer;
 import name.martingeisse.mapag.input.Symbols;
 import name.martingeisse.mapag.input.psi.Expression_Identifier;
 import name.martingeisse.mapag.input.psi.Production;
+import name.martingeisse.mapag.input.psi.TerminalDeclaration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,13 +30,13 @@ public class MapagFindUsagesProvider implements FindUsagesProvider {
 
 	@Override
 	public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
-
-		// TODO terminals
-
-		if (psiElement instanceof Expression_Identifier) {
+		if (psiElement instanceof TerminalDeclaration) {
 			return true;
 		}
 		if (psiElement instanceof Production) {
+			return true;
+		}
+		if (psiElement instanceof Expression_Identifier) {
 			return true;
 		}
 		return false;
@@ -62,11 +63,13 @@ public class MapagFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getNodeText(@NotNull PsiElement psiElement, boolean useFullName) {
-
-		// TODO terminals
-
-		if (psiElement instanceof Expression_Identifier) {
-			return ((Expression_Identifier) psiElement).getIdentifier().getText();
+		if (psiElement instanceof TerminalDeclaration) {
+			String name = ((TerminalDeclaration) psiElement).getName();
+			if (name != null) {
+				return name;
+			} else {
+				return psiElement.getText();
+			}
 		}
 		if (psiElement instanceof Production) {
 			String name = ((Production) psiElement).getName();
@@ -75,6 +78,9 @@ public class MapagFindUsagesProvider implements FindUsagesProvider {
 			} else {
 				return psiElement.getText();
 			}
+		}
+		if (psiElement instanceof Expression_Identifier) {
+			return ((Expression_Identifier) psiElement).getIdentifier().getText();
 		}
 		return psiElement.getText();
 	}
