@@ -1,5 +1,6 @@
 
 - code formatter
 - auto-close comments is broken when typing /* enter
+
 - generate using meta-grammar file and make sure the output is identical to that of the bootstrap grammar
 - TODO markers in code
