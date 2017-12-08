@@ -79,7 +79,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		codeGenerationProperties.setProperty("psi.package", "name.martingeisse.mapag.input.psi");
 		codeGenerationProperties.setProperty("psi.utilClass", "name.martingeisse.mapag.input.psi.PsiUtil");
 		codeGenerationProperties.setProperty("psi.supports.psiNameIdentifierOwner", "TerminalDeclaration, Production");
-		codeGenerationProperties.setProperty("psi.supports.getReference", "Expression_Identifier");
+		codeGenerationProperties.setProperty("psi.supports.getReference", "PrecedenceDeclarationSymbol, Expression_Identifier");
 		codeGenerationProperties.setProperty("psi.supports.safeDelete", "TerminalDeclaration, Production");
 		codeGenerationProperties.setProperty("context.parserDefinitionClass", "name.martingeisse.mapag.ide.MapagParserDefinition");
 		Configuration configuration = new Configuration(codeGenerationProperties);
@@ -146,9 +146,14 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 			new Production("precedenceDeclaration", ImmutableList.of(
 				alternative(null, sequence(
 					or(symbol("KW_LEFT").withName("left"), symbol("KW_RIGHT").withName("right"), symbol("KW_NONASSOC").withName("nonassoc")).withName("associativity"),
-					oneOrMoreWithSeparator("COMMA", symbol("IDENTIFIER")).withName("terminals"),
+					oneOrMoreWithSeparator("COMMA", symbol("precedenceDeclarationSymbol")).withName("terminals"),
 					symbol("SEMICOLON")
 				))
+			)),
+			// precedenceDeclarationSymbol is extracted to a nonterminal because each symbol in the precedence table
+			// needs a nonterminal AST node to support referencing and auto-complete
+			new Production("precedenceDeclarationSymbol", ImmutableList.of(
+				alternative(null, symbol("IDENTIFIER").withName("identifier"))
 			)),
 			new Production("production", ImmutableList.of(
 

@@ -91,10 +91,10 @@ public class PsiToGrammarConverter {
 		return new PrecedenceTable(ImmutableList.copyOf(convertedEntries));
 	}
 
-	private ImmutableList<String> convertPrecedenceTableSymbols(ListNode<LeafPsiElement> identifiers) {
+	private ImmutableList<String> convertPrecedenceTableSymbols(ListNode<PrecedenceDeclarationSymbol> identifiers) {
 		List<String> result = new ArrayList<>();
-		for (LeafPsiElement node : identifiers.getAll()) {
-			result.add(getText(node));
+		for (PrecedenceDeclarationSymbol node : identifiers.getAll()) {
+			result.add(getText(node.getIdentifier()));
 		}
 		return ImmutableList.copyOf(result);
 	}

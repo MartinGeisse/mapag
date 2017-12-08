@@ -41,6 +41,10 @@ final class PsiUtil {
 	// reference support
 	//
 
+	public static PsiReference getReference(PrecedenceDeclarationSymbol precedenceDeclarationSymbol) {
+		return new PrecedenceDeclarationSymbolReference(precedenceDeclarationSymbol);
+	}
+
 	public static PsiReference getReference(Expression_Identifier expression) {
 		return new IdentifierExpressionReference(expression);
 	}
