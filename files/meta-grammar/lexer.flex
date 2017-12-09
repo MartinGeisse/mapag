@@ -20,9 +20,10 @@ import com.intellij.psi.tree.IElementType;
 Newline = \r | \n | \r\n
 Whitespace = [ \t\f] | {Newline}
 
-// comments
+// Comments. Note: do NOT make the newline a part of the LineComment -- it will confuse the auto-formatter. The
+// "longest match" algorithm will eat everything before the newline even without specifying it explicitly.
 BlockComment = "/*" {CommentContent} \*+ "/"
-LineComment = "//" [^\r\n]* {Newline}
+LineComment = "//" [^\r\n]*
 CommentContent = ( [^*] | \*+[^*/] )*
 
 // identifiers

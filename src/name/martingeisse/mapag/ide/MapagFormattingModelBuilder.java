@@ -22,10 +22,16 @@ import java.util.List;
  */
 public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 
+	// comments are not indented relative to their parent, which is usually indented itself
+	private static final TokenSet COMMENT_SYMBOLS = TokenSet.create(Symbols.LINE_COMMENT, Symbols.BLOCK_COMMENT);
+
+	// whitespace is needed for the workaround for comments
+	private static final TokenSet WHITESPACE_SYMBOLS = TokenSet.create(TokenType.WHITE_SPACE);
+	private static final TokenSet WHITESPACE_AND_COMMENT_SYMBOLS = TokenSet.orSet(WHITESPACE_SYMBOLS, COMMENT_SYMBOLS);
+
 	private static final TokenSet DEFAULT_INDENTED_SYMBOLS = TokenSet.create(
 
 		// list elements for which the list is already indented normally
-		Symbols.terminalDeclaration,
 		Symbols.precedenceDeclaration_Normal,
 		Symbols.precedenceDeclaration_ErrorWithSemicolon,
 		Symbols.precedenceDeclaration_ErrorWithoutSemicolon,
@@ -49,14 +55,14 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 		// relative to its parent, a closing brace is never indented
 		Symbols.CLOSING_CURLY_BRACE,
 
-		// comments are not indented relative to their parent, which is usually indented itself
-		Symbols.LINE_COMMENT,
-		Symbols.BLOCK_COMMENT,
+		// individual terminal declarations are not indented relative to their list, which in turn IS indented
+		Symbols.terminalDeclaration,
 
 		// top-level elements
 		Symbols.grammar_TerminalDeclarations,
 		Symbols.grammar_PrecedenceTable,
 		Symbols.grammar_Productions_List,
+		Symbols.KW_START,
 		Symbols.production_SingleUnnamed,
 		Symbols.production_SingleNamed,
 		Symbols.production_Multi,
@@ -130,6 +136,21 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 			// TODO getChildAttributes(): Supports indentation at the moment the user breaks a line manually
 
 			IElementType type = myNode.getElementType();
+			if (COMMENT_SYMBOLS.contains(type)) {
+				// Comment symbols are not handled by the parser, but rather implicitly attached to the AST produced
+				// by the parser. This sometimes produces a wrong result, especially for comments in an AST list node:
+				// in such a case, a comment before the first list node is wrongly attached outside of the list, and
+				// thus not indented. We solve this by looking fir the first non-comment token to see if it is
+				// normally indented.
+				ASTNode node = getNode();
+				while (node != null && WHITESPACE_AND_COMMENT_SYMBOLS.contains(node.getElementType())) {
+					node = node.getTreeNext();
+				}
+				if (node != null && NORMALLY_INDENTED_SYMBOLS.contains(node.getElementType())) {
+					return Indent.getNormalIndent();
+				}
+				return Indent.getNoneIndent();
+			}
 			if (DEFAULT_INDENTED_SYMBOLS.contains(type)) {
 				return null;
 			}
