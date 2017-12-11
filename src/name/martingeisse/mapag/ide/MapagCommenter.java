@@ -7,9 +7,6 @@ import com.intellij.psi.tree.IElementType;
 import name.martingeisse.mapag.input.Symbols;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * TODO currently broken -- hitting enter after an opening slash-asterisk does not auto-close.
- */
 public class MapagCommenter implements CodeDocumentationAwareCommenterEx {
 
 	@Override
