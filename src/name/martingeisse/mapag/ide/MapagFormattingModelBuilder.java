@@ -76,6 +76,11 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 
 	);
 
+	private static final TokenSet POSTFIX_OPERATORS = TokenSet.create(Symbols.ASTERISK, Symbols.PLUS, Symbols.QUESTION_MARK);
+
+	private static final TokenSet INFIX_OPERATORS = TokenSet.create(Symbols.BAR);
+
+
 	@NotNull
 	@Override
 	public FormattingModel createModel(PsiElement element, CodeStyleSettings settings) {
@@ -163,18 +168,29 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 		@Nullable
 		@Override
 		public Spacing getSpacing(@Nullable Block block1, @NotNull Block block2) {
-			IElementType type1 = (block1 instanceof MyBlock) ? ((MyBlock) block1).getNode().getElementType() : null;
-			IElementType type2 = (block2 instanceof MyBlock) ? ((MyBlock) block2).getNode().getElementType() : null;
+			ASTNode node1 = (block1 instanceof MyBlock) ? ((MyBlock) block1).getNode() : null;
+			IElementType type1 = node1 != null ? node1.getElementType() : null;
+			ASTNode node2 = (block2 instanceof MyBlock) ? ((MyBlock) block2).getNode() : null;
+			IElementType type2 = node2 != null ? node2.getElementType() : null;
 
-			if (type1 == Symbols.COMMA) {
+			if (type1 == Symbols.COMMA || POSTFIX_OPERATORS.contains(type1)) {
 				return Spacing.createSpacing(1, 1, 0, true, 2);
 			}
-			if (type2 == Symbols.COMMA) {
+			if (type2 == Symbols.COMMA || POSTFIX_OPERATORS.contains(type2)) {
 				return Spacing.createSpacing(0, 0, 0, false, 0);
 			}
 			if (type1 == Symbols.EXPANDS_TO || type2 == Symbols.EXPANDS_TO) {
 				return Spacing.createSpacing(1, 1, 0, false, 0);
 			}
+			if (INFIX_OPERATORS.contains(type1) || INFIX_OPERATORS.contains(type2)) {
+				return Spacing.createSpacing(1, 1, 0, true, 1);
+			}
+			if (node1 != null && node2 != null && node1.getTreeParent() != null && node1.getTreeParent() == node2.getTreeParent()) {
+				if (node1.getTreeParent().getElementType() == Symbols.expression_Sequence) {
+					return Spacing.createSpacing(1, 1, 0, true, 1);
+				}
+			}
+
 			return null;
 		}
 

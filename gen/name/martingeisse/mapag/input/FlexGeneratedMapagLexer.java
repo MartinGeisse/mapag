@@ -171,10 +171,10 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
   private static final String ZZ_ACTION_PACKED_0 =
     "\1\0\1\1\2\2\1\1\1\3\1\4\1\1\1\5"+
     "\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1\15"+
-    "\1\16\1\17\25\0\1\20\1\21\3\0\1\22\17\0"+
-    "\1\23\4\0\1\24\1\25\2\0\1\26\1\0\1\27"+
-    "\1\30\3\0\1\31\3\0\1\32\5\0\1\33\1\0"+
-    "\1\34\3\0\1\35\2\0\1\36";
+    "\1\16\1\17\1\20\10\0\1\20\13\0\1\21\1\20"+
+    "\3\0\1\22\17\0\1\23\4\0\1\24\1\25\2\0"+
+    "\1\26\1\0\1\27\1\30\3\0\1\31\3\0\1\32"+
+    "\5\0\1\33\1\0\1\34\3\0\1\35\2\0\1\36";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[97];
@@ -305,10 +305,10 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\1\0\1\11\1\1\1\11\1\1\1\11\2\1\6\11"+
-    "\1\1\3\11\1\1\25\0\2\11\3\0\1\11\17\0"+
-    "\1\11\4\0\2\11\2\0\1\11\1\0\2\11\3\0"+
-    "\1\1\3\0\1\11\5\0\1\11\1\0\1\11\3\0"+
-    "\1\11\2\0\1\11";
+    "\1\1\3\11\2\1\10\0\1\1\13\0\2\11\3\0"+
+    "\1\11\17\0\1\11\4\0\2\11\2\0\1\11\1\0"+
+    "\2\11\3\0\1\1\3\0\1\11\5\0\1\11\1\0"+
+    "\1\11\3\0\1\11\2\0\1\11";
 
   private static int [] zzUnpackAttribute() {
     int [] result = new int[97];
@@ -685,11 +685,11 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
             }
           case 45: break;
           case 16: 
-            { return Symbols.EXPANDS_TO;
+            { return Symbols.BLOCK_COMMENT;
             }
           case 46: break;
           case 17: 
-            { return Symbols.BLOCK_COMMENT;
+            { return Symbols.EXPANDS_TO;
             }
           case 47: break;
           case 18: 

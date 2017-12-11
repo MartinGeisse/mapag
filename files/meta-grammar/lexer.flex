@@ -22,7 +22,13 @@ Whitespace = [ \t\f] | {Newline}
 
 // Comments. Note: do NOT make the newline a part of the LineComment -- it will confuse the auto-formatter. The
 // "longest match" algorithm will eat everything before the newline even without specifying it explicitly.
-BlockComment = "/*" {CommentContent} \*+ "/"
+//
+// Also, the IDE commenter wants an unterminated block comment to formally be a comment too. We use a rule that
+// matches a block comment without the terminating characters. If the comment is properly terminated, the normal
+// block comment rule will match a longer substring and take precedence.
+UnterminatedBlockComment = "/*" {CommentContent} \**
+TerminatedBlockComment = "/*" {CommentContent} \*+ "/"
+BlockComment = {UnterminatedBlockComment} | {TerminatedBlockComment}
 LineComment = "//" [^\r\n]*
 CommentContent = ( [^*] | \*+[^*/] )*
 
