@@ -34,10 +34,23 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
 	private static void run() throws Exception {
 		Properties codeGenerationProperties = new Properties();
+
 		codeGenerationProperties.setProperty("parser.package", "name.martingeisse.mapag.input");
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
 		codeGenerationProperties.setProperty("parser.fileElementType", "name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE");
 		// codeGenerationProperties.setProperty("parser.debug", "true");
+		codeGenerationProperties.setProperty("symbolHolder.generate", "true");
+		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.mapag.input");
+		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");
+		codeGenerationProperties.setProperty("symbol.elementType.class", "MapagElementType");
+		codeGenerationProperties.setProperty("psi.generate", "true");
+		codeGenerationProperties.setProperty("psi.package", "name.martingeisse.mapag.input.psi");
+		codeGenerationProperties.setProperty("psi.utilClass", "name.martingeisse.mapag.input.psi.PsiUtil");
+		codeGenerationProperties.setProperty("psi.supports.psiNameIdentifierOwner", "TerminalDeclaration, Production");
+		codeGenerationProperties.setProperty("psi.supports.getReference", "PrecedenceDeclarationSymbol, Expression_Identifier");
+		codeGenerationProperties.setProperty("psi.supports.safeDelete", "TerminalDeclaration, Production");
+		codeGenerationProperties.setProperty("context.parserDefinitionClass", "name.martingeisse.mapag.ide.MapagParserDefinition");
+
 		codeGenerationProperties.setProperty("parser.error.KW_TERMINALS", "%terminals");
 		codeGenerationProperties.setProperty("parser.error.KW_PRECEDENCE", "%precedence");
 		codeGenerationProperties.setProperty("parser.error.KW_LEFT", "%left");
@@ -71,17 +84,6 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		codeGenerationProperties.setProperty("parser.error.production", "production");
 		codeGenerationProperties.setProperty("parser.error.expression", "expression");
 		codeGenerationProperties.setProperty("parser.error.resolveDeclaration", "resolve-declaration");
-		codeGenerationProperties.setProperty("symbolHolder.generate", "true");
-		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.mapag.input");
-		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");
-		codeGenerationProperties.setProperty("symbol.elementType.class", "MapagElementType");
-		codeGenerationProperties.setProperty("psi.generate", "true");
-		codeGenerationProperties.setProperty("psi.package", "name.martingeisse.mapag.input.psi");
-		codeGenerationProperties.setProperty("psi.utilClass", "name.martingeisse.mapag.input.psi.PsiUtil");
-		codeGenerationProperties.setProperty("psi.supports.psiNameIdentifierOwner", "TerminalDeclaration, Production");
-		codeGenerationProperties.setProperty("psi.supports.getReference", "PrecedenceDeclarationSymbol, Expression_Identifier");
-		codeGenerationProperties.setProperty("psi.supports.safeDelete", "TerminalDeclaration, Production");
-		codeGenerationProperties.setProperty("context.parserDefinitionClass", "name.martingeisse.mapag.ide.MapagParserDefinition");
 		Configuration configuration = new Configuration(codeGenerationProperties);
 
 		ImmutableList terminalDeclarations = ImmutableList.of(
