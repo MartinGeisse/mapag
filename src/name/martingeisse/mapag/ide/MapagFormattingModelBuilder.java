@@ -31,12 +31,6 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 
 	private static final TokenSet DEFAULT_INDENTED_SYMBOLS = TokenSet.create(
 
-		// list elements for which the list is already indented normally
-		Symbols.precedenceDeclaration_Normal,
-		Symbols.precedenceDeclaration_ErrorWithSemicolon,
-		Symbols.precedenceDeclaration_ErrorWithoutSemicolon,
-		Symbols.resolveDeclaration,
-
 		// terminal list inside a precedence declaration
 		Symbols.precedenceDeclaration_Normal_Terminals_List,
 		Symbols.precedenceDeclarationSymbol
@@ -55,8 +49,15 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 		// relative to its parent, a closing brace is never indented
 		Symbols.CLOSING_CURLY_BRACE,
 
-		// individual terminal declarations are not indented relative to their list, which in turn IS indented
+		// list elements for which the list is already indented normally
 		Symbols.terminalDeclaration,
+		Symbols.precedenceDeclaration_Normal,
+		Symbols.precedenceDeclaration_ErrorWithSemicolon,
+		Symbols.precedenceDeclaration_ErrorWithoutSemicolon,
+		Symbols.production_Multi_Alternatives_Named,
+		Symbols.production_Multi_Alternatives_Named_Named,
+		Symbols.production_Multi_Alternatives_Unnamed_Unnamed,
+		Symbols.resolveDeclaration,
 
 		// top-level elements
 		Symbols.grammar_TerminalDeclarations,
@@ -79,21 +80,16 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 	@Override
 	public FormattingModel createModel(PsiElement element, CodeStyleSettings settings) {
 		MyBlock block = new MyBlock(element.getNode(), null);
-
-		// TODO remove ------
-		dump(block, 0);
-		// TODO remove ------
-
 		return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings);
 	}
 
 	private void dump(MyBlock block, int dumpIndent) {
-		for (int i=0; i<dumpIndent; i++) {
+		for (int i = 0; i < dumpIndent; i++) {
 			System.out.print("  ");
 		}
 		System.out.println(block.getNode().getElementType() + " -- indent: " + block.getIndent());
 		for (Block child : block.getSubBlocks()) {
-			dump((MyBlock)child, dumpIndent + 1);
+			dump((MyBlock) child, dumpIndent + 1);
 		}
 	}
 
@@ -126,15 +122,6 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 
 		@Override
 		public Indent getIndent() {
-
-			// TODO re-write when PSI is stable
-			// TODO null indent means default indent -- check if this is sufficient
-			// TODO wrap is "always", "never" or "if line is too long" -- soudns logical
-			// TODO spacing says min/max spaces and whether line break. Can use SpacingBuilder.
-			// Note the difference: line break == this belongs into the next line; wrap == line is too long
-			// TODO alignment: align symbols in subsequent lines, e.g. colons in a JSON object. I hate that anyway.
-			// TODO getChildAttributes(): Supports indentation at the moment the user breaks a line manually
-
 			IElementType type = myNode.getElementType();
 			if (COMMENT_SYMBOLS.contains(type)) {
 				// Comment symbols are not handled by the parser, but rather implicitly attached to the AST produced
@@ -161,7 +148,6 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 				return Indent.getNoneIndent();
 			}
 			return null;
-
 		}
 
 		private boolean isInside(ASTNode node, IElementType type) {
@@ -176,8 +162,19 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 
 		@Nullable
 		@Override
-		public Spacing getSpacing(@Nullable Block block, @NotNull Block block1) {
-			// TODO
+		public Spacing getSpacing(@Nullable Block block1, @NotNull Block block2) {
+			IElementType type1 = (block1 instanceof MyBlock) ? ((MyBlock) block1).getNode().getElementType() : null;
+			IElementType type2 = (block2 instanceof MyBlock) ? ((MyBlock) block2).getNode().getElementType() : null;
+
+			if (type1 == Symbols.COMMA) {
+				return Spacing.createSpacing(1, 1, 0, true, 2);
+			}
+			if (type2 == Symbols.COMMA) {
+				return Spacing.createSpacing(0, 0, 0, false, 0);
+			}
+			if (type1 == Symbols.EXPANDS_TO || type2 == Symbols.EXPANDS_TO) {
+				return Spacing.createSpacing(1, 1, 0, false, 0);
+			}
 			return null;
 		}
 
