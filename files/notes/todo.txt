@@ -1,2 +1,0 @@
-
-- generate using meta-grammar file and make sure the output is identical to that of the bootstrap grammar
