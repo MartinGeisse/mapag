@@ -64,6 +64,7 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 		Symbols.grammar,
 		Symbols.grammar_TerminalDeclarations,
 		Symbols.grammar_PrecedenceTable,
+		Symbols.grammar_PrecedenceTable_Optional,
 		Symbols.grammar_Productions_List,
 		Symbols.KW_START,
 		Symbols.production_SingleUnnamed,
