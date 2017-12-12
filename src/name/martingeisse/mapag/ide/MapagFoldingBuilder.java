@@ -29,7 +29,9 @@ public class MapagFoldingBuilder implements FoldingBuilder {
 
 	private void collectFoldingRegions(PsiElement psiElement, List<FoldingDescriptor> destination) {
 		if (psiElement instanceof Grammar_TerminalDeclarations || psiElement instanceof Grammar_PrecedenceTable || psiElement instanceof Production) {
-			destination.add(new FoldingDescriptor(psiElement.getNode(), psiElement.getTextRange()));
+			if (psiElement.getNode() != null && psiElement.getTextRange() != null) {
+				destination.add(new FoldingDescriptor(psiElement.getNode(), psiElement.getTextRange()));
+			}
 		}
 		for (PsiElement child : psiElement.getChildren()) {
 			collectFoldingRegions(child, destination);

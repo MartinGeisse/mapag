@@ -60,6 +60,8 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 		Symbols.resolveDeclaration,
 
 		// top-level elements
+		MapagParserDefinition.FILE_ELEMENT_TYPE,
+		Symbols.grammar,
 		Symbols.grammar_TerminalDeclarations,
 		Symbols.grammar_PrecedenceTable,
 		Symbols.grammar_Productions_List,
