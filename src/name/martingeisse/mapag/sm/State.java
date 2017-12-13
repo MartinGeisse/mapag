@@ -23,6 +23,7 @@ import java.util.Set;
 public final class State {
 
 	private final ImmutableSet<StateElement> elements;
+	private int cachedHashCode = 0;
 
 	public State(ImmutableSet<StateElement> elements) {
 		this.elements = ParameterUtil.ensureNotNullOrEmpty(elements, "elements");
@@ -43,7 +44,10 @@ public final class State {
 
 	@Override
 	public int hashCode() {
-		return elements.hashCode();
+		if (cachedHashCode == 0) {
+			cachedHashCode = elements.hashCode();
+		}
+		return cachedHashCode;
 	}
 
 	@Override

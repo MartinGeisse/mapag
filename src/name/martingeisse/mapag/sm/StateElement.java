@@ -14,6 +14,7 @@ public final class StateElement {
 	private final Alternative alternative;
 	private final int position;
 	private final String followTerminal;
+	private int cachedHashCode = 0;
 
 	public StateElement(String leftSide, Alternative alternative, int position, String followTerminal) {
 		this.leftSide = ParameterUtil.ensureNotNullOrEmpty(leftSide, "leftSide");
@@ -67,7 +68,10 @@ public final class StateElement {
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(leftSide).append(alternative).append(position).append(followTerminal).toHashCode();
+		if (cachedHashCode == 0) {
+			cachedHashCode = new HashCodeBuilder().append(leftSide).append(alternative).append(position).append(followTerminal).toHashCode();
+		}
+		return cachedHashCode;
 	}
 
 	@Override
