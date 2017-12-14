@@ -18,9 +18,11 @@ final class StateBuilder {
 
 	private final GrammarInfo grammarInfo;
 	private final Set<StateElement> elements = new HashSet<>();
+	private final StateMachineBuildingCache cache;
 
-	public StateBuilder(GrammarInfo grammarInfo) {
+	public StateBuilder(GrammarInfo grammarInfo, StateMachineBuildingCache cache) {
 		this.grammarInfo = ParameterUtil.ensureNotNull(grammarInfo, "grammarInfo");
+		this.cache = cache;
 	}
 
 	public StateBuilder addElementClosure(StateElement rootElement) {
@@ -55,11 +57,11 @@ final class StateBuilder {
 		for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
 			if (alternative.getAttributes().isReduceOnEofOnly()) {
 				if (localFollowSet.contains(SpecialSymbols.EOF_SYMBOL_NAME)) {
-					addElementClosure(new StateElement(nonterminal, alternative, 0, SpecialSymbols.EOF_SYMBOL_NAME));
+					addElementClosure(cache.buildStartingStateElement(nonterminal, alternative, SpecialSymbols.EOF_SYMBOL_NAME));
 				}
 			} else {
 				for (String followTerminal : localFollowSet) {
-					addElementClosure(new StateElement(nonterminal, alternative, 0, followTerminal));
+					addElementClosure(cache.buildStartingStateElement(nonterminal, alternative, followTerminal));
 				}
 			}
 		}

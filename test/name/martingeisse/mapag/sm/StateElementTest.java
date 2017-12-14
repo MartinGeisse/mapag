@@ -121,9 +121,9 @@ public class StateElementTest {
 	public void testToString() {
 		Alternative alternative = new Alternative("a1", TestUtil.expansion("r1", "r2", "r3"), AlternativeAttributes.EMPTY);
 		StateElement stateElement1 = new StateElement("lll", alternative, 0, "foo");
-		Assert.assertEquals("lll ::= . r1 r2 r3    [foo]", stateElement1.toString());
+		Assert.assertEquals("lll:a1 ::= . r1 r2 r3    [foo]", stateElement1.toString());
 		StateElement stateElement2 = new StateElement("lll", alternative, 1, "foo");
-		Assert.assertEquals("lll ::= r1 . r2 r3    [foo]", stateElement2.toString());
+		Assert.assertEquals("lll:a1 ::= r1 . r2 r3    [foo]", stateElement2.toString());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

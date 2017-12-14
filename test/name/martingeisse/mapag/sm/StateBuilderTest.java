@@ -64,14 +64,14 @@ public class StateBuilderTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorNull() {
-		new StateBuilder(null);
+		new StateBuilder(null, new StateMachineBuildingCache());
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testCantWorkWithoutRootElements() {
 		Grammar grammar = new Grammar(ImmutableSet.of(TERMINAL_1), ImmutableSet.of(START_SYMBOL_1), START_NONTERMINAL_NAME);
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
-		new StateBuilder(grammarInfo).build();
+		new StateBuilder(grammarInfo, new StateMachineBuildingCache()).build();
 	}
 
 	@DataProvider
@@ -170,7 +170,7 @@ public class StateBuilderTest {
 		Grammar grammar = new Grammar(terminals, nonterminals, START_NONTERMINAL_NAME);
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
 
-		StateBuilder builder = new StateBuilder(grammarInfo);
+		StateBuilder builder = new StateBuilder(grammarInfo, new StateMachineBuildingCache());
 		Assert.assertTrue(builder.isEmpty());
 		for (StateElement rootElement : rootElements) {
 			builder.addElementClosure(rootElement);

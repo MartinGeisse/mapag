@@ -15,6 +15,7 @@ public final class StateElement {
 	private final int position;
 	private final String followTerminal;
 	private int cachedHashCode = 0;
+	private StateElement cachedShifted = null;
 
 	public StateElement(String leftSide, Alternative alternative, int position, String followTerminal) {
 		this.leftSide = ParameterUtil.ensureNotNullOrEmpty(leftSide, "leftSide");
@@ -120,7 +121,10 @@ public final class StateElement {
 		if (isAtEnd()) {
 			throw new IllegalStateException("cannot shift -- remaining right side is already empty");
 		}
-		return new StateElement(leftSide, alternative, position + 1, followTerminal);
+		if (cachedShifted == null) {
+			cachedShifted = new StateElement(leftSide, alternative, position + 1, followTerminal);
+		}
+		return cachedShifted;
 	}
 
 	public enum ActionType {

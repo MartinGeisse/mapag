@@ -70,7 +70,7 @@ public class StateMachineBuilderTest {
 
 		// check properties of the start and end states
 		State startState = stateMachine.getStartState();
-		State endState = startState.determineNextStateAfterShiftingNonterminal(grammarInfo, grammar.getStartNonterminalName());
+		State endState = startState.determineNextStateAfterShiftingNonterminal(grammarInfo, new StateMachineBuildingCache(), grammar.getStartNonterminalName());
 		Assert.assertNotNull(endState);
 		Assert.assertEquals(Action.Accept.INSTANCE, stateMachine.getTerminalOrEofActions().get(endState).get(SpecialSymbols.EOF_SYMBOL_NAME));
 

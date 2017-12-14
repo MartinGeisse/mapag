@@ -57,7 +57,7 @@ public final class State {
 	}
 
 	// Returns null to indicate a run-time syntax error
-	public Action determineActionForTerminalOrEof(GrammarInfo grammarInfo, String terminalOrEof) {
+	public Action determineActionForTerminalOrEof(GrammarInfo grammarInfo, StateMachineBuildingCache cache, String terminalOrEof) {
 
 		// determine which elements want to shift that terminal, and which want to reduce when seeing that terminal
 		Set<StateElement> elementsThatWantToShift = new HashSet<>();
@@ -89,7 +89,7 @@ public final class State {
 			if (elementsThatWantToShift.isEmpty()) {
 				return getError();
 			} else {
-				return getShift(grammarInfo, elementsThatWantToShift);
+				return getShift(grammarInfo, cache, elementsThatWantToShift);
 			}
 		}
 
@@ -131,7 +131,7 @@ public final class State {
 			switch (resolution) {
 
 				case SHIFT:
-					return getShift(grammarInfo, elementsThatWantToShift);
+					return getShift(grammarInfo, cache, elementsThatWantToShift);
 
 				case REDUCE:
 					return getReduce(elementThatWantsToReduce);
@@ -159,7 +159,7 @@ public final class State {
 
 		// If all reducible elements agree to shift, then the R/R conflict disappears.
 		if (reducibleElementsWithoutResolution.isEmpty() && reducibleElementsWithReduceResolution.isEmpty()) {
-			return getShift(grammarInfo, elementsThatWantToShift);
+			return getShift(grammarInfo, cache, elementsThatWantToShift);
 		}
 
 		// At this point we have an unresolvable R/R conflict. We now check for reducible elements that disagree in
@@ -235,8 +235,8 @@ public final class State {
 		return null;
 	}
 
-	private static Action.Shift getShift(GrammarInfo grammarInfo, Set<StateElement> elementsThatWantToShift) {
-		StateBuilder builder = new StateBuilder(grammarInfo);
+	private static Action.Shift getShift(GrammarInfo grammarInfo, StateMachineBuildingCache cache, Set<StateElement> elementsThatWantToShift) {
+		StateBuilder builder = new StateBuilder(grammarInfo, cache);
 		for (StateElement element : elementsThatWantToShift) {
 			builder.addElementClosure(element.getShifted());
 		}
@@ -249,8 +249,8 @@ public final class State {
 
 	// Returns null if that nonterminal would cause a syntax error. This corresponds to an empty table entry and
 	// cannot happen at runtime in LR(1).
-	public State determineNextStateAfterShiftingNonterminal(GrammarInfo grammarInfo, String nonterminal) {
-		StateBuilder builder = new StateBuilder(grammarInfo);
+	public State determineNextStateAfterShiftingNonterminal(GrammarInfo grammarInfo, StateMachineBuildingCache cache, String nonterminal) {
+		StateBuilder builder = new StateBuilder(grammarInfo, cache);
 		for (StateElement originalElement : elements) {
 			StateElement nextElement = originalElement.determineNextRootElementForNonterminal(nonterminal);
 			if (nextElement != null) {

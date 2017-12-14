@@ -87,7 +87,7 @@ public class StateTest {
 		{
 			Alternative startAlternative = new Alternative("a1", TestUtil.expansion("s"), AlternativeAttributes.EMPTY);
 			StateElement startStateElement = new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, startAlternative, 0, SpecialSymbols.EOF_SYMBOL_NAME);
-			State state0 = new StateBuilder(grammarInfo).addElementClosure(startStateElement).build();
+			State state0 = new StateBuilder(grammarInfo, new StateMachineBuildingCache()).addElementClosure(startStateElement).build();
 			Assert.assertEquals(new State(ImmutableSet.of(
 				startStateElement,
 				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(0), 0, SpecialSymbols.EOF_SYMBOL_NAME),
@@ -137,7 +137,7 @@ public class StateTest {
 			expectReduceOnTerminal(grammarInfo, state_e, "e", "p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0));
 			expectReduceOnTerminal(grammarInfo, state_e, "c", "p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0));
 
-			State state_p = state0.determineNextStateAfterShiftingNonterminal(grammarInfo, "p");
+			State state_p = state0.determineNextStateAfterShiftingNonterminal(grammarInfo, new StateMachineBuildingCache(), "p");
 			Assert.assertEquals(new State(ImmutableSet.of(
 				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(1), 1, SpecialSymbols.EOF_SYMBOL_NAME),
 				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(2), 1, SpecialSymbols.EOF_SYMBOL_NAME),
@@ -159,7 +159,7 @@ public class StateTest {
 			expectSyntaxError(grammarInfo, state_p_e, "a", "b", "c", "d", "e", "p", "q");
 			expectReduceOnTerminal(grammarInfo, state_p_e, SpecialSymbols.EOF_SYMBOL_NAME, "p", grammar.getNonterminalDefinitions().get("p").getAlternatives().get(0));
 
-			State state_p_p = state_p.determineNextStateAfterShiftingNonterminal(grammarInfo, "p");
+			State state_p_p = state_p.determineNextStateAfterShiftingNonterminal(grammarInfo, new StateMachineBuildingCache(), "p");
 			Assert.assertEquals(new State(ImmutableSet.of(
 				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(1), 2, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_p_p);
@@ -170,7 +170,7 @@ public class StateTest {
 			// check the path through (s ::= q c)
 			//
 
-			State state_q = state0.determineNextStateAfterShiftingNonterminal(grammarInfo, "q");
+			State state_q = state0.determineNextStateAfterShiftingNonterminal(grammarInfo, new StateMachineBuildingCache(), "q");
 			Assert.assertEquals(new State(ImmutableSet.of(
 				new StateElement("s", grammar.getNonterminalDefinitions().get("s").getAlternatives().get(3), 1, SpecialSymbols.EOF_SYMBOL_NAME)
 			)), state_q);
@@ -188,14 +188,14 @@ public class StateTest {
 	}
 
 	private static State expectShiftTerminal(GrammarInfo grammarInfo, State state, String terminal) {
-		Action action = state.determineActionForTerminalOrEof(grammarInfo, terminal);
+		Action action = state.determineActionForTerminalOrEof(grammarInfo, new StateMachineBuildingCache(), terminal);
 		Assert.assertTrue(action instanceof Action.Shift);
 		return ((Action.Shift) action).getNextState();
 	}
 
 	// note: the 'terminal' argument may be EOF for this method
 	private static void expectReduceOnTerminal(GrammarInfo grammarInfo, State state, String terminal, String expectedNonterminal, Alternative expectedAlternative) {
-		Action action = state.determineActionForTerminalOrEof(grammarInfo, terminal);
+		Action action = state.determineActionForTerminalOrEof(grammarInfo, new StateMachineBuildingCache(), terminal);
 		Assert.assertTrue(action instanceof Action.Reduce);
 		Action.Reduce reduce = (Action.Reduce) action;
 		Assert.assertEquals(expectedNonterminal, reduce.getNonterminal());
@@ -205,8 +205,8 @@ public class StateTest {
 	// checks terminals and nonterminals
 	private static void expectSyntaxError(GrammarInfo grammarInfo, State state, String... symbols) {
 		for (String symbol : symbols) {
-			Assert.assertNull(state.determineActionForTerminalOrEof(grammarInfo, symbol));
-			Assert.assertNull(state.determineNextStateAfterShiftingNonterminal(grammarInfo, symbol));
+			Assert.assertNull(state.determineActionForTerminalOrEof(grammarInfo, new StateMachineBuildingCache(), symbol));
+			Assert.assertNull(state.determineNextStateAfterShiftingNonterminal(grammarInfo, new StateMachineBuildingCache(), symbol));
 		}
 	}
 
@@ -224,9 +224,9 @@ public class StateTest {
 		GrammarInfo grammarInfo = helper.getLeft();
 		State state = helper.getRight();
 
-		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, "PLUS"));
-		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, "MINUS"));
-		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, "TIMES"));
+		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, new StateMachineBuildingCache(), "PLUS"));
+		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, new StateMachineBuildingCache(), "MINUS"));
+		ExAssert.assertThrows(StateMachineException.ShiftReduceConflict.class, () -> state.determineActionForTerminalOrEof(grammarInfo, new StateMachineBuildingCache(), "TIMES"));
 
 	}
 
@@ -255,7 +255,7 @@ public class StateTest {
 		// ... and shift TIMES because it has higher precedence
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
-			State expectedState2 = new StateBuilder(grammarInfo)
+			State expectedState2 = new StateBuilder(grammarInfo, new StateMachineBuildingCache())
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
@@ -293,7 +293,7 @@ public class StateTest {
 		// ... and shift TIMES because it has higher precedence
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
-			State expectedState2 = new StateBuilder(grammarInfo)
+			State expectedState2 = new StateBuilder(grammarInfo, new StateMachineBuildingCache())
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
@@ -350,7 +350,7 @@ public class StateTest {
 		// this time, shift PLUS and MINUS because they're right-associative...
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "PLUS");
-			State expectedState2 = new StateBuilder(grammarInfo)
+			State expectedState2 = new StateBuilder(grammarInfo, new StateMachineBuildingCache())
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, SpecialSymbols.EOF_SYMBOL_NAME))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "PLUS"))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(1), 2, "MINUS"))
@@ -360,7 +360,7 @@ public class StateTest {
 		}
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "MINUS");
-			State expectedState2 = new StateBuilder(grammarInfo)
+			State expectedState2 = new StateBuilder(grammarInfo, new StateMachineBuildingCache())
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, SpecialSymbols.EOF_SYMBOL_NAME))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "PLUS"))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "MINUS"))
@@ -372,7 +372,7 @@ public class StateTest {
 		// ... and shift TIMES because it has higher precedence
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
-			State expectedState2 = new StateBuilder(grammarInfo)
+			State expectedState2 = new StateBuilder(grammarInfo, new StateMachineBuildingCache())
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
@@ -435,7 +435,7 @@ public class StateTest {
 		// ... and shift TIMES because it has higher precedence
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
-			State expectedState2 = new StateBuilder(grammarInfo)
+			State expectedState2 = new StateBuilder(grammarInfo, new StateMachineBuildingCache())
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
@@ -471,7 +471,7 @@ public class StateTest {
 		// ... and shift TIMES because it is right-associative
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
-			State expectedState2 = new StateBuilder(grammarInfo)
+			State expectedState2 = new StateBuilder(grammarInfo, new StateMachineBuildingCache())
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, SpecialSymbols.EOF_SYMBOL_NAME))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "PLUS"))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(3), 2, "MINUS"))
@@ -496,7 +496,7 @@ public class StateTest {
 		// ... and shift TIMES
 		{
 			State actualState2 = expectShiftTerminal(grammarInfo, state, "TIMES");
-			State expectedState2 = new StateBuilder(grammarInfo)
+			State expectedState2 = new StateBuilder(grammarInfo, new StateMachineBuildingCache())
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, SpecialSymbols.EOF_SYMBOL_NAME))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "PLUS"))
 				.addElementClosure(new StateElement("e", grammar.getNonterminalDefinitions().get("e").getAlternatives().get(2), 2, "TIMES"))
@@ -538,10 +538,10 @@ public class StateTest {
 		Grammar grammar = builder.build();
 		GrammarInfo grammarInfo = new GrammarInfo(grammar);
 		StateElement startStateElement = new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, new Alternative("a1", TestUtil.expansion("e"), AlternativeAttributes.EMPTY), 0, SpecialSymbols.EOF_SYMBOL_NAME);
-		State state = new StateBuilder(grammarInfo).addElementClosure(startStateElement).build();
-		state = state.determineNextStateAfterShiftingNonterminal(grammarInfo, "e");
+		State state = new StateBuilder(grammarInfo, new StateMachineBuildingCache()).addElementClosure(startStateElement).build();
+		state = state.determineNextStateAfterShiftingNonterminal(grammarInfo, new StateMachineBuildingCache(), "e");
 		state = expectShiftTerminal(grammarInfo, state, operatorTerminal);
-		state = state.determineNextStateAfterShiftingNonterminal(grammarInfo, "e");
+		state = state.determineNextStateAfterShiftingNonterminal(grammarInfo, new StateMachineBuildingCache(), "e");
 		return Pair.of(grammarInfo, state);
 	}
 }

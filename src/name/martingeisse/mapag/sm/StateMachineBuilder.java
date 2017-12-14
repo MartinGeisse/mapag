@@ -20,12 +20,14 @@ import java.util.Set;
 public class StateMachineBuilder {
 
 	private final GrammarInfo grammarInfo;
+	private final StateMachineBuildingCache cache;
 	private final Set<State> states = new HashSet<>();
 	private final Map<State, Map<String, Action>> terminalOrEofActions = new HashMap<>();
 	private final Map<State, Map<String, Action.Shift>> nonterminalActions = new HashMap<>();
 
 	public StateMachineBuilder(GrammarInfo grammarInfo) {
 		this.grammarInfo = ParameterUtil.ensureNotNull(grammarInfo, "grammarInfo");
+		this.cache = new StateMachineBuildingCache();
 	}
 
 	private static <A, B, C> ImmutableMap<A, ImmutableMap<B, C>> makeImmutable(Map<A, Map<B, C>> original) {
@@ -40,7 +42,7 @@ public class StateMachineBuilder {
 		String startNonterminal = grammarInfo.getGrammar().getStartNonterminalName();
 		Expansion expansion = new Expansion(ImmutableList.of(new ExpansionElement(startNonterminal, null)));
 		Alternative implicitAlternative = new Alternative("implicit", expansion, AlternativeAttributes.EMPTY);
-		StateBuilder builder = new StateBuilder(grammarInfo);
+		StateBuilder builder = new StateBuilder(grammarInfo, cache);
 		builder.addElementClosure(new StateElement(SpecialSymbols.ROOT_SYMBOL_NAME, implicitAlternative, 0, SpecialSymbols.EOF_SYMBOL_NAME));
 		State startState = builder.build();
 		addStates(startState);
@@ -92,7 +94,7 @@ public class StateMachineBuilder {
 
 	private void addTerminalOrEofActions(State state, String terminalOrEof) {
 		ProfilingTimer timer = new ProfilingTimer("addTerminalOrEofActions");
-		Action action = state.determineActionForTerminalOrEof(grammarInfo, terminalOrEof);
+		Action action = state.determineActionForTerminalOrEof(grammarInfo, cache, terminalOrEof);
 		timer.tick();
 		if (action == null) {
 			return;
@@ -107,7 +109,7 @@ public class StateMachineBuilder {
 
 	private void addNonterminalOrErrorActions(State state, String nonterminalOrError) {
 		ProfilingTimer timer = new ProfilingTimer("addNonterminalOrErrorActions");
-		State nextState = state.determineNextStateAfterShiftingNonterminal(grammarInfo, nonterminalOrError);
+		State nextState = state.determineNextStateAfterShiftingNonterminal(grammarInfo, cache, nonterminalOrError);
 		timer.tick();
 		if (nextState != null) {
 			getOrCreateNonterminalActionMap(state).put(nonterminalOrError, new Action.Shift(nextState));
