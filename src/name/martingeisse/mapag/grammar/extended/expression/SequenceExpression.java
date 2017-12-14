@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.extended.expression;
 
 import name.martingeisse.mapag.util.ParameterUtil;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
@@ -38,6 +39,17 @@ public final class SequenceExpression extends Expression {
 	@Override
 	public String toString() {
 		return "(" + left.toString() + ' ' + right.toString() + ')';
+	}
+
+	@Override
+	protected boolean subclassEquals(Object obj) {
+		SequenceExpression other = (SequenceExpression) obj;
+		return left.equals(other.left) && right.equals(other.right);
+	}
+
+	@Override
+	protected void buildSubclassHashCode(HashCodeBuilder builder) {
+		builder.append(left).append(right);
 	}
 
 }

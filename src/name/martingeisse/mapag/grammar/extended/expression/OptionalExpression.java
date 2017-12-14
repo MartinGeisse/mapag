@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.extended.expression;
 
 import name.martingeisse.mapag.util.ParameterUtil;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
@@ -31,6 +32,16 @@ public final class OptionalExpression extends Expression {
 	@Override
 	public String toString() {
 		return "(" + operand.toString() + ")?";
+	}
+
+	@Override
+	protected boolean subclassEquals(Object obj) {
+		return operand.equals(((OptionalExpression) obj).getOperand());
+	}
+
+	@Override
+	protected void buildSubclassHashCode(HashCodeBuilder builder) {
+		builder.append(operand);
 	}
 
 }

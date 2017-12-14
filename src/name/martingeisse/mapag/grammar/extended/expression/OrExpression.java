@@ -1,6 +1,7 @@
 package name.martingeisse.mapag.grammar.extended.expression;
 
 import name.martingeisse.mapag.util.ParameterUtil;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
@@ -38,6 +39,17 @@ public final class OrExpression extends Expression {
 	@Override
 	public String toString() {
 		return "(" + leftOperand + " | " + rightOperand + ')';
+	}
+
+	@Override
+	protected boolean subclassEquals(Object obj) {
+		OrExpression other = (OrExpression) obj;
+		return leftOperand.equals(other.leftOperand) && rightOperand.equals(other.rightOperand);
+	}
+
+	@Override
+	protected void buildSubclassHashCode(HashCodeBuilder builder) {
+		builder.append(leftOperand).append(rightOperand);
 	}
 
 }

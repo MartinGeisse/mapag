@@ -2,6 +2,7 @@ package name.martingeisse.mapag.grammar.extended.expression;
 
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.util.ParameterUtil;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
@@ -35,6 +36,16 @@ public final class SymbolReference extends Expression {
 	@Override
 	public String toString() {
 		return symbolName;
+	}
+
+	@Override
+	protected boolean subclassEquals(Object obj) {
+		return symbolName.equals(((SymbolReference) obj).getSymbolName());
+	}
+
+	@Override
+	protected void buildSubclassHashCode(HashCodeBuilder builder) {
+		builder.append(symbolName);
 	}
 
 }

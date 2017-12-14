@@ -23,7 +23,7 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 		if (expression instanceof EmptyExpression) {
 			// OK, nothing to do
 		} else if (expression instanceof OptionalExpression) {
-			validateExpression(((OptionalExpression) expression).getOperand(), errorReporter);
+			validateAnonymous(((OptionalExpression) expression).getOperand(), errorReporter);
 		} else if (expression instanceof OrExpression) {
 			OrExpression orExpression = (OrExpression) expression;
 			validateExpression(orExpression.getLeftOperand(), errorReporter);
@@ -39,14 +39,21 @@ final class ExpressionValidatorImpl implements ExpressionValidator {
 				errorReporter.reportError(expression, "unknown symbol: " + symbolName);
 			}
 		} else if (expression instanceof Repetition) {
-			Repetition repetition = (Repetition)expression;
-			validateExpression(repetition.getElementExpression(), errorReporter);
+			Repetition repetition = (Repetition) expression;
+			validateAnonymous(repetition.getElementExpression(), errorReporter);
 			if (repetition.getSeparatorExpression() != null) {
-				validateExpression(repetition.getSeparatorExpression(), errorReporter);
+				validateAnonymous(repetition.getSeparatorExpression(), errorReporter);
 			}
 		} else {
 			throw new IllegalStateException("found unknown expression type: " + expression);
 		}
+	}
+
+	private void validateAnonymous(Expression expression, ErrorReporter.ForExpressions errorReporter) {
+		if (expression.getName() != null) {
+			errorReporter.reportError(expression, "Named expression not allowed here");
+		}
+		validateExpression(expression, errorReporter);
 	}
 
 }

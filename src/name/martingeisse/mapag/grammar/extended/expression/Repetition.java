@@ -1,6 +1,9 @@
 package name.martingeisse.mapag.grammar.extended.expression;
 
 import name.martingeisse.mapag.util.ParameterUtil;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.Objects;
 
 public final class Repetition extends Expression {
 
@@ -43,6 +46,17 @@ public final class Repetition extends Expression {
 		} else {
 			return "(" + elementExpression + ", " + separatorExpression + (isEmptyAllowed() ? ")*" : ")+");
 		}
+	}
+
+	@Override
+	protected boolean subclassEquals(Object obj) {
+		Repetition other = (Repetition) obj;
+		return elementExpression.equals(other.elementExpression) && Objects.equals(separatorExpression, other.separatorExpression);
+	}
+
+	@Override
+	protected void buildSubclassHashCode(HashCodeBuilder builder) {
+		builder.append(elementExpression).append(separatorExpression);
 	}
 
 }
