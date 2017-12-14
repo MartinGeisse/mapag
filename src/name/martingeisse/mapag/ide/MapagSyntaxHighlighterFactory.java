@@ -19,10 +19,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public class MapagSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
 
-	public MapagSyntaxHighlighterFactory() {
-		System.out.println();
-	}
-
 	@Override
 	@NotNull
 	public SyntaxHighlighter getSyntaxHighlighter(final Project project, final VirtualFile virtualFile) {

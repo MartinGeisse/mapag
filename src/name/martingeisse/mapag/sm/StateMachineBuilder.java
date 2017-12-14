@@ -93,31 +93,22 @@ public class StateMachineBuilder {
 	}
 
 	private void addTerminalOrEofActions(State state, String terminalOrEof) {
-		ProfilingTimer timer = new ProfilingTimer("addTerminalOrEofActions");
 		Action action = state.determineActionForTerminalOrEof(grammarInfo, cache, terminalOrEof);
-		timer.tick();
 		if (action == null) {
 			return;
 		}
 		getOrCreateTerminalOrEofActionMap(state).put(terminalOrEof, action);
-		timer.tick();
 		if (action instanceof Action.Shift) {
 			addStates(((Action.Shift) action).getNextState());
 		}
-		timer.end();
 	}
 
 	private void addNonterminalOrErrorActions(State state, String nonterminalOrError) {
-		ProfilingTimer timer = new ProfilingTimer("addNonterminalOrErrorActions");
 		State nextState = state.determineNextStateAfterShiftingNonterminal(grammarInfo, cache, nonterminalOrError);
-		timer.tick();
 		if (nextState != null) {
 			getOrCreateNonterminalActionMap(state).put(nonterminalOrError, new Action.Shift(nextState));
-			timer.tick();
 			addStates(nextState);
-			timer.tick();
 		}
-		timer.end();
 	}
 
 }
