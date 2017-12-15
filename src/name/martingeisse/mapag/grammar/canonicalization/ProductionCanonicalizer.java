@@ -22,6 +22,7 @@ public class ProductionCanonicalizer {
 	private final Map<String, List<name.martingeisse.mapag.grammar.canonical.Alternative>> nonterminalAlternatives;
 	private final Map<String, PsiStyle> nonterminalPsiStyles;
 	private final SyntheticNonterminalNameGenerator syntheticNonterminalNameGenerator;
+	private final SyntheticNonterminalMergingStrategy syntheticNonterminalMergingStrategy;
 
 	public ProductionCanonicalizer(Collection<String> terminals, ImmutableList<Production> inputProductions) {
 		ParameterUtil.ensureNotNull(terminals, "terminals");
@@ -37,6 +38,7 @@ public class ProductionCanonicalizer {
 		for (Production production : inputProductions) {
 			syntheticNonterminalNameGenerator.registerKnownSymbol(production.getLeftHandSide());
 		}
+		this.syntheticNonterminalMergingStrategy = new SyntheticNonterminalMergingStrategy();
 	}
 
 	public void run() {
@@ -149,6 +151,9 @@ public class ProductionCanonicalizer {
 			// an OR-expression can be extracted into alternatives
 			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
 				for (Expression orOperand : getOrOperands(expression)) {
+					// TODO remove the name from the second argument? This may be the reason for unwanted nonterminals in the meta-grammar.
+					// But it depends -- if the operand is a single symbol, we cannot remove the name, otherwise we
+					// also remove its getter. For a sequence, removing the name is correct though.
 					alternatives.add(syntheticAlternative(orOperand.getName(), orOperand));
 				}
 			}, PsiStyle.Normal.INSTANCE);
