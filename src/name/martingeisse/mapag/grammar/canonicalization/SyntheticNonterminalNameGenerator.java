@@ -36,6 +36,10 @@ public final class SyntheticNonterminalNameGenerator {
 		syntheticNamePrefix = savedSyntheticNamePrefixes.pop();
 	}
 
+	public void absolute() {
+		syntheticNamePrefix = "";
+	}
+
 	public void extend(String extension) {
 		syntheticNamePrefix = syntheticNamePrefix + extension + '/';
 	}

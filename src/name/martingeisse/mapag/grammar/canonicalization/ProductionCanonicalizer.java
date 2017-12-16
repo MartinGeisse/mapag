@@ -13,7 +13,6 @@ import name.martingeisse.mapag.grammar.extended.expression.*;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public class ProductionCanonicalizer {
 
@@ -23,6 +22,7 @@ public class ProductionCanonicalizer {
 	private final Map<String, PsiStyle> nonterminalPsiStyles;
 	private final SyntheticNonterminalNameGenerator syntheticNonterminalNameGenerator;
 	private final SyntheticNonterminalMergingStrategy syntheticNonterminalMergingStrategy;
+	private final Map<Expression, String> mergedSyntheticNonterminals = new HashMap<>();
 
 	public ProductionCanonicalizer(Collection<String> terminals, ImmutableList<Production> inputProductions) {
 		ParameterUtil.ensureNotNull(terminals, "terminals");
@@ -133,62 +133,145 @@ public class ProductionCanonicalizer {
 	}
 
 	private String convertExpressionToSymbol(Expression expression) {
+
+		// symbol references can be used as-is without extracting them
+		if (expression instanceof SymbolReference) {
+			return ((SymbolReference) expression).getSymbolName();
+		}
+
+		// Anything else generates a synthetic nonterminaland is potentially subject to merging. If we merge, we store
+		// the name of the merged nonterminal here, then we go on building productions for it (those need not be stored
+		// in the mergedSyntheticNonterminals; they work like all other productions). If we don't merge, we just build
+		// the productions.
+		String mergedNonterminal;
+		{
+			Expression anonymousExpression = expression.withName(null);
+			String existingMergedName = mergedSyntheticNonterminals.get(anonymousExpression);
+			if (existingMergedName != null) {
+				return existingMergedName;
+			}
+			mergedNonterminal = syntheticNonterminalMergingStrategy.determineMergedName(anonymousExpression);
+			if (mergedNonterminal != null) {
+				mergedSyntheticNonterminals.put(anonymousExpression, mergedNonterminal);
+			}
+		}
+		// TODO what if that ID is already used?
+
+		// This name is either the merged or generated name, to be distinguished by whether mergedName is null.
+		// It may be used for any of the nonterminals generated below, not necessarily the root nonterminal.
+		// It should be used for one of them though, since the internal counter of the name generator has already
+		// been increased.
+		String suggestedNonterminalName;
+		if (mergedNonterminal == null) {
+			suggestedNonterminalName = syntheticNonterminalNameGenerator.createSyntheticName(expression.getName());
+		} else {
+			suggestedNonterminalName = mergedNonterminal;
+		}
+
+		// build the list of alternatives from the original expression and choose a PSI style
+		String rootNonterminalName;
+		List<name.martingeisse.mapag.grammar.extended.Alternative> rootNonterminalAlternatives = new ArrayList<>();
+		PsiStyle rootNonterminalPsiStyle;
 		if (expression instanceof EmptyExpression) {
 
 			// strange case, but if the caller really needs a symbol for an EmptyExpression,
 			// we must create a synthetic nonterminal with empty content
-			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-				alternatives.add(syntheticAlternative(null, expression));
-			}, PsiStyle.Normal.INSTANCE);
-
-		} else if (expression instanceof SymbolReference) {
-
-			// symbol references can be used as-is without extracting them
-			return ((SymbolReference) expression).getSymbolName();
+			rootNonterminalName = suggestedNonterminalName;
+			rootNonterminalAlternatives.add(syntheticAlternative(null, expression));
+			rootNonterminalPsiStyle = PsiStyle.Normal.INSTANCE;
 
 		} else if (expression instanceof OrExpression) {
 
 			// an OR-expression can be extracted into alternatives
-			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-				for (Expression orOperand : getOrOperands(expression)) {
-					// TODO remove the name from the second argument? This may be the reason for unwanted nonterminals in the meta-grammar.
-					// But it depends -- if the operand is a single symbol, we cannot remove the name, otherwise we
-					// also remove its getter. For a sequence, removing the name is correct though.
-					alternatives.add(syntheticAlternative(orOperand.getName(), orOperand));
-				}
-			}, PsiStyle.Normal.INSTANCE);
+			rootNonterminalName = suggestedNonterminalName;
+			for (Expression orOperand : getOrOperands(expression)) {
+				// TODO remove the name from the second argument? This may be the reason for unwanted nonterminals in the meta-grammar.
+				// But it depends -- if the operand is a single symbol, we cannot remove the name, otherwise we
+				// also remove its getter. For a sequence, removing the name is correct though.
+				rootNonterminalAlternatives.add(syntheticAlternative(orOperand.getName(), orOperand));
+			}
+			rootNonterminalPsiStyle = PsiStyle.Normal.INSTANCE;
 
 		} else if (expression instanceof SequenceExpression) {
 
 			// A sequence gets extracted, but we must remove the expression's name so it gets inlined in the new
 			// nonterminal -- otherwise we'd push it out to an infinite loop of new nonterminals.
-			return createSyntheticNonterminal(expression, (syntheticName, alternatives) -> {
-				alternatives.add(syntheticAlternative(null, expression.withName(null)));
-			}, PsiStyle.Normal.INSTANCE);
+			rootNonterminalName = suggestedNonterminalName;
+			rootNonterminalAlternatives.add(syntheticAlternative(null, expression.withName(null)));
+			rootNonterminalPsiStyle = PsiStyle.Normal.INSTANCE;
 
 		} else if (expression instanceof OptionalExpression) {
 
 			// An OptionalExpression gets extracted into a two-alternative nonterminal, but with special naming
-			Expression originalOperand = ((OptionalExpression) expression).getOperand();
-			Expression namedOperand = originalOperand.withFallbackName(expression.getName());
-			String operandSymbol = convertExpressionToSymbol(namedOperand);
+			OptionalExpression optionalExpression = (OptionalExpression) expression;
+
+			// determine the outer and inner name
+			String operandName;
+			if (mergedNonterminal == null) {
+				operandName = null;
+			} else {
+				operandName = syntheticNonterminalMergingStrategy.determineOptionalOperandName(optionalExpression);
+			}
+			if (operandName == null) {
+				rootNonterminalName = suggestedNonterminalName + "/optional";
+				operandName = suggestedNonterminalName;
+			} else {
+				rootNonterminalName = suggestedNonterminalName;
+			}
+
+			// convert the operand
+			String operandSymbol = convertExpressionToAbsoluteSymbol(optionalExpression.getOperand(), operandName);
 			Expression replacementOperand = new SymbolReference(operandSymbol).withName("it");
-			extendNameStart(namedOperand);
-			String syntheticNonterminal = createSyntheticNonterminal("optional", (syntheticName, alternatives) -> {
-				alternatives.add(syntheticAlternative("absent", new EmptyExpression()));
-				alternatives.add(syntheticAlternative("present", replacementOperand));
-			}, new PsiStyle.Optional(operandSymbol));
-			extendNameEnd(namedOperand);
-			return syntheticNonterminal;
+
+			// convert the optional itself
+			rootNonterminalAlternatives.add(syntheticAlternative("absent", new EmptyExpression()));
+			rootNonterminalAlternatives.add(syntheticAlternative("present", replacementOperand));
+			rootNonterminalPsiStyle = new PsiStyle.Optional(operandSymbol);
 
 		} else if (expression instanceof Repetition) {
 
-			// convert the element using the original name, then use that name as the basis for generating names
-			Repetition repetition = (Repetition)expression;
-			Expression namedElement = repetition.getElementExpression().withFallbackName(expression.getName());
-			String elementSymbol = convertExpressionToSymbol(namedElement);
+			Repetition repetition = (Repetition) expression;
+
+			// choose an element name and list name (for the list as defined by the user)
+			String elementName;
+			if (mergedNonterminal == null) {
+				elementName = null;
+			} else {
+				elementName = syntheticNonterminalMergingStrategy.determineListElementName(repetition);
+			}
+			if (elementName == null) {
+				rootNonterminalName = suggestedNonterminalName + (repetition.isEmptyAllowed() ? "/list" : "/nonemptyList");
+				elementName = suggestedNonterminalName;
+			} else {
+				rootNonterminalName = suggestedNonterminalName;
+			}
+
+			// choose a name for the corresponding nonempty list (note: if the original repetition is already nonempty,
+			// this name isn't going to be used anyway)
+			String nonemptyListName;
+			if (mergedNonterminal == null) {
+				nonemptyListName = null;
+			} else {
+				nonemptyListName = syntheticNonterminalMergingStrategy.determineNonemptyListName(repetition);
+			}
+			if (nonemptyListName == null) {
+				nonemptyListName = suggestedNonterminalName + "/nonemptyList";
+			}
+
+			// choose a name for the separator
+			String separatorName;
+			if (mergedNonterminal == null) {
+				separatorName = null;
+			} else {
+				separatorName = syntheticNonterminalMergingStrategy.determineListSeparatorName(repetition);
+			}
+			if (separatorName == null) {
+				separatorName = suggestedNonterminalName + "/separator";
+			}
+
+			// convert the element
+			String elementSymbol = convertExpressionToAbsoluteSymbol(repetition.getElementExpression(), elementName);
 			Expression replacementElement = new SymbolReference(elementSymbol).withName("element");
-			extendNameStart(namedElement);
 
 			// convert the separator, if any
 			String separatorSymbol;
@@ -197,50 +280,69 @@ public class ProductionCanonicalizer {
 				separatorSymbol = null;
 				replacementSeparator = null;
 			} else {
-				separatorSymbol = convertExpressionToSymbol(repetition.getSeparatorExpression());
+				separatorSymbol = convertExpressionToAbsoluteSymbol(repetition.getSeparatorExpression(), separatorName);
 				replacementSeparator = new SymbolReference(separatorSymbol).withName("separator");
 			}
 
-			// Convert the repetition, using _list for the name. We treat zero-or-more with separator as one-or-more
-			// with separator for now and handle it below.
-			PsiStyle repetitionPsiStyle = new PsiStyle.Repetition(elementSymbol, separatorSymbol);
-			String repetitionNonterminalNameSuggestion = "list";
-			if (repetition.isEmptyAllowed() && repetition.getSeparatorExpression() != null) {
-				repetitionPsiStyle = PsiStyle.Transparent.INSTANCE;
-				repetitionNonterminalNameSuggestion = "nonemptyList";
-			}
-			String repetitionNonterminal = createSyntheticNonterminal(repetitionNonterminalNameSuggestion, (repetitionSyntheticName, alternatives) -> {
+			// choose the name and PSI style for the raw repetition nonterminal. This is the above list name and a
+			// repetition PSI style, except for the special case of an emptyable list with a separator -- the latter
+			// gets wrapped in an extra optional, so that optional is "the list nonterminal" as defined by the user
+			// and the raw repetition nonterminal is the wrapped one.
+			boolean wrapInOptional = repetition.isEmptyAllowed() && repetition.getSeparatorExpression() != null;
+			String repetitionNonterminal = wrapInOptional ? nonemptyListName : rootNonterminalName;
 
-				// base case
-				boolean emptyBaseCase = repetition.isEmptyAllowed() && replacementSeparator == null;
-				alternatives.add(syntheticAlternative("start", emptyBaseCase ? new EmptyExpression() : replacementElement));
+			// build the alternatives (base case and repetition case) for the repetition
+			List<name.martingeisse.mapag.grammar.extended.Alternative> repetitionAlternatives = new ArrayList<>();
+			boolean repetitionHasEmptyBaseCase = repetition.isEmptyAllowed() && replacementSeparator == null;
+			repetitionAlternatives.add(syntheticAlternative("start", repetitionHasEmptyBaseCase ? new EmptyExpression() : replacementElement));
+			Expression repetitionDelta = replacementSeparator == null ? replacementElement : new SequenceExpression(replacementSeparator, replacementElement);
+			repetitionAlternatives.add(syntheticAlternative("next",
+				new SequenceExpression(new SymbolReference(repetitionNonterminal).withName("previous"), repetitionDelta))
+			);
 
-				// repetition case
-				Expression repetitionDelta = replacementSeparator == null ? replacementElement : new SequenceExpression(replacementSeparator, replacementElement);
-				alternatives.add(syntheticAlternative("next",
-					new SequenceExpression(new SymbolReference(repetitionSyntheticName).withName("previous"), repetitionDelta))
-				);
+			// Now, if we have a zero-or-more repetition with separator, we must wrap that (now nonempty) repetition
+			// in an optional
+			if (wrapInOptional) {
 
-			}, repetitionPsiStyle);
+				// build a nonterminal for the wrapped nonempty list
+				Production nonemptyListProduction = new Production(nonemptyListName, ImmutableList.copyOf(repetitionAlternatives));
+				pendingProductions.add(nonemptyListProduction);
+				nonterminalPsiStyles.put(rootNonterminalName, PsiStyle.Transparent.INSTANCE);
 
-			// Now, if we have a zero-or-more repetition with separator, we must still handle the real base case
-			String resultingNonterminal;
-			if (repetition.isEmptyAllowed() && repetition.getSeparatorExpression() != null) {
-				resultingNonterminal = createSyntheticNonterminal("list", (syntheticName, alternatives) -> {
-					alternatives.add(syntheticAlternative("empty", new EmptyExpression()));
-					alternatives.add(syntheticAlternative("nonempty", new SymbolReference(repetitionNonterminal).withName("nonempty")));
-				}, new PsiStyle.Repetition(elementSymbol, separatorSymbol));
+				// wrap it in an optional
+				rootNonterminalAlternatives.add(syntheticAlternative("empty", new EmptyExpression()));
+				rootNonterminalAlternatives.add(syntheticAlternative("nonempty", new SymbolReference(repetitionNonterminal).withName("nonempty")));
+
 			} else {
-				resultingNonterminal = repetitionNonterminal;
-			}
 
-			// done -- reset naming
-			extendNameEnd(namedElement);
-			return resultingNonterminal;
+				// use the repetition as the root nonterminal
+				rootNonterminalAlternatives = repetitionAlternatives;
+
+			}
+			rootNonterminalPsiStyle = new PsiStyle.Repetition(elementSymbol, separatorSymbol);
 
 		} else {
 			throw new RuntimeException("unknown expression type: " + expression);
 		}
+
+		// finish building the root synthetic nonterminal
+		Production production = new Production(rootNonterminalName, ImmutableList.copyOf(rootNonterminalAlternatives));
+		pendingProductions.add(production);
+		nonterminalPsiStyles.put(rootNonterminalName, rootNonterminalPsiStyle);
+
+		return rootNonterminalName;
+	}
+
+	// Like convertExpressionToSymbol(), but tries to use the specified absolute symbol -- absolute in the sense
+	// of "independent from the current expression context", that is, use that name as-is as the nonterminal name.
+	// This can still fail if that name is already used, and in that case the syntheticNonterminalNameGenerator will
+	// be used to generate another name. TODO this doesn't actually happen -- if there is a collision, wrong stuff happens!
+	private String convertExpressionToAbsoluteSymbol(Expression expression, String name) {
+		syntheticNonterminalNameGenerator.save();
+		syntheticNonterminalNameGenerator.absolute();
+		String resultingSymbol = convertExpressionToSymbol(expression.withName(name));
+		syntheticNonterminalNameGenerator.restore();
+		return resultingSymbol;
 	}
 
 	// flattens a top-level OrExpression tree (if any) into a list of OR operands
@@ -253,75 +355,6 @@ public class ProductionCanonicalizer {
 		} else {
 			return ImmutableList.of(expression);
 		}
-	}
-
-	/**
-	 * Uses the specified expression as the starting point for generating synthetic names, in addition to whatever
-	 * prefix is already there.
-	 */
-	private void extendNameStart(Expression expression) {
-		extendNameStart(expression.getName());
-	}
-
-	/**
-	 * Uses the specified name as the starting point for generating synthetic names, in addition to whatever
-	 * prefix is already there.
-	 */
-	private void extendNameStart(String name) {
-		if (name != null) {
-			syntheticNonterminalNameGenerator.save();
-			syntheticNonterminalNameGenerator.extend(name);
-		}
-	}
-
-	/**
-	 * Resets naming to the original behavior before calling extendNameStart().
-	 */
-	private void extendNameEnd(Expression expression) {
-		extendNameEnd(expression.getName());
-	}
-
-	/**
-	 * Resets naming to the original behavior before calling extendNameStart().
-	 */
-	private void extendNameEnd(String name) {
-		if (name != null) {
-			syntheticNonterminalNameGenerator.restore();
-		}
-	}
-
-	/**
-	 * Creates a synthetic nonterminal, using the specified callback to provide the expressions for its alternatives.
-	 * All generated alternatives have undefined precedence.
-	 * <p>
-	 * The original expression is passed to use its name, if any, for the synthetic nonterminal.
-	 */
-	private String createSyntheticNonterminal(
-		Expression expression,
-		BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder,
-		PsiStyle psiStyle) {
-
-		return createSyntheticNonterminal(expression.getName(), alternativesAdder, psiStyle);
-	}
-
-	/**
-	 * Creates a synthetic nonterminal, using the specified callback to provide the expressions for its alternatives.
-	 * All generated alternatives have undefined precedence.
-	 * <p>
-	 * The original expression is passed to use its name, if any, for the synthetic nonterminal.
-	 */
-	private String createSyntheticNonterminal(
-		String suggestedName,
-		BiConsumer<String, List<name.martingeisse.mapag.grammar.extended.Alternative>> alternativesAdder,
-		PsiStyle psiStyle) {
-
-		String syntheticName = syntheticNonterminalNameGenerator.createSyntheticName(suggestedName);
-		List<name.martingeisse.mapag.grammar.extended.Alternative> alternatives = new ArrayList<>();
-		alternativesAdder.accept(syntheticName, alternatives);
-		Production production = new Production(syntheticName, ImmutableList.copyOf(alternatives));
-		pendingProductions.add(production);
-		nonterminalPsiStyles.put(syntheticName, psiStyle);
-		return syntheticName;
 	}
 
 	private name.martingeisse.mapag.grammar.extended.Alternative syntheticAlternative(String name, Expression expression) {
