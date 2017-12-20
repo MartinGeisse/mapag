@@ -80,9 +80,7 @@ public class Symbols {
 	public static final MapagElementType production_Multi = new MapagElementType("production_Multi");
 	public static final MapagElementType production_Multi_Alternatives_List = new MapagElementType("production_Multi_Alternatives_List");
 	public static final MapagElementType production_Multi_Alternatives_Named = new MapagElementType("production_Multi_Alternatives_Named");
-	public static final MapagElementType production_Multi_Alternatives_Named_Named = new MapagElementType("production_Multi_Alternatives_Named_Named");
 	public static final MapagElementType production_Multi_Alternatives_Unnamed = new MapagElementType("production_Multi_Alternatives_Unnamed");
-	public static final MapagElementType production_Multi_Alternatives_Unnamed_Unnamed = new MapagElementType("production_Multi_Alternatives_Unnamed_Unnamed");
 	public static final MapagElementType production_SingleNamed = new MapagElementType("production_SingleNamed");
 	public static final MapagElementType production_SingleUnnamed = new MapagElementType("production_SingleUnnamed");
 	public static final MapagElementType resolveDeclaration = new MapagElementType("resolveDeclaration");

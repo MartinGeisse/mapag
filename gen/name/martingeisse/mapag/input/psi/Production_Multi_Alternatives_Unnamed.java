@@ -9,8 +9,8 @@ public final class Production_Multi_Alternatives_Unnamed extends Production_Mult
 		super(node);
 	}
 
-	public Production_Multi_Alternatives_Unnamed_Unnamed getUnnamed() {
-		return (Production_Multi_Alternatives_Unnamed_Unnamed) InternalPsiUtil.getChild(this, 0);
+	public RightHandSide getRightHandSide() {
+		return (RightHandSide) InternalPsiUtil.getChild(this, 0);
 	}
 
 }
