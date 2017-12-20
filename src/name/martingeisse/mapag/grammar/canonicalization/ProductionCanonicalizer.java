@@ -227,9 +227,8 @@ public class ProductionCanonicalizer {
 			// emptyable separated list). This keeps things simple and those names are only reflected in the parser
 			// symbols -- the PSI nodes use generic list classes anyway. The repetitionNonterminal is the nonterminal
 			// used for the actual repetition, that is, the wrapped one in case of an emptyable separated list.
-			// TODO boolean merge = (repetition.getElementExpression() instanceof SymbolReference &&
-				// (repetition.getSeparatorExpression() == null || repetition.getSeparatorExpression() instanceof SymbolReference));
-			boolean merge = false;
+			boolean merge = (repetition.getElementExpression() instanceof SymbolReference &&
+				(repetition.getSeparatorExpression() == null || repetition.getSeparatorExpression() instanceof SymbolReference));
 			String nonterminal, repetitionNonterminal;
 			if (merge) {
 				String elementSymbol = ((SymbolReference)repetition.getElementExpression()).getSymbolName();

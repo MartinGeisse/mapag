@@ -43,7 +43,6 @@ public class Symbols {
 	public static final MapagElementType alternativeAttribute_Precedence = new MapagElementType("alternativeAttribute_Precedence");
 	public static final MapagElementType alternativeAttribute_ReduceOnError = new MapagElementType("alternativeAttribute_ReduceOnError");
 	public static final MapagElementType alternativeAttribute_ResolveBlock = new MapagElementType("alternativeAttribute_ResolveBlock");
-	public static final MapagElementType alternativeAttribute_ResolveBlock_ResolveDeclarations_List = new MapagElementType("alternativeAttribute_ResolveBlock_ResolveDeclarations_List");
 	public static final MapagElementType expression_Empty = new MapagElementType("expression_Empty");
 	public static final MapagElementType expression_Error = new MapagElementType("expression_Error");
 	public static final MapagElementType expression_Identifier = new MapagElementType("expression_Identifier");
@@ -59,10 +58,7 @@ public class Symbols {
 	public static final MapagElementType grammar = new MapagElementType("grammar");
 	public static final MapagElementType grammar_PrecedenceTable = new MapagElementType("grammar_PrecedenceTable");
 	public static final MapagElementType grammar_PrecedenceTable_Optional = new MapagElementType("grammar_PrecedenceTable_Optional");
-	public static final MapagElementType grammar_PrecedenceTable_PrecedenceDeclarations_List = new MapagElementType("grammar_PrecedenceTable_PrecedenceDeclarations_List");
-	public static final MapagElementType grammar_Productions_List = new MapagElementType("grammar_Productions_List");
 	public static final MapagElementType grammar_TerminalDeclarations = new MapagElementType("grammar_TerminalDeclarations");
-	public static final MapagElementType grammar_TerminalDeclarations_Identifiers_List = new MapagElementType("grammar_TerminalDeclarations_Identifiers_List");
 	public static final MapagElementType precedenceDeclarationSymbol = new MapagElementType("precedenceDeclarationSymbol");
 	public static final MapagElementType precedenceDeclaration_ErrorWithSemicolon = new MapagElementType("precedenceDeclaration_ErrorWithSemicolon");
 	public static final MapagElementType precedenceDeclaration_ErrorWithoutSemicolon = new MapagElementType("precedenceDeclaration_ErrorWithoutSemicolon");
@@ -70,7 +66,6 @@ public class Symbols {
 	public static final MapagElementType precedenceDeclaration_Normal_Associativity_Left = new MapagElementType("precedenceDeclaration_Normal_Associativity_Left");
 	public static final MapagElementType precedenceDeclaration_Normal_Associativity_Nonassoc = new MapagElementType("precedenceDeclaration_Normal_Associativity_Nonassoc");
 	public static final MapagElementType precedenceDeclaration_Normal_Associativity_Right = new MapagElementType("precedenceDeclaration_Normal_Associativity_Right");
-	public static final MapagElementType precedenceDeclaration_Normal_Terminals_List = new MapagElementType("precedenceDeclaration_Normal_Terminals_List");
 	public static final MapagElementType production_ErrorWithNonterminalNameAtEof = new MapagElementType("production_ErrorWithNonterminalNameAtEof");
 	public static final MapagElementType production_ErrorWithNonterminalNameWithClosingCurlyBrace = new MapagElementType("production_ErrorWithNonterminalNameWithClosingCurlyBrace");
 	public static final MapagElementType production_ErrorWithNonterminalNameWithSemicolon = new MapagElementType("production_ErrorWithNonterminalNameWithSemicolon");
@@ -86,9 +81,14 @@ public class Symbols {
 	public static final MapagElementType resolveDeclaration = new MapagElementType("resolveDeclaration");
 	public static final MapagElementType resolveDeclaration_Action_Reduce = new MapagElementType("resolveDeclaration_Action_Reduce");
 	public static final MapagElementType resolveDeclaration_Action_Shift = new MapagElementType("resolveDeclaration_Action_Shift");
-	public static final MapagElementType resolveDeclaration_Symbols_List = new MapagElementType("resolveDeclaration_Symbols_List");
 	public static final MapagElementType rightHandSide = new MapagElementType("rightHandSide");
-	public static final MapagElementType rightHandSide_Attributes_List = new MapagElementType("rightHandSide_Attributes_List");
+	public static final MapagElementType synthetic_List_AlternativeAttribute = new MapagElementType("synthetic_List_AlternativeAttribute");
+	public static final MapagElementType synthetic_List_PrecedenceDeclaration = new MapagElementType("synthetic_List_PrecedenceDeclaration");
+	public static final MapagElementType synthetic_List_Production = new MapagElementType("synthetic_List_Production");
+	public static final MapagElementType synthetic_List_ResolveDeclaration = new MapagElementType("synthetic_List_ResolveDeclaration");
+	public static final MapagElementType synthetic_SeparatedList_IDENTIFIER_COMMA = new MapagElementType("synthetic_SeparatedList_IDENTIFIER_COMMA");
+	public static final MapagElementType synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA = new MapagElementType("synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA");
+	public static final MapagElementType synthetic_SeparatedList_TerminalDeclaration_COMMA = new MapagElementType("synthetic_SeparatedList_TerminalDeclaration_COMMA");
 	public static final MapagElementType terminalDeclaration = new MapagElementType("terminalDeclaration");
 
 	//
