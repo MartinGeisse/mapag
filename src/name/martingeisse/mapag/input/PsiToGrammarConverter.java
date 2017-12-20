@@ -146,15 +146,15 @@ public class PsiToGrammarConverter {
 						alternatives.add(convertAlternative(
 							typedElement,
 							null,
-							typedElement.getUnnamed().getRightHandSide()));
+							typedElement.getRightHandSide()));
 
 					} else if (element instanceof Production_Multi_Alternatives_Named) {
 
 						Production_Multi_Alternatives_Named typedElement = (Production_Multi_Alternatives_Named) element;
 						alternatives.add(convertAlternative(
 							typedElement,
-							getText(typedElement.getNamed().getAlternativeName()),
-							typedElement.getNamed().getRightHandSide()
+							getText(typedElement.getAlternativeName()),
+							typedElement.getRightHandSide()
 						));
 
 					} else {

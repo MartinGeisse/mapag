@@ -55,8 +55,7 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 		Symbols.precedenceDeclaration_ErrorWithSemicolon,
 		Symbols.precedenceDeclaration_ErrorWithoutSemicolon,
 		Symbols.production_Multi_Alternatives_Named,
-		Symbols.production_Multi_Alternatives_Named_Named,
-		Symbols.production_Multi_Alternatives_Unnamed_Unnamed,
+		Symbols.production_Multi_Alternatives_Unnamed,
 		Symbols.resolveDeclaration,
 
 		// top-level elements

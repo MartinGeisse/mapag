@@ -189,8 +189,7 @@ public class ProductionCanonicalizer {
 			OptionalExpression optionalExpression = (OptionalExpression) expression;
 
 			// check if this expression can be merged, then choose a name
-			// TODO boolean merge = (optionalExpression.getOperand() instanceof SymbolReference);
-			boolean merge = false;
+			boolean merge = (optionalExpression.getOperand() instanceof SymbolReference);
 			String nonterminal;
 			if (merge) {
 				nonterminal = "synthetic/optional/" + ((SymbolReference)optionalExpression.getOperand()).getSymbolName();
