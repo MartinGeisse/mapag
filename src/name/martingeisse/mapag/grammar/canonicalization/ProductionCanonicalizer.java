@@ -165,10 +165,12 @@ public class ProductionCanonicalizer {
 			String nonterminal = syntheticNonterminalNameGenerator.createSyntheticName(expression.getName());
 			List<Alternative> alternatives = new ArrayList<>();
 			for (Expression orOperand : getOrOperands(expression)) {
-				// TODO remove the name from the second argument? This may be the reason for unwanted nonterminals in the meta-grammar.
-				// But it depends -- if the operand is a single symbol, we cannot remove the name, otherwise we
-				// also remove its getter. For a sequence, removing the name is correct though.
-				alternatives.add(syntheticAlternative(orOperand.getName(), orOperand));
+				// for a sequence, we'll have to remove the name, or the expression gets pushed out into yet another nonterminal
+				String alternativeName = orOperand.getName();
+				if (orOperand instanceof SequenceExpression) {
+					orOperand = orOperand.withName(null);
+				}
+				alternatives.add(syntheticAlternative(alternativeName, orOperand));
 			}
 			createSyntheticNonterminal(nonterminal, alternatives, PsiStyle.Normal.INSTANCE);
 			return nonterminal;
@@ -187,7 +189,8 @@ public class ProductionCanonicalizer {
 			OptionalExpression optionalExpression = (OptionalExpression) expression;
 
 			// check if this expression can be merged, then choose a name
-			boolean merge = (optionalExpression.getOperand() instanceof SymbolReference);
+			// TODO boolean merge = (optionalExpression.getOperand() instanceof SymbolReference);
+			boolean merge = false;
 			String nonterminal;
 			if (merge) {
 				nonterminal = "synthetic/optional/" + ((SymbolReference)optionalExpression.getOperand()).getSymbolName();
@@ -225,8 +228,9 @@ public class ProductionCanonicalizer {
 			// emptyable separated list). This keeps things simple and those names are only reflected in the parser
 			// symbols -- the PSI nodes use generic list classes anyway. The repetitionNonterminal is the nonterminal
 			// used for the actual repetition, that is, the wrapped one in case of an emptyable separated list.
-			boolean merge = (repetition.getElementExpression() instanceof SymbolReference &&
-				(repetition.getSeparatorExpression() == null || repetition.getSeparatorExpression() instanceof SymbolReference));
+			// TODO boolean merge = (repetition.getElementExpression() instanceof SymbolReference &&
+				// (repetition.getSeparatorExpression() == null || repetition.getSeparatorExpression() instanceof SymbolReference));
+			boolean merge = false;
 			String nonterminal, repetitionNonterminal;
 			if (merge) {
 				String elementSymbol = ((SymbolReference)repetition.getElementExpression()).getSymbolName();
