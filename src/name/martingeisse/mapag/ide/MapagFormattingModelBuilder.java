@@ -32,16 +32,16 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 	private static final TokenSet DEFAULT_INDENTED_SYMBOLS = TokenSet.create(
 
 		// terminal list inside a precedence declaration
-		Symbols.precedenceDeclaration_Normal_Terminals_List,
+		Symbols.synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA,
 		Symbols.precedenceDeclarationSymbol
 
 	);
 
 	private static final TokenSet NORMALLY_INDENTED_SYMBOLS = TokenSet.create(
-		Symbols.grammar_TerminalDeclarations_Identifiers_List,
-		Symbols.grammar_PrecedenceTable_PrecedenceDeclarations_List,
+		Symbols.synthetic_SeparatedList_TerminalDeclaration_COMMA,
+		Symbols.synthetic_List_PrecedenceDeclaration,
 		Symbols.production_Multi_Alternatives_List,
-		Symbols.alternativeAttribute_ResolveBlock_ResolveDeclarations_List
+		Symbols.synthetic_List_ResolveDeclaration
 	);
 
 	private static final TokenSet NOT_INDENTED_SYMBOLS = TokenSet.create(
@@ -64,7 +64,7 @@ public class MapagFormattingModelBuilder implements FormattingModelBuilder {
 		Symbols.grammar_TerminalDeclarations,
 		Symbols.grammar_PrecedenceTable,
 		Symbols.grammar_PrecedenceTable_Optional,
-		Symbols.grammar_Productions_List,
+		Symbols.synthetic_List_Production,
 		Symbols.KW_START,
 		Symbols.production_SingleUnnamed,
 		Symbols.production_SingleNamed,
