@@ -13,6 +13,7 @@ import name.martingeisse.mapag.util.Comparators;
 import name.martingeisse.mapag.util.ListUtil;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -139,67 +140,67 @@ public final class StateMachineEncoder {
 		}
 	}
 
-	public void dump() {
+	public void dump(PrintWriter out) {
 
-		System.out.println("special symbols: ");
-		System.out.println("0: " + SpecialSymbols.EOF_SYMBOL_NAME);
-		System.out.println("1: " + SpecialSymbols.ERROR_SYMBOL_NAME);
-		System.out.println("2: " + SpecialSymbols.BAD_CHARACTER_SYMBOL_NAME);
-		System.out.println();
+		out.println("special symbols: ");
+		out.println("0: " + SpecialSymbols.EOF_SYMBOL_NAME);
+		out.println("1: " + SpecialSymbols.ERROR_SYMBOL_NAME);
+		out.println("2: " + SpecialSymbols.BAD_CHARACTER_SYMBOL_NAME);
+		out.println();
 
 		int symbolCode = 3;
-		System.out.println("terminals: ");
+		out.println("terminals: ");
 		for (String terminal : terminals) {
-			System.out.println(symbolCode + ": " + terminal);
+			out.println(symbolCode + ": " + terminal);
 			symbolCode++;
 		}
-		System.out.println();
+		out.println();
 
-		System.out.println("nonterminals: ");
+		out.println("nonterminals: ");
 		for (String nonterminal : nonterminals) {
-			System.out.println(symbolCode + ": " + nonterminal);
+			out.println(symbolCode + ": " + nonterminal);
 			symbolCode++;
 		}
-		System.out.println();
+		out.println();
 
 		int alternativeCode = 0;
-		System.out.println("alternatives: ");
+		out.println("alternatives: ");
 		for (Pair<String, Alternative> entry : alternatives) {
-			System.out.println(alternativeCode + ": " + entry.getLeft() + " ::= " + entry.getRight());
+			out.println(alternativeCode + ": " + entry.getLeft() + " ::= " + entry.getRight());
 			alternativeCode++;
 		}
-		System.out.println();
+		out.println();
 
-		System.out.println("----------------------------------------------------------------------");
+		out.println("----------------------------------------------------------------------");
 		int stateCode = 0;
 		for (State state : states) {
-			System.out.println();
-			System.out.println("state " + stateCode + ": ");
-			System.out.println(state);
-			System.out.println("actions:");
+			out.println();
+			out.println("state " + stateCode + ": ");
+			out.println(state);
+			out.println("actions:");
 			{
 				ImmutableMap<String, Action> terminalActionMap = stateMachine.getTerminalOrEofActions().get(state);
 				for (String terminal : grammarInfo.getGrammar().getTerminalDefinitions().keySet()) {
-					printAction(terminalActionMap, terminal);
+					printAction(terminalActionMap, terminal, out);
 				}
-				printAction(terminalActionMap, SpecialSymbols.EOF_SYMBOL_NAME);
+				printAction(terminalActionMap, SpecialSymbols.EOF_SYMBOL_NAME, out);
 			}
 			{
 				ImmutableMap<String, Action.Shift> nonterminalActionMap = stateMachine.getNonterminalActions().get(state);
 				for (String nonterminal : grammarInfo.getGrammar().getNonterminalDefinitions().keySet()) {
-					printAction(nonterminalActionMap, nonterminal);
+					printAction(nonterminalActionMap, nonterminal, out);
 				}
-				printAction(nonterminalActionMap, SpecialSymbols.ERROR_SYMBOL_NAME);
+				printAction(nonterminalActionMap, SpecialSymbols.ERROR_SYMBOL_NAME, out);
 			}
 
-			System.out.println();
+			out.println();
 			stateCode++;
 		}
 
 	}
 
-	private void printAction(ImmutableMap<String, ? extends Action> map, String symbol) {
-		System.out.println("  " + symbol + " -> " + actionToString(map.get(symbol)));
+	private void printAction(ImmutableMap<String, ? extends Action> map, String symbol, PrintWriter out) {
+		out.println("  " + symbol + " -> " + actionToString(map.get(symbol)));
 	}
 
 	private String actionToString(Action untypedAction) {
