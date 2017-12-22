@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import name.martingeisse.mapag.util.ListUtil;
 import name.martingeisse.mapag.util.ParameterUtil;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -86,29 +87,29 @@ public final class Grammar {
 		return startNonterminalName;
 	}
 
-	public void dump() {
+	public void dump(PrintWriter out) {
 
-		System.out.println("terminals:");
+		out.println("terminals:");
 		for (TerminalDefinition terminal : ListUtil.sorted(terminalDefinitions.values(), Comparator.comparing(TerminalDefinition::getName))) {
-			System.out.println("* " + terminal.getName() + ", precedenceIndex: " +
+			out.println("* " + terminal.getName() + ", precedenceIndex: " +
 				terminal.getPrecedenceIndex() + ", associativity: " + terminal.getAssociativity());
 		}
-		System.out.println();
+		out.println();
 
-		System.out.println("nonterminals (start: " + startNonterminalName + "):");
+		out.println("nonterminals (start: " + startNonterminalName + "):");
 		for (NonterminalDefinition nonterminal : ListUtil.sorted(nonterminalDefinitions.values(), Comparator.comparing(NonterminalDefinition::getName))) {
-			System.out.println(nonterminal.getName() + " ::= {");
+			out.println(nonterminal.getName() + " ::= {");
 			for (Alternative alternative : nonterminal.getAlternatives()) {
-				System.out.print("    " + alternative.getName() + " ::= " + alternative.getExpansion());
+				out.print("    " + alternative.getName() + " ::= " + alternative.getExpansion());
 				if (!alternative.getAttributes().equals(AlternativeAttributes.EMPTY)) {
-					System.out.print("    " + alternative.getAttributes());
+					out.print("    " + alternative.getAttributes());
 				}
-				System.out.println();
+				out.println();
 			}
-			System.out.println("}");
-			System.out.println();
+			out.println("}");
+			out.println();
 		}
-		System.out.println();
+		out.println();
 
 	}
 
