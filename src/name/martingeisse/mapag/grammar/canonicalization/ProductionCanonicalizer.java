@@ -239,6 +239,7 @@ public class ProductionCanonicalizer {
 					nonterminal = "synthetic/list/" + elementSymbol;
 				}
 				repetitionNonterminal = wrapInOptional ? (nonterminal + "/nonempty") : nonterminal;
+				mergedSyntheticNonterminals.put(expression.withName(null), nonterminal);
 			} else {
 				syntheticNonterminalNameGenerator.save();
 				syntheticNonterminalNameGenerator.extend(expression.getName());
@@ -319,6 +320,9 @@ public class ProductionCanonicalizer {
 	}
 
 	private void createSyntheticNonterminal(String nonterminal, Collection<Alternative> alternatives, PsiStyle psiStyle) {
+		if (nonterminalPsiStyles.get(nonterminal) != null) {
+			throw new RuntimeException("nonterminal name collision: " + nonterminal);
+		}
 		Production production = new Production(nonterminal, ImmutableList.copyOf(alternatives));
 		pendingProductions.add(production);
 		nonterminalPsiStyles.put(nonterminal, psiStyle);

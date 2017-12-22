@@ -4,7 +4,9 @@ import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.util.ParameterUtil;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -20,13 +22,21 @@ class NonterminalDefinitionValidator {
 	}
 
 	void validate() {
+		Set<String> nonterminalNames = new HashSet<>();
 		for (NonterminalDefinition nonterminalDefinition : nonterminalDefinitions.values()) {
+			if (!nonterminalNames.add(nonterminalDefinition.getName())) {
+				throw new IllegalStateException("duplicate nonterminal name: " + nonterminalDefinition.getName());
+			}
 			validate(nonterminalDefinition);
 		}
 	}
 
 	void validate(NonterminalDefinition nonterminalDefinition) {
+		Set<String> alternativeNames = new HashSet<>();
 		for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
+			if (!alternativeNames.add(alternative.getName())) {
+				throw new IllegalStateException("duplicate alternative name: " + alternative.getName() + " for nonterminal: " + nonterminalDefinition.getName());
+			}
 			validate(alternative);
 		}
 	}

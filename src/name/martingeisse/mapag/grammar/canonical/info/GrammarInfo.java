@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
+import name.martingeisse.mapag.grammar.canonical.validation.GrammarValidator;
 import name.martingeisse.mapag.util.ParameterUtil;
 
 import java.util.HashSet;
@@ -21,6 +22,7 @@ public final class GrammarInfo {
 
 	public GrammarInfo(Grammar grammar) {
 		ParameterUtil.ensureNotNull(grammar, "grammar");
+		new GrammarValidator(grammar).validate();
 		this.grammar = grammar;
 		this.vanishableNonterminals = VanishableNonterminalsHelper.runFor(grammar);
 		this.firstSets = FirstSetHelper.runFor(grammar, vanishableNonterminals);
