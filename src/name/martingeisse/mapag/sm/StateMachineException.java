@@ -2,6 +2,7 @@ package name.martingeisse.mapag.sm;
 
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
+import name.martingeisse.mapag.util.SelfDescribingRuntimeException;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.PrintWriter;
@@ -9,7 +10,7 @@ import java.io.PrintWriter;
 /**
  *
  */
-public class StateMachineException extends RuntimeException {
+public abstract class StateMachineException extends SelfDescribingRuntimeException {
 
 	public StateMachineException() {
 	}

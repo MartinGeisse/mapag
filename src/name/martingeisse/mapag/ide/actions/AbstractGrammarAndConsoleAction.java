@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.ide;
+package name.martingeisse.mapag.ide.actions;
 
 import com.intellij.execution.ExecutionManager;
 import com.intellij.execution.Executor;
@@ -11,22 +11,16 @@ import com.intellij.execution.ui.RunContentDescriptor;
 import com.intellij.execution.ui.actions.CloseAction;
 import com.intellij.ide.actions.PinActiveTabAction;
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
-import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.OutputFileFactory;
-import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
-import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
-import name.martingeisse.mapag.input.PsiToGrammarConverter;
-import name.martingeisse.mapag.sm.StateMachine;
-import name.martingeisse.mapag.sm.StateMachineBuilder;
-import name.martingeisse.mapag.sm.StateMachineException;
+import name.martingeisse.mapag.ide.MapagSourceFile;
+import name.martingeisse.mapag.ide.MapagSpecificationLanguage;
+import name.martingeisse.mapag.util.SelfDescribingRuntimeException;
 import name.martingeisse.mapag.util.UserMessageException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,19 +32,33 @@ import java.util.Properties;
 import java.util.function.Consumer;
 
 /**
- *
+ * Base class for all actions that operate on a grammar file and can output text to a console. The most important
+ * action is, of course, generating the parser code. However, currently this class is also used to dump information
+ * about a grammar -- namely, the canonical grammar and the state machine. These should better be opened in an editor
+ * instead of being printed to a console, but I found IntelliJ's editor handling to be too confusing to do this in
+ * the first version.
  */
-public class GenerateAction extends AnAction {
+public abstract class AbstractGrammarAndConsoleAction extends AnAction {
 
-	public GenerateAction() {
-		super("generate classes");
+	public AbstractGrammarAndConsoleAction() {
+	}
+
+	public AbstractGrammarAndConsoleAction(Icon icon) {
+		super(icon);
+	}
+
+	public AbstractGrammarAndConsoleAction(@Nullable String text) {
+		super(text);
+	}
+
+	public AbstractGrammarAndConsoleAction(@Nullable String text, @Nullable String description, @Nullable Icon icon) {
+		super(text, description, icon);
 	}
 
 	@Override
 	public void update(AnActionEvent event) {
 		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE);
 		boolean enabled = psiFile != null && psiFile.getLanguage() == MapagSpecificationLanguage.INSTANCE;
-		// Note to myself: event.getPresentation() is correct here, not this.getTemplatePresentation()!
 		event.getPresentation().setEnabledAndVisible(enabled);
 	}
 
@@ -62,9 +70,9 @@ public class GenerateAction extends AnAction {
 		if (project == null) {
 			return;
 		}
-		RunContentDescriptor runContentDescriptor = createConsole(project);
+		RunContentDescriptor runContentDescriptor = createConsole(project, getConsoleTitle(event));
 		ConsoleViewImpl console = (ConsoleViewImpl) runContentDescriptor.getExecutionConsole();
-		console.print("Generating MaPaG Parser...", ConsoleViewContentType.NORMAL_OUTPUT);
+		onConsoleOpened(event, console);
 
 		// we need a MaPaG input file to process
 		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE);
@@ -73,102 +81,40 @@ public class GenerateAction extends AnAction {
 			return;
 		}
 
-		// we need an associated properties file
-		Properties properties = readAssociatedProperties(psiFile, console);
-		if (properties == null) {
-			return;
-		}
-		Configuration configuration = new Configuration(properties);
-
-		// we need a module to place output files in. Should this use ModuleRootManager?
-		Module module = event.getDataContext().getData(LangDataKeys.MODULE);
-		if (module == null) {
-			console.print("No module available to place output files in", ConsoleViewContentType.ERROR_OUTPUT);
-			return;
+		// we may need an associated properties file
+		Configuration configuration;
+		if (needsPropertiesFile(event)) {
+			Properties properties = readAssociatedProperties(psiFile, console);
+			if (properties == null) {
+				return;
+			}
+			configuration = new Configuration(properties);
+		} else {
+			configuration = null;
 		}
 
 		// do it!
 		try {
-			name.martingeisse.mapag.grammar.extended.Grammar extendedGrammar =
-				new PsiToGrammarConverter(true).convert((MapagSourceFile) psiFile);
-			name.martingeisse.mapag.grammar.canonical.Grammar canonicalGrammar =
-				new GrammarCanonicalizer(extendedGrammar).run().getResult();
-			GrammarInfo grammarInfo = new GrammarInfo(canonicalGrammar);
-			StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
-			ApplicationManager.getApplication().runWriteAction(() -> {
-				try {
-
-					// create the output folder
-					VirtualFile moduleFolder = module.getModuleFile().getParent();
-					final VirtualFile existingOutputFolder = moduleFolder.findChild("gen");
-					final VirtualFile outputFolder;
-					if (existingOutputFolder == null) {
-						try {
-							outputFolder = moduleFolder.createChildDirectory(this, "gen");
-						} catch (IOException e) {
-							console.print("Could not create 'gen' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
-							return;
-						}
-					} else {
-						outputFolder = existingOutputFolder;
-					}
-
-					// this is our callback to generate output files
-					OutputFileFactory outputFileFactory = (packageName, className) -> {
-						VirtualFile packageFolder = createPackageFolder(outputFolder, packageName);
-						String fileName = className + ".java";
-						VirtualFile javaFile = packageFolder.findChild(fileName);
-						if (javaFile == null) {
-							javaFile = packageFolder.createChildData(this, fileName);
-						} else if (javaFile.isDirectory()) {
-							throw new UserMessageException("collision with existing folder while creating output " +
-								"file for package '" + packageName + "', class '" + className + "'");
-						}
-						return javaFile.getOutputStream(this);
-					};
-
-					// run the code generator
-					new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
-
-				} catch (IOException e) {
-					throw new RuntimeException("unexpected IOException", e);
-				}
-			});
+			execute(event, console, (MapagSourceFile)psiFile, configuration);
 		} catch (UserMessageException e) {
 			console.print(e.getMessage(), ConsoleViewContentType.ERROR_OUTPUT);
-			return;
-		} catch (StateMachineException.Conflict e) {
+		} catch (SelfDescribingRuntimeException e) {
 			printError(console, e::describe);
 		} catch (Exception e) {
 			console.print("unexpected exception\n", ConsoleViewContentType.ERROR_OUTPUT);
 			printError(console, e::printStackTrace);
-			return;
 		}
 
-		console.print("Done.", ConsoleViewContentType.NORMAL_OUTPUT);
 	}
 
-	private VirtualFile createPackageFolder(VirtualFile parent, String packageName) throws IOException {
-		if (packageName == null || packageName.isEmpty()) {
-			return parent;
-		}
-		int index = packageName.lastIndexOf('.');
-		String localPackageName;
-		if (index != -1) {
-			parent = createPackageFolder(parent, packageName.substring(0, index));
-			localPackageName = packageName.substring(index + 1);
-		} else {
-			localPackageName = packageName;
-		}
-		VirtualFile existing = parent.findChild(localPackageName);
-		if (existing == null) {
-			return parent.createChildDirectory(this, localPackageName);
-		} else if (existing.isDirectory()) {
-			return existing;
-		} else {
-			throw new UserMessageException("collision with existing file while creating output folders for package " + packageName);
-		}
+	protected abstract String getConsoleTitle(AnActionEvent event);
+
+	protected void onConsoleOpened(AnActionEvent event, ConsoleViewImpl console) {
 	}
+
+	protected abstract boolean needsPropertiesFile(AnActionEvent event);
+
+	protected abstract void execute(AnActionEvent event, ConsoleViewImpl console, MapagSourceFile sourceFile, Configuration configuration) throws Exception;
 
 	private Properties readAssociatedProperties(PsiFile grammarPsiFile, ConsoleViewImpl console) {
 		VirtualFile propertiesFile = findPropertiesFile(grammarPsiFile, console);
@@ -206,7 +152,7 @@ public class GenerateAction extends AnAction {
 		return propertiesFile;
 	}
 
-	private static RunContentDescriptor createConsole(@NotNull Project project) {
+	private static RunContentDescriptor createConsole(@NotNull Project project, String title) {
 
 		ConsoleView consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
 
@@ -218,7 +164,7 @@ public class GenerateAction extends AnAction {
 		consoleComponent.add(toolbarPanel, BorderLayout.WEST);
 		consoleComponent.add(consoleView.getComponent(), BorderLayout.CENTER);
 
-		RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, consoleComponent, "MaPaG Generator", null);
+		RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, consoleComponent, title, null);
 
 		Executor executor = DefaultRunExecutor.getRunExecutorInstance();
 		for (AnAction action : consoleView.createConsoleActions()) {
@@ -232,7 +178,7 @@ public class GenerateAction extends AnAction {
 
 	}
 
-	private static void printError(ConsoleViewImpl console, Consumer<PrintWriter> printable) {
+	protected static void printError(ConsoleViewImpl console, Consumer<PrintWriter> printable) {
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);
 		printable.accept(printWriter);
