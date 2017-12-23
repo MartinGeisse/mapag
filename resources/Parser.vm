@@ -39,7 +39,16 @@ public class $className implements PsiParser, LightPsiParser {
 	private static final int ACTION_TABLE_WIDTH = $actionTableWidth;
 	private static final int[] ACTION_TABLE;
 	static {
-		// TODO
+		try (InputStream inputStream = $className.class.getResourceAsStream("/$className.actions")) {
+			try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
+				ACTION_TABLE = new int[$numberOfStates * ACTION_TABLE_WIDTH];
+				for (int i = 0; i < ACTION_TABLE.length; i++) {
+					ACTION_TABLE[i] = dataInputStream.readInt();
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	// state machine (alternatives / reduction table)

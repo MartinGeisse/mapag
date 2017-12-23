@@ -70,6 +70,7 @@ public class ParserClassGenerator {
 		}
 		context.put("fileElementType", configuration.getRequired(FILE_ELEMENT_TYPE_PROPERTY));
 		context.put("startStateCode", stateMachineEncoder.getStateIndex(stateMachine.getStartState()));
+		context.put("numberOfStates", numberOfStates);
 		context.put("actionTableWidth", actionTableWidth);
 		{
 			int highestAlternativeIndex = 0;
