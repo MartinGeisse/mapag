@@ -15,9 +15,7 @@ import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 import name.martingeisse.mapag.sm.StateMachineException;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Properties;
 
 public class MapagGrammarParserGenerationMain extends BootstrapBase {
@@ -312,16 +310,30 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		Grammar grammar = new Grammar(terminalDeclarations, precedenceTable, startNonterminalName, productions);
 		GrammarInfo grammarInfo = new GrammarInfo(new GrammarCanonicalizer(grammar).run().getResult());
 		StateMachine stateMachine = new StateMachineBuilder(grammarInfo).build();
-		OutputFileFactory outputFileFactory = (packageName, className) -> {
-			File baseFolder = new File("grammar_gen_out");
-			if (!baseFolder.isDirectory()) {
-				baseFolder.mkdir();
+		OutputFileFactory outputFileFactory = new OutputFileFactory() {
+
+			@Override
+			public OutputStream createSourceFile(String packageName, String className) throws IOException {
+				return createFile(packageName, className + ".java");
 			}
-			File packageFolder = new File(baseFolder, packageName);
-			if (!packageFolder.isDirectory()) {
-				packageFolder.mkdir();
+
+			@Override
+			public OutputStream createResourceFile(String filename) throws IOException {
+				return createFile("resources", filename);
 			}
-			return new FileOutputStream(new File(packageFolder, className + ".java"));
+
+			private OutputStream createFile(String folderName, String fileName) throws IOException {
+				File baseFolder = new File("grammar_gen_out");
+				if (!baseFolder.isDirectory()) {
+					baseFolder.mkdir();
+				}
+				File packageFolder = new File(baseFolder, folderName);
+				if (!packageFolder.isDirectory()) {
+					packageFolder.mkdir();
+				}
+				return new FileOutputStream(new File(packageFolder, fileName));
+			}
+
 		};
 		new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
 

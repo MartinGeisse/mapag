@@ -36,13 +36,11 @@ public class $className implements PsiParser, LightPsiParser {
 	private static final int START_STATE = $startStateCode;
 
 	// state machine (action table)
-	private static final int[] ACTION_TABLE = {
-        #foreach($row in $actionTableRows)
-            #foreach($cell in $row) $cell, #end
-
-        #end
-	};
 	private static final int ACTION_TABLE_WIDTH = $actionTableWidth;
+	private static final int[] ACTION_TABLE;
+	static {
+		// TODO
+	}
 
 	// state machine (alternatives / reduction table)
 	private static final int[] ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH = {

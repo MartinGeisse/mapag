@@ -11,10 +11,12 @@ import name.martingeisse.mapag.sm.State;
 import name.martingeisse.mapag.sm.StateMachine;
 import org.apache.velocity.VelocityContext;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,6 +51,7 @@ public class ParserClassGenerator {
 		int numberOfStates = stateMachine.getStates().size();
 		int numberOfTerminals = grammar.getTerminalDefinitions().size();
 		int numberOfNonterminals = grammar.getNonterminalDefinitions().size();
+		int actionTableWidth = 3 + numberOfTerminals + numberOfNonterminals;
 
 		StateInputExpectationBuilder stateInputExpectationBuilder = new StateInputExpectationBuilder(grammarInfo, stateMachine, configuration.getPrefixed("parser.error."));
 		stateInputExpectationBuilder.build();
@@ -67,53 +70,7 @@ public class ParserClassGenerator {
 		}
 		context.put("fileElementType", configuration.getRequired(FILE_ELEMENT_TYPE_PROPERTY));
 		context.put("startStateCode", stateMachineEncoder.getStateIndex(stateMachine.getStartState()));
-		{
-			int actionTableWidth = 3 + numberOfTerminals + numberOfNonterminals;
-			int[][] actionTable = new int[numberOfStates][actionTableWidth];
-			for (State state : stateMachine.getStates()) {
-				int stateIndex = stateMachineEncoder.getStateIndex(state);
-
-				// %eof
-				{
-					Action action = stateMachine.getTerminalOrEofActions().get(state).get(SpecialSymbols.EOF_SYMBOL_NAME);
-					int actionCode = stateMachineEncoder.getActionCode(action);
-					actionTable[stateIndex][0] = actionCode;
-				}
-
-				// %error
-				{
-					Action.Shift action = stateMachine.getNonterminalActions().get(state).get(SpecialSymbols.ERROR_SYMBOL_NAME);
-					int actionCode = stateMachineEncoder.getActionCode(action);
-					actionTable[stateIndex][1] = actionCode;
-				}
-
-				// %badchar
-				{
-					Action action = state.getError();
-					int actionCode = stateMachineEncoder.getActionCode(action);
-					actionTable[stateIndex][2] = actionCode;
-				}
-
-				// terminals
-				for (String terminal : grammar.getTerminalDefinitions().keySet()) {
-					int symbolIndex = stateMachineEncoder.getSymbolIndex(terminal);
-					Action action = stateMachine.getTerminalOrEofActions().get(state).get(terminal);
-					int actionCode = stateMachineEncoder.getActionCode(action);
-					actionTable[stateIndex][symbolIndex] = actionCode;
-				}
-
-				// nonterminals
-				for (String nonterminal : grammar.getNonterminalDefinitions().keySet()) {
-					int symbolIndex = stateMachineEncoder.getSymbolIndex(nonterminal);
-					Action.Shift action = stateMachine.getNonterminalActions().get(state).get(nonterminal);
-					int actionCode = stateMachineEncoder.getActionCode(action);
-					actionTable[stateIndex][symbolIndex] = actionCode;
-				}
-
-			}
-			context.put("actionTableRows", actionTable);
-			context.put("actionTableWidth", actionTableWidth);
-		}
+		context.put("actionTableWidth", actionTableWidth);
 		{
 			int highestAlternativeIndex = 0;
 			for (NonterminalDefinition nonterminalDefinition : grammarInfo.getGrammar().getNonterminalDefinitions().values()) {
@@ -156,9 +113,68 @@ public class ParserClassGenerator {
 			context.put("stateInputExpectation", encodedStateInputExpectation);
 		}
 
-		try (OutputStream outputStream = outputFileFactory.createOutputFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
+		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
 				MapagVelocityEngine.engine.getTemplate("Parser.vm").merge(context, outputStreamWriter);
+			}
+		}
+
+		try (OutputStream outputStream = outputFileFactory.createResourceFile(configuration.getRequired(CLASS_NAME_PROPERTY) + ".actions")) {
+			try (DataOutputStream dataOutputStream = new DataOutputStream(outputStream)) {
+
+				State[] states = new State[stateMachine.getStates().size()];
+				for (State state : stateMachine.getStates()) {
+					states[stateMachineEncoder.getStateIndex(state)] = state;
+				}
+
+				for (int stateIndex = 0; stateIndex < states.length; stateIndex++) {
+					State state = states[stateIndex];
+					int[] actionTableRow = new int[actionTableWidth];
+
+					// %eof
+					{
+						Action action = stateMachine.getTerminalOrEofActions().get(state).get(SpecialSymbols.EOF_SYMBOL_NAME);
+						int actionCode = stateMachineEncoder.getActionCode(action);
+						actionTableRow[0] = actionCode;
+					}
+
+					// %error
+					{
+						Action.Shift action = stateMachine.getNonterminalActions().get(state).get(SpecialSymbols.ERROR_SYMBOL_NAME);
+						int actionCode = stateMachineEncoder.getActionCode(action);
+						actionTableRow[1] = actionCode;
+					}
+
+					// %badchar
+					{
+						Action action = state.getError();
+						int actionCode = stateMachineEncoder.getActionCode(action);
+						actionTableRow[2] = actionCode;
+					}
+
+					// terminals
+					for (String terminal : grammar.getTerminalDefinitions().keySet()) {
+						int symbolIndex = stateMachineEncoder.getSymbolIndex(terminal);
+						Action action = stateMachine.getTerminalOrEofActions().get(state).get(terminal);
+						int actionCode = stateMachineEncoder.getActionCode(action);
+						actionTableRow[symbolIndex] = actionCode;
+					}
+
+					// nonterminals
+					for (String nonterminal : grammar.getNonterminalDefinitions().keySet()) {
+						int symbolIndex = stateMachineEncoder.getSymbolIndex(nonterminal);
+						Action.Shift action = stateMachine.getNonterminalActions().get(state).get(nonterminal);
+						int actionCode = stateMachineEncoder.getActionCode(action);
+						actionTableRow[symbolIndex] = actionCode;
+					}
+
+					// write that row to the file
+					for (int actionCode : actionTableRow) {
+						dataOutputStream.writeInt(actionCode);
+					}
+
+				}
+
 			}
 		}
 

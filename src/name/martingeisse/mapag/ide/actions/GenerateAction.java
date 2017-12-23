@@ -16,10 +16,10 @@ import name.martingeisse.mapag.ide.MapagSourceFile;
 import name.martingeisse.mapag.input.PsiToGrammarConverter;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
-import name.martingeisse.mapag.sm.StateMachineException;
 import name.martingeisse.mapag.util.UserMessageException;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  *
@@ -61,7 +61,7 @@ public class GenerateAction extends AbstractGrammarAndConsoleAction {
 		ApplicationManager.getApplication().runWriteAction(() -> {
 			try {
 
-				// create the output folder
+				// create the output folder and resource folder
 				VirtualFile moduleFolder = module.getModuleFile().getParent();
 				final VirtualFile existingOutputFolder = moduleFolder.findChild("gen");
 				final VirtualFile outputFolder;
@@ -75,19 +75,47 @@ public class GenerateAction extends AbstractGrammarAndConsoleAction {
 				} else {
 					outputFolder = existingOutputFolder;
 				}
+				final VirtualFile existingResourcesFolder = moduleFolder.findChild("gen_resources");
+				final VirtualFile resourcesFolder;
+				if (existingResourcesFolder == null) {
+					try {
+						resourcesFolder = moduleFolder.createChildDirectory(this, "gen_resources");
+					} catch (IOException e) {
+						console.print("Could not create 'gen_resources' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
+						return;
+					}
+				} else {
+					resourcesFolder = existingResourcesFolder;
+				}
 
 				// this is our callback to generate output files
-				OutputFileFactory outputFileFactory = (packageName, className) -> {
-					VirtualFile packageFolder = createPackageFolder(outputFolder, packageName);
-					String fileName = className + ".java";
-					VirtualFile javaFile = packageFolder.findChild(fileName);
-					if (javaFile == null) {
-						javaFile = packageFolder.createChildData(this, fileName);
-					} else if (javaFile.isDirectory()) {
-						throw new UserMessageException("collision with existing folder while creating output " +
-							"file for package '" + packageName + "', class '" + className + "'");
+				OutputFileFactory outputFileFactory = new OutputFileFactory() {
+
+					@Override
+					public OutputStream createSourceFile(String packageName, String className) throws IOException {
+						VirtualFile packageFolder = createPackageFolder(outputFolder, packageName);
+						String fileName = className + ".java";
+						VirtualFile javaFile = packageFolder.findChild(fileName);
+						if (javaFile == null) {
+							javaFile = packageFolder.createChildData(this, fileName);
+						} else if (javaFile.isDirectory()) {
+							throw new UserMessageException("collision with existing folder while creating output " +
+								"file for package '" + packageName + "', class '" + className + "'");
+						}
+						return javaFile.getOutputStream(this);
 					}
-					return javaFile.getOutputStream(this);
+
+					@Override
+					public OutputStream createResourceFile(String filename) throws IOException {
+						VirtualFile file = resourcesFolder.findChild(filename);
+						if (file == null) {
+							file = resourcesFolder.createChildData(this, filename);
+						} else if (file.isDirectory()) {
+							throw new UserMessageException("collision with existing folder while creating resource file " + filename);
+						}
+						return file.getOutputStream(this);
+					}
+
 				};
 
 				// run the code generator
