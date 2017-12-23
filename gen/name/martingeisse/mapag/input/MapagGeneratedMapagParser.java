@@ -64,7 +64,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 	private static final int[] ACTION_TABLE;
 
 	static {
-		try (InputStream inputStream = MapagGeneratedMapagParser.class.getResourceAsStream("/$className.actions")) {
+		try (InputStream inputStream = MapagGeneratedMapagParser.class.getResourceAsStream("/MapagGeneratedMapagParser.actions")) {
 			try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
 				ACTION_TABLE = new int[138 * ACTION_TABLE_WIDTH];
 				for (int i = 0; i < ACTION_TABLE.length; i++) {

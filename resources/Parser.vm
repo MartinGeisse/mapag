@@ -41,7 +41,7 @@ public class $className implements PsiParser, LightPsiParser {
 	private static final int ACTION_TABLE_WIDTH = $actionTableWidth;
 	private static final int[] ACTION_TABLE;
 	static {
-		try (InputStream inputStream = ${className}.class.getResourceAsStream("/$className.actions")) {
+		try (InputStream inputStream = ${className}.class.getResourceAsStream("/${className}.actions")) {
 			try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
 				ACTION_TABLE = new int[$numberOfStates * ACTION_TABLE_WIDTH];
 				for (int i = 0; i < ACTION_TABLE.length; i++) {
