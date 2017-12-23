@@ -26,11 +26,6 @@ public abstract class PsiStyle {
 
 	}
 
-	// symbol doesn't generate an AST node, i.e. all children are added to the node's parent directly
-	public static final class Transparent extends PsiStyle {
-		public static final Transparent INSTANCE = new Transparent();
-	}
-
 	// symbol generates an optional (AST node with zero or one children)
 	public static final class Optional extends PsiStyle {
 

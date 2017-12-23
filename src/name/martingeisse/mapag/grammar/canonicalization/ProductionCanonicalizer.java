@@ -281,15 +281,15 @@ public class ProductionCanonicalizer {
 			// Now, if we have an emptyable separated repetition, we must wrap that (now nonempty) repetition in an
 			// optional, otherwise we use it as-is. The toplevel PSI style is always a repetition; if the toplevel
 			// node is an optional-wrapper, the wrapped node has transparent PSI style.
-			PsiStyle toplevelPsiStyle = new PsiStyle.Repetition(elementSymbol, separatorSymbol);
+			PsiStyle psiStyle = new PsiStyle.Repetition(elementSymbol, separatorSymbol);
 			if (wrapInOptional) {
-				createSyntheticNonterminal(repetitionNonterminal, repetitionAlternatives, PsiStyle.Transparent.INSTANCE);
+				createSyntheticNonterminal(repetitionNonterminal, repetitionAlternatives, psiStyle);
 				List<Alternative> wrapperAlternatives = new ArrayList<>();
 				wrapperAlternatives.add(syntheticAlternative("empty", new EmptyExpression()));
 				wrapperAlternatives.add(syntheticAlternative("nonempty", new SymbolReference(repetitionNonterminal).withName("nonempty")));
-				createSyntheticNonterminal(nonterminal, wrapperAlternatives, toplevelPsiStyle);
+				createSyntheticNonterminal(nonterminal, wrapperAlternatives, psiStyle);
 			} else {
-				createSyntheticNonterminal(nonterminal, repetitionAlternatives, toplevelPsiStyle);
+				createSyntheticNonterminal(nonterminal, repetitionAlternatives, psiStyle);
 			}
 			return nonterminal;
 

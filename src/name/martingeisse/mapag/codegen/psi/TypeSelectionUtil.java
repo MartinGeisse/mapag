@@ -35,8 +35,6 @@ final class TypeSelectionUtil {
 			String listElementSymbol = ((PsiStyle.Repetition) psiStyle).getElementSymbol();
 			String listElementType = getEffectiveTypeForSymbol(grammar, listElementSymbol);
 			return "ListNode<" + listElementType + ">";
-		} else if (psiStyle instanceof PsiStyle.Transparent) {
-			throw new RuntimeException("trying to determine the effective type for PsiStyle=transparent nonterminal " + nonterminalDefinition.getName());
 		} else {
 			throw new RuntimeException("unknown PsiStyle subclass: " + psiStyle);
 		}
