@@ -667,7 +667,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			int reduceActionCode = 0;
 			for (int i = 0; i < ACTION_TABLE_WIDTH; i++) {
 				int action = ACTION_TABLE[state * ACTION_TABLE_WIDTH + i];
-				if (action < 0) {
+				if (action < 0 && action != Integer.MIN_VALUE) {
 					if (reduceActionCode == 0) {
 						reduceActionCode = action; // found a reduce action
 					} else if (reduceActionCode != action) {
