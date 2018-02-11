@@ -196,7 +196,9 @@ public class ProductionCanonicalizer {
 				mergedSyntheticNonterminals.put(expression.withName(null), nonterminal);
 			} else {
 				syntheticNonterminalNameGenerator.save();
-				syntheticNonterminalNameGenerator.extend(expression.getName());
+				if (expression.getName() != null) {
+					syntheticNonterminalNameGenerator.extend(expression.getName());
+				}
 				nonterminal = syntheticNonterminalNameGenerator.createSyntheticName("optional");
 				syntheticNonterminalNameGenerator.restore();
 			}
@@ -248,7 +250,9 @@ public class ProductionCanonicalizer {
 				mergedSyntheticNonterminals.put(expression.withName(null), nonterminal);
 			} else {
 				syntheticNonterminalNameGenerator.save();
-				syntheticNonterminalNameGenerator.extend(expression.getName());
+				if (expression.getName() != null) {
+					syntheticNonterminalNameGenerator.extend(expression.getName());
+				}
 				nonterminal = syntheticNonterminalNameGenerator.createSyntheticName("list");
 				repetitionNonterminal = wrapInOptional ? syntheticNonterminalNameGenerator.createSyntheticName("nonemptyList") : nonterminal;
 				syntheticNonterminalNameGenerator.restore();
@@ -264,7 +268,9 @@ public class ProductionCanonicalizer {
 			Expression replacementSeparator;
 			if (hasSeparator) {
 				syntheticNonterminalNameGenerator.save();
-				syntheticNonterminalNameGenerator.extend(expression.getName());
+				if (expression.getName() != null) {
+					syntheticNonterminalNameGenerator.extend(expression.getName());
+				}
 				separatorSymbol = convertExpressionToSymbol(repetition.getSeparatorExpression().withName("separator"));
 				syntheticNonterminalNameGenerator.restore();
 				replacementSeparator = new SymbolReference(separatorSymbol).withName("separator");

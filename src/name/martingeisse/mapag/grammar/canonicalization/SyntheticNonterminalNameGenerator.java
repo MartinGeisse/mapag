@@ -41,6 +41,9 @@ public final class SyntheticNonterminalNameGenerator {
 	}
 
 	public void extend(String extension) {
+		if (extension == null) {
+			throw new IllegalArgumentException("extension cannot be null");
+		}
 		syntheticNamePrefix = syntheticNamePrefix + extension + '/';
 	}
 
