@@ -51,12 +51,14 @@ public final class Repetition extends Expression {
 	@Override
 	protected boolean subclassEquals(Object obj) {
 		Repetition other = (Repetition) obj;
-		return elementExpression.equals(other.elementExpression) && Objects.equals(separatorExpression, other.separatorExpression);
+		return elementExpression.equals(other.elementExpression)
+			&& Objects.equals(separatorExpression, other.separatorExpression)
+			&& emptyAllowed == other.emptyAllowed;
 	}
 
 	@Override
 	protected void buildSubclassHashCode(HashCodeBuilder builder) {
-		builder.append(elementExpression).append(separatorExpression);
+		builder.append(elementExpression).append(separatorExpression).append(emptyAllowed);
 	}
 
 }
