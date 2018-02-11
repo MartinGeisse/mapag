@@ -160,6 +160,14 @@ public class PsiClassesGenerator {
 				}
 			}
 
+			String extraInterfacesKey = "psi.implements." + className;
+			String extraInterfacesText = configuration.getOptional(extraInterfacesKey);
+			if (extraInterfacesText != null) {
+				for (String extraInterfaceText : StringUtils.split(extraInterfacesText, ',')) {
+					interfaces.add(extraInterfacesText.trim());
+				}
+			}
+
 			if (customNameImplementation || customNameIdentifierImplementation) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 			}
