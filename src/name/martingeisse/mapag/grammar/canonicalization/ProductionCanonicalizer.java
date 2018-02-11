@@ -234,11 +234,17 @@ public class ProductionCanonicalizer {
 				String elementSymbol = ((SymbolReference)repetition.getElementExpression()).getSymbolName();
 				if (hasSeparator) {
 					String separatorSymbol = ((SymbolReference)repetition.getSeparatorExpression()).getSymbolName();
-					nonterminal = "synthetic/separatedList/" + elementSymbol + "/" + separatorSymbol;
+					if (repetition.isEmptyAllowed()) {
+						nonterminal = "synthetic/separatedList/" + elementSymbol + "/" + separatorSymbol;
+						repetitionNonterminal = nonterminal + "/nonempty";
+					} else {
+						nonterminal = "synthetic/separatedList/" + elementSymbol + "/" + separatorSymbol + "/nonempty";
+						repetitionNonterminal = nonterminal;
+					}
 				} else {
-					nonterminal = "synthetic/list/" + elementSymbol;
+					nonterminal = "synthetic/list/" + elementSymbol + (repetition.isEmptyAllowed() ? "" : "/nonempty");
+					repetitionNonterminal = nonterminal;
 				}
-				repetitionNonterminal = wrapInOptional ? (nonterminal + "/nonempty") : nonterminal;
 				mergedSyntheticNonterminals.put(expression.withName(null), nonterminal);
 			} else {
 				syntheticNonterminalNameGenerator.save();
