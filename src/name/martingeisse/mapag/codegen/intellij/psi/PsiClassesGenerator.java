@@ -2,8 +2,8 @@ package name.martingeisse.mapag.codegen.intellij.psi;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.*;
-import name.martingeisse.mapag.codegen.intellij.Configuration;
-import name.martingeisse.mapag.codegen.intellij.ConfigurationException;
+import name.martingeisse.mapag.codegen.Configuration;
+import name.martingeisse.mapag.codegen.ConfigurationException;
 import name.martingeisse.mapag.codegen.intellij.IdentifierUtil;
 import name.martingeisse.mapag.codegen.intellij.MapagVelocityEngine;
 import name.martingeisse.mapag.grammar.canonical.*;

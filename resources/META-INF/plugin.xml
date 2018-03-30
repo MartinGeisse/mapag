@@ -33,7 +33,10 @@
   </extensions>
 
   <actions>
-    <action id="mapag.generate" class="name.martingeisse.mapag.ide.actions.GenerateAction" text="generate classes" description="Runs the MaPaG code generator.">
+    <action id="mapag.generate.intellij" class="name.martingeisse.mapag.ide.actions.IntellijGenerateAction" text="generate classes for IntelliJ" description="Runs the MaPaG code generator for IntellIJ.">
+      <add-to-group group-id="ProjectViewPopupMenu" />
+    </action>
+    <action id="mapag.generate.standalone" class="name.martingeisse.mapag.ide.actions.StandaloneGenerateAction" text="generate classes for standalone" description="Runs the MaPaG code generator for standalone.">
       <add-to-group group-id="ProjectViewPopupMenu" />
     </action>
     <action id="mapag.showCanonicalGrammar" class="name.martingeisse.mapag.ide.actions.ShowCanonicalGrammarAction" text="show canonical grammar" description="Opens the canonical grammar in an editor.">

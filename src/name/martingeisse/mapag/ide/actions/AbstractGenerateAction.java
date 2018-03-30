@@ -7,9 +7,8 @@ import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
-import name.martingeisse.mapag.codegen.intellij.CodeGenerationDriver;
-import name.martingeisse.mapag.codegen.intellij.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.ide.MapagSourceFile;
@@ -24,10 +23,10 @@ import java.io.OutputStream;
 /**
  *
  */
-public class GenerateAction extends AbstractGrammarAndConsoleAction {
+public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAction {
 
-	public GenerateAction() {
-		super("generate classes");
+	public AbstractGenerateAction(String text) {
+		super(text);
 	}
 
 	protected String getConsoleTitle(AnActionEvent event) {
@@ -119,7 +118,7 @@ public class GenerateAction extends AbstractGrammarAndConsoleAction {
 				};
 
 				// run the code generator
-				new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
+				generateCode(grammarInfo, stateMachine, configuration, outputFileFactory);
 
 			} catch (IOException e) {
 				throw new RuntimeException("unexpected IOException", e);
@@ -150,5 +149,7 @@ public class GenerateAction extends AbstractGrammarAndConsoleAction {
 			throw new UserMessageException("collision with existing file while creating output folders for package " + packageName);
 		}
 	}
+
+	protected abstract void generateCode(GrammarInfo grammarInfo, StateMachine stateMachine, Configuration configuration, OutputFileFactory outputFileFactory) throws IOException;
 
 }

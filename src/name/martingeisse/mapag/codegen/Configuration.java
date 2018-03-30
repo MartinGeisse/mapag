@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen.intellij;
+package name.martingeisse.mapag.codegen;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

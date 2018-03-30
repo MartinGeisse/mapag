@@ -2,7 +2,7 @@ package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.intellij.CodeGenerationDriver;
-import name.martingeisse.mapag.codegen.intellij.Configuration;
+import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;

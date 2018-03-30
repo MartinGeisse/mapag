@@ -1,8 +1,10 @@
-package name.martingeisse.mapag.codegen.intellij;
+package name.martingeisse.mapag.codegen.standalone;
 
+import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.ConfigurationException;
-import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.intellij.ParserClassGenerator;
+import name.martingeisse.mapag.codegen.intellij.SymbolHolderClassGenerator;
 import name.martingeisse.mapag.codegen.intellij.psi.PsiClassesGenerator;
 import name.martingeisse.mapag.codegen.intellij.psi.PsiFactoryGenerator;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
