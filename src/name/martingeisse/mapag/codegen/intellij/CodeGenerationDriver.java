@@ -1,7 +1,8 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.intellij;
 
-import name.martingeisse.mapag.codegen.psi.PsiClassesGenerator;
-import name.martingeisse.mapag.codegen.psi.PsiFactoryGenerator;
+import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.intellij.psi.PsiClassesGenerator;
+import name.martingeisse.mapag.codegen.intellij.psi.PsiFactoryGenerator;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.StateMachine;
 

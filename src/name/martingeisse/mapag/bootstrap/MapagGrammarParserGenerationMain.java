@@ -1,8 +1,8 @@
 package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.mapag.codegen.CodeGenerationDriver;
-import name.martingeisse.mapag.codegen.Configuration;
+import name.martingeisse.mapag.codegen.intellij.CodeGenerationDriver;
+import name.martingeisse.mapag.codegen.intellij.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
@@ -10,7 +10,6 @@ import name.martingeisse.mapag.grammar.extended.Grammar;
 import name.martingeisse.mapag.grammar.extended.PrecedenceTable;
 import name.martingeisse.mapag.grammar.extended.Production;
 import name.martingeisse.mapag.grammar.extended.TerminalDeclaration;
-import name.martingeisse.mapag.grammar.extended.expression.EmptyExpression;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 import name.martingeisse.mapag.sm.StateMachineException;

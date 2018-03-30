@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.intellij;
 
 import name.martingeisse.mapag.util.UserMessageException;
 

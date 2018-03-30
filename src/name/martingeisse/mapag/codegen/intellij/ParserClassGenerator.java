@@ -1,5 +1,6 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.intellij;
 
+import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
@@ -16,7 +17,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -116,7 +116,7 @@ public class ParserClassGenerator {
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("Parser.vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate("intellij/Parser.vm").merge(context, outputStreamWriter);
 			}
 		}
 

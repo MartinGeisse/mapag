@@ -1,6 +1,7 @@
-package name.martingeisse.mapag.codegen.psi;
+package name.martingeisse.mapag.codegen.intellij.psi;
 
 import name.martingeisse.mapag.codegen.*;
+import name.martingeisse.mapag.codegen.intellij.*;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
@@ -64,7 +65,7 @@ public class PsiFactoryGenerator {
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "PsiFactory")) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("PsiFactory.vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate("intellij/PsiFactory.vm").merge(context, outputStreamWriter);
 			}
 		}
 

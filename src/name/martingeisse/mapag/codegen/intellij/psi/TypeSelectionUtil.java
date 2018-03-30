@@ -1,6 +1,6 @@
-package name.martingeisse.mapag.codegen.psi;
+package name.martingeisse.mapag.codegen.intellij.psi;
 
-import name.martingeisse.mapag.codegen.IdentifierUtil;
+import name.martingeisse.mapag.codegen.intellij.IdentifierUtil;
 import name.martingeisse.mapag.grammar.canonical.*;
 
 /**

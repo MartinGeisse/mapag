@@ -1,7 +1,11 @@
-package name.martingeisse.mapag.codegen.psi;
+package name.martingeisse.mapag.codegen.intellij.psi;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.*;
+import name.martingeisse.mapag.codegen.intellij.Configuration;
+import name.martingeisse.mapag.codegen.intellij.ConfigurationException;
+import name.martingeisse.mapag.codegen.intellij.IdentifierUtil;
+import name.martingeisse.mapag.codegen.intellij.MapagVelocityEngine;
 import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.Comparators;
@@ -196,7 +200,7 @@ public class PsiClassesGenerator {
 
 			try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
 				try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-					MapagVelocityEngine.engine.getTemplate("PsiClass.vm").merge(context, outputStreamWriter);
+					MapagVelocityEngine.engine.getTemplate("intellij/PsiClass.vm").merge(context, outputStreamWriter);
 				}
 			}
 
