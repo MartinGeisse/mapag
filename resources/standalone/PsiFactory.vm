@@ -23,4 +23,8 @@ public class PsiFactory {
         throw new RuntimeException("cannot create PSI element for AST node due to unknown element type: " + type);
     }
 
+	private static IElementType[] createTokenSet(IElementType... types) {
+		return types;
+	}
+
 }

@@ -47,11 +47,11 @@ public final class TypeSelectionUtil {
 			String listElementType = getEffectiveTypeForSymbol(grammar, listElementSymbol);
 			TerminalDefinition terminalElementDefinition = grammar.getTerminalDefinitions().get(listElementSymbol);
 			if (terminalElementDefinition != null) {
-				return ", TokenSet.create(" + getAstNodeType(terminalElementDefinition, symbolHolder) + "), " + listElementType + ".class";
+				return ", createTokenSet(" + getAstNodeType(terminalElementDefinition, symbolHolder) + "), " + listElementType + ".class";
 			}
 			NonterminalDefinition nonterminalElementDefinition = grammar.getNonterminalDefinitions().get(listElementSymbol);
 			if (nonterminalElementDefinition != null) {
-				return ", TokenSet.create(" + getCommaSeparatedAstNodeTypes(nonterminalElementDefinition, symbolHolder) + "), " + listElementType + ".class";
+				return ", createTokenSet(" + getCommaSeparatedAstNodeTypes(nonterminalElementDefinition, symbolHolder) + "), " + listElementType + ".class";
 			}
 			throw new RuntimeException("unknown symbol: " + listElementSymbol);
 		} else {

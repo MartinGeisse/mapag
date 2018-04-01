@@ -16,7 +16,7 @@ public final class InternalPsiUtil {
 		return children[childIndex];
 	}
 
-	public static void foreachChild(ASTDelegatePsiElement parent, Consumer<PsiElement> consumer) {
+	public static void foreachChild(PsiElement parent, Consumer<PsiElement> consumer) {
 		PsiElement[] children = parent.getChildren();
 		for (PsiElement child : children) {
 			consumer.accept(child);

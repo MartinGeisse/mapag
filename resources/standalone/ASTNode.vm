@@ -1,7 +1,5 @@
 package $packageName;
 
-import ${psiPackageName}.PsiFactory;
-
 public final class ASTNode {
 
 	private final IElementType elementType;

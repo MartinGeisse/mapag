@@ -7,7 +7,7 @@ public final class Optional<T extends PsiElement> extends PsiElement {
     }
 
     public T getIt() {
-        return (T)getFirstChild();
+        return (T)InternalPsiUtil.getChild(this, 0);
     }
 
 }
