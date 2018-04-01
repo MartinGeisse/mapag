@@ -1,0 +1,15 @@
+package $packageName;
+
+public final class IElementType {
+
+	private final String name;
+
+	public IElementType(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+}

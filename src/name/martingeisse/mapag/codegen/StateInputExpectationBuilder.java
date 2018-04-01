@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen.intellij;
+package name.martingeisse.mapag.codegen;
 
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;

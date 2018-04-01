@@ -1,7 +1,6 @@
-package name.martingeisse.mapag.codegen.intellij.psi;
+package name.martingeisse.mapag.codegen.intellij;
 
 import name.martingeisse.mapag.codegen.*;
-import name.martingeisse.mapag.codegen.intellij.*;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;

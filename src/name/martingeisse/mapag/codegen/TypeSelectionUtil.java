@@ -1,18 +1,18 @@
-package name.martingeisse.mapag.codegen.intellij.psi;
+package name.martingeisse.mapag.codegen;
 
-import name.martingeisse.mapag.codegen.intellij.IdentifierUtil;
+import name.martingeisse.mapag.codegen.IdentifierUtil;
 import name.martingeisse.mapag.grammar.canonical.*;
 
 /**
  *
  */
-final class TypeSelectionUtil {
+public final class TypeSelectionUtil {
 
 	// prevent instantiation
 	private TypeSelectionUtil() {
 	}
 
-	static String getEffectiveTypeForSymbol(Grammar grammar, String symbol) {
+	public static String getEffectiveTypeForSymbol(Grammar grammar, String symbol) {
 		if (grammar.getTerminalDefinitions().get(symbol) != null) {
 			return "LeafPsiElement";
 		}
@@ -23,7 +23,7 @@ final class TypeSelectionUtil {
 		return getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
 	}
 
-	static String getEffectiveTypeForSymbol(Grammar grammar, NonterminalDefinition nonterminalDefinition) {
+	public static String getEffectiveTypeForSymbol(Grammar grammar, NonterminalDefinition nonterminalDefinition) {
 		PsiStyle psiStyle = nonterminalDefinition.getPsiStyle();
 		if (psiStyle instanceof PsiStyle.Normal) {
 			return IdentifierUtil.toIdentifier(nonterminalDefinition.getName(), true);
@@ -40,7 +40,7 @@ final class TypeSelectionUtil {
 		}
 	}
 
-	static String getAdditionalConstructorArgumentsForSymbol(Grammar grammar, NonterminalDefinition nonterminalDefinition, String symbolHolder) {
+	public static String getAdditionalConstructorArgumentsForSymbol(Grammar grammar, NonterminalDefinition nonterminalDefinition, String symbolHolder) {
 		PsiStyle psiStyle = nonterminalDefinition.getPsiStyle();
 		if (psiStyle instanceof PsiStyle.Repetition) {
 			String listElementSymbol = ((PsiStyle.Repetition) psiStyle).getElementSymbol();
@@ -80,7 +80,7 @@ final class TypeSelectionUtil {
 		}
 	}
 
-	static String getEffectiveTypeForAlternative(Grammar grammar, NonterminalDefinition nonterminalDefinition, Alternative alternative) {
+	public static String getEffectiveTypeForAlternative(Grammar grammar, NonterminalDefinition nonterminalDefinition, Alternative alternative) {
 		PsiStyle psiStyle = nonterminalDefinition.getPsiStyle();
 		if (psiStyle.isDistinctSymbolPerAlternative()) {
 			return IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);

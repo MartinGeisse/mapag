@@ -3,8 +3,7 @@ package name.martingeisse.mapag.codegen.intellij;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.ConfigurationException;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
-import name.martingeisse.mapag.codegen.intellij.psi.PsiClassesGenerator;
-import name.martingeisse.mapag.codegen.intellij.psi.PsiFactoryGenerator;
+import name.martingeisse.mapag.codegen.PsiClassesGenerator;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.StateMachine;
 
@@ -33,7 +32,7 @@ public class CodeGenerationDriver {
 			new SymbolHolderClassGenerator(grammarInfo, configuration, outputFileFactory).generate();
 		}
 		if (configuration.getRequired("psi.generate").equals("true")) {
-			new PsiClassesGenerator(grammarInfo, configuration, outputFileFactory).generate();
+			new PsiClassesGenerator(grammarInfo, configuration, outputFileFactory, "ASTWrapperPsiElement").generate();
 			new PsiFactoryGenerator(grammarInfo, configuration, outputFileFactory).generate();
 		}
 	}

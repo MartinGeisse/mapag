@@ -1,11 +1,6 @@
-package name.martingeisse.mapag.codegen.intellij.psi;
+package name.martingeisse.mapag.codegen;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.mapag.codegen.*;
-import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.ConfigurationException;
-import name.martingeisse.mapag.codegen.intellij.IdentifierUtil;
-import name.martingeisse.mapag.codegen.intellij.MapagVelocityEngine;
 import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.Comparators;
@@ -40,15 +35,17 @@ public class PsiClassesGenerator {
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
+	private final String psiBaseClassName;
 	private ImmutableList<String> classesSupportPsiNamedElement;
 	private ImmutableList<String> classesSupportPsiNameIdentifierOwner;
 	private ImmutableList<String> classesSupportGetReference;
 	private ImmutableList<String> classesSupportSafeDelete;
 
-	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
+	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory, String psiBaseClassName) {
 		this.grammar = grammarInfo.getGrammar();
 		this.configuration = configuration;
 		this.outputFileFactory = outputFileFactory;
+		this.psiBaseClassName = psiBaseClassName;
 	}
 
 	public void generate() throws ConfigurationException, IOException {
@@ -82,7 +79,7 @@ public class PsiClassesGenerator {
 	private void generateSingleAlternativeClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
 		classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
-		classGenerator.superclass = "ASTWrapperPsiElement";
+		classGenerator.superclass = psiBaseClassName;
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
 		classGenerator.generate();
@@ -91,7 +88,7 @@ public class PsiClassesGenerator {
 	private void generateMultiAlternativeBaseClass(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
 		classGenerator.className = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
-		classGenerator.superclass = "ASTWrapperPsiElement";
+		classGenerator.superclass = psiBaseClassName;
 		classGenerator.isAbstract = true;
 		classGenerator.alternative = null;
 		classGenerator.generate();
@@ -200,7 +197,7 @@ public class PsiClassesGenerator {
 
 			try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
 				try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-					MapagVelocityEngine.engine.getTemplate("intellij/PsiClass.vm").merge(context, outputStreamWriter);
+					MapagVelocityEngine.engine.getTemplate("PsiClass.vm").merge(context, outputStreamWriter);
 				}
 			}
 

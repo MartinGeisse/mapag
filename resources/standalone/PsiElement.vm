@@ -1,0 +1,29 @@
+package $packageName;
+
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import org.jetbrains.annotations.NotNull;
+
+public class PsiElement {
+
+	private IElementType type;
+	private PsiElement[] children;
+
+	public IElementType getType() {
+		return type;
+	}
+
+	public void setType(IElementType type) {
+		this.type = type;
+	}
+
+	public PsiElement[] getChildren() {
+		return children;
+	}
+
+	public void setChildren(PsiElement[] children) {
+		this.children = children;
+	}
+
+}
