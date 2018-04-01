@@ -1,13 +1,8 @@
 package $packageName;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import org.jetbrains.annotations.NotNull;
+public final class Optional<T extends PsiElement> extends PsiElement {
 
-public final class Optional<T extends PsiElement> extends ASTWrapperPsiElement {
-
-    public Optional(@NotNull ASTNode node) {
+    public Optional(ASTNode node) {
         super(node);
     }
 

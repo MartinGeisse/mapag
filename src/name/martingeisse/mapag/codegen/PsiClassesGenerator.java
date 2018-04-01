@@ -35,16 +35,19 @@ public class PsiClassesGenerator {
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
+	private final String templateFolder;
 	private final String psiBaseClassName;
 	private ImmutableList<String> classesSupportPsiNamedElement;
 	private ImmutableList<String> classesSupportPsiNameIdentifierOwner;
 	private ImmutableList<String> classesSupportGetReference;
 	private ImmutableList<String> classesSupportSafeDelete;
 
-	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory, String psiBaseClassName) {
+	public PsiClassesGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory,
+							   String templateFolder, String psiBaseClassName) {
 		this.grammar = grammarInfo.getGrammar();
 		this.configuration = configuration;
 		this.outputFileFactory = outputFileFactory;
+		this.templateFolder = templateFolder;
 		this.psiBaseClassName = psiBaseClassName;
 	}
 
@@ -197,7 +200,7 @@ public class PsiClassesGenerator {
 
 			try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
 				try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-					MapagVelocityEngine.engine.getTemplate("PsiClass.vm").merge(context, outputStreamWriter);
+					MapagVelocityEngine.engine.getTemplate(templateFolder + "/PsiClass.vm").merge(context, outputStreamWriter);
 				}
 			}
 
@@ -233,7 +236,7 @@ public class PsiClassesGenerator {
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate(className + ".vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate(templateFolder + '/' + className + ".vm").merge(context, outputStreamWriter);
 			}
 		}
 

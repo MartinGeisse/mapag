@@ -25,6 +25,7 @@ import java.util.Map;
 public class ParserClassGenerator {
 
 	public static final String PACKAGE_NAME_PROPERTY = "parser.package";
+	public static final String PSI_PACKAGE_NAME_PROPERTY = "psi.package";
 	public static final String CLASS_NAME_PROPERTY = "parser.class";
 	public static final String DEBUG_PROPERTY = "parser.debug";
 	public static final String FILE_ELEMENT_TYPE_PROPERTY = "parser.fileElementType";
@@ -58,6 +59,8 @@ public class ParserClassGenerator {
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+		context.put("psiPackageName", configuration.getRequired(PSI_PACKAGE_NAME_PROPERTY));
+		context.put("frameworkPackageName", configuration.getRequired(PSI_PACKAGE_NAME_PROPERTY));
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
 		context.put("debug", "true".equals(configuration.getOptional(DEBUG_PROPERTY)));
 		{
@@ -116,7 +119,7 @@ public class ParserClassGenerator {
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("intellij/Parser.vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate("standalone/Parser.vm").merge(context, outputStreamWriter);
 			}
 		}
 

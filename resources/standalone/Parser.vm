@@ -1,11 +1,9 @@
 package $packageName;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiParser;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
+import ${psiPackageName}.IElementType;
+import ${psiPackageName}.ASTNode;
+import ${psiPackageName}.PsiElement;
+
 #if($debug)
 import org.apache.commons.lang3.StringUtils;
 #end

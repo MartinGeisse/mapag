@@ -1,20 +1,14 @@
 package $packageName;
 
-import com.google.common.collect.ImmutableList;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.psi.tree.TokenSet;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
+public final class ListNode<T extends PsiElement> extends PsiElement {
 
     private final Class<T> elementClass;
 
-    public ListNode(@NotNull ASTNode node, Class<T> elementClass) {
+    public ListNode(ASTNode node, Class<T> elementClass) {
         super(node);
         this.elementClass = elementClass;
     }
@@ -26,18 +20,14 @@ public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
         return (ListNode)this;
     }
 
-	public final ImmutableList<T> getAll() {
-		ImmutableList.Builder<T> builder = ImmutableList.builder();
+	public final List<T> getAll() {
+		List<T> list = new ArrayList<>();
 		addAllTo(builder);
-		return builder.build();
+		return list;
 	}
 
 	public final void addAllTo(List<T> list) {
         foreach(list::add);
-	}
-
-	public final void addAllTo(ImmutableList.Builder<T> builder) {
-        foreach(builder::add);
 	}
 
     public final void foreach(Consumer<T> consumer) {

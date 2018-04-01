@@ -1,0 +1,19 @@
+package $packageName;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public $classModifiers class $className extends $superclass $interfaces {
+
+    public $className(ASTNode node) {
+        super(node);
+    }
+
+    #foreach($nodeGetter in $nodeGetters)
+    public $nodeGetter.nodeType ${nodeGetter.getterName}() {
+            return ($nodeGetter.nodeType)InternalPsiUtil.getChild(this, $nodeGetter.childIndex);
+        }
+    #end
+
+}

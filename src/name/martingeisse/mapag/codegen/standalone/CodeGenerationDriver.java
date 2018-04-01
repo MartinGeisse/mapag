@@ -28,21 +28,22 @@ public class CodeGenerationDriver {
 	}
 
 	public void generate() throws ConfigurationException, IOException {
-		new ParserClassGenerator(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
+		new FrameworkClassGenerator(configuration, outputFileFactory).generate();
 		if (configuration.getRequired("symbolHolder.generate").equals("true")) {
-			new SymbolAndHolderClassGenerator(grammarInfo, configuration, outputFileFactory).generate();
+			new SymbolHolderClassGenerator(grammarInfo, configuration, outputFileFactory).generate();
 		}
 		if (configuration.getRequired("psi.generate").equals("true")) {
 			generatePsiClasses();
 			new PsiFactoryGenerator(grammarInfo, configuration, outputFileFactory).generate();
 		}
+		new ParserClassGenerator(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
 	}
 
 	private void generatePsiClasses() throws ConfigurationException, IOException {
 		Properties properties = new Properties();
 		properties.setProperty(PsiClassesGenerator.PACKAGE_NAME_PROPERTY, configuration.getRequired(PsiClassesGenerator.PACKAGE_NAME_PROPERTY));
 		properties.setProperty(PsiClassesGenerator.PARSER_DEFINITION_CLASS_PROPERTY, configuration.getRequired(PsiClassesGenerator.PARSER_DEFINITION_CLASS_PROPERTY));
-		new PsiClassesGenerator(grammarInfo, new Configuration(properties), outputFileFactory, "PsiElement").generate();
+		new PsiClassesGenerator(grammarInfo, new Configuration(properties), outputFileFactory, "standalone", "PsiElement").generate();
 	}
 
 }

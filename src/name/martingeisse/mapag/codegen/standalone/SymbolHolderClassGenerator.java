@@ -19,7 +19,7 @@ import java.util.List;
 /**
  *
  */
-public class SymbolAndHolderClassGenerator {
+public class SymbolHolderClassGenerator {
 
 	public static final String PACKAGE_NAME_PROPERTY = "symbolHolder.package";
 	public static final String CLASS_NAME_PROPERTY = "symbolHolder.class";
@@ -32,7 +32,7 @@ public class SymbolAndHolderClassGenerator {
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
 
-	public SymbolAndHolderClassGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
+	public SymbolHolderClassGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammarInfo = grammarInfo;
 		this.grammar = grammarInfo.getGrammar();
 		this.configuration = configuration;
@@ -40,11 +40,6 @@ public class SymbolAndHolderClassGenerator {
 	}
 
 	public void generate() throws ConfigurationException, IOException {
-		generateIElementTypeClass();
-		generateSymbolHolderClass();
-	}
-
-	private void generateSymbolHolderClass() throws ConfigurationException, IOException {
 
 		List<String> nonterminalAlternatives = new ArrayList<>();
 		for (NonterminalDefinition nonterminal : grammar.getNonterminalDefinitions().values()) {
@@ -69,20 +64,6 @@ public class SymbolAndHolderClassGenerator {
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
 				MapagVelocityEngine.engine.getTemplate("standalone/SymbolHolder.vm").merge(context, outputStreamWriter);
-			}
-		}
-
-	}
-
-	private void generateIElementTypeClass() throws ConfigurationException, IOException {
-
-		VelocityContext context = new VelocityContext();
-		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
-
-		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
-			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				// VelocityContext
-				MapagVelocityEngine.engine.getTemplate("standalone/IElementType.vm").merge(context, outputStreamWriter);
 			}
 		}
 

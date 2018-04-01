@@ -32,14 +32,14 @@ public class PsiFactoryGenerator {
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
-		if (!configuration.getRequired(SymbolAndHolderClassGenerator.PACKAGE_NAME_PROPERTY).equals(configuration.getRequired(PACKAGE_NAME_PROPERTY))) {
-			String symbolHolderPackage = configuration.getRequired(SymbolAndHolderClassGenerator.PACKAGE_NAME_PROPERTY);
-			String symbolHolderClass = configuration.getRequired(SymbolAndHolderClassGenerator.CLASS_NAME_PROPERTY);
+		if (!configuration.getRequired(SymbolHolderClassGenerator.PACKAGE_NAME_PROPERTY).equals(configuration.getRequired(PACKAGE_NAME_PROPERTY))) {
+			String symbolHolderPackage = configuration.getRequired(SymbolHolderClassGenerator.PACKAGE_NAME_PROPERTY);
+			String symbolHolderClass = configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY);
 			context.put("symbolHolderImport", "import " + symbolHolderPackage + '.' + symbolHolderClass + ';');
 		} else {
 			context.put("symbolHolderImport", "");
 		}
-		String symbolHolder = configuration.getRequired(SymbolAndHolderClassGenerator.CLASS_NAME_PROPERTY);
+		String symbolHolder = configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY);
 		context.put("symbolHolder", symbolHolder);
 
 		List<FactoryCaseEntry> cases = new ArrayList<>();
