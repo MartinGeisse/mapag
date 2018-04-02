@@ -32,7 +32,7 @@ public class CodeGenerationDriver {
 			new SymbolHolderClassGenerator(grammarInfo, configuration, outputFileFactory).generate();
 		}
 		if (configuration.getRequired("psi.generate").equals("true")) {
-			new PsiClassesGenerator(grammarInfo, configuration, outputFileFactory, "intellij", "ASTWrapperPsiElement").generate();
+			new PsiClassesGenerator(grammarInfo, configuration, outputFileFactory, "templates", "ASTWrapperPsiElement").generate();
 			new PsiFactoryGenerator(grammarInfo, configuration, outputFileFactory).generate();
 		}
 	}

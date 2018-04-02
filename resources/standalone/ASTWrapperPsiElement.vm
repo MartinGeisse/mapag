@@ -1,6 +1,6 @@
 package $packageName;
 
-public class PsiElement {
+public class ASTWrapperPsiElement {
 
 	private final ASTNode node;
 	private PsiElement[] children;

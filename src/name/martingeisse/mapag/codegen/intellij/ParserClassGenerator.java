@@ -116,7 +116,7 @@ public class ParserClassGenerator {
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("intellij/Parser.vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate("templates/Parser.vm").merge(context, outputStreamWriter);
 			}
 		}
 

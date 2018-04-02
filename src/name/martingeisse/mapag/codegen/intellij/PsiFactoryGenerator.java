@@ -64,7 +64,7 @@ public class PsiFactoryGenerator {
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "PsiFactory")) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("intellij/PsiFactory.vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate("templates/PsiFactory.vm").merge(context, outputStreamWriter);
 			}
 		}
 
