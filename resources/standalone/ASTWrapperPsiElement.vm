@@ -5,7 +5,7 @@ public class ASTWrapperPsiElement {
 	private final ASTNode node;
 	private PsiElement[] children;
 
-	public PsiElement(ASTNode node) {
+	public ASTWrapperPsiElement(ASTNode node) {
 		this.node = node;
 	}
 

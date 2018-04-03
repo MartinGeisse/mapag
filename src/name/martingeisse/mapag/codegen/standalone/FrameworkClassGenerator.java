@@ -35,6 +35,7 @@ public class FrameworkClassGenerator {
 		generate("IElementType");
 		generate("ASTNode");
 		generate("PsiElement");
+		generate("ASTWrapperPsiElement");
 		generate("LeafPsiElement");
 	}
 
