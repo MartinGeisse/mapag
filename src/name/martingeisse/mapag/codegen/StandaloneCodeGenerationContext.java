@@ -4,8 +4,6 @@
  */
 package name.martingeisse.mapag.codegen;
 
-import name.martingeisse.mapag.codegen.CodeGenerationContext;
-
 /**
  *
  */

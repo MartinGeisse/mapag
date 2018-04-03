@@ -1,6 +1,5 @@
-package name.martingeisse.mapag.codegen.standalone;
+package name.martingeisse.mapag.codegen;
 
-import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
@@ -63,7 +62,7 @@ public class SymbolHolderClassGenerator {
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("standalone/SymbolHolder.vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate("templates/SymbolHolder.vm").merge(context, outputStreamWriter);
 			}
 		}
 

@@ -1,20 +1,11 @@
 package name.martingeisse.mapag.codegen;
 
-import name.martingeisse.mapag.codegen.*;
-import name.martingeisse.mapag.grammar.canonical.Alternative;
-import name.martingeisse.mapag.grammar.canonical.Grammar;
-import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
-import name.martingeisse.mapag.util.ListUtil;
 import org.apache.velocity.VelocityContext;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  *

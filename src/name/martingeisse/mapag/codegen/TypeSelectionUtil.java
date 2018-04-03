@@ -1,6 +1,5 @@
 package name.martingeisse.mapag.codegen;
 
-import name.martingeisse.mapag.codegen.IdentifierUtil;
 import name.martingeisse.mapag.grammar.canonical.*;
 
 /**
