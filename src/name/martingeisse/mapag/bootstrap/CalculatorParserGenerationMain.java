@@ -1,9 +1,11 @@
 package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.mapag.codegen.intellij.CodeGenerationDriver;
+import name.martingeisse.mapag.codegen.CodeGenerationDriver;
+import name.martingeisse.mapag.codegen.CodeGenerationParameters;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.intellij.IntellijCodeGenerationContext;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
@@ -114,7 +116,8 @@ public class CalculatorParserGenerationMain extends BootstrapBase {
 			}
 
 		};
-		new CodeGenerationDriver(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
+		CodeGenerationParameters parameters = new CodeGenerationParameters(grammarInfo, stateMachine, configuration, outputFileFactory, new IntellijCodeGenerationContext());
+		new CodeGenerationDriver(parameters).generate();
 
 	}
 
