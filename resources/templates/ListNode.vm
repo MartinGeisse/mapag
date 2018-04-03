@@ -15,10 +15,18 @@ import java.util.ArrayList;
 
 public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
 
+#if($intellij)
     private final TokenSet elementTypes;
+#else
+    private final IElementType[] elementTypes;
+#end
     private final Class<T> elementClass;
 
+#if($intellij)
     public ListNode($notNull ASTNode node, TokenSet elementTypes, Class<T> elementClass) {
+#else
+    public ListNode($notNull ASTNode node, IElementType[] elementTypes, Class<T> elementClass) {
+#end
         super(node);
         this.elementTypes = elementTypes;
         this.elementClass = elementClass;
@@ -49,9 +57,21 @@ public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
 
     public final void foreach(Consumer<T> consumer) {
         InternalPsiUtil.foreachChild(this, child -> {
-            if (elementTypes.contains(child.getNode().getElementType())) {
-                consumer.accept(elementClass.cast(child));
-            } else if (child instanceof ListNode<?> && child.getNode().getElementType() == getNode().getElementType()) {
+            #if($intellij)
+                if (elementTypes.contains(child.getNode().getElementType())) {
+                    consumer.accept(elementClass.cast(child));
+                    return;
+                }
+            #else
+                IElementType childType = child.getNode().getElementType();
+                for (IElementType elementType : elementTypes) {
+                    if (childType == elementType) {
+                        consumer.accept(elementClass.cast(child));
+                        return;
+                    }
+                }
+            #end
+            if (child instanceof ListNode<?> && child.getNode().getElementType() == getNode().getElementType()) {
                 ListNode<?> typedChild = (ListNode<?>)child;
                 typedChild.cast(elementClass).foreach(consumer);
             }
