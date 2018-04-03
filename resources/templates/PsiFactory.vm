@@ -1,6 +1,6 @@
 package $packageName;
 
-#f($intellij)
+#if($intellij)
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;

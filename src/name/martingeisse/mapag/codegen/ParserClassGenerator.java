@@ -38,13 +38,13 @@ public class ParserClassGenerator {
 	private final OutputFileFactory outputFileFactory;
 	private final CodeGenerationContext codeGenerationContext;
 
-	public ParserClassGenerator(GrammarInfo grammarInfo, StateMachine stateMachine, Configuration configuration, OutputFileFactory outputFileFactory, CodeGenerationContext codeGenerationContext) {
-		this.grammarInfo = grammarInfo;
+	public ParserClassGenerator(CodeGenerationParameters parameters) {
+		this.grammarInfo = parameters.getGrammarInfo();
 		this.grammar = grammarInfo.getGrammar();
-		this.stateMachine = stateMachine;
-		this.configuration = configuration;
-		this.outputFileFactory = outputFileFactory;
-		this.codeGenerationContext = codeGenerationContext;
+		this.stateMachine = parameters.getStateMachine();
+		this.configuration = parameters.getConfiguration();
+		this.outputFileFactory = parameters.getOutputFileFactory();
+		this.codeGenerationContext = parameters.getContext();
 	}
 
 	public void generate() throws ConfigurationException, IOException {

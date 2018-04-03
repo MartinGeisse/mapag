@@ -34,7 +34,7 @@ public class CodeGenerationDriver {
 			new PsiClassesGenerator(parameters).generate();
 			new PsiFactoryGenerator(grammarInfo, configuration, outputFileFactory).generate();
 		}
-		new ParserClassGenerator(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
+		new ParserClassGenerator(parameters).generate();
 	}
 
 }
