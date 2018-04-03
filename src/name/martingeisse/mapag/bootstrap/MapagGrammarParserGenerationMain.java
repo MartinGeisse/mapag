@@ -5,7 +5,7 @@ import name.martingeisse.mapag.codegen.CodeGenerationParameters;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.CodeGenerationDriver;
-import name.martingeisse.mapag.codegen.standalone.StandaloneCodeGenerationContext;
+import name.martingeisse.mapag.codegen.StandaloneCodeGenerationContext;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.extended.Grammar;

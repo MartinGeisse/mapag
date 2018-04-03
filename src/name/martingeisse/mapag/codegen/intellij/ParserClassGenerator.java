@@ -25,6 +25,7 @@ import java.util.Map;
 public class ParserClassGenerator {
 
 	public static final String PACKAGE_NAME_PROPERTY = "parser.package";
+	public static final String PSI_PACKAGE_NAME_PROPERTY = "psi.package";
 	public static final String CLASS_NAME_PROPERTY = "parser.class";
 	public static final String DEBUG_PROPERTY = "parser.debug";
 	public static final String FILE_ELEMENT_TYPE_PROPERTY = "parser.fileElementType";
@@ -36,13 +37,15 @@ public class ParserClassGenerator {
 	private final StateMachine stateMachine;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
+	private final CodeGenerationContext codeGenerationContext;
 
-	public ParserClassGenerator(GrammarInfo grammarInfo, StateMachine stateMachine, Configuration configuration, OutputFileFactory outputFileFactory) {
+	public ParserClassGenerator(GrammarInfo grammarInfo, StateMachine stateMachine, Configuration configuration, OutputFileFactory outputFileFactory, CodeGenerationContext codeGenerationContext) {
 		this.grammarInfo = grammarInfo;
 		this.grammar = grammarInfo.getGrammar();
 		this.stateMachine = stateMachine;
 		this.configuration = configuration;
 		this.outputFileFactory = outputFileFactory;
+		this.codeGenerationContext = codeGenerationContext;
 	}
 
 	public void generate() throws ConfigurationException, IOException {
@@ -58,7 +61,10 @@ public class ParserClassGenerator {
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+		context.put("psiPackageName", configuration.getRequired(PSI_PACKAGE_NAME_PROPERTY));
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
+		context.put("intellij", codeGenerationContext.isIntellij());
+		context.put("notNull", codeGenerationContext.getNotNullAnnotation());
 		context.put("debug", "true".equals(configuration.getOptional(DEBUG_PROPERTY)));
 		{
 			String[] terminalNames = new String[numberOfTerminals];

@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen.standalone;
+package name.martingeisse.mapag.codegen;
 
 import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
@@ -46,7 +46,7 @@ public class FrameworkClassGenerator {
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("standalone/" + className + ".vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate("templates/" + className + ".vm").merge(context, outputStreamWriter);
 			}
 		}
 

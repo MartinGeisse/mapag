@@ -1,7 +1,5 @@
 package name.martingeisse.mapag.codegen;
 
-import name.martingeisse.mapag.codegen.*;
-import name.martingeisse.mapag.codegen.standalone.FrameworkClassGenerator;
 import name.martingeisse.mapag.codegen.standalone.ParserClassGenerator;
 import name.martingeisse.mapag.codegen.standalone.PsiFactoryGenerator;
 import name.martingeisse.mapag.codegen.standalone.SymbolHolderClassGenerator;
