@@ -34,6 +34,7 @@ public class PsiClassesGenerator {
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
+	private final CodeGenerationContext codeGenerationContext;
 	private ImmutableList<String> classesSupportPsiNamedElement;
 	private ImmutableList<String> classesSupportPsiNameIdentifierOwner;
 	private ImmutableList<String> classesSupportGetReference;
@@ -43,6 +44,7 @@ public class PsiClassesGenerator {
 		this.grammar = codeGenerationParameters.getGrammarInfo().getGrammar();
 		this.configuration = codeGenerationParameters.getConfiguration();
 		this.outputFileFactory = codeGenerationParameters.getOutputFileFactory();
+		this.codeGenerationContext = codeGenerationParameters.getContext();
 	}
 
 	public void generate() throws ConfigurationException, IOException {
@@ -114,6 +116,8 @@ public class PsiClassesGenerator {
 			context.put("className", className);
 			context.put("superclass", superclass);
 			context.put("classModifiers", isAbstract ? "abstract" : "final");
+			context.put("intellij", codeGenerationContext.isIntellij());
+			context.put("notNull", codeGenerationContext.getNotNullAnnotation());
 
 			List<NodeGetter> nodeGetters = new ArrayList<>();
 			if (alternative != null) {
@@ -227,6 +231,8 @@ public class PsiClassesGenerator {
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 		context.put("parserDefinitionClass", configuration.getRequired(PARSER_DEFINITION_CLASS_PROPERTY));
+		context.put("intellij", codeGenerationContext.isIntellij());
+		context.put("notNull", codeGenerationContext.getNotNullAnnotation());
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {

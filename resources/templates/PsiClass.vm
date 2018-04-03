@@ -1,5 +1,6 @@
 package $packageName;
 
+#if(intellij)
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
@@ -14,16 +15,16 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.psi.PsiReference;
+import com.google.common.collect.ImmutableList;
+#end
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 public $classModifiers class $className extends $superclass $interfaces {
 
-    public $className(@NotNull ASTNode node) {
+    public $className($notNull ASTNode node) {
         super(node);
     }
 
@@ -33,64 +34,67 @@ public $classModifiers class $className extends $superclass $interfaces {
         }
     #end
 
-	#if($customNameImplementation)
-
-		public String getName() {
-			return ${psiUtilClass}.getName(this);
-		}
-
-		public PsiElement setName(String newName) throws IncorrectOperationException {
-			return ${psiUtilClass}.setName(this, newName);
-		}
-
-	#end
-	#if($customNameIdentifierImplementation)
-
-	    #if($customNameImplementation)
-
-            public PsiElement getNameIdentifier() {
-                return ${psiUtilClass}.getNameIdentifier(this);
-            }
-
-        #else
-
-            public LeafPsiElement getNameIdentifier() {
-                return ${psiUtilClass}.getNameIdentifier(this);
-            }
+    #if(intellij)
+    
+        #if($customNameImplementation)
 
             public String getName() {
-                LeafPsiElement nameIdentifier = getNameIdentifier();
-                return (nameIdentifier == null ? null : nameIdentifier.getText());
+                return ${psiUtilClass}.getName(this);
             }
 
             public PsiElement setName(String newName) throws IncorrectOperationException {
-                LeafPsiElement nameIdentifier = getNameIdentifier();
-                if (nameIdentifier == null) {
-                    throw new IncorrectOperationException("name identifier not found");
-                }
-                return (LeafPsiElement) nameIdentifier.replaceWithText(newName);
+                return ${psiUtilClass}.setName(this, newName);
             }
 
         #end
+        #if($customNameIdentifierImplementation)
 
-	#end
+            #if($customNameImplementation)
 
-	#if($supportsGetReference)
-		public PsiReference getReference() {
-			return ${psiUtilClass}.getReference(this);
-		}
-	#end
+                public PsiElement getNameIdentifier() {
+                    return ${psiUtilClass}.getNameIdentifier(this);
+                }
 
-	#if($safeDeleteBase)
-		public void superclassDelete() throws IncorrectOperationException {
-			super.delete();
-		}
-	#end
+            #else
 
-	#if($safeDeleteImplementation)
-		public void delete() throws IncorrectOperationException {
-			${psiUtilClass}.delete(this);
-		}
-	#end
+                public LeafPsiElement getNameIdentifier() {
+                    return ${psiUtilClass}.getNameIdentifier(this);
+                }
 
+                public String getName() {
+                    LeafPsiElement nameIdentifier = getNameIdentifier();
+                    return (nameIdentifier == null ? null : nameIdentifier.getText());
+                }
+
+                public PsiElement setName(String newName) throws IncorrectOperationException {
+                    LeafPsiElement nameIdentifier = getNameIdentifier();
+                    if (nameIdentifier == null) {
+                        throw new IncorrectOperationException("name identifier not found");
+                    }
+                    return (LeafPsiElement) nameIdentifier.replaceWithText(newName);
+                }
+
+            #end
+
+        #end
+
+        #if($supportsGetReference)
+            public PsiReference getReference() {
+                return ${psiUtilClass}.getReference(this);
+            }
+        #end
+
+        #if($safeDeleteBase)
+            public void superclassDelete() throws IncorrectOperationException {
+                super.delete();
+            }
+        #end
+
+        #if($safeDeleteImplementation)
+            public void delete() throws IncorrectOperationException {
+                ${psiUtilClass}.delete(this);
+            }
+        #end
+
+    #end
 }

@@ -1,30 +1,20 @@
 package name.martingeisse.mapag.codegen.standalone;
 
-import name.martingeisse.mapag.codegen.Configuration;
+import name.martingeisse.mapag.codegen.CodeGenerationParameters;
 import name.martingeisse.mapag.codegen.ConfigurationException;
-import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.PsiClassesGenerator;
-import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
-import name.martingeisse.mapag.sm.StateMachine;
 
 import java.io.IOException;
-import java.util.Properties;
 
 /**
  *
  */
 public class CodeGenerationDriver {
 
-	private final GrammarInfo grammarInfo;
-	private final StateMachine stateMachine;
-	private final Configuration configuration;
-	private final OutputFileFactory outputFileFactory;
+	private final CodeGenerationParameters parameters;
 
-	public CodeGenerationDriver(GrammarInfo grammarInfo, StateMachine stateMachine, Configuration configuration, OutputFileFactory outputFileFactory) {
-		this.grammarInfo = grammarInfo;
-		this.stateMachine = stateMachine;
-		this.configuration = configuration;
-		this.outputFileFactory = outputFileFactory;
+	public CodeGenerationDriver(CodeGenerationParameters parameters) {
+		this.parameters = parameters;
 	}
 
 	public void generate() throws ConfigurationException, IOException {
@@ -33,17 +23,10 @@ public class CodeGenerationDriver {
 			new SymbolHolderClassGenerator(grammarInfo, configuration, outputFileFactory).generate();
 		}
 		if (configuration.getRequired("psi.generate").equals("true")) {
-			generatePsiClasses();
+			new PsiClassesGenerator(parameters).generate();
 			new PsiFactoryGenerator(grammarInfo, configuration, outputFileFactory).generate();
 		}
 		new ParserClassGenerator(grammarInfo, stateMachine, configuration, outputFileFactory).generate();
-	}
-
-	private void generatePsiClasses() throws ConfigurationException, IOException {
-		Properties properties = new Properties();
-		properties.setProperty(PsiClassesGenerator.PACKAGE_NAME_PROPERTY, configuration.getRequired(PsiClassesGenerator.PACKAGE_NAME_PROPERTY));
-		properties.setProperty(PsiClassesGenerator.PARSER_DEFINITION_CLASS_PROPERTY, configuration.getRequired(PsiClassesGenerator.PARSER_DEFINITION_CLASS_PROPERTY));
-		new PsiClassesGenerator(grammarInfo, new Configuration(properties), outputFileFactory, "standalone", "PsiElement").generate();
 	}
 
 }

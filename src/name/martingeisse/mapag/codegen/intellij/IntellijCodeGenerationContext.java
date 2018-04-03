@@ -10,4 +10,13 @@ import name.martingeisse.mapag.codegen.CodeGenerationContext;
  *
  */
 public final class IntellijCodeGenerationContext implements CodeGenerationContext {
+
+	public boolean isIntellij() {
+		return true;
+	}
+
+	public String getNotNullAnnotation() {
+		return "@NotNull";
+	}
+
 }
