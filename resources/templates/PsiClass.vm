@@ -2,7 +2,7 @@ package $packageName;
 
 #if($intellij)
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.ASTWrapperPsiElement;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
