@@ -145,6 +145,10 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 #if($intellij)
 	private PsiBuilder psiBuilder;
 	private PsiBuilder.Marker speculativeTokenConsumptionMarker;
+#else
+    private ASTNode[] tokens;
+    private int tokenPointer, tokenMarker;
+    private ASTNode astRootNode;
 #end
 
 	private boolean used = false;
@@ -168,6 +172,12 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 		}
 		parse();
 	}
+#else
+    public ASTNode parse(ASTNode[] tokens) {
+        this.tokens = tokens;
+        parse();
+        return astRootNode;
+    }
 #end
 
 	private void parse() {
@@ -193,6 +203,8 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 #if($intellij)
         PsiBuilder.Marker wholeFileMarker = psiBuilder.mark();
         PsiBuilder.Marker preParseMarker = psiBuilder.mark();
+#else
+        tokenPointer = tokenMarker = 0;
 #end
         try {
 
@@ -267,13 +279,14 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 #if($intellij)
 		// Now we re-parse, based on the parse tree we build, in a way that the PsiBuilder likes.
 		feedPsiBuilder(parseTreeStack[0], null);
-#end
 
-#if($intellij)
 		// Before we consider the file parsed, we must advance the lexer once more so it consumes end-of-file
 		// whitespace and comments as part of the root AST node.
 		nextToken();
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
+#else
+        tokenPointer = tokenMarker = 0;
+        astRootNode = buildAst(parseTreeStack[0]);
 #end
 
 #if($debug)
@@ -359,6 +372,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 	}
 
 #if($intellij)
+
 	private void feedPsiBuilder(Object what, IElementType parentElementType) {
 	    if (what == null) {
             psiBuilder.advanceLexer();
@@ -400,6 +414,56 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
             }
 		}
 	}
+
+#else
+
+	private ASTNode buildAst(Object what) {
+	    if (what == null) {
+    	    TODO
+            psiBuilder.advanceLexer();
+	    } else if (what instanceof Object[]) {
+    	    TODO
+			Object[] reduction = (Object[]) what;
+			IElementType elementType;
+			boolean buildMarker;
+			if (reduction[0] == null) {
+				elementType = null;
+				buildMarker = false;
+			} else if (reduction[0] instanceof ListNodeGenerationWrapper) {
+				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
+				elementType = listNodeGenerationWrapper.elementType;
+				buildMarker = (parentElementType == null || elementType != parentElementType);
+			} else {
+				elementType = (IElementType)reduction[0];
+				buildMarker = true;
+			}
+			PsiBuilder.Marker marker = null;
+			if (buildMarker) {
+				marker = psiBuilder.mark();
+			}
+			for (int i = 1; i < reduction.length; i++) {
+				feedPsiBuilder(reduction[i], elementType);
+			}
+			if (buildMarker) {
+				marker.done(elementType);
+			}
+		} else if (what instanceof List<?>) {
+    	    TODO
+			// an object list has the same meaning as an object array (needed for error symbols)
+			feedPsiBuilder(((List<?>)what).toArray(), parentElementType);
+		} else if (what instanceof ErrorLocationIndicator) {
+    	    TODO
+		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
+			psiBuilder.error("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
+		} else if (what instanceof UnrecoverableSyntaxException) {
+    	    TODO
+            psiBuilder.error(((UnrecoverableSyntaxException)what).getMessage());
+            while (!psiBuilder.eof()) {
+            	psiBuilder.advanceLexer();
+            }
+		}
+	}
+
 #end
 
 	private void recoverFromError() throws UnrecoverableSyntaxException {
@@ -579,6 +643,8 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 	// --- Separate IntelliJ vs. standalone compatibility layer
 	// ------------------------------------------------------------------------------------------------
 
+#if($intellij)
+
     private void beginSpeculativeTokenConsumption() {
         speculativeTokenConsumptionMarker = psiBuilder.mark();
     }
@@ -598,5 +664,31 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
     private void nextToken() {
         psiBuilder.advanceLexer();
     }
+
+#else
+
+    private void beginSpeculativeTokenConsumption() {
+        tokenMarker = tokenPointer;
+    }
+
+    private void endSpeculativeTokenConsumption() {
+        tokenPointer = tokenMarker;
+    }
+
+    private IElementType getTokenType() {
+        return tokenPointer >= tokens.length ? null : tokens[tokenPointer].getElementType();
+    }
+
+    private boolean isAtEof() {
+        return tokenPointer >= tokens.length;
+    }
+
+    private void nextToken() {
+        if (tokenPointer < tokens.length) {
+            tokenPointer++;
+        }
+    }
+
+#end
 
 }
