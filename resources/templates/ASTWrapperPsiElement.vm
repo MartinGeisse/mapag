@@ -1,6 +1,6 @@
 package $packageName;
 
-public class ASTWrapperPsiElement {
+public class ASTWrapperPsiElement extends PsiElement {
 
 	private final ASTNode node;
 	private PsiElement[] children;
@@ -11,10 +11,6 @@ public class ASTWrapperPsiElement {
 
 	public ASTNode getNode() {
 		return node;
-	}
-
-	public IElementType getElementType() {
-		return node.getElementType();
 	}
 
 	public PsiElement[] getChildren() {

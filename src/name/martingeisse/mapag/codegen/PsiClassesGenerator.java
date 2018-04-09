@@ -140,25 +140,29 @@ public class PsiClassesGenerator {
 			boolean customNameImplementation = false;
 			boolean customNameIdentifierImplementation = false;
 
-			if (classesSupportPsiNamedElement.contains(className)) {
-				interfaces.add("PsiNamedElement");
-				if (!isAbstract) {
-					customNameImplementation = true;
-				}
-			} else if (classesSupportPsiNamedElement.contains(superclass)) {
-				if (!isAbstract) {
-					customNameImplementation = true;
+			if (codeGenerationContext.isIntellij()) {
+				if (classesSupportPsiNamedElement.contains(className)) {
+					interfaces.add("PsiNamedElement");
+					if (!isAbstract) {
+						customNameImplementation = true;
+					}
+				} else if (classesSupportPsiNamedElement.contains(superclass)) {
+					if (!isAbstract) {
+						customNameImplementation = true;
+					}
 				}
 			}
 
-			if (classesSupportPsiNameIdentifierOwner.contains(className)) {
-				interfaces.add("PsiNameIdentifierOwner");
-				if (!isAbstract) {
-					customNameIdentifierImplementation = true;
-				}
-			} else if (classesSupportPsiNameIdentifierOwner.contains(superclass)) {
-				if (!isAbstract) {
-					customNameIdentifierImplementation = true;
+			if (codeGenerationContext.isIntellij()) {
+				if (classesSupportPsiNameIdentifierOwner.contains(className)) {
+					interfaces.add("PsiNameIdentifierOwner");
+					if (!isAbstract) {
+						customNameIdentifierImplementation = true;
+					}
+				} else if (classesSupportPsiNameIdentifierOwner.contains(superclass)) {
+					if (!isAbstract) {
+						customNameIdentifierImplementation = true;
+					}
 				}
 			}
 
@@ -181,7 +185,7 @@ public class PsiClassesGenerator {
 			context.put("customNameImplementation", customNameImplementation);
 			context.put("customNameIdentifierImplementation", customNameIdentifierImplementation);
 
-			if (!isAbstract && (classesSupportGetReference.contains(className) || classesSupportGetReference.contains(superclass))) {
+			if (codeGenerationContext.isIntellij() && !isAbstract && (classesSupportGetReference.contains(className) || classesSupportGetReference.contains(superclass))) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 				context.put("supportsGetReference", true);
 			} else {
@@ -189,7 +193,7 @@ public class PsiClassesGenerator {
 			}
 
 			context.put("safeDeleteBase", classesSupportSafeDelete.contains(className));
-			if (classesSupportSafeDelete.contains(className) || classesSupportSafeDelete.contains(superclass)) {
+			if (codeGenerationContext.isIntellij() && classesSupportSafeDelete.contains(className) || classesSupportSafeDelete.contains(superclass)) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 				context.put("safeDeleteImplementation", !isAbstract);
 			} else {

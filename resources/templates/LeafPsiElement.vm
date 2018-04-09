@@ -4,8 +4,14 @@ public final class LeafPsiElement extends PsiElement {
 
 	private static final PsiElement[] NO_CHILDREN = new PsiElement[0];
 
+	private final ASTNode node;
+
 	public LeafPsiElement(ASTNode node) {
-		super(node);
+		this.node = node;
+	}
+
+	public ASTNode getNode() {
+		return node;
 	}
 
 	public PsiElement[] getChildren() {
