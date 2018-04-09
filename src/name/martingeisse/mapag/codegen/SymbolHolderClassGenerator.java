@@ -30,12 +30,14 @@ public class SymbolHolderClassGenerator {
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
+	private final CodeGenerationContext codeGenerationContext;
 
-	public SymbolHolderClassGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
+	public SymbolHolderClassGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory, CodeGenerationContext codeGenerationContext) {
 		this.grammarInfo = grammarInfo;
 		this.grammar = grammarInfo.getGrammar();
 		this.configuration = configuration;
 		this.outputFileFactory = outputFileFactory;
+		this.codeGenerationContext = codeGenerationContext;
 	}
 
 	public void generate() throws ConfigurationException, IOException {
@@ -55,6 +57,7 @@ public class SymbolHolderClassGenerator {
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
+		context.put("intellij", codeGenerationContext.isIntellij());
 		context.put("terminals", ListUtil.sorted(grammar.getTerminalDefinitions().keySet(), null));
 		context.put("terminalElementTypeClass", configuration.getExactlyOne(TERMINAL_ELEMENT_TYPE_CLASS, ELEMENT_TYPE_CLASS));
 		context.put("nonterminalAlternatives", nonterminalAlternatives);

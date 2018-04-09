@@ -20,17 +20,20 @@ public class PsiFactoryGenerator {
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
+	private final CodeGenerationContext codeGenerationContext;
 
-	public PsiFactoryGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory) {
+	public PsiFactoryGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory, CodeGenerationContext codeGenerationContext) {
 		this.grammar = grammarInfo.getGrammar();
 		this.configuration = configuration;
 		this.outputFileFactory = outputFileFactory;
+		this.codeGenerationContext = codeGenerationContext;
 	}
 
 	public void generate() throws ConfigurationException, IOException {
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+		context.put("intellij", codeGenerationContext.isIntellij());
 		if (!configuration.getRequired(SymbolHolderClassGenerator.PACKAGE_NAME_PROPERTY).equals(configuration.getRequired(PACKAGE_NAME_PROPERTY))) {
 			String symbolHolderPackage = configuration.getRequired(SymbolHolderClassGenerator.PACKAGE_NAME_PROPERTY);
 			String symbolHolderClass = configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY);

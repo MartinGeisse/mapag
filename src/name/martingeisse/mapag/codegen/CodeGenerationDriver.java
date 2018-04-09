@@ -28,11 +28,11 @@ public class CodeGenerationDriver {
 			new FrameworkClassGenerator(configuration, outputFileFactory).generate();
 		}
 		if (configuration.getRequired("symbolHolder.generate").equals("true")) {
-			new SymbolHolderClassGenerator(grammarInfo, configuration, outputFileFactory).generate();
+			new SymbolHolderClassGenerator(grammarInfo, configuration, outputFileFactory, context).generate();
 		}
 		if (configuration.getRequired("psi.generate").equals("true")) {
 			new PsiClassesGenerator(parameters).generate();
-			new PsiFactoryGenerator(grammarInfo, configuration, outputFileFactory).generate();
+			new PsiFactoryGenerator(grammarInfo, configuration, outputFileFactory, context).generate();
 		}
 		new ParserClassGenerator(parameters).generate();
 	}
