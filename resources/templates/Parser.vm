@@ -381,8 +381,10 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 			IElementType elementType;
 			boolean buildMarker;
 			if (reduction[0] == null) {
-				elementType = null;
-				buildMarker = false;
+			    // TODO testing if this ever happens -- there's no place in the code that inserts a null parse node head...
+				// elementType = null;
+				// buildMarker = false;
+				throw new RuntimeException("i guess this never happens...");
 			} else if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
 				elementType = listNodeGenerationWrapper.elementType;
