@@ -137,8 +137,13 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 	}
 
 	// ------------------------------------------------------------------------------------------------
-	// --- non-generated stuff
+	// --- The main parser code. Code generation here mostly deals with IntelliJ vs. standalone.
 	// ------------------------------------------------------------------------------------------------
+
+#if($intellij)
+	private PsiBuilder psiBuilder;
+	private PsiBuilder.Marker speculativeTokenConsumptionMarker;
+#end
 
 	private boolean used = false;
 	private int[] stateStack = new int[256];
@@ -146,25 +151,30 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 	private int stackSize = 0;
 	private int state = START_STATE;
 
+#if($intellij)
 	@Override
 	public ASTNode parse(IElementType type, PsiBuilder psiBuilder) {
+	    this.psiBuilder = psiBuilder;
 		parseLight(type, psiBuilder);
 		return psiBuilder.getTreeBuilt();
 	}
 
 	@Override
-	public void parseLight(IElementType type, PsiBuilder builder) {
+	public void parseLight(IElementType type) {
+		if (type != FILE_ELEMENT_TYPE) {
+			throw new IllegalArgumentException("unsupported top-level element type to parse: " + type);
+		}
+		parse();
+	}
+#end
+
+	private void parse() {
+
+        // prevent re-use of this object since the internal state gets changed during parsing
 		if (used) {
 			throw new IllegalStateException("cannot re-use this parser object");
 		}
 		used = true;
-		if (type != FILE_ELEMENT_TYPE) {
-			throw new IllegalArgumentException("unsupported top-level element type to parse: " + type);
-		}
-		parse(builder);
-	}
-
-	private void parse(PsiBuilder psiBuilder) {
 
 		// initialize static parser information
 		initializeStatic();
@@ -178,18 +188,20 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 #end
 
         // handle unrecoverable syntax errors
+#if($intellij)
         PsiBuilder.Marker wholeFileMarker = psiBuilder.mark();
         PsiBuilder.Marker preParseMarker = psiBuilder.mark();
+#end
         try {
 
             // Parse the input using the generated machine to build a parse tree. The state machine cannot execute the
             // accept action here since the input cannot contain EOF.
-            while (!psiBuilder.eof()) {
+            while (!isAtEof()) {
 #if($debug)
-                System.out.println("Next token: " + psiBuilder.getTokenType() + ", symbol code: " + getSymbolCodeForElementType(psiBuilder.getTokenType()));
+                System.out.println("Next token: " + getTokenType() + ", symbol code: " + getSymbolCodeForElementType(getTokenType()));
 #end
-           		if (consumeSymbol(getSymbolCodeForElementType(psiBuilder.getTokenType()), null)) {
-                	psiBuilder.advanceLexer();
+           		if (consumeSymbol(getSymbolCodeForElementType(getTokenType()), null)) {
+                	nextToken();
            		} else {
            			recoverFromError(psiBuilder);
            		}
@@ -238,22 +250,29 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
             stackSize = 1;
 
         }
+#if($intellij)
         preParseMarker.rollbackTo();
+#end
 
 		// At this point, the state stack should contain single element (the start state) and the associated parse
 		// tree stack contains the root node as its single element. If anything in the input tried to prevent that,
-		// consuming the EOF token would have failed. Now we re-parse, based on the parse tree we build, in a way
-		// that the PsiBuilder likes.
+		// consuming the EOF token would have failed.
 		if (stackSize != 1) {
 			// either the Lexer returned an explicit EOF (which it shouldn't) or this is a bug in the parser generator
 			throw new RuntimeException("unexpected stack size after accepting start symbol");
 		}
-		feedPsiBuilder(psiBuilder, parseTreeStack[0], null);
 
+#if($intellij)
+		// Now we re-parse, based on the parse tree we build, in a way that the PsiBuilder likes.
+		feedPsiBuilder(psiBuilder, parseTreeStack[0], null);
+#end
+
+#if($intellij)
 		// Before we consider the file parsed, we must advance the lexer once more so it consumes end-of-file
 		// whitespace and comments as part of the root AST node.
-		psiBuilder.advanceLexer();
+		nextToken();
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
+#end
 
 #if($debug)
         System.out.println();
@@ -337,9 +356,10 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 
 	}
 
-	private void feedPsiBuilder(PsiBuilder builder, Object what, IElementType parentElementType) {
+#if($intellij)
+	private void feedPsiBuilder(Object what, IElementType parentElementType) {
 	    if (what == null) {
-            builder.advanceLexer();
+            psiBuilder.advanceLexer();
 	    } else if (what instanceof Object[]) {
 			Object[] reduction = (Object[]) what;
 			IElementType elementType;
@@ -357,29 +377,30 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 			}
 			PsiBuilder.Marker marker = null;
 			if (buildMarker) {
-				marker = builder.mark();
+				marker = psiBuilder.mark();
 			}
 			for (int i = 1; i < reduction.length; i++) {
-				feedPsiBuilder(builder, reduction[i], elementType);
+				feedPsiBuilder(psiBuilder, reduction[i], elementType);
 			}
 			if (buildMarker) {
 				marker.done(elementType);
 			}
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
-			feedPsiBuilder(builder, ((List<?>)what).toArray(), parentElementType);
+			feedPsiBuilder(psiBuilder, ((List<?>)what).toArray(), parentElementType);
 		} else if (what instanceof ErrorLocationIndicator) {
 		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
-			builder.error("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
+			psiBuilder.error("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
 		} else if (what instanceof UnrecoverableSyntaxException) {
-            builder.error(((UnrecoverableSyntaxException)what).getMessage());
-            while (!builder.eof()) {
-            	builder.advanceLexer();
+            psiBuilder.error(((UnrecoverableSyntaxException)what).getMessage());
+            while (!psiBuilder.eof()) {
+            	psiBuilder.advanceLexer();
             }
 		}
 	}
+#end
 
-	private void recoverFromError(PsiBuilder psiBuilder) throws UnrecoverableSyntaxException {
+	private void recoverFromError() throws UnrecoverableSyntaxException {
 
 		int originalState = state; // used for error messages
 
@@ -486,20 +507,20 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 
 			// Attempt to parse for RECOVERY_SYNC_LENGTH steps (stop early if we hit EOF). If we reach EOF, then we
 			// must be able to consume that too
-			PsiBuilder.Marker marker = psiBuilder.mark();
+			beginSpeculativeTokenConsumption();
 			boolean success = true;
-			for (int i = 0; i < RECOVERY_SYNC_LENGTH && !psiBuilder.eof(); i++) {
-           		if (consumeSymbol(getSymbolCodeForElementType(psiBuilder.getTokenType()), null)) {
-                	psiBuilder.advanceLexer();
+			for (int i = 0; i < RECOVERY_SYNC_LENGTH && !isAtEof(); i++) {
+           		if (consumeSymbol(getSymbolCodeForElementType(getTokenType()), null)) {
+                	nextToken();
            		} else {
            			success = false;
            			break;
            		}
 			}
-			if (success && psiBuilder.eof()) {
+			if (success && isAtEof()) {
 				success = consumeSymbol(EOF_SYMBOL_CODE, null);
 			}
-			marker.rollbackTo();
+			endSpeculativeTokenConsumption();
 
 			// restore state and stack backup
 			System.arraycopy(backupStateStack, 0, stateStack, 0, backupStackSize);
@@ -511,7 +532,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 			if (success) {
 				return;
 			}
-			if (psiBuilder.eof()) {
+			if (isAtEof()) {
 				// Error recovery failed, so we'll signal a "giving up" syntax error and wrap the remainder of the
 				// input in a dummy AST node. We don't bother restoring the original parser state since it's
 				// irrelevant now. The PSI builder need not be reset here -- that happens automatically after the
@@ -520,7 +541,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 				throw new UnrecoverableSyntaxException(originalState);
 			}
 			errorNodeBuilder.add(null);
-			psiBuilder.advanceLexer();
+			nextToken();
 
 		}
 
@@ -555,5 +576,29 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 		}
 
 	}
+
+	// ------------------------------------------------------------------------------------------------
+	// --- Separate IntelliJ vs. standalone compatibility layer
+	// ------------------------------------------------------------------------------------------------
+
+    private void beginSpeculativeTokenConsumption() {
+        speculativeTokenConsumptionMarker = psiBuilder.mark();
+    }
+
+    private void endSpeculativeTokenConsumption() {
+        speculativeTokenConsumptionMarker.rollbackTo();
+    }
+
+    private IElementType getTokenType() {
+        return psiBuilder.getTokenType();
+    }
+
+    private boolean isAtEof() {
+        return psiBuilder.eof();
+    }
+
+    private void nextToken() {
+        psiBuilder.advanceLexer();
+    }
 
 }
