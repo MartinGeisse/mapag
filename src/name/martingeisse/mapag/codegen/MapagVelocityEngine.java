@@ -18,6 +18,7 @@ public final class MapagVelocityEngine {
 		engine.setProperty("classpath.loader.description", "classpath-based resource loader");
 		engine.setProperty("classpath.resource.loader.instance", new MyResourceLoader());
 		engine.setProperty("classpath.resource.loader.cache", true);
+		engine.setProperty("runtime.references.strict", true);
 		engine.init();
 	}
 
