@@ -10,15 +10,15 @@ public final class InternalPsiUtil {
 
 	private static TokenSet ignoredElementTypes;
 
+	// prevent instantiation
+	private InternalPsiUtil() {
+	}
+
 	private static void initializeIgnoredElementTypes() {
 		if (ignoredElementTypes == null) {
 			name.martingeisse.mapag.ide.MapagParserDefinition parserDefinition = new name.martingeisse.mapag.ide.MapagParserDefinition();
 			ignoredElementTypes = TokenSet.orSet(parserDefinition.getWhitespaceTokens(), parserDefinition.getCommentTokens());
 		}
-	}
-
-	// prevent instantiation
-	private InternalPsiUtil() {
 	}
 
 	/**
@@ -54,3 +54,4 @@ public final class InternalPsiUtil {
 	}
 
 }
+

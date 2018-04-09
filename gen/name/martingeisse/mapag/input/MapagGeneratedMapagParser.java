@@ -62,24 +62,8 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 	// state machine (action table)
 	private static final int ACTION_TABLE_WIDTH = 54;
 	private static final int[] ACTION_TABLE;
-
-	static {
-		try (InputStream inputStream = MapagGeneratedMapagParser.class.getResourceAsStream("/MapagGeneratedMapagParser.actions")) {
-			try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
-				ACTION_TABLE = new int[138 * ACTION_TABLE_WIDTH];
-				for (int i = 0; i < ACTION_TABLE.length; i++) {
-					ACTION_TABLE[i] = dataInputStream.readInt();
-				}
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	// state machine (alternatives / reduction table)
 	private static final int[] ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH = {
-		1,
-		3,
 		2,
 		1,
 		1,
@@ -102,6 +86,8 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		4,
 		4,
 		3,
+		1,
+		3,
 		2,
 		4,
 		4,
@@ -120,11 +106,13 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		2,
 		6,
 		1,
+		1,
+		1,
 		2,
 		1,
 		1,
 		1,
-		1,
+		3,
 		3,
 		4,
 		0,
@@ -136,74 +124,70 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		1,
 		1,
 		1,
-		1,
-		3,
 	};
 	private static final Object[] ALTERNATIVE_INDEX_TO_PARSE_NODE_HEAD = {
-		new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_IDENTIFIER_COMMA),
-		new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_IDENTIFIER_COMMA),
-		Symbols.rightHandSide,
-		Symbols.expression_Empty,
-		Symbols.expression_Identifier,
-		Symbols.expression_Error,
-		Symbols.expression_Sequence,
-		Symbols.expression_Or,
-		Symbols.expression_ZeroOrMore,
-		Symbols.expression_OneOrMore,
-		Symbols.expression_SeparatedZeroOrMore,
-		Symbols.expression_SeparatedOneOrMore,
-		Symbols.expression_Optional,
-		Symbols.expression_Parenthesized,
-		Symbols.expression_Named,
-		Symbols.production_SingleUnnamed,
-		Symbols.production_SingleNamed,
-		Symbols.production_Multi,
-		Symbols.production_ErrorWithoutNonterminalNameWithSemicolon,
-		Symbols.production_ErrorWithoutNonterminalNameWithClosingCurlyBrace,
-		Symbols.production_ErrorWithoutNonterminalNameAtEof,
-		Symbols.production_ErrorWithNonterminalNameWithSemicolon,
-		Symbols.production_ErrorWithNonterminalNameWithClosingCurlyBrace,
-		Symbols.production_ErrorWithNonterminalNameAtEof,
-		Symbols.production_Multi_Alternatives_Unnamed,
-		Symbols.production_Multi_Alternatives_Named,
-		Symbols.grammar_TerminalDeclarations,
-		new ListNodeGenerationWrapper(Symbols.synthetic_List_PrecedenceDeclaration),
-		new ListNodeGenerationWrapper(Symbols.synthetic_List_PrecedenceDeclaration),
-		Symbols.grammar_PrecedenceTable_Optional,
-		Symbols.grammar_PrecedenceTable_Optional,
-		new ListNodeGenerationWrapper(Symbols.synthetic_List_AlternativeAttribute),
-		new ListNodeGenerationWrapper(Symbols.synthetic_List_AlternativeAttribute),
-		Symbols.precedenceDeclaration_Normal,
-		Symbols.precedenceDeclaration_ErrorWithSemicolon,
-		Symbols.precedenceDeclaration_ErrorWithoutSemicolon,
-		new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_TerminalDeclaration_COMMA),
-		new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_TerminalDeclaration_COMMA),
-		new ListNodeGenerationWrapper(Symbols.production_Multi_Alternatives_List),
-		new ListNodeGenerationWrapper(Symbols.production_Multi_Alternatives_List),
-		Symbols.grammar,
-		new ListNodeGenerationWrapper(Symbols.synthetic_List_Production),
-		new ListNodeGenerationWrapper(Symbols.synthetic_List_Production),
-		Symbols.terminalDeclaration,
-		Symbols.precedenceDeclarationSymbol,
-		Symbols.resolveDeclaration_Action_Shift,
-		Symbols.resolveDeclaration_Action_Reduce,
-		Symbols.resolveDeclaration,
-		Symbols.grammar_PrecedenceTable,
-		new ListNodeGenerationWrapper(Symbols.synthetic_List_ResolveDeclaration),
-		new ListNodeGenerationWrapper(Symbols.synthetic_List_ResolveDeclaration),
-		Symbols.alternativeAttribute_Precedence,
-		Symbols.alternativeAttribute_ResolveBlock,
-		Symbols.alternativeAttribute_ReduceOnError,
-		Symbols.alternativeAttribute_Eof,
-		Symbols.precedenceDeclaration_Normal_Associativity_Left,
-		Symbols.precedenceDeclaration_Normal_Associativity_Right,
-		Symbols.precedenceDeclaration_Normal_Associativity_Nonassoc,
-		new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA),
-		new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA),
+		name.martingeisse.mapag.input.Symbols.rightHandSide,
+		name.martingeisse.mapag.input.Symbols.expression_Empty,
+		name.martingeisse.mapag.input.Symbols.expression_Identifier,
+		name.martingeisse.mapag.input.Symbols.expression_Error,
+		name.martingeisse.mapag.input.Symbols.expression_Sequence,
+		name.martingeisse.mapag.input.Symbols.expression_Or,
+		name.martingeisse.mapag.input.Symbols.expression_ZeroOrMore,
+		name.martingeisse.mapag.input.Symbols.expression_OneOrMore,
+		name.martingeisse.mapag.input.Symbols.expression_SeparatedZeroOrMore,
+		name.martingeisse.mapag.input.Symbols.expression_SeparatedOneOrMore,
+		name.martingeisse.mapag.input.Symbols.expression_Optional,
+		name.martingeisse.mapag.input.Symbols.expression_Parenthesized,
+		name.martingeisse.mapag.input.Symbols.expression_Named,
+		name.martingeisse.mapag.input.Symbols.production_SingleUnnamed,
+		name.martingeisse.mapag.input.Symbols.production_SingleNamed,
+		name.martingeisse.mapag.input.Symbols.production_Multi,
+		name.martingeisse.mapag.input.Symbols.production_ErrorWithoutNonterminalNameWithSemicolon,
+		name.martingeisse.mapag.input.Symbols.production_ErrorWithoutNonterminalNameWithClosingCurlyBrace,
+		name.martingeisse.mapag.input.Symbols.production_ErrorWithoutNonterminalNameAtEof,
+		name.martingeisse.mapag.input.Symbols.production_ErrorWithNonterminalNameWithSemicolon,
+		name.martingeisse.mapag.input.Symbols.production_ErrorWithNonterminalNameWithClosingCurlyBrace,
+		name.martingeisse.mapag.input.Symbols.production_ErrorWithNonterminalNameAtEof,
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty),
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty),
+		name.martingeisse.mapag.input.Symbols.production_Multi_Alternatives_Unnamed,
+		name.martingeisse.mapag.input.Symbols.production_Multi_Alternatives_Named,
+		name.martingeisse.mapag.input.Symbols.grammar_TerminalDeclarations,
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_PrecedenceDeclaration),
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_PrecedenceDeclaration),
+		name.martingeisse.mapag.input.Symbols.grammar_PrecedenceTable_Optional,
+		name.martingeisse.mapag.input.Symbols.grammar_PrecedenceTable_Optional,
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_AlternativeAttribute),
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_AlternativeAttribute),
+		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_Normal,
+		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_ErrorWithSemicolon,
+		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_ErrorWithoutSemicolon,
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA_Nonempty),
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA_Nonempty),
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.production_Multi_Alternatives_List),
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.production_Multi_Alternatives_List),
+		name.martingeisse.mapag.input.Symbols.grammar,
+		name.martingeisse.mapag.input.Symbols.terminalDeclaration,
+		name.martingeisse.mapag.input.Symbols.precedenceDeclarationSymbol,
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_Production_Nonempty),
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_Production_Nonempty),
+		name.martingeisse.mapag.input.Symbols.resolveDeclaration_Action_Shift,
+		name.martingeisse.mapag.input.Symbols.resolveDeclaration_Action_Reduce,
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_IDENTIFIER_COMMA_Nonempty),
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_IDENTIFIER_COMMA_Nonempty),
+		name.martingeisse.mapag.input.Symbols.resolveDeclaration,
+		name.martingeisse.mapag.input.Symbols.grammar_PrecedenceTable,
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_ResolveDeclaration),
+		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_ResolveDeclaration),
+		name.martingeisse.mapag.input.Symbols.alternativeAttribute_Precedence,
+		name.martingeisse.mapag.input.Symbols.alternativeAttribute_ResolveBlock,
+		name.martingeisse.mapag.input.Symbols.alternativeAttribute_ReduceOnError,
+		name.martingeisse.mapag.input.Symbols.alternativeAttribute_Eof,
+		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_Normal_Associativity_Left,
+		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_Normal_Associativity_Right,
+		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_Normal_Associativity_Nonassoc,
 	};
 	private static final int[] ALTERNATIVE_INDEX_TO_NONTERMINAL_SYMBOL_CODE = {
-		50,
-		50,
 		45,
 		32,
 		32,
@@ -226,6 +210,8 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		40,
 		40,
 		40,
+		52,
+		52,
 		41,
 		41,
 		36,
@@ -238,17 +224,19 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		37,
 		37,
 		37,
-		52,
-		52,
+		51,
+		51,
 		42,
 		42,
 		33,
-		48,
-		48,
 		53,
 		39,
+		48,
+		48,
 		44,
 		44,
+		50,
+		50,
 		43,
 		34,
 		49,
@@ -260,10 +248,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		38,
 		38,
 		38,
-		51,
-		51,
 	};
-
 	// state machine (error messages)
 	private static final String[] STATE_INPUT_EXPECTATION = {
 		"%terminals",
@@ -405,17 +390,40 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		", }",
 		", }",
 	};
-
 	// other
 	private static final IElementType FILE_ELEMENT_TYPE = name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE;
 	private static final int RECOVERY_SYNC_LENGTH = 3;
+	// static table, but has to be initialized at startup since element type indices aren't compile-time constants
+	private static int[] elementTypeIndexToSymbolCode;
 
 	// ------------------------------------------------------------------------------------------------
 	// --- non-generated stuff (initialization and static stuff)
 	// ------------------------------------------------------------------------------------------------
 
-	// static table, but has to be initialized at startup since element type indices aren't compile-time constants
-	private static int[] elementTypeIndexToSymbolCode;
+	static {
+		try (InputStream inputStream = MapagGeneratedMapagParser.class.getResourceAsStream("/MapagGeneratedMapagParser.actions")) {
+			try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
+				ACTION_TABLE = new int[138 * ACTION_TABLE_WIDTH];
+				for (int i = 0; i < ACTION_TABLE.length; i++) {
+					ACTION_TABLE[i] = dataInputStream.readInt();
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private PsiBuilder psiBuilder;
+	private PsiBuilder.Marker speculativeTokenConsumptionMarker;
+
+	// ------------------------------------------------------------------------------------------------
+	// --- The main parser code. Code generation here mostly deals with IntelliJ vs. standalone.
+	// ------------------------------------------------------------------------------------------------
+	private boolean used = false;
+	private int[] stateStack = new int[256];
+	private Object[] parseTreeStack = new Object[256];
+	private int stackSize = 0;
+	private int state = START_STATE;
 
 	/**
 	 * This method initializes static tables on the first parse run -- we need element type
@@ -454,16 +462,6 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		throw new RuntimeException("unknown token: " + elementType);
 	}
 
-	// ------------------------------------------------------------------------------------------------
-	// --- non-generated stuff
-	// ------------------------------------------------------------------------------------------------
-
-	private boolean used = false;
-	private int[] stateStack = new int[256];
-	private Object[] parseTreeStack = new Object[256];
-	private int stackSize = 0;
-	private int state = START_STATE;
-
 	@Override
 	public ASTNode parse(IElementType type, PsiBuilder psiBuilder) {
 		parseLight(type, psiBuilder);
@@ -471,18 +469,21 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 	}
 
 	@Override
-	public void parseLight(IElementType type, PsiBuilder builder) {
+	public void parseLight(IElementType type, PsiBuilder psiBuilder) {
+		if (type != FILE_ELEMENT_TYPE) {
+			throw new IllegalArgumentException("unsupported top-level element type to parse: " + type);
+		}
+		this.psiBuilder = psiBuilder;
+		parse();
+	}
+
+	private void parse() {
+
+		// prevent re-use of this object since the internal state gets changed during parsing
 		if (used) {
 			throw new IllegalStateException("cannot re-use this parser object");
 		}
 		used = true;
-		if (type != FILE_ELEMENT_TYPE) {
-			throw new IllegalArgumentException("unsupported top-level element type to parse: " + type);
-		}
-		parse(builder);
-	}
-
-	private void parse(PsiBuilder psiBuilder) {
 
 		// initialize static parser information
 		initializeStatic();
@@ -494,11 +495,11 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 			// Parse the input using the generated machine to build a parse tree. The state machine cannot execute the
 			// accept action here since the input cannot contain EOF.
-			while (!psiBuilder.eof()) {
-				if (consumeSymbol(getSymbolCodeForElementType(psiBuilder.getTokenType()), null)) {
-					psiBuilder.advanceLexer();
+			while (!isAtEof()) {
+				if (consumeSymbol(getSymbolCodeForElementType(getTokenType()), null)) {
+					nextToken();
 				} else {
-					recoverFromError(psiBuilder);
+					recoverFromError();
 				}
 			}
 
@@ -507,9 +508,9 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			{
 				int originalState = state;
 				if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
-					recoverFromError(psiBuilder);
+					recoverFromError();
 					if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
-						throw new UnrecoverableSyntaxException(state);
+						throw new UnrecoverableSyntaxException(originalState);
 					}
 				}
 			}
@@ -532,17 +533,18 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 		// At this point, the state stack should contain single element (the start state) and the associated parse
 		// tree stack contains the root node as its single element. If anything in the input tried to prevent that,
-		// consuming the EOF token would have failed. Now we re-parse, based on the parse tree we build, in a way
-		// that the PsiBuilder likes.
+		// consuming the EOF token would have failed.
 		if (stackSize != 1) {
 			// either the Lexer returned an explicit EOF (which it shouldn't) or this is a bug in the parser generator
 			throw new RuntimeException("unexpected stack size after accepting start symbol");
 		}
-		feedPsiBuilder(psiBuilder, parseTreeStack[0], null);
+
+		// Now we re-parse, based on the parse tree we build, in a way that the PsiBuilder likes.
+		feedPsiBuilder(parseTreeStack[0], null);
 
 		// Before we consider the file parsed, we must advance the lexer once more so it consumes end-of-file
 		// whitespace and comments as part of the root AST node.
-		psiBuilder.advanceLexer();
+		nextToken();
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
 
 	}
@@ -606,16 +608,18 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 	}
 
-	private void feedPsiBuilder(PsiBuilder builder, Object what, IElementType parentElementType) {
+	private void feedPsiBuilder(Object what, IElementType parentElementType) {
 		if (what == null) {
-			builder.advanceLexer();
+			nextToken();
 		} else if (what instanceof Object[]) {
 			Object[] reduction = (Object[]) what;
 			IElementType elementType;
 			boolean buildMarker;
 			if (reduction[0] == null) {
-				elementType = null;
-				buildMarker = false;
+				// TODO testing if this ever happens -- there's no place in the code that inserts a null parse node head...
+				// elementType = null;
+				// buildMarker = false;
+				throw new RuntimeException("i guess this never happens...");
 			} else if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper) reduction[0];
 				elementType = listNodeGenerationWrapper.elementType;
@@ -626,29 +630,29 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			}
 			PsiBuilder.Marker marker = null;
 			if (buildMarker) {
-				marker = builder.mark();
+				marker = psiBuilder.mark();
 			}
 			for (int i = 1; i < reduction.length; i++) {
-				feedPsiBuilder(builder, reduction[i], elementType);
+				feedPsiBuilder(reduction[i], elementType);
 			}
 			if (buildMarker) {
 				marker.done(elementType);
 			}
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
-			feedPsiBuilder(builder, ((List<?>) what).toArray(), parentElementType);
+			feedPsiBuilder(((List<?>) what).toArray(), parentElementType);
 		} else if (what instanceof ErrorLocationIndicator) {
 			ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator) what;
-			builder.error("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
+			reportErrorForCurrentToken("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
 		} else if (what instanceof UnrecoverableSyntaxException) {
-			builder.error(((UnrecoverableSyntaxException) what).getMessage());
-			while (!builder.eof()) {
-				builder.advanceLexer();
+			reportErrorForCurrentToken(((UnrecoverableSyntaxException) what).getMessage());
+			while (!isAtEof()) {
+				nextToken();
 			}
 		}
 	}
 
-	private void recoverFromError(PsiBuilder psiBuilder) throws UnrecoverableSyntaxException {
+	private void recoverFromError() throws UnrecoverableSyntaxException {
 
 		int originalState = state; // used for error messages
 
@@ -756,20 +760,20 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 			// Attempt to parse for RECOVERY_SYNC_LENGTH steps (stop early if we hit EOF). If we reach EOF, then we
 			// must be able to consume that too
-			PsiBuilder.Marker marker = psiBuilder.mark();
+			beginSpeculativeTokenConsumption();
 			boolean success = true;
-			for (int i = 0; i < RECOVERY_SYNC_LENGTH && !psiBuilder.eof(); i++) {
-				if (consumeSymbol(getSymbolCodeForElementType(psiBuilder.getTokenType()), null)) {
-					psiBuilder.advanceLexer();
+			for (int i = 0; i < RECOVERY_SYNC_LENGTH && !isAtEof(); i++) {
+				if (consumeSymbol(getSymbolCodeForElementType(getTokenType()), null)) {
+					nextToken();
 				} else {
 					success = false;
 					break;
 				}
 			}
-			if (success && psiBuilder.eof()) {
+			if (success && isAtEof()) {
 				success = consumeSymbol(EOF_SYMBOL_CODE, null);
 			}
-			marker.rollbackTo();
+			endSpeculativeTokenConsumption();
 
 			// restore state and stack backup
 			System.arraycopy(backupStateStack, 0, stateStack, 0, backupStackSize);
@@ -781,7 +785,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			if (success) {
 				return;
 			}
-			if (psiBuilder.eof()) {
+			if (isAtEof()) {
 				// Error recovery failed, so we'll signal a "giving up" syntax error and wrap the remainder of the
 				// input in a dummy AST node. We don't bother restoring the original parser state since it's
 				// irrelevant now. The PSI builder need not be reset here -- that happens automatically after the
@@ -790,19 +794,43 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 				throw new UnrecoverableSyntaxException(originalState);
 			}
 			errorNodeBuilder.add(null);
-			psiBuilder.advanceLexer();
+			nextToken();
 
 		}
 
 	}
 
+	private void beginSpeculativeTokenConsumption() {
+		speculativeTokenConsumptionMarker = psiBuilder.mark();
+	}
+
+	private void endSpeculativeTokenConsumption() {
+		speculativeTokenConsumptionMarker.rollbackTo();
+	}
+
+	private IElementType getTokenType() {
+		return psiBuilder.getTokenType();
+	}
+
+	// ------------------------------------------------------------------------------------------------
+	// --- Separate IntelliJ vs. standalone compatibility layer
+	// ------------------------------------------------------------------------------------------------
+
+	private boolean isAtEof() {
+		return psiBuilder.eof();
+	}
+
+	private void nextToken() {
+		psiBuilder.advanceLexer();
+	}
+
+	private void reportErrorForCurrentToken(String errorMessage) {
+		psiBuilder.error(errorMessage);
+	}
+
 	private static class UnrecoverableSyntaxException extends Exception {
 
-		public UnrecoverableSyntaxException() {
-			super("syntax error");
-		}
-
-		public UnrecoverableSyntaxException(int state) {
+		UnrecoverableSyntaxException(int state) {
 			super("expected one of: " + STATE_INPUT_EXPECTATION[state]);
 		}
 

@@ -17,36 +17,10 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 	 * This character denotes the end of file
 	 */
 	public static final int YYEOF = -1;
-
-	/**
-	 * initial size of the lookahead buffer
-	 */
-	private static final int ZZ_BUFFERSIZE = 16384;
-
 	/**
 	 * lexical states
 	 */
 	public static final int YYINITIAL = 0;
-
-	/**
-	 * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
-	 * ZZ_LEXSTATE[l+1] is the state in the DFA for the lexical state l
-	 * at the beginning of a line
-	 * l is of the form l = 2*k, k a non negative integer
-	 */
-	private static final int ZZ_LEXSTATE[] = {
-		0, 0
-	};
-
-	/**
-	 * Translates characters to character classes
-	 * Chosen bits are [12, 6, 3]
-	 * Total runtime size is 14800 bytes
-	 */
-	public static int ZZ_CMAP(int ch) {
-		return ZZ_CMAP_A[(ZZ_CMAP_Y[(ZZ_CMAP_Z[ch >> 9] << 6) | ((ch >> 3) & 0x3f)] << 3) | (ch & 0x7)];
-	}
-
 	/* The ZZ_CMAP_Z table has 2176 entries */
 	static final char ZZ_CMAP_Z[] = zzUnpackCMap(
 		"\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1\15\1\16\1\17\1" +
@@ -55,7 +29,6 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 			"\21\1\47\2\21\1\50\4\21\1\25\1\51\1\52\5\21\2\25\1\53\31\21\1\25\1\54\1\21" +
 			"\1\55\40\21\1\56\17\21\1\57\1\60\1\61\1\62\13\21\1\63\10\21\123\25\1\64\7" +
 			"\25\1\65\1\66\37\21\1\25\1\66\u0582\21\1\67\u017f\21");
-
 	/* The ZZ_CMAP_Y table has 3584 entries */
 	static final char ZZ_CMAP_Y[] = zzUnpackCMap(
 		"\1\0\1\1\1\0\1\2\1\3\1\4\1\0\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1\15\4\0" +
@@ -129,7 +102,6 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 			"\225\1\157\2\203\1\120\1\10\1\33\1\10\1\112\1\314\1\33\1\10\1\112\50\25\32" +
 			"\10\1\22\5\25\106\10\1\26\1\25\33\10\1\215\74\25\1\117\3\25\14\0\20\25\36" +
 			"\0\2\25");
-
 	/* The ZZ_CMAP_A table has 1640 entries */
 	static final char ZZ_CMAP_A[] = zzUnpackCMap(
 		"\11\7\1\3\1\2\1\0\1\3\1\1\6\7\4\0\1\3\3\0\1\6\1\10\2\0\1\40\1\41\1\5\1\47" +
@@ -166,12 +138,19 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 			"\3\7\1\0\2\7\1\0\3\7\2\0\1\7\2\0\1\7\4\6\10\0\5\7\3\0\6\7\2\0\3\7\2\0\4\7" +
 			"\4\0\3\7\5\0\1\6\2\0\2\6\2\0\4\6\1\0\4\6\1\0\1\6\1\0\6\6\2\0\5\6\1\0\4\6\1" +
 			"\0\4\6\2\0\2\7\1\0\1\6\1\0\1\6\5\0\1\6\1\0\1\6\1\0\3\6\1\0\3\6\1\0\3\6");
-
 	/**
-	 * Translates DFA states to action switch labels.
+	 * initial size of the lookahead buffer
 	 */
-	private static final int[] ZZ_ACTION = zzUnpackAction();
-
+	private static final int ZZ_BUFFERSIZE = 16384;
+	/**
+	 * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
+	 * ZZ_LEXSTATE[l+1] is the state in the DFA for the lexical state l
+	 * at the beginning of a line
+	 * l is of the form l = 2*k, k a non negative integer
+	 */
+	private static final int ZZ_LEXSTATE[] = {
+		0, 0
+	};
 	private static final String ZZ_ACTION_PACKED_0 =
 		"\1\0\1\1\2\2\1\1\1\3\1\4\1\1\1\5" +
 			"\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1\15" +
@@ -179,31 +158,10 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 			"\3\0\1\22\17\0\1\23\4\0\1\24\1\25\2\0" +
 			"\1\26\1\0\1\27\1\30\3\0\1\31\3\0\1\32" +
 			"\5\0\1\33\1\0\1\34\3\0\1\35\2\0\1\36";
-
-	private static int[] zzUnpackAction() {
-		int[] result = new int[97];
-		int offset = 0;
-		offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
-		return result;
-	}
-
-	private static int zzUnpackAction(String packed, int offset, int[] result) {
-		int i = 0;       /* index in packed string  */
-		int j = offset;  /* index in unpacked array */
-		int l = packed.length();
-		while (i < l) {
-			int count = packed.charAt(i++);
-			int value = packed.charAt(i++);
-			do result[j++] = value; while (--count > 0);
-		}
-		return j;
-	}
-
 	/**
-	 * Translates a state to a row index in the transition table
+	 * Translates DFA states to action switch labels.
 	 */
-	private static final int[] ZZ_ROWMAP = zzUnpackRowMap();
-
+	private static final int[] ZZ_ACTION = zzUnpackAction();
 	private static final String ZZ_ROWMAP_PACKED_0 =
 		"\0\0\0\51\0\122\0\51\0\173\0\51\0\244\0\315" +
 			"\0\51\0\51\0\51\0\51\0\51\0\51\0\366\0\51" +
@@ -218,30 +176,10 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 			"\0\u099c\0\51\0\u09c5\0\u09ee\0\u0a17\0\u0a40\0\u0a69\0\51" +
 			"\0\u0a92\0\51\0\u0abb\0\u0ae4\0\u0b0d\0\51\0\u0b36\0\u0b5f" +
 			"\0\51";
-
-	private static int[] zzUnpackRowMap() {
-		int[] result = new int[97];
-		int offset = 0;
-		offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
-		return result;
-	}
-
-	private static int zzUnpackRowMap(String packed, int offset, int[] result) {
-		int i = 0;  /* index in packed string  */
-		int j = offset;  /* index in unpacked array */
-		int l = packed.length();
-		while (i < l) {
-			int high = packed.charAt(i++) << 16;
-			result[j++] = high | packed.charAt(i++);
-		}
-		return j;
-	}
-
 	/**
-	 * The transition table of the DFA
+	 * Translates a state to a row index in the transition table
 	 */
-	private static final int[] ZZ_TRANS = zzUnpackTrans();
-
+	private static final int[] ZZ_ROWMAP = zzUnpackRowMap();
 	private static final String ZZ_TRANS_PACKED_0 =
 		"\1\2\1\3\2\4\1\5\1\6\1\7\1\2\1\10" +
 			"\25\7\1\11\1\12\1\13\1\14\1\15\1\16\1\17" +
@@ -267,6 +205,131 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 			"\43\0\1\131\53\0\1\132\63\0\1\133\37\0\1\134" +
 			"\40\0\1\135\47\0\1\136\51\0\1\137\65\0\1\140" +
 			"\33\0\1\141\35\0";
+	/**
+	 * The transition table of the DFA
+	 */
+	private static final int[] ZZ_TRANS = zzUnpackTrans();
+	/* error codes */
+	private static final int ZZ_UNKNOWN_ERROR = 0;
+	private static final int ZZ_NO_MATCH = 1;
+	private static final int ZZ_PUSHBACK_2BIG = 2;
+	/* error messages for the codes above */
+	private static final String[] ZZ_ERROR_MSG = {
+		"Unknown internal scanner error",
+		"Error: could not match input",
+		"Error: pushback value was too large"
+	};
+	private static final String ZZ_ATTRIBUTE_PACKED_0 =
+		"\1\0\1\11\1\1\1\11\1\1\1\11\2\1\6\11" +
+			"\1\1\3\11\2\1\10\0\1\1\13\0\2\11\3\0" +
+			"\1\11\17\0\1\11\4\0\2\11\2\0\1\11\1\0" +
+			"\2\11\3\0\1\1\3\0\1\11\5\0\1\11\1\0" +
+			"\1\11\3\0\1\11\2\0\1\11";
+	/**
+	 * ZZ_ATTRIBUTE[aState] contains the attributes of state <code>aState</code>
+	 */
+	private static final int[] ZZ_ATTRIBUTE = zzUnpackAttribute();
+	/**
+	 * the input device
+	 */
+	private java.io.Reader zzReader;
+	/**
+	 * the current state of the DFA
+	 */
+	private int zzState;
+	/**
+	 * the current lexical state
+	 */
+	private int zzLexicalState = YYINITIAL;
+	/**
+	 * this buffer contains the current text to be matched and is
+	 * the source of the yytext() string
+	 */
+	private CharSequence zzBuffer = "";
+	/**
+	 * the textposition at the last accepting state
+	 */
+	private int zzMarkedPos;
+	/**
+	 * the current text position in the buffer
+	 */
+	private int zzCurrentPos;
+	/**
+	 * startRead marks the beginning of the yytext() string in the buffer
+	 */
+	private int zzStartRead;
+	/**
+	 * endRead marks the last character in the buffer, that has been read
+	 * from input
+	 */
+	private int zzEndRead;
+	/**
+	 * zzAtBOL == true <=> the scanner is currently at the beginning of a line
+	 */
+	private boolean zzAtBOL = true;
+	/**
+	 * zzAtEOF == true <=> the scanner is at the EOF
+	 */
+	private boolean zzAtEOF;
+	/**
+	 * denotes if the user-EOF-code has already been executed
+	 */
+	private boolean zzEOFDone;
+
+	/**
+	 * Creates a new scanner
+	 *
+	 * @param in the java.io.Reader to read input from.
+	 */
+	public FlexGeneratedMapagLexer(java.io.Reader in) {
+		this.zzReader = in;
+	}
+
+	/**
+	 * Translates characters to character classes
+	 * Chosen bits are [12, 6, 3]
+	 * Total runtime size is 14800 bytes
+	 */
+	public static int ZZ_CMAP(int ch) {
+		return ZZ_CMAP_A[(ZZ_CMAP_Y[(ZZ_CMAP_Z[ch >> 9] << 6) | ((ch >> 3) & 0x3f)] << 3) | (ch & 0x7)];
+	}
+
+	private static int[] zzUnpackAction() {
+		int[] result = new int[97];
+		int offset = 0;
+		offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
+		return result;
+	}
+
+	private static int zzUnpackAction(String packed, int offset, int[] result) {
+		int i = 0;       /* index in packed string  */
+		int j = offset;  /* index in unpacked array */
+		int l = packed.length();
+		while (i < l) {
+			int count = packed.charAt(i++);
+			int value = packed.charAt(i++);
+			do result[j++] = value; while (--count > 0);
+		}
+		return j;
+	}
+
+	private static int[] zzUnpackRowMap() {
+		int[] result = new int[97];
+		int offset = 0;
+		offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
+		return result;
+	}
+
+	private static int zzUnpackRowMap(String packed, int offset, int[] result) {
+		int i = 0;  /* index in packed string  */
+		int j = offset;  /* index in unpacked array */
+		int l = packed.length();
+		while (i < l) {
+			int high = packed.charAt(i++) << 16;
+			result[j++] = high | packed.charAt(i++);
+		}
+		return j;
+	}
 
 	private static int[] zzUnpackTrans() {
 		int[] result = new int[2952];
@@ -288,30 +351,6 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 		return j;
 	}
 
-	/* error codes */
-	private static final int ZZ_UNKNOWN_ERROR = 0;
-	private static final int ZZ_NO_MATCH = 1;
-	private static final int ZZ_PUSHBACK_2BIG = 2;
-
-	/* error messages for the codes above */
-	private static final String[] ZZ_ERROR_MSG = {
-		"Unknown internal scanner error",
-		"Error: could not match input",
-		"Error: pushback value was too large"
-	};
-
-	/**
-	 * ZZ_ATTRIBUTE[aState] contains the attributes of state <code>aState</code>
-	 */
-	private static final int[] ZZ_ATTRIBUTE = zzUnpackAttribute();
-
-	private static final String ZZ_ATTRIBUTE_PACKED_0 =
-		"\1\0\1\11\1\1\1\11\1\1\1\11\2\1\6\11" +
-			"\1\1\3\11\2\1\10\0\1\1\13\0\2\11\3\0" +
-			"\1\11\17\0\1\11\4\0\2\11\2\0\1\11\1\0" +
-			"\2\11\3\0\1\1\3\0\1\11\5\0\1\11\1\0" +
-			"\1\11\3\0\1\11\2\0\1\11";
-
 	private static int[] zzUnpackAttribute() {
 		int[] result = new int[97];
 		int offset = 0;
@@ -329,72 +368,6 @@ public class FlexGeneratedMapagLexer implements FlexLexer {
 			do result[j++] = value; while (--count > 0);
 		}
 		return j;
-	}
-
-	/**
-	 * the input device
-	 */
-	private java.io.Reader zzReader;
-
-	/**
-	 * the current state of the DFA
-	 */
-	private int zzState;
-
-	/**
-	 * the current lexical state
-	 */
-	private int zzLexicalState = YYINITIAL;
-
-	/**
-	 * this buffer contains the current text to be matched and is
-	 * the source of the yytext() string
-	 */
-	private CharSequence zzBuffer = "";
-
-	/**
-	 * the textposition at the last accepting state
-	 */
-	private int zzMarkedPos;
-
-	/**
-	 * the current text position in the buffer
-	 */
-	private int zzCurrentPos;
-
-	/**
-	 * startRead marks the beginning of the yytext() string in the buffer
-	 */
-	private int zzStartRead;
-
-	/**
-	 * endRead marks the last character in the buffer, that has been read
-	 * from input
-	 */
-	private int zzEndRead;
-
-	/**
-	 * zzAtBOL == true <=> the scanner is currently at the beginning of a line
-	 */
-	private boolean zzAtBOL = true;
-
-	/**
-	 * zzAtEOF == true <=> the scanner is at the EOF
-	 */
-	private boolean zzAtEOF;
-
-	/**
-	 * denotes if the user-EOF-code has already been executed
-	 */
-	private boolean zzEOFDone;
-
-	/**
-	 * Creates a new scanner
-	 *
-	 * @param in the java.io.Reader to read input from.
-	 */
-	public FlexGeneratedMapagLexer(java.io.Reader in) {
-		this.zzReader = in;
 	}
 
 	/**

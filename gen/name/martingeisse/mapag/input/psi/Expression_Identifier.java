@@ -16,7 +16,7 @@ public final class Expression_Identifier extends Expression {
 	}
 
 	public PsiReference getReference() {
-		return PsiUtil.getReference(this);
+		return name.martingeisse.mapag.input.psi.PsiUtil.getReference(this);
 	}
 
 }

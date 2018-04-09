@@ -17,7 +17,7 @@ public final class PrecedenceDeclarationSymbol extends ASTWrapperPsiElement {
 	}
 
 	public PsiReference getReference() {
-		return PsiUtil.getReference(this);
+		return name.martingeisse.mapag.input.psi.PsiUtil.getReference(this);
 	}
 
 }

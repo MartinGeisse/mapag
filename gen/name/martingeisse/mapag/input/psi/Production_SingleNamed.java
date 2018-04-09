@@ -25,7 +25,7 @@ public final class Production_SingleNamed extends Production {
 	}
 
 	public LeafPsiElement getNameIdentifier() {
-		return PsiUtil.getNameIdentifier(this);
+		return name.martingeisse.mapag.input.psi.PsiUtil.getNameIdentifier(this);
 	}
 
 	public String getName() {
@@ -42,7 +42,7 @@ public final class Production_SingleNamed extends Production {
 	}
 
 	public void delete() throws IncorrectOperationException {
-		PsiUtil.delete(this);
+		name.martingeisse.mapag.input.psi.PsiUtil.delete(this);
 	}
 
 }

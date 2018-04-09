@@ -84,11 +84,11 @@ public class Symbols {
 	public static final MapagElementType rightHandSide = new MapagElementType("rightHandSide");
 	public static final MapagElementType synthetic_List_AlternativeAttribute = new MapagElementType("synthetic_List_AlternativeAttribute");
 	public static final MapagElementType synthetic_List_PrecedenceDeclaration = new MapagElementType("synthetic_List_PrecedenceDeclaration");
-	public static final MapagElementType synthetic_List_Production = new MapagElementType("synthetic_List_Production");
+	public static final MapagElementType synthetic_List_Production_Nonempty = new MapagElementType("synthetic_List_Production_Nonempty");
 	public static final MapagElementType synthetic_List_ResolveDeclaration = new MapagElementType("synthetic_List_ResolveDeclaration");
-	public static final MapagElementType synthetic_SeparatedList_IDENTIFIER_COMMA = new MapagElementType("synthetic_SeparatedList_IDENTIFIER_COMMA");
-	public static final MapagElementType synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA = new MapagElementType("synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA");
-	public static final MapagElementType synthetic_SeparatedList_TerminalDeclaration_COMMA = new MapagElementType("synthetic_SeparatedList_TerminalDeclaration_COMMA");
+	public static final MapagElementType synthetic_SeparatedList_IDENTIFIER_COMMA_Nonempty = new MapagElementType("synthetic_SeparatedList_IDENTIFIER_COMMA_Nonempty");
+	public static final MapagElementType synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA_Nonempty = new MapagElementType("synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA_Nonempty");
+	public static final MapagElementType synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty = new MapagElementType("synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty");
 	public static final MapagElementType terminalDeclaration = new MapagElementType("terminalDeclaration");
 
 	//

@@ -12,7 +12,7 @@ public final class Optional<T extends PsiElement> extends ASTWrapperPsiElement {
 	}
 
 	public T getIt() {
-		return (T) getFirstChild();
+		return (T) InternalPsiUtil.getChild(this, 0);
 	}
 
 }

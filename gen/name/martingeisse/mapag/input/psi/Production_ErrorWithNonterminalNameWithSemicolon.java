@@ -17,7 +17,7 @@ public final class Production_ErrorWithNonterminalNameWithSemicolon extends Prod
 	}
 
 	public LeafPsiElement getNameIdentifier() {
-		return PsiUtil.getNameIdentifier(this);
+		return name.martingeisse.mapag.input.psi.PsiUtil.getNameIdentifier(this);
 	}
 
 	public String getName() {
@@ -34,7 +34,7 @@ public final class Production_ErrorWithNonterminalNameWithSemicolon extends Prod
 	}
 
 	public void delete() throws IncorrectOperationException {
-		PsiUtil.delete(this);
+		name.martingeisse.mapag.input.psi.PsiUtil.delete(this);
 	}
 
 }

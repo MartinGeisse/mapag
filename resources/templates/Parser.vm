@@ -89,7 +89,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
     };
 
 	// other
-#if($intelij)
+#if($intellij)
 	private static final IElementType FILE_ELEMENT_TYPE = $fileElementType;
 #end
 	private static final int RECOVERY_SYNC_LENGTH = 3;
@@ -160,16 +160,16 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 #if($intellij)
 	@Override
 	public ASTNode parse(IElementType type, PsiBuilder psiBuilder) {
-	    this.psiBuilder = psiBuilder;
-		parseLight(type);
+		parseLight(type, psiBuilder);
 		return psiBuilder.getTreeBuilt();
 	}
 
 	@Override
-	public void parseLight(IElementType type) {
+	public void parseLight(IElementType type, PsiBuilder psiBuilder) {
 		if (type != FILE_ELEMENT_TYPE) {
 			throw new IllegalArgumentException("unsupported top-level element type to parse: " + type);
 		}
+	    this.psiBuilder = psiBuilder;
 		parse();
 	}
 #else

@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -28,10 +29,10 @@ public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
 		return (ListNode) this;
 	}
 
-	public final ImmutableList<T> getAll() {
-		ImmutableList.Builder<T> builder = ImmutableList.builder();
-		addAllTo(builder);
-		return builder.build();
+	public final List<T> getAll() {
+		List<T> list = new ArrayList<>();
+		addAllTo(list);
+		return list;
 	}
 
 	public final void addAllTo(List<T> list) {
@@ -46,7 +47,9 @@ public final class ListNode<T extends PsiElement> extends ASTWrapperPsiElement {
 		InternalPsiUtil.foreachChild(this, child -> {
 			if (elementTypes.contains(child.getNode().getElementType())) {
 				consumer.accept(elementClass.cast(child));
-			} else if (child instanceof ListNode<?> && child.getNode().getElementType() == getNode().getElementType()) {
+				return;
+			}
+			if (child instanceof ListNode<?> && child.getNode().getElementType() == getNode().getElementType()) {
 				ListNode<?> typedChild = (ListNode<?>) child;
 				typedChild.cast(elementClass).foreach(consumer);
 			}

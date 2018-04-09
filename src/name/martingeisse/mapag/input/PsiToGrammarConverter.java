@@ -228,7 +228,7 @@ public class PsiToGrammarConverter {
 		return convertedAlternative;
 	}
 
-	private ResolveBlock convertResolveBlock(ImmutableList<name.martingeisse.mapag.input.psi.ResolveDeclaration> psiResolveDeclarations) {
+	private ResolveBlock convertResolveBlock(List<name.martingeisse.mapag.input.psi.ResolveDeclaration> psiResolveDeclarations) {
 		List<ResolveDeclaration> resolveDeclarations = new ArrayList<>();
 		for (name.martingeisse.mapag.input.psi.ResolveDeclaration psiResolveDeclaration : psiResolveDeclarations) {
 
