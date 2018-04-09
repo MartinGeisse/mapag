@@ -89,7 +89,9 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
     };
 
 	// other
+#if($intelij)
 	private static final IElementType FILE_ELEMENT_TYPE = $fileElementType;
+#end
 	private static final int RECOVERY_SYNC_LENGTH = 3;
 
 	// ------------------------------------------------------------------------------------------------
@@ -155,7 +157,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 	@Override
 	public ASTNode parse(IElementType type, PsiBuilder psiBuilder) {
 	    this.psiBuilder = psiBuilder;
-		parseLight(type, psiBuilder);
+		parseLight(type);
 		return psiBuilder.getTreeBuilt();
 	}
 
@@ -203,7 +205,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
            		if (consumeSymbol(getSymbolCodeForElementType(getTokenType()), null)) {
                 	nextToken();
            		} else {
-           			recoverFromError(psiBuilder);
+           			recoverFromError();
            		}
 #if($debug)
                 System.out.println("New state: " + state);
@@ -220,9 +222,9 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 #end
                 int originalState = state;
                 if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
-                    recoverFromError(psiBuilder);
+                    recoverFromError();
                     if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
-                        throw new UnrecoverableSyntaxException(state);
+                        throw new UnrecoverableSyntaxException(originalState);
                     }
                 }
 #if($debug)
@@ -264,7 +266,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 
 #if($intellij)
 		// Now we re-parse, based on the parse tree we build, in a way that the PsiBuilder likes.
-		feedPsiBuilder(psiBuilder, parseTreeStack[0], null);
+		feedPsiBuilder(parseTreeStack[0], null);
 #end
 
 #if($intellij)
@@ -380,14 +382,14 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 				marker = psiBuilder.mark();
 			}
 			for (int i = 1; i < reduction.length; i++) {
-				feedPsiBuilder(psiBuilder, reduction[i], elementType);
+				feedPsiBuilder(reduction[i], elementType);
 			}
 			if (buildMarker) {
 				marker.done(elementType);
 			}
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
-			feedPsiBuilder(psiBuilder, ((List<?>)what).toArray(), parentElementType);
+			feedPsiBuilder(((List<?>)what).toArray(), parentElementType);
 		} else if (what instanceof ErrorLocationIndicator) {
 		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
 			psiBuilder.error("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
@@ -549,11 +551,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 
     private static class UnrecoverableSyntaxException extends Exception {
 
-        public UnrecoverableSyntaxException() {
-            super("syntax error");
-        }
-
-        public UnrecoverableSyntaxException(int state) {
+        UnrecoverableSyntaxException(int state) {
             super("expected one of: " + STATE_INPUT_EXPECTATION[state]);
         }
 
