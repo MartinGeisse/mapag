@@ -286,7 +286,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
 #else
         tokenPointer = tokenMarker = 0;
-        astRootNode = buildAst(parseTreeStack[0]);
+        astRootNode = buildAst(parseTreeStack[0], null);
 #end
 
 #if($debug)
@@ -375,7 +375,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 
 	private void feedPsiBuilder(Object what, IElementType parentElementType) {
 	    if (what == null) {
-            psiBuilder.advanceLexer();
+            nextToken();
 	    } else if (what instanceof Object[]) {
 			Object[] reduction = (Object[]) what;
 			IElementType elementType;
@@ -406,21 +406,22 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 			feedPsiBuilder(((List<?>)what).toArray(), parentElementType);
 		} else if (what instanceof ErrorLocationIndicator) {
 		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
-			psiBuilder.error("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
+			reportErrorForCurrentToken("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
 		} else if (what instanceof UnrecoverableSyntaxException) {
-            psiBuilder.error(((UnrecoverableSyntaxException)what).getMessage());
-            while (!psiBuilder.eof()) {
-            	psiBuilder.advanceLexer();
+            reportErrorForCurrentToken(((UnrecoverableSyntaxException)what).getMessage());
+            while (!isAtEof()) {
+            	nextToken();
             }
 		}
 	}
 
 #else
 
-	private ASTNode buildAst(Object what) {
+	private ASTNode buildAst(Object what, IElementType parentElementType) {
 	    if (what == null) {
-    	    TODO
-            psiBuilder.advanceLexer();
+	        ASTNode node = getToken();
+            nextToken();
+            return node;
 	    } else if (what instanceof Object[]) {
     	    TODO
 			Object[] reduction = (Object[]) what;
@@ -448,19 +449,15 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 				marker.done(elementType);
 			}
 		} else if (what instanceof List<?>) {
-    	    TODO
 			// an object list has the same meaning as an object array (needed for error symbols)
-			feedPsiBuilder(((List<?>)what).toArray(), parentElementType);
+			return buildAst(((List<?>)what).toArray(), parentElementType);
 		} else if (what instanceof ErrorLocationIndicator) {
-    	    TODO
 		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
-			psiBuilder.error("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
+			reportErrorForCurrentToken("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
+			return null;
 		} else if (what instanceof UnrecoverableSyntaxException) {
-    	    TODO
-            psiBuilder.error(((UnrecoverableSyntaxException)what).getMessage());
-            while (!psiBuilder.eof()) {
-            	psiBuilder.advanceLexer();
-            }
+            reportErrorForCurrentToken(((UnrecoverableSyntaxException)what).getMessage());
+            tokenPointer = tokens.length;
 		}
 	}
 
@@ -665,6 +662,10 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
         psiBuilder.advanceLexer();
     }
 
+    private void reportErrorForCurrentToken(String errorMessage) {
+        psiBuilder.error(errorMessage);
+    }
+
 #else
 
     private void beginSpeculativeTokenConsumption() {
@@ -673,6 +674,10 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 
     private void endSpeculativeTokenConsumption() {
         tokenPointer = tokenMarker;
+    }
+
+    private ASTNode getToken() {
+        return tokenPointer >= tokens.length ? null : tokens[tokenPointer];
     }
 
     private IElementType getTokenType() {
@@ -687,6 +692,10 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
         if (tokenPointer < tokens.length) {
             tokenPointer++;
         }
+    }
+
+    private void reportErrorForCurrentToken(String errorMessage) {
+        // TODO
     }
 
 #end
