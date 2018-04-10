@@ -615,12 +615,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			Object[] reduction = (Object[]) what;
 			IElementType elementType;
 			boolean buildMarker;
-			if (reduction[0] == null) {
-				// TODO testing if this ever happens -- there's no place in the code that inserts a null parse node head...
-				// elementType = null;
-				// buildMarker = false;
-				throw new RuntimeException("i guess this never happens...");
-			} else if (reduction[0] instanceof ListNodeGenerationWrapper) {
+			if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper) reduction[0];
 				elementType = listNodeGenerationWrapper.elementType;
 				buildMarker = (parentElementType == null || elementType != parentElementType);
