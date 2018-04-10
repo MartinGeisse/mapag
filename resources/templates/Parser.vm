@@ -380,12 +380,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 			Object[] reduction = (Object[]) what;
 			IElementType elementType;
 			boolean buildMarker;
-			if (reduction[0] == null) {
-			    // TODO testing if this ever happens -- there's no place in the code that inserts a null parse node head...
-				// elementType = null;
-				// buildMarker = false;
-				throw new RuntimeException("i guess this never happens...");
-			} else if (reduction[0] instanceof ListNodeGenerationWrapper) {
+			if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
 				elementType = listNodeGenerationWrapper.elementType;
 				buildMarker = (parentElementType == null || elementType != parentElementType);
@@ -425,31 +420,22 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
             nextToken();
             return node;
 	    } else if (what instanceof Object[]) {
-    	    TODO
 			Object[] reduction = (Object[]) what;
 			IElementType elementType;
-			boolean buildMarker;
-			if (reduction[0] == null) {
-				elementType = null;
-				buildMarker = false;
-			} else if (reduction[0] instanceof ListNodeGenerationWrapper) {
+			boolean publicNode;
+			if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
 				elementType = listNodeGenerationWrapper.elementType;
-				buildMarker = (parentElementType == null || elementType != parentElementType);
+				publicNode = (parentElementType == null || elementType != parentElementType);
 			} else {
 				elementType = (IElementType)reduction[0];
-				buildMarker = true;
+				publicNode = true;
 			}
-			PsiBuilder.Marker marker = null;
-			if (buildMarker) {
-				marker = psiBuilder.mark();
-			}
+			List<ASTNode> childNodes = new ArrayList<>();
 			for (int i = 1; i < reduction.length; i++) {
-				feedPsiBuilder(reduction[i], elementType);
+				childNodes.add(buildAst(reduction[i], elementType));
 			}
-			if (buildMarker) {
-				marker.done(elementType);
-			}
+			return new ASTNode(elementType, childNodes.toArray(new ASTNode[childNodes.size()]), publicNode);
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
 			return buildAst(((List<?>)what).toArray(), parentElementType);
