@@ -1,5 +1,5 @@
 plugins {
-    id "org.jetbrains.intellij" version "0.1.10"
+    id "org.jetbrains.intellij" version "0.4.7"
 }
 
 apply plugin: 'org.jetbrains.intellij'
@@ -9,7 +9,7 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 intellij {
-    version '143.2370.31'
+    version '183.6156.11'
     pluginName 'MaPaG'
 }
 
