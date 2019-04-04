@@ -1,0 +1,14 @@
+
+%terminals {KW_TERMINALS}
+%nonterminals {grammar}
+%start grammar;
+
+production ::= {
+	error ::= %error SEMICOLON;
+}
+
+rightHandSide ::= {
+    withoutResolver ::= expression;
+    withPrecedenceResolver ::= expression KW_PRECEDENCE IDENTIFIER;
+    withExplicitResolver ::= expression KW_RESOLVE OPENING_CURLY_BRACE resolveDeclaration* CLOSING_CURLY_BRACE;
+}

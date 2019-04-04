@@ -1,0 +1,124 @@
+
+Am Beispiel Java in IntelliJ:
+
+
+semantic errors -- semantische Analyse wird durchgeführt, obwohl im selben Methodenrumpf noch Syntax Errors sind.
+	--> (Statement ::= %error SEMICOLON) und dann damit arbeiten. Bei der sem. An. werden Errors ignoriert, beim
+		"echten Compile" führen sie zum Abbruch.
+		--> dazu müssen error nodes evtl. auch in einer noch abstrakteren Form als PSI vorliegen, die als Basis für
+			sem. An. und Compile benutzt wird.
+
+"not a statement" bei (STRING_LITERAL SEMICOLON):
+	Unklar, wie das erkannt wird. Es könnte eine Regel mit (expression SEMICOLON) sein, die einen Fehlerknoten produziert.
+	Ein Syntax Error entsteht erst beim Semicolon, da die Zeile
+
+		"foo".length();
+
+	gültig ist und auch mit einem Stringliteral anfängt. Ein Syntax Error beim Semicolon währe verwirrend. Außerdem
+	lässt sich die gültige Syntax für Statements dann nicht als (expression SEMICOLON) mit higher-level-Fehlererkennung
+	schreiben.
+
+Auf jeden Fall muss die Möglichkeit gegeben sein, dass die sem. An. auch Editorsichtbare Fehlermarker produziert.
+
+Auch IntelliJ hat keine "superschönen" Fehlermeldungen:
+
+		int x = 1 * * 2;
+
+	liefert mehrere Fehlermeldungen für das Leerzeichen und mehrere andere Fehlermeldungen für das zweite Malzeichen:
+
+			; expected
+			expression expected
+			unexpected token
+
+	Meine erste Überlegung zur Fehlerausgabe würde hier sagen: "expression or ';' expected", was gar nicht
+	schlecht wäre. Sie würde allerdings bei einem Token am Anfang eines Statement, welches kein Statement
+	anfangen kann, nur sagen: "statement or '}' expected" -- wäre das gut oder schlecht? Vermutlich gar nicht
+	so schlecht. In den meisten Fällen ist wahrscheinlich sogar "syntax error" okay, sieht nur mistig aus.
+
+- Wie würde das funktionieren?
+	- Dazu muss Fehlerinformation über jeden Zustand des Parsers vorliegen. Wenn ein Syntax Error auftritt, wird
+		aus der Fehlerinformation des aktuellen Zustands die Meldung erzeugt. Das aktuelle Token ist dafür egal, das
+		ist ja eh falsch.
+		--> diese Information kann aus der Tabelle oder auch aus den State Elements des Zustands erzeugt werden.
+			aufgrund des u.g. Vorgehens ist "aus den State Elements" einfacher.
+	- Die Fehlerinformation soll erklären, welche Terminale und Nichtterminale in diesem Zustand erkannt werden.
+		Das ist so "plain" auch einfach aus den Übergängen möglich. Interessant ist dann nur noch,
+			- wie diese Beschrieben werden
+				- Nichtterminale vereinfachend mit deren Namen? Bei synthetic Nonterminals ist das Mist
+					-> das ist einfach: Für jedes SN gibt es non-synthetic nonterminals oder terminals aus
+						dessen Expanion. Dann wird vorher das SN ausgeblendet, dadurch kommen die anderen zum Vorschein
+					-> ebenso wird das Root-Symbol vorher ausgeblendet, so dass dessen Expansion zum Vorschein kommt
+					-> s.u. was "ausblenden" bedeutet
+			- welche davon weggelassen werden, weil sie Duplikate voneinander sind
+				-> dazu muss auch erkannt werden, wann die Symbole Dupliakte voneinander sind
+			- ob welche weggelassen werden, weil sie unwichtig / irreführend / etc. sind.
+				- das im ersten Schritt mal nicht
+
+Problem: Manche Nichtterminale sind nicht von Bedeutung -- die synthetic gehören dazu, aber auch manche Toplevel.
+	Außerdem sind die Namen aus dem Grammar File nicht "schön". Idee: In der Properties-Datei werden die
+	signifikanten Nichtterminale und deren lesbare Beschreibung für Fehlermeldungen aufgelistet. Alle nicht
+	gelisteten sind nicht signifikant.
+	-->
+	Dann werden alle nicht signifikanten Nichtterminale "ausgeblendet".
+
+Sammeln der Symbole und erkennung von Duplikaten und "ausblenden":
+- Der jeweilige Zustand besteht aus einer Menge von State Elements.
+- Zu diesen werden so lange neue State Elements dazugenommen, bis ein Abschluß erreicht ist:
+	Wenn eines der Elemente den Punkt vor einem vanishable Nonterminal stehen hat, wird das State Element
+	mit dem Punkt eine Stelle weiter dazugenommen.
+- Die Menge der jetzt möglichen Nichtterminale "JMN" ist die Menge aller signifikanten Nichtterminale, wo in
+	irgendeinenem Element des aktuellen State ein Punkt davor steht;
+	ausgenommen sind diejenigen Elemente, wo der Punkt am Anfang steht und auf der Linken Seite auch ein JMN.
+	    -> das macht keine Probleme bei Rekursion: Da kein Nichtterminal außer %start einen "Lufthaken" bildet,
+	        muss jedes Nichtterminal auch irgendwo anders rechts vorkommen als in einer Rekursion. Dadurch kann so
+	        kein JMN verschwinden, außer es ist durch ein anderes JMN abgedeckt.
+- Danach werden alle State Elements mit einem JMN auf der linken Seite und den Punkt am Anfang entfernt
+    (da weiter unten nur noch Terminale gefunden werden, ist das nur da relevant, wo ein JMN mit einem Terminal anfängt).
+        --> nein, nicht "DANACH", denn die oben unterdrückten Nichtterminale sollen auch keine Terminale erzeugen
+- Die Menge der jetzt möglichen Terminale "JMT" ist die Menge aller Terminale, wo in irgendeinem Element
+	des aktuellen State ein Punkt davor steht, vereinigt mit der Menge aller Terminale, die in irgendeinem
+	Element des aktuellen State mit Punkt am Ende als Lookahead-Terminal vorkommen.
+- Die Menge der jetzt möglichen Symbole sind JMN vereinigt mit JMT.
+
+Hinweis: Dadurch kann ein Terminal in JMT vorkommen, auch wenn es ein anfangendes Terminal für ein JMN
+	ist, wenn es zusätzlich auch anderswo im aktuellen State erlaubt ist.
+
+----
+
+Fazit:
+Fehlermeldung in Parser erzeugen
+sem. An. muss Fehlermarker produzieren können
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Weitere Verbesserungen:
+- wenn alle State Elements eines State dieselbe Alternative haben (damit auch dasselbe Nichtterminal) und alle am Ende
+    stehen, dann gibt es nur REDUCE und ERROR. Dann sollte auch im Fehlerfall reduziert werden, also implizites %reduceOnError.
+    - Frage: Soll das auch passieren, wenn es zusätzlich Zustände gibt, die unter anderen Terminalen SHIFTen würden? Das
+        ist nicht mehr so klar, weil im Fehlerfall der Benutzer beides gemeint haben könnte. Trotzdem gibt es vermutlich
+        auf diese art bessere Fehlermeldungen.
+    - Also: Wenn in einem Zustand von denjenigen Elements, die "am Ende" sind, alle dieselbe Alternative haben, dann
+        hat diese Alternative in diesem Zustand implizit %reduceOnError.
+- damit ist der aktuelle Fehler aber noch nicht vollständig erklärt:
+
+        %terminals {
+            IDENTIFIER
+        }
+
+        %start grammar;
+
+        production ::= {
+            error4 ::= IDENTIFIER; }
+        }
+
+        rightHandSide ::= IDENTIFIER ) IDENTIFIER;
+
+    Es ist nur erklärt, warum das Nichtterminal "production" nicht reduziert werden kann, aber nicht, warum der
+    davon unabhängige Fehler im Nichtterminal "rightHandSide" nicht erkannt wird.
+    -->
+    Das liegt daran, dass die Fehlerproduktionen für "production" ein Semikolon als Trennzeichen erwarten, es aber
+    bei einer Multi-Alternative-Produktion kein Semikolon am Ende gibt. Hier sollte zusätzlich die geschweifte
+    Klammer-zu als Trennzeichen erlaubt sein.

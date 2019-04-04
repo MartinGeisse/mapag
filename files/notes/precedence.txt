@@ -1,0 +1,56 @@
+
+
+I could make precedence more explicit:
+
+level 0: leave as-is; like YACC except for the special rules needed for complex right-hand expressions
+level 1: no implicit rule precedence -- all rule precedences must be explicitly specified
+level 2: allow multiple precedence tables to specify precedence only between desired pairs of symbols (partial order
+    instead of total order). More complex to implement; associativity of a single symbol must be the same in all
+    tables (or specified separately from tables).
+level 3: do not use precedence tables but single conflict resolution annotations, e.g. in rule X and nonterminal Y
+    reduce, whereas on nonterminal Z shift.
+
+1 is an option.
+
+2 and 3 are rather complex because they fundamentally change the input language in a way that I don't understand well.
+
+Example for 2 (with terminal names used for precedence):
+
+    %terminals {
+        NUMBER, %left PLUS, %left TIMES
+    }
+
+    %precedence {
+        PLUS < TIMES < UNARY;
+        ELSE < IF;
+    }
+
+Example for 2 (with separate precedence identifiers):
+
+    %precedence {
+        plus < times < unary;
+        else < if;
+    }
+
+    %terminals {
+        NUMBER, %left PLUS (plus), %left TIMES (times)
+    }
+
+Example for 3 (can grow very large for a language like C -- not very nice):
+
+    E ::= E PLUS E %resolve {
+        PLUS, MINUS %reduce;
+        TIMES, DIVIDE %shift;
+    }
+
+Alternative approach to avoid unwanted conflict resolutions (the main problem I'm trying to solve):
+- use level 0 or 1
+- invent a unit-testing approach for the generated parser, with tests like
+    "ignoring the conflict resolutions dont in nonterminal 'expression', I want the precedences to cause one resolution
+        in nonterminal ifStatement and no further resolutions".
+- this could be part of the grammar language or specified separately
+- a very simple way to implement this, although with run-time baggage, is to generate meta-information in the Java code
+    along with the parser and check that meta-information to be as expected in JUnit tests
+- another way would be to generate such information in a separate file -- maybe IntelliJ has a mechanism in place to
+    put such files. The JUnit tests could read them. With a simple syntax, they wouldn't need a support library to read.
+    (or Java property files, where the support library is part of the standard lib)

@@ -1,0 +1,24 @@
+
+Meta-Grammar in Java-Code zusammenbauen. In CUP-Syntax ist diese 120 Zeilen lang, d.h. auch in Java wird das kein
+Riesending (Vermutung: < 1000 Zeilen). Ggf. abstrakte Basisklasse mit Hilfsfunktionen, um eine Grammatik in Java
+zu bauen.
+
+LR(1)-Generator drüberlaufen lassen. Erst mal keine Fehlerbehandlung.
+
+Der generierte Code erzeugt erst einen Ableitungsbaum und gibt ihn dann an den PsiBuilder. Der Einfachheit halber sollte
+der generierte Code all das ohne Bibliohek tun, auch wenn man Dinge auslagern könnte. Ausnahme: Wenn das viel zu viel
+wird. Der Ableitungsbaum ist eine Struktur aus Object[]; das erste Element ist das reduzierte Nonterminal
+(IElementType), die restlichen Elemente sind entweder Terminale (IElementType) oder Ableitungen (Object[]).
+Im generierten Parser gibt es eine Standard-Routine, die diesen Ableitungsbaum an den PsiBuilder weitergibt (Diese
+ist nur reingepastet, nicht wirklich generiert).
+
+Später dann Fehlerbehandlung nach dem Vorbild von CUP.
+
+Scanner bleibt dauerhaft außen vor. Dafür gibt es JFlex und das funzt gut genug. Dokumentation, wie die JFlex-Datei
+zu schreiben ist:
+- Package und Klassenname frei wählbar
+- benötigte Imports
+- %implements FlexLexer, %function advance, %type IElementType, %eof{ return; %eof}
+- ggf. %public und %unicode
+- alle Zeichen müssen ein Token erzeugen, auch Whitespace / Comments / Bad Character
+- Auffangregel: [^] { return TokenType.BAD_CHARACTER; }

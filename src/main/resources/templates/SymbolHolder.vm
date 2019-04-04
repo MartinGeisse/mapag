@@ -1,0 +1,30 @@
+package $packageName;
+
+public class $className {
+
+	//
+	// terminals
+	//
+
+#foreach($terminal in $terminals)
+	public static final $terminalElementTypeClass $terminal = new $terminalElementTypeClass("$terminal");
+#end
+
+
+	//
+	// nonterminals
+	//
+
+#foreach($nonterminalAlternative in $nonterminalAlternatives)
+	public static final $nonterminalElementTypeClass $nonterminalAlternative = new $nonterminalElementTypeClass("$nonterminalAlternative");
+#end
+
+
+	//
+	// special
+	//
+
+    // partially parsed input in case of an error
+	public static final $nonterminalElementTypeClass __PARSED_FRAGMENT = new $nonterminalElementTypeClass("__PARSED_FRAGMENT");
+
+}
