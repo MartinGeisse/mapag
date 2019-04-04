@@ -44,7 +44,7 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 	protected void execute(AnActionEvent event, ConsoleViewImpl console, MapagSourceFile sourceFile, Configuration configuration) throws Exception {
 
 		// we need a module to place output files in. Should this use ModuleRootManager?
-		Module module = event.getDataContext().getData(LangDataKeys.MODULE);
+		Module module = LangDataKeys.MODULE.getData(event.getDataContext());
 		if (module == null) {
 			console.print("No module available to place output files in", ConsoleViewContentType.ERROR_OUTPUT);
 			return;

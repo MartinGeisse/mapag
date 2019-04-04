@@ -57,7 +57,7 @@ public abstract class AbstractGrammarAndConsoleAction extends AnAction {
 
 	@Override
 	public void update(AnActionEvent event) {
-		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE);
+		PsiFile psiFile = CommonDataKeys.PSI_FILE.getData(event.getDataContext());
 		boolean enabled = psiFile != null && psiFile.getLanguage() == MapagSpecificationLanguage.INSTANCE;
 		event.getPresentation().setEnabledAndVisible(enabled);
 	}
@@ -75,7 +75,7 @@ public abstract class AbstractGrammarAndConsoleAction extends AnAction {
 		onConsoleOpened(event, console);
 
 		// we need a MaPaG input file to process
-		PsiFile psiFile = event.getDataContext().getData(CommonDataKeys.PSI_FILE);
+		PsiFile psiFile = CommonDataKeys.PSI_FILE.getData(event.getDataContext());
 		if (!(psiFile instanceof MapagSourceFile)) {
 			console.print("The input file is not a MaPaG grammar file", ConsoleViewContentType.ERROR_OUTPUT);
 			return;
