@@ -1,0 +1,18 @@
+
+%terminals {
+	IDENTIFIER
+}
+
+%start grammar;
+
+foo ::= production;
+
+production ::= {
+	error4 ::= IDENTIFIER;
+		}
+
+grammar ::= foo (foo) %empy foo;
+
+rightHandSide  ::= IDENTIFIER ) IDENTIFIER;
+
+// at %empy, the "expected" message is bad!
