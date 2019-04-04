@@ -47,4 +47,5 @@ repositories {
 dependencies {
     compile 'org.apache.commons:commons-lang3:3.0'
     testCompile 'junit:junit:4.12'
+    testCompile 'com.tngtech.java:junit-dataprovider:1.13.1'
 }

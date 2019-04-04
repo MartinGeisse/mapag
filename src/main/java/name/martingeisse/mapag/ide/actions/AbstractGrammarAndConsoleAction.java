@@ -160,7 +160,7 @@ public abstract class AbstractGrammarAndConsoleAction extends AnAction {
 		JComponent consoleComponent = new JPanel(new BorderLayout());
 
 		JPanel toolbarPanel = new JPanel(new BorderLayout());
-		toolbarPanel.add(ActionManager.getInstance().createActionToolbar(ActionPlaces.RUNNER_TOOLBAR, toolbarActions, false).getComponent());
+		toolbarPanel.add(ActionManager.getInstance().createActionToolbar(ActionPlaces.DEBUGGER_TOOLBAR, toolbarActions, false).getComponent());
 		consoleComponent.add(toolbarPanel, BorderLayout.WEST);
 		consoleComponent.add(consoleView.getComponent(), BorderLayout.CENTER);
 
