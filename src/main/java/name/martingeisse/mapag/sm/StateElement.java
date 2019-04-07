@@ -3,7 +3,7 @@ package name.martingeisse.mapag.sm;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.ExpansionElement;
 import name.martingeisse.mapag.util.ParameterUtil;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
