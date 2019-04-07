@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen.old;
+package name.martingeisse.mapag.codegen.highlevel;
 
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
