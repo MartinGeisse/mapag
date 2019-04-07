@@ -16,13 +16,9 @@ public class OldCodeGenerationDriver {
 	public static void generate(InternalCodeGenerationParameters parameters) throws ConfigurationException, IOException {
 
 		final GrammarInfo grammarInfo = parameters.getGrammarInfo();
-		final StateMachine stateMachine = parameters.getStateMachine();
 		final Configuration configuration = parameters.getConfiguration();
 		final OutputFileFactory outputFileFactory = parameters.getOutputFileFactory();
 
-		if (!parameters.isIntellij()) {
-			new FrameworkClassGenerator(configuration, outputFileFactory).generate();
-		}
 		if (configuration.getRequired("symbolHolder.generate").equals("true")) {
 			new SymbolHolderClassGenerator(grammarInfo, configuration, outputFileFactory, parameters).generate();
 		}
