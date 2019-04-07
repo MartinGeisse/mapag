@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.highlevel;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
