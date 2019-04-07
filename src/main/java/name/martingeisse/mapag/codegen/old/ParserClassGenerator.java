@@ -1,8 +1,6 @@
 package name.martingeisse.mapag.codegen.old;
 
-import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.ConfigurationException;
-import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.highlevel.StateMachineEncoder;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;

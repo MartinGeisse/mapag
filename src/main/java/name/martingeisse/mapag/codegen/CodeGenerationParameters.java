@@ -2,10 +2,8 @@
  * Copyright (c) 2018 Martin Geisse
  * This file is distributed under the terms of the MIT license.
  */
-package name.martingeisse.mapag.codegen.old;
+package name.martingeisse.mapag.codegen;
 
-import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.StateMachine;
 

@@ -1,8 +1,6 @@
 package name.martingeisse.mapag.codegen.old;
 
-import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.ConfigurationException;
-import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.StateMachine;
 
@@ -11,11 +9,11 @@ import java.io.IOException;
 /**
  *
  */
-public class CodeGenerationDriver {
+public class OldCodeGenerationDriver implements CodeGenerationDriver {
 
 	private final CodeGenerationParameters parameters;
 
-	public CodeGenerationDriver(CodeGenerationParameters parameters) {
+	public OldCodeGenerationDriver(CodeGenerationParameters parameters) {
 		this.parameters = parameters;
 	}
 

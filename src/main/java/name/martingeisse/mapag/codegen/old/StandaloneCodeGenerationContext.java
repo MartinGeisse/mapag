@@ -4,10 +4,19 @@
  */
 package name.martingeisse.mapag.codegen.old;
 
+import name.martingeisse.mapag.codegen.CodeGenerationContext;
+import name.martingeisse.mapag.codegen.CodeGenerationDriver;
+import name.martingeisse.mapag.codegen.CodeGenerationParameters;
+
 /**
  *
  */
 public final class StandaloneCodeGenerationContext implements CodeGenerationContext {
+
+	@Override
+	public String getName() {
+		return "standalone";
+	}
 
 	public boolean isIntellij() {
 		return false;
@@ -15,6 +24,11 @@ public final class StandaloneCodeGenerationContext implements CodeGenerationCont
 
 	public String getNotNullAnnotation() {
 		return "";
+	}
+
+	@Override
+	public CodeGenerationDriver createDriver(CodeGenerationParameters parameters) {
+		return new OldCodeGenerationDriver(parameters);
 	}
 
 }
