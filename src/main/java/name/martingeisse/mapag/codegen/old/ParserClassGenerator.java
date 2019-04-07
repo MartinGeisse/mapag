@@ -38,15 +38,15 @@ public class ParserClassGenerator {
 	private final StateMachine stateMachine;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
-	private final CodeGenerationContext codeGenerationContext;
+	private final InternalCodeGenerationParameters codeGenerationContext;
 
-	public ParserClassGenerator(CodeGenerationParameters parameters) {
+	public ParserClassGenerator(InternalCodeGenerationParameters parameters) {
 		this.grammarInfo = parameters.getGrammarInfo();
 		this.grammar = grammarInfo.getGrammar();
 		this.stateMachine = parameters.getStateMachine();
 		this.configuration = parameters.getConfiguration();
 		this.outputFileFactory = parameters.getOutputFileFactory();
-		this.codeGenerationContext = parameters.getContext();
+		this.codeGenerationContext = parameters;
 	}
 
 	public void generate() throws ConfigurationException, IOException {

@@ -1,6 +1,5 @@
 package name.martingeisse.mapag.codegen.old;
 
-import name.martingeisse.mapag.codegen.CodeGenerationContext;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.ConfigurationException;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
@@ -34,9 +33,9 @@ public class SymbolHolderClassGenerator {
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
-	private final CodeGenerationContext codeGenerationContext;
+	private final InternalCodeGenerationParameters codeGenerationContext;
 
-	public SymbolHolderClassGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory, CodeGenerationContext codeGenerationContext) {
+	public SymbolHolderClassGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory, InternalCodeGenerationParameters codeGenerationContext) {
 		this.grammarInfo = grammarInfo;
 		this.grammar = grammarInfo.getGrammar();
 		this.configuration = configuration;

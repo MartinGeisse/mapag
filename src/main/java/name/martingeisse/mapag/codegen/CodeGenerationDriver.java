@@ -11,6 +11,6 @@ import java.io.IOException;
  */
 public interface CodeGenerationDriver {
 
-	void generate() throws ConfigurationException, IOException;
+	void generate(CodeGenerationParameters parameters) throws ConfigurationException, IOException;
 
 }

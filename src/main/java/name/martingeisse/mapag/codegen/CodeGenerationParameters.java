@@ -16,14 +16,12 @@ public final class CodeGenerationParameters {
 	private final StateMachine stateMachine;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
-	private final CodeGenerationContext context;
 
-	public CodeGenerationParameters(GrammarInfo grammarInfo, StateMachine stateMachine, Configuration configuration, OutputFileFactory outputFileFactory, CodeGenerationContext context) {
+	public CodeGenerationParameters(GrammarInfo grammarInfo, StateMachine stateMachine, Configuration configuration, OutputFileFactory outputFileFactory) {
 		this.grammarInfo = grammarInfo;
 		this.stateMachine = stateMachine;
 		this.configuration = configuration;
 		this.outputFileFactory = outputFileFactory;
-		this.context = context;
 	}
 
 	public GrammarInfo getGrammarInfo() {
@@ -40,10 +38,6 @@ public final class CodeGenerationParameters {
 
 	public OutputFileFactory getOutputFileFactory() {
 		return outputFileFactory;
-	}
-
-	public CodeGenerationContext getContext() {
-		return context;
 	}
 
 }
