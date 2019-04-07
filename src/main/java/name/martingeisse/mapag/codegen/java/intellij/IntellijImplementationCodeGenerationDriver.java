@@ -2,7 +2,7 @@
  * Copyright (c) 2018 Martin Geisse
  * This file is distributed under the terms of the MIT license.
  */
-package name.martingeisse.mapag.codegen.intellij;
+package name.martingeisse.mapag.codegen.java.intellij;
 
 import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.CodeGenerationParameters;

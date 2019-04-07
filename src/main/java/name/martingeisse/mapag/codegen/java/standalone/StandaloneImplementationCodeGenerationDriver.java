@@ -2,24 +2,24 @@
  * Copyright (c) 2018 Martin Geisse
  * This file is distributed under the terms of the MIT license.
  */
-package name.martingeisse.mapag.codegen.intellij;
+package name.martingeisse.mapag.codegen.java.standalone;
 
 import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.CodeGenerationParameters;
 import name.martingeisse.mapag.codegen.ConfigurationException;
-import name.martingeisse.mapag.codegen.old.InternalCodeGenerationParameters;
-import name.martingeisse.mapag.codegen.old.OldCodeGenerationDriver;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.io.IOException;
 
 /**
  *
  */
-public class IntellijCodeGenerationDriver implements CodeGenerationDriver {
+public class StandaloneImplementationCodeGenerationDriver implements CodeGenerationDriver {
 
 	@Override
 	public void generate(CodeGenerationParameters parameters) throws ConfigurationException, IOException {
-		OldCodeGenerationDriver.generate(new InternalCodeGenerationParameters(parameters, true, "@NotNull"));
+		// TODO
+		throw new NotImplementedException("");
 	}
 
 }
