@@ -3,7 +3,7 @@ package name.martingeisse.mapag.ide.actions;
 import com.intellij.execution.impl.ConsoleViewImpl;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import name.martingeisse.mapag.codegen.old.Configuration;
+import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.highlevel.StateMachineEncoder;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;

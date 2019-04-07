@@ -1,6 +1,9 @@
 package name.martingeisse.mapag.codegen.old;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.mapag.codegen.Configuration;
+import name.martingeisse.mapag.codegen.ConfigurationException;
+import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.util.Comparators;
 import org.apache.commons.lang3.StringUtils;

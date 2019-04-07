@@ -14,7 +14,7 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
-import name.martingeisse.mapag.codegen.old.Configuration;
+import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.ide.MapagSourceFile;
 import name.martingeisse.mapag.ide.MapagSpecificationLanguage;
 import name.martingeisse.mapag.util.SelfDescribingRuntimeException;

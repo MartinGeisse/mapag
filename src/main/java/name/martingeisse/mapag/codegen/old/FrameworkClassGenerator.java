@@ -1,5 +1,8 @@
 package name.martingeisse.mapag.codegen.old;
 
+import name.martingeisse.mapag.codegen.Configuration;
+import name.martingeisse.mapag.codegen.ConfigurationException;
+import name.martingeisse.mapag.codegen.OutputFileFactory;
 import org.apache.velocity.VelocityContext;
 
 import java.io.IOException;
