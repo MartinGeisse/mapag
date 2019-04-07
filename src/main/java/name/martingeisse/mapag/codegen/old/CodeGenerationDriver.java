@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.old;
 
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.sm.StateMachine;

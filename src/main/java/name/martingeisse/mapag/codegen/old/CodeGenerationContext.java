@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.old;
 
 /**
  * This class defines the difference between a standalone parser and an IntelliJ integrated parser.

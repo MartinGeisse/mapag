@@ -2,19 +2,19 @@
  * Copyright (c) 2018 Martin Geisse
  * This file is distributed under the terms of the MIT license.
  */
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.old;
 
 /**
  *
  */
-public final class IntellijCodeGenerationContext implements CodeGenerationContext {
+public final class StandaloneCodeGenerationContext implements CodeGenerationContext {
 
 	public boolean isIntellij() {
-		return true;
+		return false;
 	}
 
 	public String getNotNullAnnotation() {
-		return "@NotNull";
+		return "";
 	}
 
 }

@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.old;
 
 import java.io.IOException;
 import java.io.OutputStream;

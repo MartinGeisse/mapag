@@ -1,11 +1,11 @@
 package name.martingeisse.mapag.bootstrap;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.mapag.codegen.CodeGenerationDriver;
-import name.martingeisse.mapag.codegen.CodeGenerationParameters;
-import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.OutputFileFactory;
-import name.martingeisse.mapag.codegen.IntellijCodeGenerationContext;
+import name.martingeisse.mapag.codegen.old.CodeGenerationDriver;
+import name.martingeisse.mapag.codegen.old.CodeGenerationParameters;
+import name.martingeisse.mapag.codegen.old.Configuration;
+import name.martingeisse.mapag.codegen.old.OutputFileFactory;
+import name.martingeisse.mapag.codegen.old.IntellijCodeGenerationContext;
 import name.martingeisse.mapag.grammar.Associativity;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;

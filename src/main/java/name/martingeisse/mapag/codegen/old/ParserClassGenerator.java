@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.old;
 
 import name.martingeisse.mapag.codegen.highlevel.StateMachineEncoder;
 import name.martingeisse.mapag.grammar.SpecialSymbols;

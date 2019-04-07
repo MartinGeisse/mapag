@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen;
+package name.martingeisse.mapag.codegen.old;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.log.NullLogChute;
