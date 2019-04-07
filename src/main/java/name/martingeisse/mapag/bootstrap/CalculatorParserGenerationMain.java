@@ -30,7 +30,7 @@ public class CalculatorParserGenerationMain extends BootstrapBase {
 	public static void main(String[] args) throws Exception {
 
 		Properties codeGenerationProperties = new Properties();
-		codeGenerationProperties.setProperty("parser.package", "name.martingeisse.calculator");
+		codeGenerationProperties.setProperty("package", "name.martingeisse.calculator");
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedCalculationParser");
 		codeGenerationProperties.setProperty("parser.fileElementType", "CalculatorParserDefinition.FILE_ELEMENT_TYPE");
 		codeGenerationProperties.setProperty("symbolHolder.generate", "true");
