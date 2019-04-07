@@ -5,8 +5,6 @@ package name.martingeisse.mapag.codegen;
  */
 public interface CodeGenerationContext {
 
-	String getName();
-
 	// TODO refactor this to be more abstract
 	boolean isIntellij();
 

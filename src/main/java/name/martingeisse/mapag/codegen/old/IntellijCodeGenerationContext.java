@@ -13,11 +13,6 @@ import name.martingeisse.mapag.codegen.CodeGenerationParameters;
  */
 public final class IntellijCodeGenerationContext implements CodeGenerationContext {
 
-	@Override
-	public String getName() {
-		return "intellij";
-	}
-
 	public boolean isIntellij() {
 		return true;
 	}
