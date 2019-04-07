@@ -3,6 +3,7 @@ package name.martingeisse.mapag.codegen.old;
 import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.highlevel.StateInputExpectationBuilder;
 import name.martingeisse.mapag.codegen.highlevel.StateMachineEncoder;
+import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
@@ -26,7 +27,6 @@ import java.util.Map;
  */
 public class ParserClassGenerator {
 
-	public static final String PACKAGE_NAME_PROPERTY = "parser.package";
 	public static final String PSI_PACKAGE_NAME_PROPERTY = "psi.package";
 	public static final String CLASS_NAME_PROPERTY = "parser.class";
 	public static final String DEBUG_PROPERTY = "parser.debug";
@@ -62,7 +62,7 @@ public class ParserClassGenerator {
 		stateInputExpectationBuilder.build();
 
 		VelocityContext context = new VelocityContext();
-		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+		context.put("packageName", configuration.getRequired(JavaPropertyNames.BASE_PACKAGE));
 		context.put("psiPackageName", configuration.getRequired(PSI_PACKAGE_NAME_PROPERTY));
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
 		context.put("intellij", codeGenerationContext.isIntellij());
@@ -122,7 +122,7 @@ public class ParserClassGenerator {
 			context.put("stateInputExpectation", encodedStateInputExpectation);
 		}
 
-		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
+		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(JavaPropertyNames.BASE_PACKAGE), configuration.getRequired(CLASS_NAME_PROPERTY))) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
 				MapagVelocityEngine.engine.getTemplate("templates/Parser.vm").merge(context, outputStreamWriter);
 			}
