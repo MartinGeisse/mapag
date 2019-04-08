@@ -47,7 +47,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		codeGenerationProperties.setProperty("psi.supports.psiNameIdentifierOwner", "TerminalDeclaration, Production");
 		codeGenerationProperties.setProperty("psi.supports.getReference", "PrecedenceDeclarationSymbol, Expression_Identifier");
 		codeGenerationProperties.setProperty("psi.supports.safeDelete", "TerminalDeclaration, Production");
-		codeGenerationProperties.setProperty("context.parserDefinitionClass", "name.martingeisse.mapag.ide.MapagParserDefinition");
+		codeGenerationProperties.setProperty("intellij.parserDefinitionClass", "name.martingeisse.mapag.ide.MapagParserDefinition");
 
 		codeGenerationProperties.setProperty("parser.error.KW_TERMINALS", "%terminals");
 		codeGenerationProperties.setProperty("parser.error.KW_PRECEDENCE", "%precedence");
