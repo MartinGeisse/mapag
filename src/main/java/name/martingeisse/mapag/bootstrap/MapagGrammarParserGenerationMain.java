@@ -314,24 +314,16 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
 			@Override
 			public OutputStream createSourceFile(String packageName, String className) throws IOException {
-				return createFile(packageName, className + ".java");
+				File folder = new File("grammar_gen_out/java/" + packageName.replace('.', '/'));
+				folder.mkdirs();
+				return new FileOutputStream(new File(folder, className + ".java"));
 			}
 
 			@Override
 			public OutputStream createResourceFile(String filename) throws IOException {
-				return createFile("resources", filename);
-			}
-
-			private OutputStream createFile(String folderName, String fileName) throws IOException {
-				File baseFolder = new File("grammar_gen_out");
-				if (!baseFolder.isDirectory()) {
-					baseFolder.mkdir();
-				}
-				File packageFolder = new File(baseFolder, folderName);
-				if (!packageFolder.isDirectory()) {
-					packageFolder.mkdir();
-				}
-				return new FileOutputStream(new File(packageFolder, fileName));
+				File folder = new File("grammar_gen_out/resources");
+				folder.mkdirs();
+				return new FileOutputStream(new File(folder, filename));
 			}
 
 		};

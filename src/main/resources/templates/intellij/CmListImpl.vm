@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.ArrayList;
 
+import $basePackageName.cm.CmNode;
+import $basePackageName.cm.CmList;
+
 public final class CmListImpl<T extends CmNode> extends ASTWrapperPsiElement implements CmList<T> {
 
     private final TokenSet elementTypes;

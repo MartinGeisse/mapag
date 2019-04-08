@@ -1,4 +1,6 @@
 package $packageName;
 
-public final class CmTokenImpl extends CmNode implements CmToken {
+import $basePackageName.cm.CmToken;
+
+public final class CmTokenImpl implements CmToken {
 }

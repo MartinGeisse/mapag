@@ -39,15 +39,17 @@ public final class HelperClassGenerator {
 		}
 
 		// determine full package name
+		String basePackageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE);
 		String packageName;
 		if (subpackage == null) {
-			packageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE);
+			packageName = basePackageName;
 		} else {
-			packageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE) + '.' + subpackage;
+			packageName = basePackageName + '.' + subpackage;
 		}
 
 		// build template variables
 		VelocityContext context = new VelocityContext();
+		context.put("basePackageName", basePackageName);
 		context.put("packageName", packageName);
 
 		// generate output
