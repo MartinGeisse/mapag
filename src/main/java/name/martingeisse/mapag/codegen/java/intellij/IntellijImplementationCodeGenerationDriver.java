@@ -29,6 +29,7 @@ public class IntellijImplementationCodeGenerationDriver implements CodeGeneratio
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmListImpl", parameters);
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmOptionalImpl", parameters);
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmTokenImpl", parameters);
+		HelperClassGenerator.generate(templateSubfolder, subpackage, "PsiCm", parameters);
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "InternalPsiUtil", parameters, context -> {
 			context.put("parserDefinitionClass", configuration.getRequired(PARSER_DEFINITION_CLASS_PROPERTY));
 		});

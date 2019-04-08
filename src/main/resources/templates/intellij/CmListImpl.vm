@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import ${basePackageName}.cm.CmNode;
 import ${basePackageName}.cm.CmList;
 
-public final class CmListImpl<T extends CmNode> extends ASTWrapperPsiElement implements CmList<T> {
+public final class CmListImpl<T extends CmNode> extends ASTWrapperPsiElement implements PsiCm, CmList<T> {
 
     private final TokenSet elementTypes;
     private final Class<T> elementClass;

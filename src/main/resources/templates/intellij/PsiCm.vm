@@ -1,0 +1,25 @@
+package $packageName;
+
+import com.intellij.psi.PsiElement;
+
+import ${basePackageName}.cm.CmNode;
+
+public interface PsiCm extends CmNode {
+
+    default PsiElement getPsi() {
+        return InternalPsiUtil.getPsiFromCm(this);
+    }
+
+    default CmNode getParent() {
+        PsiElement thisPsi = getPsi();
+        if (thisPsi == null) {
+            return null;
+        }
+        PsiElement parentPsi = thisPsi.getParent();
+        if (parentPsi == null) {
+            return null;
+        }
+        return InternalPsiUtil.getCmFromPsi(parentPsi);
+    }
+
+}
