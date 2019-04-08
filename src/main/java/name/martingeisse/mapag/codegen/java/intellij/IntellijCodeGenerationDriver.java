@@ -7,8 +7,7 @@ package name.martingeisse.mapag.codegen.java.intellij;
 import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.CodeGenerationParameters;
 import name.martingeisse.mapag.codegen.ConfigurationException;
-import name.martingeisse.mapag.codegen.old.InternalCodeGenerationParameters;
-import name.martingeisse.mapag.codegen.old.OldCodeGenerationDriver;
+import name.martingeisse.mapag.codegen.java.common.CommonCodeGenerationDriver;
 
 import java.io.IOException;
 
@@ -19,7 +18,8 @@ public class IntellijCodeGenerationDriver implements CodeGenerationDriver {
 
 	@Override
 	public void generate(CodeGenerationParameters parameters) throws ConfigurationException, IOException {
-		OldCodeGenerationDriver.generate(new InternalCodeGenerationParameters(parameters, true, "@NotNull"));
+		new CommonCodeGenerationDriver().generate(parameters);
+		new IntellijImplementationCodeGenerationDriver().generate(parameters);
 	}
 
 }
