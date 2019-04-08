@@ -5,8 +5,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import org.jetbrains.annotations.NotNull;
 
-import $basePackageName.cm.CmNode;
-import $basePackageName.cm.CmOptional;
+import ${basePackageName}.cm.CmNode;
+import ${basePackageName}.cm.CmOptional;
 
 public final class Optional<T extends CmNode> extends ASTWrapperPsiElement implements CmOptional<T> {
 
