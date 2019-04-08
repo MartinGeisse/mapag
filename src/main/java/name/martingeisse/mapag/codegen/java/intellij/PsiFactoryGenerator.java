@@ -1,16 +1,11 @@
 package name.martingeisse.mapag.codegen.java.intellij;
 
-import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.ConfigurationException;
-import name.martingeisse.mapag.codegen.MapagVelocityEngine;
-import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.java.IdentifierUtil;
 import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
-import name.martingeisse.mapag.codegen.old.InternalCodeGenerationParameters;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import org.apache.velocity.VelocityContext;
 
 import java.io.IOException;
@@ -27,13 +22,11 @@ public class PsiFactoryGenerator {
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
-	private final InternalCodeGenerationParameters codeGenerationContext;
 
-	public PsiFactoryGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory, InternalCodeGenerationParameters codeGenerationContext) {
-		this.grammar = grammarInfo.getGrammar();
-		this.configuration = configuration;
-		this.outputFileFactory = outputFileFactory;
-		this.codeGenerationContext = codeGenerationContext;
+	public PsiFactoryGenerator(CodeGenerationParameters parameters) {
+		this.grammar = parameters.getGrammarInfo().getGrammar();
+		this.configuration = parameters.getConfiguration();
+		this.outputFileFactory = parameters.getOutputFileFactory();
 	}
 
 	public void generate() throws ConfigurationException, IOException {

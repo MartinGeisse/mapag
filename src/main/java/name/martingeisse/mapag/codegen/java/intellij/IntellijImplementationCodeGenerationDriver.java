@@ -9,6 +9,7 @@ import name.martingeisse.mapag.codegen.CodeGenerationParameters;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.ConfigurationException;
 import name.martingeisse.mapag.codegen.java.HelperClassGenerator;
+import name.martingeisse.mapag.codegen.java.common.CmGenerator;
 
 import java.io.IOException;
 
@@ -33,6 +34,10 @@ public class IntellijImplementationCodeGenerationDriver implements CodeGeneratio
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "InternalPsiUtil", parameters, context -> {
 			context.put("parserDefinitionClass", configuration.getRequired(PARSER_DEFINITION_CLASS_PROPERTY));
 		});
+
+		// generate code model / PSI implementation
+		new PsiClassesGenerator(parameters).generate();
+		new PsiFactoryGenerator(parameters).generate();
 
 		// generate symbol holder
 		new SymbolHolderClassGenerator(parameters).generate();

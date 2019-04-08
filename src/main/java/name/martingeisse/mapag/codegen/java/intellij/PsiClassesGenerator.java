@@ -36,17 +36,15 @@ public class PsiClassesGenerator {
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
-	private final InternalCodeGenerationParameters codeGenerationContext;
 	private ImmutableList<String> classesSupportPsiNamedElement;
 	private ImmutableList<String> classesSupportPsiNameIdentifierOwner;
 	private ImmutableList<String> classesSupportGetReference;
 	private ImmutableList<String> classesSupportSafeDelete;
 
-	public PsiClassesGenerator(InternalCodeGenerationParameters codeGenerationParameters) {
+	public PsiClassesGenerator(CodeGenerationParameters codeGenerationParameters) {
 		this.grammar = codeGenerationParameters.getGrammarInfo().getGrammar();
 		this.configuration = codeGenerationParameters.getConfiguration();
 		this.outputFileFactory = codeGenerationParameters.getOutputFileFactory();
-		this.codeGenerationContext = codeGenerationParameters;
 	}
 
 	public void generate() throws ConfigurationException, IOException {
