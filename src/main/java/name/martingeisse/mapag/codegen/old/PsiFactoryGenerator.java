@@ -5,6 +5,8 @@ import name.martingeisse.mapag.codegen.ConfigurationException;
 import name.martingeisse.mapag.codegen.MapagVelocityEngine;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.java.IdentifierUtil;
+import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
+import name.martingeisse.mapag.codegen.java.intellij.SymbolHolderClassGenerator;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
@@ -35,12 +37,13 @@ public class PsiFactoryGenerator {
 	}
 
 	public void generate() throws ConfigurationException, IOException {
+		String basePackageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE);
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
 		context.put("intellij", codeGenerationContext.isIntellij());
-		if (!configuration.getRequired(SymbolHolderClassGenerator.PACKAGE_NAME_PROPERTY).equals(configuration.getRequired(PACKAGE_NAME_PROPERTY))) {
-			String symbolHolderPackage = configuration.getRequired(SymbolHolderClassGenerator.PACKAGE_NAME_PROPERTY);
+		if (!basePackageName.equals(configuration.getRequired(PACKAGE_NAME_PROPERTY))) {
+			String symbolHolderPackage = basePackageName;
 			String symbolHolderClass = configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY);
 			context.put("symbolHolderImport", "import " + symbolHolderPackage + '.' + symbolHolderClass + ';');
 		} else {

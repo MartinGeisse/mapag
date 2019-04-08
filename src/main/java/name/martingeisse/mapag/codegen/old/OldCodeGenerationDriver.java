@@ -3,6 +3,7 @@ package name.martingeisse.mapag.codegen.old;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.ConfigurationException;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.java.intellij.SymbolHolderClassGenerator;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 
 import java.io.IOException;
@@ -18,9 +19,6 @@ public class OldCodeGenerationDriver {
 		final Configuration configuration = parameters.getConfiguration();
 		final OutputFileFactory outputFileFactory = parameters.getOutputFileFactory();
 
-		if (configuration.getRequired("symbolHolder.generate").equals("true")) {
-			new SymbolHolderClassGenerator(grammarInfo, configuration, outputFileFactory, parameters).generate();
-		}
 		if (configuration.getRequired("psi.generate").equals("true")) {
 			new PsiClassesGenerator(parameters).generate();
 			new PsiFactoryGenerator(grammarInfo, configuration, outputFileFactory, parameters).generate();

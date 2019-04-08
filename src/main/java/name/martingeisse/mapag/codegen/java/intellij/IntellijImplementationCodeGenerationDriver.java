@@ -34,6 +34,9 @@ public class IntellijImplementationCodeGenerationDriver implements CodeGeneratio
 			context.put("parserDefinitionClass", configuration.getRequired(PARSER_DEFINITION_CLASS_PROPERTY));
 		});
 
+		// generate symbol holder
+		new SymbolHolderClassGenerator(parameters).generate();
+
 		// TODO
 		// throw new NotImplementedException("");
 

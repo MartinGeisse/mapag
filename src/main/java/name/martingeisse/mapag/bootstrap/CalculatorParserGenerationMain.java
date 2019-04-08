@@ -33,9 +33,7 @@ public class CalculatorParserGenerationMain extends BootstrapBase {
 		codeGenerationProperties.setProperty("package", "name.martingeisse.calculator");
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedCalculationParser");
 		codeGenerationProperties.setProperty("parser.fileElementType", "CalculatorParserDefinition.FILE_ELEMENT_TYPE");
-		codeGenerationProperties.setProperty("symbolHolder.generate", "true");
-		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.calculator");
-		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");
+		codeGenerationProperties.setProperty("intellij.symbolHolderClass", "Symbols");
 		codeGenerationProperties.setProperty("symbol.elementType.class", "CalculatorElementType");
 		codeGenerationProperties.setProperty("psi.generate", "true");
 		codeGenerationProperties.setProperty("psi.package", "name.martingeisse.calculator.psi");

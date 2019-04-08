@@ -1,10 +1,9 @@
-package name.martingeisse.mapag.codegen.old;
+package name.martingeisse.mapag.codegen.java.intellij;
 
-import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.ConfigurationException;
-import name.martingeisse.mapag.codegen.MapagVelocityEngine;
-import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.java.IdentifierUtil;
+import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
+import name.martingeisse.mapag.codegen.old.InternalCodeGenerationParameters;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
@@ -25,27 +24,23 @@ import java.util.List;
  */
 public class SymbolHolderClassGenerator {
 
-	public static final String PACKAGE_NAME_PROPERTY = "symbolHolder.package";
-	public static final String CLASS_NAME_PROPERTY = "symbolHolder.class";
+	public static final String CLASS_NAME_PROPERTY = "intellij.symbolHolderClass";
 	public static final String ELEMENT_TYPE_CLASS = "symbol.elementType.class";
 	public static final String TERMINAL_ELEMENT_TYPE_CLASS = "symbol.elementType.terminal.class";
 	public static final String NONTERMINAL_ELEMENT_TYPE_CLASS = "symbol.elementType.nonterminal.class";
 
-	private final GrammarInfo grammarInfo;
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
-	private final InternalCodeGenerationParameters codeGenerationContext;
 
-	public SymbolHolderClassGenerator(GrammarInfo grammarInfo, Configuration configuration, OutputFileFactory outputFileFactory, InternalCodeGenerationParameters codeGenerationContext) {
-		this.grammarInfo = grammarInfo;
-		this.grammar = grammarInfo.getGrammar();
-		this.configuration = configuration;
-		this.outputFileFactory = outputFileFactory;
-		this.codeGenerationContext = codeGenerationContext;
+	public SymbolHolderClassGenerator(CodeGenerationParameters parameters) {
+		this.grammar = parameters.getGrammarInfo().getGrammar();
+		this.configuration = parameters.getConfiguration();
+		this.outputFileFactory = parameters.getOutputFileFactory();
 	}
 
 	public void generate() throws ConfigurationException, IOException {
+		String packageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE);
 
 		List<String> nonterminalAlternatives = new ArrayList<>();
 		for (NonterminalDefinition nonterminal : grammar.getNonterminalDefinitions().values()) {
@@ -60,15 +55,14 @@ public class SymbolHolderClassGenerator {
 		Collections.sort(nonterminalAlternatives);
 
 		VelocityContext context = new VelocityContext();
-		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+		context.put("packageName", packageName);
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
-		context.put("intellij", codeGenerationContext.isIntellij());
 		context.put("terminals", ListUtil.sorted(grammar.getTerminalDefinitions().keySet(), null));
 		context.put("terminalElementTypeClass", configuration.getExactlyOne(TERMINAL_ELEMENT_TYPE_CLASS, ELEMENT_TYPE_CLASS));
 		context.put("nonterminalAlternatives", nonterminalAlternatives);
 		context.put("nonterminalElementTypeClass", configuration.getExactlyOne(NONTERMINAL_ELEMENT_TYPE_CLASS, ELEMENT_TYPE_CLASS));
 
-		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), configuration.getRequired(CLASS_NAME_PROPERTY))) {
+		try (OutputStream outputStream = outputFileFactory.createSourceFile(packageName, configuration.getRequired(CLASS_NAME_PROPERTY))) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
 				MapagVelocityEngine.engine.getTemplate("templates/SymbolHolder.vm").merge(context, outputStreamWriter);
 			}

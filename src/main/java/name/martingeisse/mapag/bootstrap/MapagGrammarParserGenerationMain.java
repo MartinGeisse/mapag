@@ -37,9 +37,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
 		codeGenerationProperties.setProperty("parser.fileElementType", "name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE");
 		// codeGenerationProperties.setProperty("parser.debug", "true");
-		codeGenerationProperties.setProperty("symbolHolder.generate", "true");
-		codeGenerationProperties.setProperty("symbolHolder.package", "name.martingeisse.mapag.input");
-		codeGenerationProperties.setProperty("symbolHolder.class", "Symbols");
+		codeGenerationProperties.setProperty("intellij.symbolHolderClass", "Symbols");
 		codeGenerationProperties.setProperty("symbol.elementType.class", "MapagElementType");
 		codeGenerationProperties.setProperty("psi.generate", "true");
 		codeGenerationProperties.setProperty("psi.package", "name.martingeisse.mapag.input.psi");
