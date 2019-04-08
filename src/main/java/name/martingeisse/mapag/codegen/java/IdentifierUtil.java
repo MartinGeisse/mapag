@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen.old;
+package name.martingeisse.mapag.codegen.java;
 
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;

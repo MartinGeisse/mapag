@@ -4,6 +4,7 @@ import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.ConfigurationException;
 import name.martingeisse.mapag.codegen.MapagVelocityEngine;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.java.IdentifierUtil;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;

@@ -3,6 +3,7 @@ package name.martingeisse.mapag.codegen.old;
 import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.highlevel.StateInputExpectationBuilder;
 import name.martingeisse.mapag.codegen.highlevel.StateMachineEncoder;
+import name.martingeisse.mapag.codegen.java.IdentifierUtil;
 import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;

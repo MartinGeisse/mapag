@@ -8,7 +8,6 @@ import name.martingeisse.mapag.codegen.CodeGenerationDriver;
 import name.martingeisse.mapag.codegen.CodeGenerationParameters;
 import name.martingeisse.mapag.codegen.ConfigurationException;
 import name.martingeisse.mapag.codegen.java.HelperClassGenerator;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.io.IOException;
 
@@ -26,6 +25,7 @@ public class CommonCodeGenerationDriver implements CodeGenerationDriver {
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmNode", parameters);
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmList", parameters);
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmOptional", parameters);
+		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmToken", parameters);
 
 		// TODO ...
 	}
