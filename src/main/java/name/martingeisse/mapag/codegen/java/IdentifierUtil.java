@@ -13,11 +13,11 @@ public final class IdentifierUtil {
 	private IdentifierUtil() {
 	}
 
-	public static String getNonterminalClassIdentifier(NonterminalDefinition nonterminalDefinition) {
-		return getNonterminalClassIdentifier(nonterminalDefinition.getName());
+	public static String getNonterminalTypeIdentifier(NonterminalDefinition nonterminalDefinition) {
+		return getNonterminalTypeIdentifier(nonterminalDefinition.getName());
 	}
 
-	public static String getNonterminalClassIdentifier(String nonterminalName) {
+	public static String getNonterminalTypeIdentifier(String nonterminalName) {
 		return toIdentifier(nonterminalName, true);
 	}
 
@@ -29,9 +29,9 @@ public final class IdentifierUtil {
 		return toIdentifier(nonterminalName, false);
 	}
 
-	public static String getAlternativeClassIdentifier(NonterminalDefinition nonterminalDefinition, Alternative alternative) {
+	public static String getAlternativeTypeIdentifier(NonterminalDefinition nonterminalDefinition, Alternative alternative) {
 		if (nonterminalDefinition.getAlternatives().size() == 1) {
-			return getNonterminalClassIdentifier(nonterminalDefinition);
+			return getNonterminalTypeIdentifier(nonterminalDefinition);
 		} else {
 			return toIdentifier(nonterminalDefinition.getName() + '/' + alternative.getName(), true);
 		}
