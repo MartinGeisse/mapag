@@ -200,7 +200,7 @@ public class PsiClassesGenerator {
 
 			try (OutputStream outputStream = outputFileFactory.createSourceFile(packageName, className)) {
 				try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-					MapagVelocityEngine.engine.getTemplate("templates/intellij/PsiClass.vm").merge(context, outputStreamWriter);
+					MapagVelocityEngine.engine.getTemplate("templates/intellij/CmClass.vm").merge(context, outputStreamWriter);
 				}
 			}
 
