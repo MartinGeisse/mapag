@@ -1,0 +1,41 @@
+package $packageName;
+
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.PsiParser;
+import com.intellij.psi.TokenType;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.PsiElement;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import ${basePackageName}.${symbolHolder};
+
+public class PsiFactory {
+
+    public static PsiElement createPsiElement(ASTNode node) {
+        IElementType type = node.getElementType();
+
+        #foreach($case in $cases)
+            if (type == ${symbolHolder}.${case.elementType}) {
+                return new ${case.psiClass}(node${case.additionalConstructorArguments});
+            }
+        #end
+		if (type == ${symbolHolder}.__PARSED_FRAGMENT) {
+			return new ASTWrapperPsiElement(node);
+        }
+
+        throw new RuntimeException("cannot create PSI element for AST node due to unknown element type: " + type);
+    }
+
+	private static TokenSet createTokenSet(IElementType... types) {
+		return TokenSet.create(types);
+	}
+
+}

@@ -1,4 +1,4 @@
-package name.martingeisse.mapag.codegen.old;
+package name.martingeisse.mapag.codegen.java.intellij;
 
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.ConfigurationException;
@@ -6,7 +6,7 @@ import name.martingeisse.mapag.codegen.MapagVelocityEngine;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.java.IdentifierUtil;
 import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
-import name.martingeisse.mapag.codegen.java.intellij.SymbolHolderClassGenerator;
+import name.martingeisse.mapag.codegen.old.InternalCodeGenerationParameters;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
@@ -38,18 +38,14 @@ public class PsiFactoryGenerator {
 
 	public void generate() throws ConfigurationException, IOException {
 		String basePackageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE);
+		String cmPackageName = basePackageName + ".cm";
+		String packageName = cmPackageName + ".impl";
+		String symbolHolder = configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY);
 
 		VelocityContext context = new VelocityContext();
-		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
-		context.put("intellij", codeGenerationContext.isIntellij());
-		if (!basePackageName.equals(configuration.getRequired(PACKAGE_NAME_PROPERTY))) {
-			String symbolHolderPackage = basePackageName;
-			String symbolHolderClass = configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY);
-			context.put("symbolHolderImport", "import " + symbolHolderPackage + '.' + symbolHolderClass + ';');
-		} else {
-			context.put("symbolHolderImport", "");
-		}
-		String symbolHolder = configuration.getRequired(SymbolHolderClassGenerator.CLASS_NAME_PROPERTY);
+		context.put("basePackageName", basePackageName);
+		context.put("cmPackageName", cmPackageName);
+		context.put("packageName", packageName);
 		context.put("symbolHolder", symbolHolder);
 
 		List<FactoryCaseEntry> cases = new ArrayList<>();
@@ -58,14 +54,14 @@ public class PsiFactoryGenerator {
 				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
 					FactoryCaseEntry caseEntry = new FactoryCaseEntry();
 					caseEntry.elementType = IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
-					caseEntry.psiClass = TypeSelectionUtil.getEffectiveTypeForAlternative(grammar, nonterminalDefinition, alternative);
+					caseEntry.psiClass = TypeSelectionUtil.getEffectiveTypeForAlternative(TypeSelectionUtil.Usage.PSI, grammar, nonterminalDefinition, alternative);
 					caseEntry.additionalConstructorArguments = "";
 					cases.add(caseEntry);
 				}
 			} else {
 				FactoryCaseEntry caseEntry = new FactoryCaseEntry();
 				caseEntry.elementType = IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
-				caseEntry.psiClass = TypeSelectionUtil.getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
+				caseEntry.psiClass = TypeSelectionUtil.getEffectiveTypeForSymbol(TypeSelectionUtil.Usage.PSI, grammar, nonterminalDefinition);
 				caseEntry.additionalConstructorArguments = TypeSelectionUtil.getAdditionalConstructorArgumentsForSymbol(grammar, nonterminalDefinition, symbolHolder);
 				cases.add(caseEntry);
 			}
@@ -74,7 +70,7 @@ public class PsiFactoryGenerator {
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "PsiFactory")) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("templates/PsiFactory.vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate("templates/intellij/PsiFactory.vm").merge(context, outputStreamWriter);
 			}
 		}
 

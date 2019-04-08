@@ -1,8 +1,10 @@
-package name.martingeisse.mapag.codegen.old;
+package name.martingeisse.mapag.codegen.java.intellij;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.java.IdentifierUtil;
+import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
+import name.martingeisse.mapag.codegen.old.InternalCodeGenerationParameters;
 import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.util.Comparators;
 import org.apache.commons.lang3.StringUtils;
@@ -25,8 +27,6 @@ import java.util.List;
  */
 public class PsiClassesGenerator {
 
-	public static final String PACKAGE_NAME_PROPERTY = "psi.package";
-	public static final String PARSER_DEFINITION_CLASS_PROPERTY = "context.parserDefinitionClass";
 	public static final String CLASSES_SUPPORT_PSI_NAMED_ELEMENT = "psi.supports.psiNamedElement";
 	public static final String CLASSES_SUPPORT_PSI_NAME_IDENTIFIER_OWNER = "psi.supports.psiNameIdentifierOwner";
 	public static final String CLASSES_SUPPORT_GET_REFERENCE = "psi.supports.getReference";
@@ -57,9 +57,6 @@ public class PsiClassesGenerator {
 		for (NonterminalDefinition nonterminalDefinition : grammar.getNonterminalDefinitions().values()) {
 			handleNonterminal(nonterminalDefinition);
 		}
-		generateVerbatimClass("Optional");
-		generateVerbatimClass("ListNode");
-		generateVerbatimClass("InternalPsiUtil");
 	}
 
 	private void handleNonterminal(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
@@ -79,7 +76,7 @@ public class PsiClassesGenerator {
 
 	private void generateSingleAlternativeClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative);
+		classGenerator.className = IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative) + "Impl";
 		classGenerator.superclass = "ASTWrapperPsiElement";
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
@@ -88,7 +85,7 @@ public class PsiClassesGenerator {
 
 	private void generateMultiAlternativeBaseClass(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition);
+		classGenerator.className = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition) + "Impl";
 		classGenerator.superclass = "ASTWrapperPsiElement";
 		classGenerator.isAbstract = true;
 		classGenerator.alternative = null;
@@ -97,8 +94,8 @@ public class PsiClassesGenerator {
 
 	private void generateMultiAlternativeCaseClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative);
-		classGenerator.superclass = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition);
+		classGenerator.className = IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative) + "Impl";
+		classGenerator.superclass = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition) + "Impl";
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
 		classGenerator.generate();
@@ -113,13 +110,18 @@ public class PsiClassesGenerator {
 
 		void generate() throws ConfigurationException, IOException {
 
+			// determine full package name
+			String basePackageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE);
+			String cmPackageName = basePackageName + ".cm";
+			String packageName = cmPackageName + ".impl";
+
 			VelocityContext context = new VelocityContext();
-			context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
+			context.put("basePackageName", basePackageName);
+			context.put("cmPackageName", cmPackageName);
+			context.put("packageName", packageName);
 			context.put("className", className);
 			context.put("superclass", superclass);
 			context.put("classModifiers", isAbstract ? "abstract" : "final");
-			context.put("intellij", codeGenerationContext.isIntellij());
-			context.put("notNull", codeGenerationContext.getNotNullAnnotation());
 
 			List<NodeGetter> nodeGetters = new ArrayList<>();
 			if (alternative != null) {
@@ -129,7 +131,7 @@ public class PsiClassesGenerator {
 					if (expressionName != null) {
 						NodeGetter nodeGetter = new NodeGetter();
 						nodeGetter.childIndex = childIndex;
-						nodeGetter.nodeType = TypeSelectionUtil.getEffectiveTypeForSymbol(grammar, element.getSymbol());
+						nodeGetter.nodeType = TypeSelectionUtil.getEffectiveTypeForSymbol(TypeSelectionUtil.Usage.CM, grammar, element.getSymbol());
 						nodeGetter.getterName = "get" + StringUtils.capitalize(expressionName);
 						nodeGetters.add(nodeGetter);
 					}
@@ -142,29 +144,25 @@ public class PsiClassesGenerator {
 			boolean customNameImplementation = false;
 			boolean customNameIdentifierImplementation = false;
 
-			if (codeGenerationContext.isIntellij()) {
-				if (classesSupportPsiNamedElement.contains(className)) {
-					interfaces.add("PsiNamedElement");
-					if (!isAbstract) {
-						customNameImplementation = true;
-					}
-				} else if (classesSupportPsiNamedElement.contains(superclass)) {
-					if (!isAbstract) {
-						customNameImplementation = true;
-					}
+			if (classesSupportPsiNamedElement.contains(className)) {
+				interfaces.add("PsiNamedElement");
+				if (!isAbstract) {
+					customNameImplementation = true;
+				}
+			} else if (classesSupportPsiNamedElement.contains(superclass)) {
+				if (!isAbstract) {
+					customNameImplementation = true;
 				}
 			}
 
-			if (codeGenerationContext.isIntellij()) {
-				if (classesSupportPsiNameIdentifierOwner.contains(className)) {
-					interfaces.add("PsiNameIdentifierOwner");
-					if (!isAbstract) {
-						customNameIdentifierImplementation = true;
-					}
-				} else if (classesSupportPsiNameIdentifierOwner.contains(superclass)) {
-					if (!isAbstract) {
-						customNameIdentifierImplementation = true;
-					}
+			if (classesSupportPsiNameIdentifierOwner.contains(className)) {
+				interfaces.add("PsiNameIdentifierOwner");
+				if (!isAbstract) {
+					customNameIdentifierImplementation = true;
+				}
+			} else if (classesSupportPsiNameIdentifierOwner.contains(superclass)) {
+				if (!isAbstract) {
+					customNameIdentifierImplementation = true;
 				}
 			}
 
@@ -172,7 +170,7 @@ public class PsiClassesGenerator {
 			String extraInterfacesText = configuration.getOptional(extraInterfacesKey);
 			if (extraInterfacesText != null) {
 				for (String extraInterfaceText : StringUtils.split(extraInterfacesText, ',')) {
-					interfaces.add(extraInterfacesText.trim());
+					interfaces.add(extraInterfaceText.trim());
 				}
 			}
 
@@ -187,7 +185,7 @@ public class PsiClassesGenerator {
 			context.put("customNameImplementation", customNameImplementation);
 			context.put("customNameIdentifierImplementation", customNameIdentifierImplementation);
 
-			if (codeGenerationContext.isIntellij() && !isAbstract && (classesSupportGetReference.contains(className) || classesSupportGetReference.contains(superclass))) {
+			if (!isAbstract && (classesSupportGetReference.contains(className) || classesSupportGetReference.contains(superclass))) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 				context.put("supportsGetReference", true);
 			} else {
@@ -195,16 +193,16 @@ public class PsiClassesGenerator {
 			}
 
 			context.put("safeDeleteBase", classesSupportSafeDelete.contains(className));
-			if (codeGenerationContext.isIntellij() && classesSupportSafeDelete.contains(className) || classesSupportSafeDelete.contains(superclass)) {
+			if (classesSupportSafeDelete.contains(className) || classesSupportSafeDelete.contains(superclass)) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 				context.put("safeDeleteImplementation", !isAbstract);
 			} else {
 				context.put("safeDeleteImplementation", false);
 			}
 
-			try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
+			try (OutputStream outputStream = outputFileFactory.createSourceFile(packageName, className)) {
 				try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-					MapagVelocityEngine.engine.getTemplate("templates/PsiClass.vm").merge(context, outputStreamWriter);
+					MapagVelocityEngine.engine.getTemplate("templates/intellij/PsiClass.vm").merge(context, outputStreamWriter);
 				}
 			}
 
@@ -228,22 +226,6 @@ public class PsiClassesGenerator {
 
 		public String getGetterName() {
 			return getterName;
-		}
-
-	}
-
-	private void generateVerbatimClass(String className) throws ConfigurationException, IOException {
-
-		VelocityContext context = new VelocityContext();
-		context.put("packageName", configuration.getRequired(PACKAGE_NAME_PROPERTY));
-		context.put("parserDefinitionClass", configuration.getRequired(PARSER_DEFINITION_CLASS_PROPERTY));
-		context.put("intellij", codeGenerationContext.isIntellij());
-		context.put("notNull", codeGenerationContext.getNotNullAnnotation());
-
-		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), className)) {
-			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("templates/" + className + ".vm").merge(context, outputStreamWriter);
-			}
 		}
 
 	}
