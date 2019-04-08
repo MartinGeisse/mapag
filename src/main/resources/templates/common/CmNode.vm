@@ -1,6 +1,6 @@
 package $packageName;
 
-public final interface CmNode {
+public interface CmNode {
 
 	CmNode getParent();
 

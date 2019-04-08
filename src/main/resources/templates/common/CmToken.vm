@@ -1,4 +1,4 @@
 package $packageName;
 
-public final class CmToken extends CmNode {
+public interface CmToken extends CmNode {
 }
