@@ -25,6 +25,7 @@ public final class CmListImpl<T extends CmNode> extends ASTWrapperPsiElement imp
         this.elementClass = elementClass;
     }
 
+    @Override
     public <S extends CmNode> CmList<S> cast(Class<S> subclass) {
         if (!elementClass.isAssignableFrom(subclass)) {
             throw new ClassCastException(subclass.getName() + " is not a subclass of " + elementClass.getName());
@@ -32,20 +33,24 @@ public final class CmListImpl<T extends CmNode> extends ASTWrapperPsiElement imp
         return (CmList)this;
     }
 
+    @Override
     public final List<T> getAll() {
         List<T> list = new ArrayList<>();
         addAllTo(list);
         return list;
 	}
 
+    @Override
 	public final void addAllTo(List<T> list) {
         foreach(list::add);
 	}
 
+    @Override
 	public final void addAllTo(ImmutableList.Builder<T> builder) {
         foreach(builder::add);
 	}
 
+    @Override
     public final void foreach(Consumer<T> consumer) {
         InternalPsiUtil.foreachChild(this, child -> {
             if (elementTypes.contains(child.getNode().getElementType())) {

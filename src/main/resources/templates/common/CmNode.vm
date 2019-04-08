@@ -2,6 +2,6 @@ package $packageName;
 
 public interface CmNode {
 
-	CmNode getParent();
+	CmNode getCmParent();
 
 }

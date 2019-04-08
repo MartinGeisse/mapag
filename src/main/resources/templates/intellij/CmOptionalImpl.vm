@@ -14,6 +14,7 @@ public final class CmOptionalImpl<T extends CmNode> extends ASTWrapperPsiElement
         super(node);
     }
 
+    @Override
     public T getIt() {
         // TODO will not work for tokens -- need method to get the CM node from PSI node
         return (T)InternalPsiUtil.getChild(this, 0);

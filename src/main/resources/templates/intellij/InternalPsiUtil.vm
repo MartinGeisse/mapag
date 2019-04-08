@@ -7,6 +7,9 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement;
 
 import java.util.function.Consumer;
 
+import ${basePackageName}.cm.CmNode;
+import ${basePackageName}.cm.CmToken;
+
 public final class InternalPsiUtil {
 
 	private static TokenSet ignoredElementTypes;
@@ -61,7 +64,7 @@ public final class InternalPsiUtil {
         if (psi instanceof CmNode) {
             return (CmNode)psi;
         } else if (psi instanceof LeafPsiElement) {
-            return new CmToken();
+            return new CmTokenImpl((LeafPsiElement)psi);
         } else {
             return null;
         }

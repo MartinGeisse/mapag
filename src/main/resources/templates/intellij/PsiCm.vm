@@ -10,7 +10,8 @@ public interface PsiCm extends CmNode {
         return InternalPsiUtil.getPsiFromCm(this);
     }
 
-    default CmNode getParent() {
+    @Override
+    default CmNode getCmParent() {
         PsiElement thisPsi = getPsi();
         if (thisPsi == null) {
             return null;
