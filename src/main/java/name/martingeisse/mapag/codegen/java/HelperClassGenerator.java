@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 /**
  *
@@ -25,6 +26,12 @@ public final class HelperClassGenerator {
 	}
 
 	public static void generate(String templateSubfolder, String subpackage, String className, CodeGenerationParameters parameters) throws IOException {
+		generate(templateSubfolder, subpackage, className, parameters, null);
+	}
+
+	public static void generate(String templateSubfolder, String subpackage, String className,
+								CodeGenerationParameters parameters,
+								Consumer<VelocityContext> velocityContextConfigurator) throws IOException {
 
 		// extract parameters
 		Configuration configuration = parameters.getConfiguration();
@@ -51,6 +58,9 @@ public final class HelperClassGenerator {
 		VelocityContext context = new VelocityContext();
 		context.put("basePackageName", basePackageName);
 		context.put("packageName", packageName);
+		if (velocityContextConfigurator != null) {
+			velocityContextConfigurator.accept(context);
+		}
 
 		// generate output
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(packageName, className)) {
