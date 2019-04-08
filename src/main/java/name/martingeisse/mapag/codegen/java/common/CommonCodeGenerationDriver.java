@@ -27,7 +27,9 @@ public class CommonCodeGenerationDriver implements CodeGenerationDriver {
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmOptional", parameters);
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmToken", parameters);
 
-		// TODO ...
+		// generate code model
+		new CmGenerator(parameters).generate();
+
 	}
 
 }

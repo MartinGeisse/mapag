@@ -1,13 +1,8 @@
 package name.martingeisse.mapag.codegen.java.common;
 
-import name.martingeisse.mapag.codegen.Configuration;
-import name.martingeisse.mapag.codegen.ConfigurationException;
-import name.martingeisse.mapag.codegen.MapagVelocityEngine;
-import name.martingeisse.mapag.codegen.OutputFileFactory;
+import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.java.IdentifierUtil;
 import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
-import name.martingeisse.mapag.codegen.old.InternalCodeGenerationParameters;
-import name.martingeisse.mapag.codegen.old.TypeSelectionUtil;
 import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.util.Comparators;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +24,7 @@ public class CmGenerator {
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
 
-	public CmGenerator(InternalCodeGenerationParameters codeGenerationParameters) {
+	public CmGenerator(CodeGenerationParameters codeGenerationParameters) {
 		this.grammar = codeGenerationParameters.getGrammarInfo().getGrammar();
 		this.configuration = codeGenerationParameters.getConfiguration();
 		this.outputFileFactory = codeGenerationParameters.getOutputFileFactory();
