@@ -83,7 +83,7 @@ public final class TypeSelectionUtil {
 	public static String getEffectiveTypeForAlternative(Grammar grammar, NonterminalDefinition nonterminalDefinition, Alternative alternative) {
 		PsiStyle psiStyle = nonterminalDefinition.getPsiStyle();
 		if (psiStyle.isDistinctSymbolPerAlternative()) {
-			return IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
+			return IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative);
 		} else {
 			return getEffectiveTypeForSymbol(grammar, nonterminalDefinition);
 		}

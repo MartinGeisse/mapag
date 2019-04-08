@@ -79,7 +79,7 @@ public class PsiClassesGenerator {
 
 	private void generateSingleAlternativeClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
+		classGenerator.className = IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative);
 		classGenerator.superclass = "ASTWrapperPsiElement";
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
@@ -88,7 +88,7 @@ public class PsiClassesGenerator {
 
 	private void generateMultiAlternativeBaseClass(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
+		classGenerator.className = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition);
 		classGenerator.superclass = "ASTWrapperPsiElement";
 		classGenerator.isAbstract = true;
 		classGenerator.alternative = null;
@@ -97,8 +97,8 @@ public class PsiClassesGenerator {
 
 	private void generateMultiAlternativeCaseClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
-		classGenerator.className = IdentifierUtil.getAlternativeClassIdentifier(nonterminalDefinition, alternative);
-		classGenerator.superclass = IdentifierUtil.getNonterminalClassIdentifier(nonterminalDefinition);
+		classGenerator.className = IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative);
+		classGenerator.superclass = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition);
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
 		classGenerator.generate();
