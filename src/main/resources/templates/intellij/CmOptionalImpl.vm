@@ -10,7 +10,7 @@ import ${basePackageName}.cm.CmOptional;
 
 public final class CmOptionalImpl<T extends CmNode> extends ASTWrapperPsiElement implements CmOptional<T> {
 
-    public Optional(@NotNull ASTNode node) {
+    public CmOptionalImpl(@NotNull ASTNode node) {
         super(node);
     }
 
