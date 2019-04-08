@@ -1,0 +1,19 @@
+package $packageName;
+
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import org.jetbrains.annotations.NotNull;
+
+public final class Optional<T extends CmNode> extends ASTWrapperPsiElement implements CmOptional<T> {
+
+    public Optional(@NotNull ASTNode node) {
+        super(node);
+    }
+
+    public T getIt() {
+        // TODO will not work for tokens -- need method to get the CM node from PSI node
+        return (T)InternalPsiUtil.getChild(this, 0);
+    }
+
+}

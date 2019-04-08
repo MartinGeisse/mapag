@@ -1,0 +1,4 @@
+package $packageName;
+
+public final class CmTokenImpl extends CmNode implements CmToken {
+}
