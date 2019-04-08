@@ -1,0 +1,9 @@
+package $packageName;
+
+public interface $name extends $interfaces {
+
+    #foreach($nodeGetter in $nodeGetters)
+    	$nodeGetter.nodeType ${nodeGetter.getterName}();
+    #end
+
+}
