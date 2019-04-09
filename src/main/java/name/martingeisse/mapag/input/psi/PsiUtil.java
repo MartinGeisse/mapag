@@ -11,7 +11,7 @@ import com.intellij.util.IncorrectOperationException;
 /**
  *
  */
-final class PsiUtil {
+public final class PsiUtil {
 
 	// prevent instantiation
 	private PsiUtil() {
