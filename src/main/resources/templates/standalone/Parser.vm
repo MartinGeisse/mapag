@@ -1,85 +1,80 @@
 
-#set($intellij = true)
-#set($badCharacterElementType = "TokenType.BAD_CHARACTER")
+#set($intellij = false)
+#set($badCharacterElementType = "IElementType.BAD_CHARACTER")
 
 #define($imports)
-    import com.intellij.lang.ASTNode;
-    import com.intellij.lang.LightPsiParser;
-    import com.intellij.lang.PsiBuilder;
-    import com.intellij.lang.PsiParser;
-    import com.intellij.psi.TokenType;
-    import com.intellij.psi.tree.IElementType;
+import ${psiPackageName}.IElementType;
+import ${psiPackageName}.ASTNode;
+import ${psiPackageName}.PsiElement;
 #end
 
 #define($implements)
-    implements PsiParser, LightPsiParser
 #end
 
 #define($declarations)
 
-    private static final IElementType FILE_ELEMENT_TYPE = $fileElementType;
-
-
     private void beginSpeculativeTokenConsumption() {
-        speculativeTokenConsumptionMarker = psiBuilder.mark();
+        tokenMarker = tokenPointer;
     }
 
     private void endSpeculativeTokenConsumption() {
-        speculativeTokenConsumptionMarker.rollbackTo();
+        tokenPointer = tokenMarker;
+    }
+
+    private ASTNode getToken() {
+        return tokenPointer >= tokens.length ? null : tokens[tokenPointer];
     }
 
     private IElementType getTokenType() {
-        return psiBuilder.getTokenType();
+        return tokenPointer >= tokens.length ? null : tokens[tokenPointer].getElementType();
     }
 
     private boolean isAtEof() {
-        return psiBuilder.eof();
+        return tokenPointer >= tokens.length;
     }
 
     private void nextToken() {
-        psiBuilder.advanceLexer();
+        if (tokenPointer < tokens.length) {
+            tokenPointer++;
+        }
     }
 
     private void reportErrorForCurrentToken(String errorMessage) {
-        psiBuilder.error(errorMessage);
+        // TODO
     }
 
-	private void feedPsiBuilder(Object what, IElementType parentElementType) {
+	private ASTNode buildAst(Object what, IElementType parentElementType) {
 	    if (what == null) {
+	        ASTNode node = getToken();
             nextToken();
+            return node;
 	    } else if (what instanceof Object[]) {
 			Object[] reduction = (Object[]) what;
 			IElementType elementType;
-			boolean buildMarker;
+			boolean publicNode;
 			if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
 				elementType = listNodeGenerationWrapper.elementType;
-				buildMarker = (parentElementType == null || elementType != parentElementType);
+				publicNode = (parentElementType == null || elementType != parentElementType);
 			} else {
 				elementType = (IElementType)reduction[0];
-				buildMarker = true;
+				publicNode = true;
 			}
-			PsiBuilder.Marker marker = null;
-			if (buildMarker) {
-				marker = psiBuilder.mark();
-			}
+			List<ASTNode> childNodes = new ArrayList<>();
 			for (int i = 1; i < reduction.length; i++) {
-				feedPsiBuilder(reduction[i], elementType);
+				childNodes.add(buildAst(reduction[i], elementType));
 			}
-			if (buildMarker) {
-				marker.done(elementType);
-			}
+			return new ASTNode(elementType, childNodes.toArray(new ASTNode[childNodes.size()]), publicNode);
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
-			feedPsiBuilder(((List<?>)what).toArray(), parentElementType);
+			return buildAst(((List<?>)what).toArray(), parentElementType);
 		} else if (what instanceof ErrorLocationIndicator) {
 		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
 			reportErrorForCurrentToken("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
+			return null;
 		} else if (what instanceof UnrecoverableSyntaxException) {
             reportErrorForCurrentToken(((UnrecoverableSyntaxException)what).getMessage());
-            while (!isAtEof()) {
-            	nextToken();
-            }
+            tokenPointer = tokens.length;
 		}
 	}
 

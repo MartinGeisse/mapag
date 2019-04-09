@@ -1,17 +1,6 @@
 package $packageName;
 
-#if($intellij)
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiParser;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
-#else
-import ${psiPackageName}.IElementType;
-import ${psiPackageName}.ASTNode;
-import ${psiPackageName}.PsiElement;
-#end
+$imports
 
 #if($debug)
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class $className #if($intellij) implements PsiParser, LightPsiParser #end {
+public class $className $implements {
 
 	// ------------------------------------------------------------------------------------------------
 	// --- generated stuff
@@ -35,11 +24,7 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 	private static final IElementType[] SYMBOL_CODE_TO_ELEMENT_TYPE = {
     	null, // %eof -- doesn't have an IElementType
     	null, // %error -- doesn't have an IElementType
-#if($intellij)
-    	TokenType.BAD_CHARACTER, // %badchar
-#else
-		IElementType.BAD_CHARACTER, // %badchar
-#end
+    	$badCharacterElementType, // %badchar
         #foreach($token in $tokenCodeToToken)
             Symbols.$token,
         #end
@@ -89,10 +74,10 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
     };
 
 	// other
-#if($intellij)
-	private static final IElementType FILE_ELEMENT_TYPE = $fileElementType;
-#end
 	private static final int RECOVERY_SYNC_LENGTH = 3;
+
+    // target-specific declarations
+	$declarations
 
 	// ------------------------------------------------------------------------------------------------
 	// --- non-generated stuff (initialization and static stuff)
@@ -371,86 +356,6 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 
 	}
 
-#if($intellij)
-
-	private void feedPsiBuilder(Object what, IElementType parentElementType) {
-	    if (what == null) {
-            nextToken();
-	    } else if (what instanceof Object[]) {
-			Object[] reduction = (Object[]) what;
-			IElementType elementType;
-			boolean buildMarker;
-			if (reduction[0] instanceof ListNodeGenerationWrapper) {
-				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
-				elementType = listNodeGenerationWrapper.elementType;
-				buildMarker = (parentElementType == null || elementType != parentElementType);
-			} else {
-				elementType = (IElementType)reduction[0];
-				buildMarker = true;
-			}
-			PsiBuilder.Marker marker = null;
-			if (buildMarker) {
-				marker = psiBuilder.mark();
-			}
-			for (int i = 1; i < reduction.length; i++) {
-				feedPsiBuilder(reduction[i], elementType);
-			}
-			if (buildMarker) {
-				marker.done(elementType);
-			}
-		} else if (what instanceof List<?>) {
-			// an object list has the same meaning as an object array (needed for error symbols)
-			feedPsiBuilder(((List<?>)what).toArray(), parentElementType);
-		} else if (what instanceof ErrorLocationIndicator) {
-		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
-			reportErrorForCurrentToken("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
-		} else if (what instanceof UnrecoverableSyntaxException) {
-            reportErrorForCurrentToken(((UnrecoverableSyntaxException)what).getMessage());
-            while (!isAtEof()) {
-            	nextToken();
-            }
-		}
-	}
-
-#else
-
-	private ASTNode buildAst(Object what, IElementType parentElementType) {
-	    if (what == null) {
-	        ASTNode node = getToken();
-            nextToken();
-            return node;
-	    } else if (what instanceof Object[]) {
-			Object[] reduction = (Object[]) what;
-			IElementType elementType;
-			boolean publicNode;
-			if (reduction[0] instanceof ListNodeGenerationWrapper) {
-				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
-				elementType = listNodeGenerationWrapper.elementType;
-				publicNode = (parentElementType == null || elementType != parentElementType);
-			} else {
-				elementType = (IElementType)reduction[0];
-				publicNode = true;
-			}
-			List<ASTNode> childNodes = new ArrayList<>();
-			for (int i = 1; i < reduction.length; i++) {
-				childNodes.add(buildAst(reduction[i], elementType));
-			}
-			return new ASTNode(elementType, childNodes.toArray(new ASTNode[childNodes.size()]), publicNode);
-		} else if (what instanceof List<?>) {
-			// an object list has the same meaning as an object array (needed for error symbols)
-			return buildAst(((List<?>)what).toArray(), parentElementType);
-		} else if (what instanceof ErrorLocationIndicator) {
-		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
-			reportErrorForCurrentToken("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
-			return null;
-		} else if (what instanceof UnrecoverableSyntaxException) {
-            reportErrorForCurrentToken(((UnrecoverableSyntaxException)what).getMessage());
-            tokenPointer = tokens.length;
-		}
-	}
-
-#end
-
 	private void recoverFromError() throws UnrecoverableSyntaxException {
 
 		int originalState = state; // used for error messages
@@ -623,69 +528,5 @@ public class $className #if($intellij) implements PsiParser, LightPsiParser #end
 		}
 
 	}
-
-	// ------------------------------------------------------------------------------------------------
-	// --- Separate IntelliJ vs. standalone compatibility layer
-	// ------------------------------------------------------------------------------------------------
-
-#if($intellij)
-
-    private void beginSpeculativeTokenConsumption() {
-        speculativeTokenConsumptionMarker = psiBuilder.mark();
-    }
-
-    private void endSpeculativeTokenConsumption() {
-        speculativeTokenConsumptionMarker.rollbackTo();
-    }
-
-    private IElementType getTokenType() {
-        return psiBuilder.getTokenType();
-    }
-
-    private boolean isAtEof() {
-        return psiBuilder.eof();
-    }
-
-    private void nextToken() {
-        psiBuilder.advanceLexer();
-    }
-
-    private void reportErrorForCurrentToken(String errorMessage) {
-        psiBuilder.error(errorMessage);
-    }
-
-#else
-
-    private void beginSpeculativeTokenConsumption() {
-        tokenMarker = tokenPointer;
-    }
-
-    private void endSpeculativeTokenConsumption() {
-        tokenPointer = tokenMarker;
-    }
-
-    private ASTNode getToken() {
-        return tokenPointer >= tokens.length ? null : tokens[tokenPointer];
-    }
-
-    private IElementType getTokenType() {
-        return tokenPointer >= tokens.length ? null : tokens[tokenPointer].getElementType();
-    }
-
-    private boolean isAtEof() {
-        return tokenPointer >= tokens.length;
-    }
-
-    private void nextToken() {
-        if (tokenPointer < tokens.length) {
-            tokenPointer++;
-        }
-    }
-
-    private void reportErrorForCurrentToken(String errorMessage) {
-        // TODO
-    }
-
-#end
 
 }
