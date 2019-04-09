@@ -27,8 +27,12 @@ public $classModifiers class $className extends $superclass $interfaces {
     }
 
     #foreach($nodeGetter in $nodeGetters)
-    public $nodeGetter.nodeType ${nodeGetter.getterName}() {
-            return ($nodeGetter.nodeType)InternalPsiUtil.getChild(this, $nodeGetter.childIndex);
+	    public $nodeGetter.nodeType ${nodeGetter.getterName}() {
+            return ($nodeGetter.nodeType)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, $nodeGetter.childIndex));
+        }
+
+    	public PsiElement ${nodeGetter.getterName}Psi() {
+            return InternalPsiUtil.getChild(this, $nodeGetter.childIndex);
         }
     #end
 
