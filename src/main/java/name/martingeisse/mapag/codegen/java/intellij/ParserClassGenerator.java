@@ -9,7 +9,7 @@ import org.apache.velocity.VelocityContext;
  */
 public class ParserClassGenerator extends AbstractParserClassGenerator {
 
-	public static final String FILE_ELEMENT_TYPE_PROPERTY = "parser.fileElementType";
+	public static final String FILE_ELEMENT_TYPE_PROPERTY = "intellij.fileElementType";
 
 	private final CodeGenerationParameters parameters;
 

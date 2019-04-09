@@ -80,5 +80,5 @@ import ${psiPackageName}.PsiElement;
 
 #end
 
-#parse("include/Parser.vm")
+#parse("templates/include/Parser.vm")
 
