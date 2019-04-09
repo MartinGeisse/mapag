@@ -1,10 +1,8 @@
-package name.martingeisse.mapag.codegen.old;
+package name.martingeisse.mapag.codegen.java;
 
 import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.highlevel.StateInputExpectationBuilder;
 import name.martingeisse.mapag.codegen.highlevel.StateMachineEncoder;
-import name.martingeisse.mapag.codegen.java.IdentifierUtil;
-import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
 import name.martingeisse.mapag.grammar.SpecialSymbols;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
@@ -26,32 +24,33 @@ import java.util.Map;
 /**
  *
  */
-public class ParserClassGenerator {
+public abstract class AbstractParserClassGenerator {
 
-	public static final String PSI_PACKAGE_NAME_PROPERTY = "psi.package";
 	public static final String CLASS_NAME_PROPERTY = "parser.class";
 	public static final String DEBUG_PROPERTY = "parser.debug";
-	public static final String FILE_ELEMENT_TYPE_PROPERTY = "parser.fileElementType";
-	public static final String SYMBOL_HOLDER_PACKAGE_NAME_PROPERTY = "symbolHolder.package";
-	public static final String SYMBOL_HOLDER_CLASS_NAME_PROPERTY = "symbolHolder.class";
+	public static final String SYMBOL_HOLDER_CLASS_NAME_PROPERTY = "symbol.holder.class";
 
 	private final GrammarInfo grammarInfo;
 	private final Grammar grammar;
 	private final StateMachine stateMachine;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
-	private final InternalCodeGenerationParameters codeGenerationContext;
 
-	public ParserClassGenerator(InternalCodeGenerationParameters parameters) {
+	public AbstractParserClassGenerator(CodeGenerationParameters parameters) {
 		this.grammarInfo = parameters.getGrammarInfo();
 		this.grammar = grammarInfo.getGrammar();
 		this.stateMachine = parameters.getStateMachine();
 		this.configuration = parameters.getConfiguration();
 		this.outputFileFactory = parameters.getOutputFileFactory();
-		this.codeGenerationContext = parameters;
 	}
 
 	public void generate() throws ConfigurationException, IOException {
+
+		// determine full package name
+		String basePackageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE);
+		String cmPackageName = basePackageName + ".cm";
+		String packageName = cmPackageName + ".impl";
+		String symbolHolderPrefix = basePackageName + '.' + configuration.getRequired(SYMBOL_HOLDER_CLASS_NAME_PROPERTY);
 
 		StateMachineEncoder stateMachineEncoder = new StateMachineEncoder(grammarInfo, stateMachine);
 		int numberOfStates = stateMachine.getStates().size();
@@ -63,11 +62,10 @@ public class ParserClassGenerator {
 		stateInputExpectationBuilder.build();
 
 		VelocityContext context = new VelocityContext();
-		context.put("packageName", configuration.getRequired(JavaPropertyNames.BASE_PACKAGE));
-		context.put("psiPackageName", configuration.getRequired(PSI_PACKAGE_NAME_PROPERTY));
+		context.put("basePackageName", basePackageName);
+		context.put("cmPackageName", cmPackageName);
+		context.put("packageName", packageName);
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
-		context.put("intellij", codeGenerationContext.isIntellij());
-		context.put("notNull", codeGenerationContext.getNotNullAnnotation());
 		context.put("debug", "true".equals(configuration.getOptional(DEBUG_PROPERTY)));
 		{
 			String[] terminalNames = new String[numberOfTerminals];
@@ -77,7 +75,6 @@ public class ParserClassGenerator {
 			}
 			context.put("tokenCodeToToken", terminalNames);
 		}
-		context.put("fileElementType", configuration.getRequired(FILE_ELEMENT_TYPE_PROPERTY));
 		context.put("startStateCode", stateMachineEncoder.getStateIndex(stateMachine.getStartState()));
 		context.put("numberOfStates", numberOfStates);
 		context.put("actionTableWidth", actionTableWidth);
@@ -94,7 +91,6 @@ public class ParserClassGenerator {
 				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
 					int alternativeIndex = stateMachineEncoder.getAlternativeIndex(nonterminalDefinition.getName(), alternative);
 					String parseNodeHead;
-					String symbolHolderPrefix = configuration.getRequired(SYMBOL_HOLDER_PACKAGE_NAME_PROPERTY) + '.' + configuration.getRequired(SYMBOL_HOLDER_CLASS_NAME_PROPERTY);
 
 					if (nonterminalDefinition.getPsiStyle() instanceof PsiStyle.Repetition) {
 						String symbol = symbolHolderPrefix + '.' + IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
@@ -122,10 +118,11 @@ public class ParserClassGenerator {
 			}
 			context.put("stateInputExpectation", encodedStateInputExpectation);
 		}
+		configureVelocityContext(context);
 
-		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(JavaPropertyNames.BASE_PACKAGE), configuration.getRequired(CLASS_NAME_PROPERTY))) {
+		try (OutputStream outputStream = outputFileFactory.createSourceFile(basePackageName, configuration.getRequired(CLASS_NAME_PROPERTY))) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("templates/Parser.vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate(getTemplateName()).merge(context, outputStreamWriter);
 			}
 		}
 
@@ -215,5 +212,8 @@ public class ParserClassGenerator {
 		}
 
 	}
+
+	protected abstract String getTemplateName();
+	protected abstract void configureVelocityContext(VelocityContext context);
 
 }

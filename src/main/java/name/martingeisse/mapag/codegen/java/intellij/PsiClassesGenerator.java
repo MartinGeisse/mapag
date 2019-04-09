@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.java.IdentifierUtil;
 import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
-import name.martingeisse.mapag.codegen.old.InternalCodeGenerationParameters;
 import name.martingeisse.mapag.grammar.canonical.*;
 import name.martingeisse.mapag.util.Comparators;
 import org.apache.commons.lang3.StringUtils;

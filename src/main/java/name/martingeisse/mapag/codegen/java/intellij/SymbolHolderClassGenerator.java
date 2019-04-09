@@ -22,10 +22,10 @@ import java.util.List;
  */
 public class SymbolHolderClassGenerator {
 
-	public static final String CLASS_NAME_PROPERTY = "intellij.symbol.holder.class";
-	public static final String ELEMENT_TYPE_CLASS = "intellij.symbol.elementType.class";
-	public static final String TERMINAL_ELEMENT_TYPE_CLASS = "intellij.symbol.elementType.terminal.class";
-	public static final String NONTERMINAL_ELEMENT_TYPE_CLASS = "intellij.symbol.elementType.nonterminal.class";
+	public static final String CLASS_NAME_PROPERTY = "symbol.holder.class";
+	public static final String ELEMENT_TYPE_CLASS = "symbol.elementType.class";
+	public static final String TERMINAL_ELEMENT_TYPE_CLASS = "symbol.elementType.terminal.class";
+	public static final String NONTERMINAL_ELEMENT_TYPE_CLASS = "symbol.elementType.nonterminal.class";
 
 	private final Grammar grammar;
 	private final Configuration configuration;

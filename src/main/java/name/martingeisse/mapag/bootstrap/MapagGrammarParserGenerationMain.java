@@ -35,16 +35,17 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
 		codeGenerationProperties.setProperty("package", "name.martingeisse.mapag.test");
 
-		codeGenerationProperties.setProperty("intellij.parser.class", "MapagGeneratedMapagParser");
-		// codeGenerationProperties.setProperty("intellij.parser.debug", "true");
-		codeGenerationProperties.setProperty("intellij.symbol.elementType.class", "MapagElementType");
-		codeGenerationProperties.setProperty("intellij.symbol.fileElementType", "name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE");
-		codeGenerationProperties.setProperty("intellij.symbol.holder.class", "Symbols");
+		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
+		// codeGenerationProperties.setProperty("parser.debug", "true");
+		codeGenerationProperties.setProperty("symbol.elementType.class", "MapagElementType");
+		codeGenerationProperties.setProperty("symbol.holder.class", "Symbols");
+
 		codeGenerationProperties.setProperty("intellij.psi.utilClass", "name.martingeisse.mapag.input.cm.impl.PsiUtil");
 		codeGenerationProperties.setProperty("intellij.psi.supports.psiNameIdentifierOwner", "TerminalDeclaration, Production");
 		codeGenerationProperties.setProperty("intellij.psi.supports.getReference", "PrecedenceDeclarationSymbol, Expression_Identifier");
 		codeGenerationProperties.setProperty("intellij.psi.supports.safeDelete", "TerminalDeclaration, Production");
 		codeGenerationProperties.setProperty("intellij.parserDefinitionClass", "name.martingeisse.mapag.ide.MapagParserDefinition");
+		codeGenerationProperties.setProperty("intellij.fileElementType", "name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE");
 
 		codeGenerationProperties.setProperty("parser.error.KW_TERMINALS", "%terminals");
 		codeGenerationProperties.setProperty("parser.error.KW_PRECEDENCE", "%precedence");
