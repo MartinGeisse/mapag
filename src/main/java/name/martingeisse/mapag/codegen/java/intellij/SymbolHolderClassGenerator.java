@@ -3,11 +3,9 @@ package name.martingeisse.mapag.codegen.java.intellij;
 import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.java.IdentifierUtil;
 import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
-import name.martingeisse.mapag.codegen.old.InternalCodeGenerationParameters;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
-import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.util.ListUtil;
 import org.apache.velocity.VelocityContext;
 
@@ -64,7 +62,7 @@ public class SymbolHolderClassGenerator {
 
 		try (OutputStream outputStream = outputFileFactory.createSourceFile(packageName, configuration.getRequired(CLASS_NAME_PROPERTY))) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-				MapagVelocityEngine.engine.getTemplate("templates/SymbolHolder.vm").merge(context, outputStreamWriter);
+				MapagVelocityEngine.engine.getTemplate("templates/intellij/SymbolHolder.vm").merge(context, outputStreamWriter);
 			}
 		}
 
