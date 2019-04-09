@@ -33,7 +33,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 	private static void run() throws Exception {
 		Properties codeGenerationProperties = new Properties();
 
-		codeGenerationProperties.setProperty("package", "name.martingeisse.mapag.test");
+		codeGenerationProperties.setProperty("package", "name.martingeisse.mapag.input");
 
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
 		// codeGenerationProperties.setProperty("parser.debug", "true");
