@@ -50,7 +50,7 @@ public abstract class AbstractParserClassGenerator {
 		String basePackageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE);
 		String cmPackageName = basePackageName + ".cm";
 		String packageName = cmPackageName + ".impl";
-		String symbolHolderPrefix = basePackageName + '.' + configuration.getRequired(SYMBOL_HOLDER_CLASS_NAME_PROPERTY);
+		String symbolHolderPrefix = configuration.getRequired(SYMBOL_HOLDER_CLASS_NAME_PROPERTY);
 
 		StateMachineEncoder stateMachineEncoder = new StateMachineEncoder(grammarInfo, stateMachine);
 		int numberOfStates = stateMachine.getStates().size();
