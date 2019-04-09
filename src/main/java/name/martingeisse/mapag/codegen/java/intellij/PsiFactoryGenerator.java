@@ -17,8 +17,6 @@ import java.util.List;
 
 public class PsiFactoryGenerator {
 
-	public static final String PACKAGE_NAME_PROPERTY = "psi.package";
-
 	private final Grammar grammar;
 	private final Configuration configuration;
 	private final OutputFileFactory outputFileFactory;
@@ -61,7 +59,7 @@ public class PsiFactoryGenerator {
 		}
 		context.put("cases", cases);
 
-		try (OutputStream outputStream = outputFileFactory.createSourceFile(configuration.getRequired(PACKAGE_NAME_PROPERTY), "PsiFactory")) {
+		try (OutputStream outputStream = outputFileFactory.createSourceFile(packageName, "PsiFactory")) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
 				MapagVelocityEngine.engine.getTemplate("templates/intellij/PsiFactory.vm").merge(context, outputStreamWriter);
 			}

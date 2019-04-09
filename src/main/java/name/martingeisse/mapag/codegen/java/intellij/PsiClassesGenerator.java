@@ -27,11 +27,11 @@ import java.util.List;
  */
 public class PsiClassesGenerator {
 
-	public static final String CLASSES_SUPPORT_PSI_NAMED_ELEMENT = "psi.supports.psiNamedElement";
-	public static final String CLASSES_SUPPORT_PSI_NAME_IDENTIFIER_OWNER = "psi.supports.psiNameIdentifierOwner";
-	public static final String CLASSES_SUPPORT_GET_REFERENCE = "psi.supports.getReference";
-	public static final String CLASSES_SUPPORT_SAFE_DELETE = "psi.supports.safeDelete";
-	public static final String PSI_UTIL_CLASS_PROPERTY = "psi.utilClass";
+	public static final String CLASSES_SUPPORT_PSI_NAMED_ELEMENT = "intellij.psi.supports.psiNamedElement";
+	public static final String CLASSES_SUPPORT_PSI_NAME_IDENTIFIER_OWNER = "intellij.psi.supports.psiNameIdentifierOwner";
+	public static final String CLASSES_SUPPORT_GET_REFERENCE = "intellij.psi.supports.getReference";
+	public static final String CLASSES_SUPPORT_SAFE_DELETE = "intellij.psi.supports.safeDelete";
+	public static final String PSI_UTIL_CLASS_PROPERTY = "intellij.psi.utilClass";
 
 	private final Grammar grammar;
 	private final Configuration configuration;
