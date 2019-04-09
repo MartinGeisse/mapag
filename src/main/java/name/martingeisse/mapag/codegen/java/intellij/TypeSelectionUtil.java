@@ -30,11 +30,11 @@ public final class TypeSelectionUtil {
 		} else if (psiStyle instanceof PsiStyle.Optional) {
 			String operandSymbol = ((PsiStyle.Optional) psiStyle).getOperandSymbol();
 			String operandType = getEffectiveTypeForSymbol(Usage.CM, grammar, operandSymbol);
-			return (usage == Usage.PSI ? "" : "Cm") + "Optional<" + operandType + ">";
+			return "CmOptional" + (usage == Usage.PSI ? "Impl" : "") + "<" + operandType + ">";
 		} else if (psiStyle instanceof PsiStyle.Repetition) {
 			String listElementSymbol = ((PsiStyle.Repetition) psiStyle).getElementSymbol();
 			String listElementType = getEffectiveTypeForSymbol(Usage.CM, grammar, listElementSymbol);
-			return (usage == Usage.PSI ? "" : "Cm") + "ListNode<" + listElementType + ">";
+			return "CmList" + (usage == Usage.PSI ? "Impl" : "") + "<" + listElementType + ">";
 		} else {
 			throw new RuntimeException("unknown PsiStyle subclass: " + psiStyle);
 		}
