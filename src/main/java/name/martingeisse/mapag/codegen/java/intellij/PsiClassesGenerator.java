@@ -128,7 +128,8 @@ public class PsiClassesGenerator {
 					if (expressionName != null) {
 						NodeGetter nodeGetter = new NodeGetter();
 						nodeGetter.childIndex = childIndex;
-						nodeGetter.nodeType = TypeSelectionUtil.getEffectiveTypeForSymbol(TypeSelectionUtil.Usage.CM, grammar, element.getSymbol());
+						nodeGetter.nodeTypeCm = TypeSelectionUtil.getEffectiveTypeForSymbol(TypeSelectionUtil.Usage.CM, grammar, element.getSymbol());
+						nodeGetter.nodeTypePsi = TypeSelectionUtil.getEffectiveTypeForSymbol(TypeSelectionUtil.Usage.PSI, grammar, element.getSymbol());
 						nodeGetter.getterName = "get" + StringUtils.capitalize(expressionName);
 						nodeGetters.add(nodeGetter);
 					}
@@ -212,15 +213,20 @@ public class PsiClassesGenerator {
 	public class NodeGetter {
 
 		int childIndex;
-		String nodeType;
+		String nodeTypeCm;
+		String nodeTypePsi;
 		String getterName;
 
 		public int getChildIndex() {
 			return childIndex;
 		}
 
-		public String getNodeType() {
-			return nodeType;
+		public String getNodeTypeCm() {
+			return nodeTypeCm;
+		}
+
+		public String getNodeTypePsi() {
+			return nodeTypePsi;
 		}
 
 		public String getGetterName() {
