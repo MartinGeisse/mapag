@@ -17,4 +17,9 @@ public final class CmTokenImpl implements PsiCm, CmToken {
         return psi;
     }
 
+    @Override
+    public String getText() {
+        return psi.getText();
+    }
+
 }
