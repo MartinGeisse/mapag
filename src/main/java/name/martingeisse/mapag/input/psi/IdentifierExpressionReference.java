@@ -46,20 +46,18 @@ public class IdentifierExpressionReference implements PsiReference {
 		String identifier = expressionPsi.getIdentifier().getText();
 
 		// terminals
-		for (TerminalDeclaration terminalDeclaration : grammar.getTerminalDeclarations().getIdentifiers().getAll()) {
-			TerminalDeclarationImpl terminalDeclarationImpl = (TerminalDeclarationImpl) InternalPsiUtil.getPsiFromCm(terminalDeclaration);
-			String terminalName = terminalDeclarationImpl.getName();
+		for (TerminalDeclarationImpl terminalDeclaration : grammar.getTerminalDeclarationsPsi().getIdentifiersPsi().getAllPsi()) {
+			String terminalName = terminalDeclaration.getName();
 			if (terminalName != null && terminalName.equals(identifier)) {
-				return terminalDeclarationImpl;
+				return terminalDeclaration;
 			}
 		}
 
 		// nonterminals / productions
-		for (Production production : grammar.getProductions().getAll()) {
-			ProductionImpl productionImpl = (ProductionImpl) InternalPsiUtil.getPsiFromCm(production);
-			String nonterminalName = productionImpl.getName();
+		for (ProductionImpl production : grammar.getProductionsPsi().getAllPsi()) {
+			String nonterminalName = production.getName();
 			if (nonterminalName != null && nonterminalName.equals(identifier)) {
-				return productionImpl;
+				return production;
 			}
 		}
 
@@ -80,14 +78,14 @@ public class IdentifierExpressionReference implements PsiReference {
 	@Override
 	public PsiElement bindToElement(@NotNull PsiElement psiElement) throws IncorrectOperationException {
 
-		if (psiElement instanceof TerminalDeclaration) {
+		if (psiElement instanceof TerminalDeclarationImpl) {
 			String newName = ((TerminalDeclarationImpl) psiElement).getName();
 			if (newName != null) {
 				return PsiUtil.setText(expressionPsi.getIdentifierPsi(), newName);
 			}
 		}
 
-		if (psiElement instanceof Production) {
+		if (psiElement instanceof ProductionImpl) {
 			String newName = ((ProductionImpl) psiElement).getName();
 			if (newName != null) {
 				return PsiUtil.setText(expressionPsi.getIdentifierPsi(), newName);
@@ -139,14 +137,13 @@ public class IdentifierExpressionReference implements PsiReference {
 		List<Object> variants = new ArrayList<>();
 
 		// terminals
-		for (TerminalDeclaration more : grammar.getTerminalDeclarations().getIdentifiers().getAll()) {
+		for (TerminalDeclarationImpl more : grammar.getTerminalDeclarationsPsi().getIdentifiersPsi().getAllPsi()) {
 			variants.add(more.getIdentifier().getText());
 		}
 
 		// nonterminals
-		for (Production production : grammar.getProductions().getAll()) {
-			ProductionImpl productionImpl = (ProductionImpl) InternalPsiUtil.getPsiFromCm(production);
-			PsiElement nameIdentifier = productionImpl.getNameIdentifier();
+		for (ProductionImpl production : grammar.getProductionsPsi().getAllPsi()) {
+			PsiElement nameIdentifier = production.getNameIdentifier();
 			if (nameIdentifier != null) {
 				variants.add(nameIdentifier.getText());
 			}

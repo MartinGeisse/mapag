@@ -43,11 +43,10 @@ public class PrecedenceDeclarationSymbolReference implements PsiReference {
 			return null;
 		}
 		String identifier = precedenceDeclarationSymbolPsi.getIdentifier().getText();
-		for (TerminalDeclaration terminalDeclaration : grammar.getTerminalDeclarations().getIdentifiers().getAll()) {
-			TerminalDeclarationImpl terminalDeclarationImpl = (TerminalDeclarationImpl) terminalDeclaration;
-			String terminalName = terminalDeclarationImpl.getName();
+		for (TerminalDeclarationImpl terminalDeclaration : grammar.getTerminalDeclarationsPsi().getIdentifiersPsi().getAllPsi()) {
+			String terminalName = terminalDeclaration.getName();
 			if (terminalName != null && terminalName.equals(identifier)) {
-				return terminalDeclarationImpl;
+				return terminalDeclaration;
 			}
 		}
 		return null;
@@ -99,7 +98,7 @@ public class PrecedenceDeclarationSymbolReference implements PsiReference {
 			return new Object[0];
 		}
 		List<Object> variants = new ArrayList<>();
-		for (TerminalDeclaration more : grammar.getTerminalDeclarations().getIdentifiers().getAll()) {
+		for (TerminalDeclarationImpl more : grammar.getTerminalDeclarationsPsi().getIdentifiersPsi().getAllPsi()) {
 			variants.add(more.getIdentifier().getText());
 		}
 		return variants.toArray();
