@@ -29,12 +29,22 @@ public final class TypeSelectionUtil {
 			return IdentifierUtil.toIdentifier(nonterminalDefinition.getName(), true) + (usage == Usage.PSI ? "Impl" : "");
 		} else if (psiStyle instanceof PsiStyle.Optional) {
 			String operandSymbol = ((PsiStyle.Optional) psiStyle).getOperandSymbol();
-			String operandType = getEffectiveTypeForSymbol(Usage.CM, grammar, operandSymbol);
-			return "CmOptional" + (usage == Usage.PSI ? "Impl" : "") + "<" + operandType + ">";
+			String operandTypeCm = getEffectiveTypeForSymbol(Usage.CM, grammar, operandSymbol);
+			if (usage == Usage.CM) {
+				return "CmOptional<" + operandTypeCm + ">";
+			} else {
+				String operandTypePsi = getEffectiveTypeForSymbol(Usage.PSI, grammar, operandSymbol);
+				return "CmOptionalImpl<" + operandTypeCm + ", " + operandTypePsi + ">";
+			}
 		} else if (psiStyle instanceof PsiStyle.Repetition) {
 			String listElementSymbol = ((PsiStyle.Repetition) psiStyle).getElementSymbol();
-			String listElementType = getEffectiveTypeForSymbol(Usage.CM, grammar, listElementSymbol);
-			return "CmList" + (usage == Usage.PSI ? "Impl" : "") + "<" + listElementType + ">";
+			String listElementTypeCm = getEffectiveTypeForSymbol(Usage.CM, grammar, listElementSymbol);
+			if (usage == Usage.CM) {
+				return "CmList<" + listElementTypeCm + ">";
+			} else {
+				String listElementTypePsi = getEffectiveTypeForSymbol(Usage.PSI, grammar, listElementSymbol);
+				return "CmListImpl<" + listElementTypeCm + ", " + listElementTypePsi + ">";
+			}
 		} else {
 			throw new RuntimeException("unknown PsiStyle subclass: " + psiStyle);
 		}
@@ -44,14 +54,17 @@ public final class TypeSelectionUtil {
 		PsiStyle psiStyle = nonterminalDefinition.getPsiStyle();
 		if (psiStyle instanceof PsiStyle.Repetition) {
 			String listElementSymbol = ((PsiStyle.Repetition) psiStyle).getElementSymbol();
-			String listElementType = getEffectiveTypeForSymbol(Usage.CM, grammar, listElementSymbol);
+			String listElementTypeCm = getEffectiveTypeForSymbol(Usage.CM, grammar, listElementSymbol);
+			String listElementTypePsi = getEffectiveTypeForSymbol(Usage.PSI, grammar, listElementSymbol);
 			TerminalDefinition terminalElementDefinition = grammar.getTerminalDefinitions().get(listElementSymbol);
 			if (terminalElementDefinition != null) {
-				return ", createTokenSet(" + getAstNodeType(terminalElementDefinition, symbolHolder) + "), " + listElementType + ".class";
+				return ", createTokenSet(" + getAstNodeType(terminalElementDefinition, symbolHolder) + "), "
+					+ listElementTypeCm + ".class, " + listElementTypePsi + ".class";
 			}
 			NonterminalDefinition nonterminalElementDefinition = grammar.getNonterminalDefinitions().get(listElementSymbol);
 			if (nonterminalElementDefinition != null) {
-				return ", createTokenSet(" + getCommaSeparatedAstNodeTypes(nonterminalElementDefinition, symbolHolder) + "), " + listElementType + ".class";
+				return ", createTokenSet(" + getCommaSeparatedAstNodeTypes(nonterminalElementDefinition, symbolHolder) + "), "
+					+ listElementTypeCm + ".class, " + listElementTypePsi + ".class";
 			}
 			throw new RuntimeException("unknown symbol: " + listElementSymbol);
 		} else {
