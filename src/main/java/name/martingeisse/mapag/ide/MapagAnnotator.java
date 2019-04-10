@@ -4,9 +4,8 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.psi.PsiElement;
 import name.martingeisse.mapag.grammar.extended.validation.ErrorLocation;
-import name.martingeisse.mapag.input.GrammarToPsiMap;
-import name.martingeisse.mapag.input.PsiToGrammarConverter;
-import name.martingeisse.mapag.input.psi.*;
+import name.martingeisse.mapag.input.GrammarToCmMap;
+import name.martingeisse.mapag.input.CmToGrammarConverter;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,7 +20,7 @@ public class MapagAnnotator implements Annotator {
 	public void annotate(@NotNull PsiElement psiElement, @NotNull AnnotationHolder annotationHolder) {
 		if (psiElement instanceof Grammar) {
 			Grammar psiGrammar = (Grammar)psiElement;
-			PsiToGrammarConverter converter = new PsiToGrammarConverter(false);
+			CmToGrammarConverter converter = new CmToGrammarConverter(false);
 			name.martingeisse.mapag.grammar.extended.Grammar extendedGrammar = converter.convert(psiGrammar);
 			name.martingeisse.mapag.grammar.extended.validation.GrammarValidator extendedValidator =
 				new name.martingeisse.mapag.grammar.extended.validation.GrammarValidator(extendedGrammar);
@@ -29,14 +28,14 @@ public class MapagAnnotator implements Annotator {
 		}
 	}
 
-	private void reportError(ErrorLocation location, String message, AnnotationHolder annotationHolder, GrammarToPsiMap backMap) {
+	private void reportError(ErrorLocation location, String message, AnnotationHolder annotationHolder, GrammarToCmMap backMap) {
 		PsiElement psiElement = determinePsiElement(location, backMap);
 		if (psiElement != null) {
 			annotationHolder.createErrorAnnotation(psiElement.getNode(), message);
 		}
 	}
 
-	private PsiElement determinePsiElement(ErrorLocation location, GrammarToPsiMap backMap) {
+	private PsiElement determinePsiElement(ErrorLocation location, GrammarToCmMap backMap) {
 		if (location instanceof ErrorLocation.TerminalDeclaration) {
 			return backMap.terminalDeclarations.get(((ErrorLocation.TerminalDeclaration) location).getTerminalDeclaration());
 		} else if (location instanceof ErrorLocation.PrecedenceTableEntry) {

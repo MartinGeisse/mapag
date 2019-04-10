@@ -4,7 +4,7 @@ import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
-import name.martingeisse.mapag.input.psi.Grammar;
+import name.martingeisse.mapag.input.cm.Grammar;
 import org.jetbrains.annotations.NotNull;
 
 /**

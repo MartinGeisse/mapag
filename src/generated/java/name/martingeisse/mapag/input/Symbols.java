@@ -35,6 +35,7 @@ public class Symbols {
 	public static final MapagElementType QUESTION_MARK = new MapagElementType("QUESTION_MARK");
 	public static final MapagElementType SEMICOLON = new MapagElementType("SEMICOLON");
 
+
 	//
 	// nonterminals
 	//
@@ -91,11 +92,12 @@ public class Symbols {
 	public static final MapagElementType synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty = new MapagElementType("synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty");
 	public static final MapagElementType terminalDeclaration = new MapagElementType("terminalDeclaration");
 
+
 	//
 	// special
 	//
 
-	// partially parsed input in case of an error
+    // partially parsed input in case of an error
 	public static final MapagElementType __PARSED_FRAGMENT = new MapagElementType("__PARSED_FRAGMENT");
 
 }
