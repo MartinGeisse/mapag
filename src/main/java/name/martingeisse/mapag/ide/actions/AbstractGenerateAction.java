@@ -74,6 +74,7 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 				} else {
 					outputFolder = existingOutputFolder;
 				}
+				console.print("output folder path: " + outputFolder.getCanonicalPath(), ConsoleViewContentType.NORMAL_OUTPUT);
 				final VirtualFile existingResourcesFolder = moduleFolder.findChild("gen_resources");
 				final VirtualFile resourcesFolder;
 				if (existingResourcesFolder == null) {
@@ -123,6 +124,7 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 			} catch (IOException e) {
 				throw new RuntimeException("unexpected IOException", e);
 			}
+			console.print("Background action completed...", ConsoleViewContentType.NORMAL_OUTPUT);
 		});
 
 		console.print("Done.", ConsoleViewContentType.NORMAL_OUTPUT);
