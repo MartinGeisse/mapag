@@ -75,7 +75,7 @@ public final class CmListImpl<T extends CmNode, PSI extends PsiElement> extends 
 
     @Override
     public final void foreach(Consumer<T> consumer) {
-        foreachPsi((PsiElement childPsi) -> {
+        foreachPsi((PSI childPsi) -> {
             consumer.accept(elementClass.cast(InternalPsiUtil.getCmFromPsi(childPsi)));
         });
     }
