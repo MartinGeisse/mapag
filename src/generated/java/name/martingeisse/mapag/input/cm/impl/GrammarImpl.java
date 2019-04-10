@@ -39,8 +39,8 @@ public final class GrammarImpl extends ASTWrapperPsiElement implements Grammar,P
             return (CmOptional<Grammar_PrecedenceTable>)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, 1));
         }
 
-    	public CmOptionalImpl<Grammar_PrecedenceTable> getPrecedenceTablePsi() {
-            return (CmOptionalImpl<Grammar_PrecedenceTable>)InternalPsiUtil.getChild(this, 1);
+    	public CmOptionalImpl<Grammar_PrecedenceTable, Grammar_PrecedenceTableImpl> getPrecedenceTablePsi() {
+            return (CmOptionalImpl<Grammar_PrecedenceTable, Grammar_PrecedenceTableImpl>)InternalPsiUtil.getChild(this, 1);
         }
     	    public CmToken getStartSymbolName() {
             return (CmToken)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, 3));
@@ -53,8 +53,8 @@ public final class GrammarImpl extends ASTWrapperPsiElement implements Grammar,P
             return (CmList<Production>)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, 5));
         }
 
-    	public CmListImpl<Production> getProductionsPsi() {
-            return (CmListImpl<Production>)InternalPsiUtil.getChild(this, 5);
+    	public CmListImpl<Production, ProductionImpl> getProductionsPsi() {
+            return (CmListImpl<Production, ProductionImpl>)InternalPsiUtil.getChild(this, 5);
         }
     
         

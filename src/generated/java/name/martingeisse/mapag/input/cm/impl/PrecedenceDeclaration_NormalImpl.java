@@ -39,8 +39,8 @@ public final class PrecedenceDeclaration_NormalImpl extends PrecedenceDeclaratio
             return (CmList<PrecedenceDeclarationSymbol>)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, 1));
         }
 
-    	public CmListImpl<PrecedenceDeclarationSymbol> getTerminalsPsi() {
-            return (CmListImpl<PrecedenceDeclarationSymbol>)InternalPsiUtil.getChild(this, 1);
+    	public CmListImpl<PrecedenceDeclarationSymbol, PrecedenceDeclarationSymbolImpl> getTerminalsPsi() {
+            return (CmListImpl<PrecedenceDeclarationSymbol, PrecedenceDeclarationSymbolImpl>)InternalPsiUtil.getChild(this, 1);
         }
     
         

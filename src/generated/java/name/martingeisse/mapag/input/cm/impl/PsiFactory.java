@@ -90,7 +90,7 @@ public class PsiFactory {
                 return new Production_ErrorWithNonterminalNameAtEofImpl(node);
             }
                     if (type == Symbols.synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty) {
-                return new CmListImpl<TerminalDeclaration>(node, createTokenSet(Symbols.terminalDeclaration), TerminalDeclaration.class);
+                return new CmListImpl<TerminalDeclaration, TerminalDeclarationImpl>(node, createTokenSet(Symbols.terminalDeclaration), TerminalDeclaration.class, TerminalDeclarationImpl.class);
             }
                     if (type == Symbols.production_Multi_Alternatives_Unnamed) {
                 return new Production_Multi_Alternatives_UnnamedImpl(node);
@@ -102,13 +102,13 @@ public class PsiFactory {
                 return new Grammar_TerminalDeclarationsImpl(node);
             }
                     if (type == Symbols.synthetic_List_PrecedenceDeclaration) {
-                return new CmListImpl<PrecedenceDeclaration>(node, createTokenSet(Symbols.precedenceDeclaration_Normal, Symbols.precedenceDeclaration_ErrorWithSemicolon, Symbols.precedenceDeclaration_ErrorWithoutSemicolon), PrecedenceDeclaration.class);
+                return new CmListImpl<PrecedenceDeclaration, PrecedenceDeclarationImpl>(node, createTokenSet(Symbols.precedenceDeclaration_Normal, Symbols.precedenceDeclaration_ErrorWithSemicolon, Symbols.precedenceDeclaration_ErrorWithoutSemicolon), PrecedenceDeclaration.class, PrecedenceDeclarationImpl.class);
             }
                     if (type == Symbols.grammar_PrecedenceTable_Optional) {
-                return new CmOptionalImpl<Grammar_PrecedenceTable>(node);
+                return new CmOptionalImpl<Grammar_PrecedenceTable, Grammar_PrecedenceTableImpl>(node);
             }
                     if (type == Symbols.synthetic_List_AlternativeAttribute) {
-                return new CmListImpl<AlternativeAttribute>(node, createTokenSet(Symbols.alternativeAttribute_Precedence, Symbols.alternativeAttribute_ResolveBlock, Symbols.alternativeAttribute_ReduceOnError, Symbols.alternativeAttribute_Eof), AlternativeAttribute.class);
+                return new CmListImpl<AlternativeAttribute, AlternativeAttributeImpl>(node, createTokenSet(Symbols.alternativeAttribute_Precedence, Symbols.alternativeAttribute_ResolveBlock, Symbols.alternativeAttribute_ReduceOnError, Symbols.alternativeAttribute_Eof), AlternativeAttribute.class, AlternativeAttributeImpl.class);
             }
                     if (type == Symbols.precedenceDeclaration_Normal) {
                 return new PrecedenceDeclaration_NormalImpl(node);
@@ -120,10 +120,10 @@ public class PsiFactory {
                 return new PrecedenceDeclaration_ErrorWithoutSemicolonImpl(node);
             }
                     if (type == Symbols.synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA_Nonempty) {
-                return new CmListImpl<PrecedenceDeclarationSymbol>(node, createTokenSet(Symbols.precedenceDeclarationSymbol), PrecedenceDeclarationSymbol.class);
+                return new CmListImpl<PrecedenceDeclarationSymbol, PrecedenceDeclarationSymbolImpl>(node, createTokenSet(Symbols.precedenceDeclarationSymbol), PrecedenceDeclarationSymbol.class, PrecedenceDeclarationSymbolImpl.class);
             }
                     if (type == Symbols.production_Multi_Alternatives_List) {
-                return new CmListImpl<Production_Multi_Alternatives>(node, createTokenSet(Symbols.production_Multi_Alternatives_Unnamed, Symbols.production_Multi_Alternatives_Named), Production_Multi_Alternatives.class);
+                return new CmListImpl<Production_Multi_Alternatives, Production_Multi_AlternativesImpl>(node, createTokenSet(Symbols.production_Multi_Alternatives_Unnamed, Symbols.production_Multi_Alternatives_Named), Production_Multi_Alternatives.class, Production_Multi_AlternativesImpl.class);
             }
                     if (type == Symbols.grammar) {
                 return new GrammarImpl(node);
@@ -135,7 +135,7 @@ public class PsiFactory {
                 return new PrecedenceDeclarationSymbolImpl(node);
             }
                     if (type == Symbols.synthetic_List_Production_Nonempty) {
-                return new CmListImpl<Production>(node, createTokenSet(Symbols.production_SingleUnnamed, Symbols.production_SingleNamed, Symbols.production_Multi, Symbols.production_ErrorWithoutNonterminalNameWithSemicolon, Symbols.production_ErrorWithoutNonterminalNameWithClosingCurlyBrace, Symbols.production_ErrorWithoutNonterminalNameAtEof, Symbols.production_ErrorWithNonterminalNameWithSemicolon, Symbols.production_ErrorWithNonterminalNameWithClosingCurlyBrace, Symbols.production_ErrorWithNonterminalNameAtEof), Production.class);
+                return new CmListImpl<Production, ProductionImpl>(node, createTokenSet(Symbols.production_SingleUnnamed, Symbols.production_SingleNamed, Symbols.production_Multi, Symbols.production_ErrorWithoutNonterminalNameWithSemicolon, Symbols.production_ErrorWithoutNonterminalNameWithClosingCurlyBrace, Symbols.production_ErrorWithoutNonterminalNameAtEof, Symbols.production_ErrorWithNonterminalNameWithSemicolon, Symbols.production_ErrorWithNonterminalNameWithClosingCurlyBrace, Symbols.production_ErrorWithNonterminalNameAtEof), Production.class, ProductionImpl.class);
             }
                     if (type == Symbols.resolveDeclaration_Action_Shift) {
                 return new ResolveDeclaration_Action_ShiftImpl(node);
@@ -144,7 +144,7 @@ public class PsiFactory {
                 return new ResolveDeclaration_Action_ReduceImpl(node);
             }
                     if (type == Symbols.synthetic_SeparatedList_IDENTIFIER_COMMA_Nonempty) {
-                return new CmListImpl<CmToken>(node, createTokenSet(Symbols.IDENTIFIER), CmToken.class);
+                return new CmListImpl<CmToken, LeafPsiElement>(node, createTokenSet(Symbols.IDENTIFIER), CmToken.class, LeafPsiElement.class);
             }
                     if (type == Symbols.resolveDeclaration) {
                 return new ResolveDeclarationImpl(node);
@@ -153,7 +153,7 @@ public class PsiFactory {
                 return new Grammar_PrecedenceTableImpl(node);
             }
                     if (type == Symbols.synthetic_List_ResolveDeclaration) {
-                return new CmListImpl<ResolveDeclaration>(node, createTokenSet(Symbols.resolveDeclaration), ResolveDeclaration.class);
+                return new CmListImpl<ResolveDeclaration, ResolveDeclarationImpl>(node, createTokenSet(Symbols.resolveDeclaration), ResolveDeclaration.class, ResolveDeclarationImpl.class);
             }
                     if (type == Symbols.alternativeAttribute_Precedence) {
                 return new AlternativeAttribute_PrecedenceImpl(node);

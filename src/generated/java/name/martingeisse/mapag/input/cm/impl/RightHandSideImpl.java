@@ -39,8 +39,8 @@ public final class RightHandSideImpl extends ASTWrapperPsiElement implements Rig
             return (CmList<AlternativeAttribute>)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, 1));
         }
 
-    	public CmListImpl<AlternativeAttribute> getAttributesPsi() {
-            return (CmListImpl<AlternativeAttribute>)InternalPsiUtil.getChild(this, 1);
+    	public CmListImpl<AlternativeAttribute, AlternativeAttributeImpl> getAttributesPsi() {
+            return (CmListImpl<AlternativeAttribute, AlternativeAttributeImpl>)InternalPsiUtil.getChild(this, 1);
         }
     
         

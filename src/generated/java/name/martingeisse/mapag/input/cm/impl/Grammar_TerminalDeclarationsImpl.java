@@ -32,8 +32,8 @@ public final class Grammar_TerminalDeclarationsImpl extends ASTWrapperPsiElement
             return (CmList<TerminalDeclaration>)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, 2));
         }
 
-    	public CmListImpl<TerminalDeclaration> getIdentifiersPsi() {
-            return (CmListImpl<TerminalDeclaration>)InternalPsiUtil.getChild(this, 2);
+    	public CmListImpl<TerminalDeclaration, TerminalDeclarationImpl> getIdentifiersPsi() {
+            return (CmListImpl<TerminalDeclaration, TerminalDeclarationImpl>)InternalPsiUtil.getChild(this, 2);
         }
     
         

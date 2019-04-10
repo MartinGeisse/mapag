@@ -39,8 +39,8 @@ public final class ResolveDeclarationImpl extends ASTWrapperPsiElement implement
             return (CmList<CmToken>)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, 1));
         }
 
-    	public CmListImpl<CmToken> getSymbolsPsi() {
-            return (CmListImpl<CmToken>)InternalPsiUtil.getChild(this, 1);
+    	public CmListImpl<CmToken, LeafPsiElement> getSymbolsPsi() {
+            return (CmListImpl<CmToken, LeafPsiElement>)InternalPsiUtil.getChild(this, 1);
         }
     
         

@@ -32,8 +32,8 @@ public final class Grammar_PrecedenceTableImpl extends ASTWrapperPsiElement impl
             return (CmList<PrecedenceDeclaration>)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, 2));
         }
 
-    	public CmListImpl<PrecedenceDeclaration> getPrecedenceDeclarationsPsi() {
-            return (CmListImpl<PrecedenceDeclaration>)InternalPsiUtil.getChild(this, 2);
+    	public CmListImpl<PrecedenceDeclaration, PrecedenceDeclarationImpl> getPrecedenceDeclarationsPsi() {
+            return (CmListImpl<PrecedenceDeclaration, PrecedenceDeclarationImpl>)InternalPsiUtil.getChild(this, 2);
         }
     
         

@@ -39,8 +39,8 @@ public final class Production_MultiImpl extends ProductionImpl implements Produc
             return (CmList<Production_Multi_Alternatives>)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, 3));
         }
 
-    	public CmListImpl<Production_Multi_Alternatives> getAlternativesPsi() {
-            return (CmListImpl<Production_Multi_Alternatives>)InternalPsiUtil.getChild(this, 3);
+    	public CmListImpl<Production_Multi_Alternatives, Production_Multi_AlternativesImpl> getAlternativesPsi() {
+            return (CmListImpl<Production_Multi_Alternatives, Production_Multi_AlternativesImpl>)InternalPsiUtil.getChild(this, 3);
         }
     
         

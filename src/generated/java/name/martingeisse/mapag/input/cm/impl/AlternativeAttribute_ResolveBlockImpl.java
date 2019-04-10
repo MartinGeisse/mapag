@@ -32,8 +32,8 @@ public final class AlternativeAttribute_ResolveBlockImpl extends AlternativeAttr
             return (CmList<ResolveDeclaration>)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, 2));
         }
 
-    	public CmListImpl<ResolveDeclaration> getResolveDeclarationsPsi() {
-            return (CmListImpl<ResolveDeclaration>)InternalPsiUtil.getChild(this, 2);
+    	public CmListImpl<ResolveDeclaration, ResolveDeclarationImpl> getResolveDeclarationsPsi() {
+            return (CmListImpl<ResolveDeclaration, ResolveDeclarationImpl>)InternalPsiUtil.getChild(this, 2);
         }
     
         
