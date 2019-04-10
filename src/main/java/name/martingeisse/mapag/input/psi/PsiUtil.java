@@ -7,6 +7,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.FileContentUtil;
 import com.intellij.util.IncorrectOperationException;
+import name.martingeisse.mapag.input.cm.impl.*;
 
 /**
  *
@@ -41,11 +42,11 @@ public final class PsiUtil {
 	// reference support
 	//
 
-	public static PsiReference getReference(PrecedenceDeclarationSymbol precedenceDeclarationSymbol) {
+	public static PsiReference getReference(PrecedenceDeclarationSymbolImpl precedenceDeclarationSymbol) {
 		return new PrecedenceDeclarationSymbolReference(precedenceDeclarationSymbol);
 	}
 
-	public static PsiReference getReference(Expression_Identifier expression) {
+	public static PsiReference getReference(Expression_IdentifierImpl expression) {
 		return new IdentifierExpressionReference(expression);
 	}
 
@@ -53,51 +54,51 @@ public final class PsiUtil {
 	// naming support
 	//
 
-	public static LeafPsiElement getNameIdentifier(TerminalDeclaration node) {
-		return node.getIdentifier();
+	public static LeafPsiElement getNameIdentifier(TerminalDeclarationImpl node) {
+		return node.getIdentifierPsi();
 	}
 
-	public static LeafPsiElement getNameIdentifier(Production_SingleUnnamed node) {
-		return node.getNonterminalName();
+	public static LeafPsiElement getNameIdentifier(Production_SingleUnnamedImpl node) {
+		return node.getNonterminalNamePsi();
 	}
 
-	public static LeafPsiElement getNameIdentifier(Production_SingleNamed node) {
-		return node.getNonterminalName();
+	public static LeafPsiElement getNameIdentifier(Production_SingleNamedImpl node) {
+		return node.getNonterminalNamePsi();
 	}
 
-	public static LeafPsiElement getNameIdentifier(Production_Multi node) {
-		return node.getNonterminalName();
+	public static LeafPsiElement getNameIdentifier(Production_MultiImpl node) {
+		return node.getNonterminalNamePsi();
 	}
 
-	public static LeafPsiElement getNameIdentifier(Production_ErrorWithoutNonterminalNameWithSemicolon node) {
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithoutNonterminalNameWithSemicolonImpl node) {
 		return null;
 	}
 
-	public static LeafPsiElement getNameIdentifier(Production_ErrorWithoutNonterminalNameWithClosingCurlyBrace node) {
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithoutNonterminalNameWithClosingCurlyBraceImpl node) {
 		return null;
 	}
 
-	public static LeafPsiElement getNameIdentifier(Production_ErrorWithoutNonterminalNameAtEof node) {
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithoutNonterminalNameAtEofImpl node) {
 		return null;
 	}
 
-	public static LeafPsiElement getNameIdentifier(Production_ErrorWithNonterminalNameWithSemicolon node) {
-		return node.getNonterminalName();
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithNonterminalNameWithSemicolonImpl node) {
+		return node.getNonterminalNamePsi();
 	}
 
-	public static LeafPsiElement getNameIdentifier(Production_ErrorWithNonterminalNameWithClosingCurlyBrace node) {
-		return node.getNonterminalName();
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithNonterminalNameWithClosingCurlyBraceImpl node) {
+		return node.getNonterminalNamePsi();
 	}
 
-	public static LeafPsiElement getNameIdentifier(Production_ErrorWithNonterminalNameAtEof node) {
-		return node.getNonterminalName();
+	public static LeafPsiElement getNameIdentifier(Production_ErrorWithNonterminalNameAtEofImpl node) {
+		return node.getNonterminalNamePsi();
 	}
 
 	//
 	// safe delete
 	//
 
-	public static void delete(TerminalDeclaration node) throws IncorrectOperationException {
+	public static void delete(TerminalDeclarationImpl node) throws IncorrectOperationException {
 		PsiFile psiFile = node.getContainingFile();
 		if (psiFile != null) {
 			VirtualFile virtualFile = psiFile.getVirtualFile();
@@ -110,7 +111,7 @@ public final class PsiUtil {
 		throw new IncorrectOperationException("could not determine containing virtual file to reparse after safe delete");
 	}
 
-	public static void delete(Production node) throws IncorrectOperationException {
+	public static void delete(ProductionImpl node) throws IncorrectOperationException {
 		PsiFile psiFile = node.getContainingFile();
 		if (psiFile != null) {
 			VirtualFile virtualFile = psiFile.getVirtualFile();
