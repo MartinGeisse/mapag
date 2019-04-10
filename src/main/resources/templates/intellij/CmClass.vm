@@ -30,7 +30,7 @@ public $classModifiers class $className extends $superclass $interfaces {
 
     #foreach($nodeGetter in $nodeGetters)
 	    public $nodeGetter.nodeTypeCm ${nodeGetter.getterName}() {
-            return ($nodeGetter.nodeType)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, $nodeGetter.childIndex));
+            return ($nodeGetter.nodeTypeCm)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, $nodeGetter.childIndex));
         }
 
     	public $nodeGetter.nodeTypePsi ${nodeGetter.getterName}Psi() {
