@@ -29,8 +29,13 @@ public final class TypeSelectionUtil {
 			return IdentifierUtil.toIdentifier(nonterminalDefinition.getName(), true) + (usage == Usage.PSI ? "Impl" : "");
 		} else if (psiStyle instanceof PsiStyle.Optional) {
 			String operandSymbol = ((PsiStyle.Optional) psiStyle).getOperandSymbol();
-			String operandType = getEffectiveTypeForSymbol(Usage.CM, grammar, operandSymbol);
-			return "CmOptional" + (usage == Usage.PSI ? "Impl" : "") + "<" + operandType + ">";
+			String operandTypeCm = getEffectiveTypeForSymbol(Usage.CM, grammar, operandSymbol);
+			if (usage == Usage.CM) {
+				return "CmOptional<" + operandTypeCm + ">";
+			} else {
+				String operandTypePsi = getEffectiveTypeForSymbol(Usage.PSI, grammar, operandSymbol);
+				return "CmOptionalImpl<" + operandTypeCm + ", " + operandTypePsi + ">";
+			}
 		} else if (psiStyle instanceof PsiStyle.Repetition) {
 			String listElementSymbol = ((PsiStyle.Repetition) psiStyle).getElementSymbol();
 			String listElementTypeCm = getEffectiveTypeForSymbol(Usage.CM, grammar, listElementSymbol);
