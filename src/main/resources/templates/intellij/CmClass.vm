@@ -34,7 +34,7 @@ public $classModifiers class $className extends $superclass $interfaces {
         }
 
     	public $nodeGetter.nodeTypePsi ${nodeGetter.getterName}Psi() {
-            return InternalPsiUtil.getChild(this, $nodeGetter.childIndex);
+            return ($nodeGetter.nodeTypePsi)InternalPsiUtil.getChild(this, $nodeGetter.childIndex);
         }
     #end
 
