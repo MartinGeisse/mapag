@@ -74,6 +74,7 @@ public class PsiClassesGenerator {
 	private void generateSingleAlternativeClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
 		classGenerator.cmName = IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative);
+		classGenerator.cmSuperclass = null;
 		classGenerator.superclass = "ASTWrapperPsiElement";
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
@@ -83,6 +84,7 @@ public class PsiClassesGenerator {
 	private void generateMultiAlternativeBaseClass(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
 		classGenerator.cmName = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition);
+		classGenerator.cmSuperclass = null;
 		classGenerator.superclass = "ASTWrapperPsiElement";
 		classGenerator.isAbstract = true;
 		classGenerator.alternative = null;
@@ -92,7 +94,8 @@ public class PsiClassesGenerator {
 	private void generateMultiAlternativeCaseClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
 		PsiClassGenerator classGenerator = new PsiClassGenerator();
 		classGenerator.cmName = IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative);
-		classGenerator.superclass = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition) + "Impl";
+		classGenerator.cmSuperclass = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition);
+		classGenerator.superclass = classGenerator.cmSuperclass + "Impl";
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
 		classGenerator.generate();
@@ -101,6 +104,7 @@ public class PsiClassesGenerator {
 	private class PsiClassGenerator {
 
 		String cmName;
+		String cmSuperclass;
 		String superclass;
 		boolean isAbstract;
 		Alternative alternative;
@@ -149,7 +153,7 @@ public class PsiClassesGenerator {
 				if (!isAbstract) {
 					customNameImplementation = true;
 				}
-			} else if (classesSupportPsiNamedElement.contains(superclass)) {
+			} else if (classesSupportPsiNamedElement.contains(cmSuperclass)) {
 				if (!isAbstract) {
 					customNameImplementation = true;
 				}
@@ -160,7 +164,7 @@ public class PsiClassesGenerator {
 				if (!isAbstract) {
 					customNameIdentifierImplementation = true;
 				}
-			} else if (classesSupportPsiNameIdentifierOwner.contains(superclass)) {
+			} else if (classesSupportPsiNameIdentifierOwner.contains(cmSuperclass)) {
 				if (!isAbstract) {
 					customNameIdentifierImplementation = true;
 				}
@@ -185,7 +189,7 @@ public class PsiClassesGenerator {
 			context.put("customNameImplementation", customNameImplementation);
 			context.put("customNameIdentifierImplementation", customNameIdentifierImplementation);
 
-			if (!isAbstract && (classesSupportGetReference.contains(cmName) || classesSupportGetReference.contains(superclass))) {
+			if (!isAbstract && (classesSupportGetReference.contains(cmName) || classesSupportGetReference.contains(cmSuperclass))) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 				context.put("supportsGetReference", true);
 			} else {
@@ -193,7 +197,7 @@ public class PsiClassesGenerator {
 			}
 
 			context.put("safeDeleteBase", classesSupportSafeDelete.contains(cmName));
-			if (classesSupportSafeDelete.contains(cmName) || classesSupportSafeDelete.contains(superclass)) {
+			if (classesSupportSafeDelete.contains(cmName) || classesSupportSafeDelete.contains(cmSuperclass)) {
 				context.put("psiUtilClass", configuration.getRequired(PSI_UTIL_CLASS_PROPERTY));
 				context.put("safeDeleteImplementation", !isAbstract);
 			} else {
