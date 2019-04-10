@@ -63,7 +63,7 @@ public final class CmListImpl<T extends CmNode, PSI extends PsiElement> extends 
 	}
 
     @Override
-	public final void addAllTo(List<PSI> list) {
+	public final void addAllToPsi(List<PSI> list) {
         foreachPsi(list::add);
 	}
 
