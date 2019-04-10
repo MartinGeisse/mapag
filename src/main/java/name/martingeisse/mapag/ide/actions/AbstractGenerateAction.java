@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.Configuration;
@@ -34,7 +35,7 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 	}
 
 	protected void onConsoleOpened(AnActionEvent event, ConsoleViewImpl console) {
-		console.print("Generating MaPaG Parser...", ConsoleViewContentType.NORMAL_OUTPUT);
+		console.print("Generating MaPaG Parser...\n", ConsoleViewContentType.NORMAL_OUTPUT);
 	}
 
 	protected boolean needsPropertiesFile(AnActionEvent event) {
@@ -46,7 +47,7 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 		// we need a module to place output files in. Should this use ModuleRootManager?
 		Module module = LangDataKeys.MODULE.getData(event.getDataContext());
 		if (module == null) {
-			console.print("No module available to place output files in", ConsoleViewContentType.ERROR_OUTPUT);
+			console.print("No module available to place output files in\n", ConsoleViewContentType.ERROR_OUTPUT);
 			return;
 		}
 
@@ -61,27 +62,27 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 			try {
 
 				// create the output folder and resource folder
-				VirtualFile moduleFolder = module.getModuleFile().getParent();
-				final VirtualFile existingOutputFolder = moduleFolder.findChild("gen");
+				VirtualFile contentRoot = ModuleRootManager.getInstance(module).getContentRoots()[0];
+				final VirtualFile existingOutputFolder = contentRoot.findChild("gen_java");
 				final VirtualFile outputFolder;
 				if (existingOutputFolder == null) {
 					try {
-						outputFolder = moduleFolder.createChildDirectory(this, "gen");
+						outputFolder = contentRoot.createChildDirectory(this, "gen_java");
 					} catch (IOException e) {
-						console.print("Could not create 'gen' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
+						console.print("Could not create 'gen' folder: " + e + "\n", ConsoleViewContentType.ERROR_OUTPUT);
 						return;
 					}
 				} else {
 					outputFolder = existingOutputFolder;
 				}
-				console.print("output folder path: " + outputFolder.getCanonicalPath(), ConsoleViewContentType.NORMAL_OUTPUT);
-				final VirtualFile existingResourcesFolder = moduleFolder.findChild("gen_resources");
+				console.print("output folder path: " + outputFolder.getCanonicalPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+				final VirtualFile existingResourcesFolder = contentRoot.findChild("gen_resources");
 				final VirtualFile resourcesFolder;
 				if (existingResourcesFolder == null) {
 					try {
-						resourcesFolder = moduleFolder.createChildDirectory(this, "gen_resources");
+						resourcesFolder = contentRoot.createChildDirectory(this, "gen_resources");
 					} catch (IOException e) {
-						console.print("Could not create 'gen_resources' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
+						console.print("Could not create 'gen_resources' folder: " + e + "\n", ConsoleViewContentType.ERROR_OUTPUT);
 						return;
 					}
 				} else {
@@ -124,10 +125,10 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 			} catch (IOException e) {
 				throw new RuntimeException("unexpected IOException", e);
 			}
-			console.print("Background action completed...", ConsoleViewContentType.NORMAL_OUTPUT);
+			console.print("Background action completed...\n", ConsoleViewContentType.NORMAL_OUTPUT);
 		});
 
-		console.print("Done.", ConsoleViewContentType.NORMAL_OUTPUT);
+		console.print("Done.\n", ConsoleViewContentType.NORMAL_OUTPUT);
 	}
 
 	private VirtualFile createPackageFolder(VirtualFile parent, String packageName) throws IOException {
