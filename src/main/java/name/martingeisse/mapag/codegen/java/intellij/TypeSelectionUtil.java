@@ -34,8 +34,12 @@ public final class TypeSelectionUtil {
 		} else if (psiStyle instanceof PsiStyle.Repetition) {
 			String listElementSymbol = ((PsiStyle.Repetition) psiStyle).getElementSymbol();
 			String listElementTypeCm = getEffectiveTypeForSymbol(Usage.CM, grammar, listElementSymbol);
-			String listElementTypePsi = getEffectiveTypeForSymbol(Usage.PSI, grammar, listElementSymbol);
-			return "CmList" + (usage == Usage.PSI ? "Impl" : "") + "<" + listElementTypeCm + ", " + listElementTypePsi + ">";
+			if (usage == Usage.CM) {
+				return "CmList<" + listElementTypeCm + ">";
+			} else {
+				String listElementTypePsi = getEffectiveTypeForSymbol(Usage.PSI, grammar, listElementSymbol);
+				return "CmListImpl<" + listElementTypeCm + ", " + listElementTypePsi + ">";
+			}
 		} else {
 			throw new RuntimeException("unknown PsiStyle subclass: " + psiStyle);
 		}
