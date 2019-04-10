@@ -49,7 +49,7 @@ public abstract class AbstractParserClassGenerator {
 		// determine full package name
 		String basePackageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE);
 		String cmPackageName = basePackageName + ".cm";
-		String packageName = cmPackageName + ".impl";
+		String cmImplPackageName = cmPackageName + ".impl";
 		String symbolHolderPrefix = configuration.getRequired(SYMBOL_HOLDER_CLASS_NAME_PROPERTY);
 
 		StateMachineEncoder stateMachineEncoder = new StateMachineEncoder(grammarInfo, stateMachine);
@@ -64,7 +64,7 @@ public abstract class AbstractParserClassGenerator {
 		VelocityContext context = new VelocityContext();
 		context.put("basePackageName", basePackageName);
 		context.put("cmPackageName", cmPackageName);
-		context.put("packageName", packageName);
+		context.put("cmImplPackageName", cmImplPackageName);
 		context.put("className", configuration.getRequired(CLASS_NAME_PROPERTY));
 		context.put("debug", "true".equals(configuration.getOptional(DEBUG_PROPERTY)));
 		{
