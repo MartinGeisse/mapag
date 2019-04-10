@@ -35,7 +35,6 @@ public final class CmListImpl<T extends CmNode, PSI extends PsiElement> extends 
         return (CmList)this;
     }
 
-    @Override
     public <X extends PsiElement> CmListImpl<T, X> castPsi(Class<X> subclass) {
         if (!elementClassPsi.isAssignableFrom(subclass)) {
             throw new ClassCastException(subclass.getName() + " is not a subclass of " + elementClassPsi.getName());
@@ -50,7 +49,6 @@ public final class CmListImpl<T extends CmNode, PSI extends PsiElement> extends 
         return list;
 	}
 
-    @Override
     public final List<PSI> getAllPsi() {
         List<PSI> list = new ArrayList<>();
         addAllToPsi(list);
@@ -62,7 +60,6 @@ public final class CmListImpl<T extends CmNode, PSI extends PsiElement> extends 
         foreach(list::add);
 	}
 
-    @Override
 	public final void addAllToPsi(List<PSI> list) {
         foreachPsi(list::add);
 	}
@@ -72,7 +69,6 @@ public final class CmListImpl<T extends CmNode, PSI extends PsiElement> extends 
         foreach(builder::add);
 	}
 
-    @Override
 	public final void addAllToPsi(ImmutableList.Builder<PSI> builder) {
         foreachPsi(builder::add);
 	}
@@ -84,15 +80,14 @@ public final class CmListImpl<T extends CmNode, PSI extends PsiElement> extends 
         });
     }
 
-    @Override
     public final void foreachPsi(Consumer<PSI> consumer) {
         InternalPsiUtil.foreachChild(this, child -> {
             if (elementTypes.contains(child.getNode().getElementType())) {
                 consumer.accept(elementClassPsi.cast(child));
                 return;
             }
-            if (child instanceof CmListImpl<?> && child.getNode().getElementType() == getNode().getElementType()) {
-                CmListImpl<?> typedChild = (CmListImpl<?>)child;
+            if (child instanceof CmListImpl<?, ?> && child.getNode().getElementType() == getNode().getElementType()) {
+                CmListImpl<?, ?> typedChild = (CmListImpl<?, ?>)child;
                 typedChild.castPsi(elementClassPsi).foreachPsi(consumer);
             }
         });
