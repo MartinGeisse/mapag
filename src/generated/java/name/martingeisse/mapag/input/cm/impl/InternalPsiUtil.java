@@ -77,7 +77,7 @@ public final class InternalPsiUtil {
         if (cm instanceof PsiElement) {
             return (PsiElement)cm;
         } else if (cm instanceof CmToken) {
-            throw new RuntimeException("not yet implemented");
+			return ((CmTokenImpl)cm).getPsi();
         } else {
             throw new RuntimeException("found CM node that is neither a PSI node nor a token: " + cm);
         }
