@@ -5,6 +5,7 @@ import name.martingeisse.mapag.codegen.CodeGenerationParameters;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.java.intellij.IntellijCodeGenerationDriver;
+import name.martingeisse.mapag.codegen.java.standalone.StandaloneCodeGenerationDriver;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.extended.Grammar;
@@ -33,7 +34,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 	private static void run() throws Exception {
 		Properties codeGenerationProperties = new Properties();
 
-		codeGenerationProperties.setProperty("package", "name.martingeisse.mapag.input");
+		codeGenerationProperties.setProperty("package", "name.martingeisse.mapag.test");
 
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
 		// codeGenerationProperties.setProperty("parser.debug", "true");
@@ -326,7 +327,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
 		};
 		CodeGenerationParameters parameters = new CodeGenerationParameters(grammarInfo, stateMachine, configuration, outputFileFactory);
-		new IntellijCodeGenerationDriver().generate(parameters);
+		new StandaloneCodeGenerationDriver().generate(parameters);
 
 	}
 

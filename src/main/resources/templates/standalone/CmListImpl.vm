@@ -1,13 +1,15 @@
 package $packageName;
 
-import ${cmPackage}.CmNode;
-import ${cmPackage}.CmList;
+import com.google.common.collect.ImmutableList;
+
+import ${basePackageName}.cm.CmNode;
+import ${basePackageName}.cm.CmList;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.ArrayList;
 
-public final class CmListImpl<T extends CmNode> implements CmList<T> {
+public final class CmListImpl<T extends CmNode> extends CmNodeImpl implements CmList<T> {
 
     private final IElementType[] elementTypes;
     private final Class<T> elementClass;

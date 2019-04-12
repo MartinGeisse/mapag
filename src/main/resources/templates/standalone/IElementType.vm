@@ -1,5 +1,7 @@
 package ${packageName};
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class IElementType {
 
 	private static final AtomicInteger INDEX_ALLOCATOR = new AtomicInteger();
@@ -7,7 +9,7 @@ public class IElementType {
 	private final int index;
 	private final String debugName;
 
-	public IElementType(String debugName, Language ignored) {
+	public IElementType(String debugName) {
 		this.index = INDEX_ALLOCATOR.getAndIncrement();
 		this.debugName = debugName;
 	}

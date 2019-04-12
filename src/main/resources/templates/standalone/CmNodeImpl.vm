@@ -1,0 +1,22 @@
+package $packageName;
+
+import ${basePackageName}.cm.CmNode;
+
+public abstract class CmNodeImpl implements CmNode {
+
+    private CmNode parent;
+
+    void setParent(CmNode parent) {
+        this.parent = parent;
+    }
+
+    public CmNode getCmParent() {
+        return parent;
+    }
+
+    public int compareStartOffset(CmNode other) {
+        // TODO
+        return 0;
+    }
+
+}

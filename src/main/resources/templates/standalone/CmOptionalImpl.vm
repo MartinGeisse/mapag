@@ -1,12 +1,13 @@
 package $packageName;
 
-import ${cmPackage}.CmNode;
+import ${basePackageName}.cm.CmNode;
+import ${basePackageName}.cm.CmOptional;
 
-public final class Optional<T extends CmNode> implements CmOptional<T> {
+public final class CmOptionalImpl<T extends CmNode> extends CmNodeImpl implements CmOptional<T> {
 
     private final T it;
 
-    public Optional(Object[] reduction) {
+    public CmOptionalImpl(Object[] reduction) {
     // TODO
     }
 

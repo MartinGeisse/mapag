@@ -24,6 +24,7 @@ public class StandaloneImplementationCodeGenerationDriver implements CodeGenerat
 		String subpackage = "cm.impl";
 
 		// generate helper classes
+		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmNodeImpl", parameters);
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmListImpl", parameters);
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmOptionalImpl", parameters);
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmTokenImpl", parameters);
