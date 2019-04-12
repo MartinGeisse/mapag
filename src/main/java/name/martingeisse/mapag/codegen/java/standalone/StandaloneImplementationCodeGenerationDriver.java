@@ -30,7 +30,15 @@ public class StandaloneImplementationCodeGenerationDriver implements CodeGenerat
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "CmTokenImpl", parameters);
 		HelperClassGenerator.generate(templateSubfolder, subpackage, "IElementType", parameters);
 
-		// TODO
+		// generate code model and implementation
+		new CmImplementationGenerator(parameters).generate();
+
+		// generate symbol holder
+		new SymbolHolderClassGenerator(parameters).generate();
+
+		// generate parser
+		new ParserClassGenerator(parameters).generate();
+
 	}
 
 }
