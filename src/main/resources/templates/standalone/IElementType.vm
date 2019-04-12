@@ -8,10 +8,12 @@ public class IElementType {
 
 	private final int index;
 	private final String debugName;
+	private final CmNodeFactory cmNodeFactory;
 
-	public IElementType(String debugName) {
+	public IElementType(String debugName, CmNodeFactory cmNodeFactory) {
 		this.index = INDEX_ALLOCATOR.getAndIncrement();
 		this.debugName = debugName;
+		this.cmNodeFactory = cmNodeFactory;
 	}
 
 	public int getIndex() {
@@ -20,6 +22,10 @@ public class IElementType {
 
 	public String getDebugName() {
 		return debugName;
+	}
+
+	public CmNodeFactory getCmNodeFactory() {
+	    return cmNodeFactory;
 	}
 
 	@Override
@@ -31,5 +37,9 @@ public class IElementType {
 	public String toString() {
 		return debugName;
 	}
+
+    public interface CmNodeFactory {
+        CmNode createCmNode(Object[] childNodes);
+    }
 
 }

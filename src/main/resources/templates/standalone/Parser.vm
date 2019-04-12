@@ -3,9 +3,7 @@
 #set($badCharacterElementType = "IElementType.BAD_CHARACTER")
 
 #define($imports)
-import ${psiPackageName}.IElementType;
-import ${psiPackageName}.ASTNode;
-import ${psiPackageName}.PsiElement;
+import ${cmImplPackageName}.IElementType;
 #end
 
 #define($implements)

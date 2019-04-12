@@ -34,11 +34,14 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 	private static void run() throws Exception {
 		Properties codeGenerationProperties = new Properties();
 
+		// TODO changed
 		codeGenerationProperties.setProperty("package", "name.martingeisse.mapag.test");
 
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
 		// codeGenerationProperties.setProperty("parser.debug", "true");
-		codeGenerationProperties.setProperty("symbol.elementType.class", "MapagElementType");
+		// TODO changed
+		// codeGenerationProperties.setProperty("symbol.elementType.class", "MapagElementType");
+		codeGenerationProperties.setProperty("symbol.elementType.class", "IElementType");
 		codeGenerationProperties.setProperty("symbol.holder.class", "Symbols");
 
 		codeGenerationProperties.setProperty("intellij.psi.utilClass", "name.martingeisse.mapag.input.psi.PsiUtil");
@@ -327,6 +330,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
 		};
 		CodeGenerationParameters parameters = new CodeGenerationParameters(grammarInfo, stateMachine, configuration, outputFileFactory);
+		// TODO changed
 		new StandaloneCodeGenerationDriver().generate(parameters);
 
 	}

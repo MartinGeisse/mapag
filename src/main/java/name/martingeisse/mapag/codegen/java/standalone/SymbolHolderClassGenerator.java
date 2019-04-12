@@ -15,6 +15,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -40,17 +41,21 @@ public class SymbolHolderClassGenerator {
 	public void generate() throws ConfigurationException, IOException {
 		String packageName = configuration.getRequired(JavaPropertyNames.BASE_PACKAGE);
 
-		List<String> nonterminalAlternatives = new ArrayList<>();
+		List<NonterminalAlternativeEntry> nonterminalAlternatives = new ArrayList<>();
 		for (NonterminalDefinition nonterminal : grammar.getNonterminalDefinitions().values()) {
 			if (nonterminal.getPsiStyle().isDistinctSymbolPerAlternative()) {
 				for (Alternative alternative : nonterminal.getAlternatives()) {
-					nonterminalAlternatives.add(IdentifierUtil.getAlternativeVariableIdentifier(nonterminal, alternative));
+					String variable = IdentifierUtil.getAlternativeVariableIdentifier(nonterminal, alternative);
+					String implementationClass = IdentifierUtil.getAlternativeTypeIdentifier(nonterminal, alternative) + "Impl";
+					nonterminalAlternatives.add(new NonterminalAlternativeEntry(variable, implementationClass));
 				}
 			} else {
-				nonterminalAlternatives.add(IdentifierUtil.getNonterminalVariableIdentifier(nonterminal));
+				String variable = IdentifierUtil.getNonterminalVariableIdentifier(nonterminal);
+				String implementationClass = IdentifierUtil.getNonterminalTypeIdentifier(nonterminal) + "Impl";
+				nonterminalAlternatives.add(new NonterminalAlternativeEntry(variable, implementationClass));
 			}
 		}
-		Collections.sort(nonterminalAlternatives);
+		Collections.sort(nonterminalAlternatives, Comparator.comparing(NonterminalAlternativeEntry::getVariable));
 
 		VelocityContext context = new VelocityContext();
 		context.put("packageName", packageName);
@@ -64,6 +69,26 @@ public class SymbolHolderClassGenerator {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
 				MapagVelocityEngine.engine.getTemplate("templates/standalone/SymbolHolder.vm").merge(context, outputStreamWriter);
 			}
+		}
+
+	}
+
+	public static final class NonterminalAlternativeEntry {
+
+		private final String variable;
+		private final String implementationClass;
+
+		public NonterminalAlternativeEntry(String variable, String implementationClass) {
+			this.variable = variable;
+			this.implementationClass = implementationClass;
+		}
+
+		public String getVariable() {
+			return variable;
+		}
+
+		public String getImplementationClass() {
+			return implementationClass;
 		}
 
 	}
