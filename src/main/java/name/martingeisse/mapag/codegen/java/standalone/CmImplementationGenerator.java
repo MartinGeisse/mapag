@@ -129,7 +129,6 @@ public class CmImplementationGenerator {
 
 			List<String> interfaces = new ArrayList<>();
 			interfaces.add(cmName);
-			interfaces.add("PsiCm");
 			boolean customNameImplementation = false;
 			boolean customNameIdentifierImplementation = false;
 

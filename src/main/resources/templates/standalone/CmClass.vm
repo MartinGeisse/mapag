@@ -15,7 +15,7 @@ public $classModifiers class $className extends $superclass $interfaces {
     }
 
     #foreach($child in $children)
-	    public $child.nodeTypeCm ${nodeGetter.getterName}() {
+	    public $child.nodeTypeCm ${child.getterName}() {
             return $child.nodeName;
         }
     #end

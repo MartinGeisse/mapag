@@ -1,6 +1,6 @@
 package ${packageName};
 
-import ${cmPackageName}.CmNode;
+import ${basePackageName}.cm.CmNode;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
