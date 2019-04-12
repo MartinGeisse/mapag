@@ -1,0 +1,7 @@
+package $packageName;
+
+import ${cmPackage}.CmToken;
+
+public final class CmTokenImpl implements CmToken {
+
+}

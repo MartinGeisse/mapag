@@ -1,0 +1,17 @@
+package $packageName;
+
+import ${cmPackage}.CmNode;
+
+public final class Optional<T extends CmNode> implements CmOptional<T> {
+
+    private final T it;
+
+    public Optional(Object[] reduction) {
+    // TODO
+    }
+
+    public T getIt() {
+        return it;
+    }
+
+}
