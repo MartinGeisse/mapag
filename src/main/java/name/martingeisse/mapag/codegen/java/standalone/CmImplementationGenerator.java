@@ -107,6 +107,7 @@ public class CmImplementationGenerator {
 			context.put("packageName", packageName);
 			context.put("className", cmName + "Impl");
 			context.put("superclass", superclass);
+			context.put("isAbstract", isAbstract);
 			context.put("classModifiers", isAbstract ? "abstract" : "final");
 
 			List<Child> children = new ArrayList<>();
