@@ -1,6 +1,6 @@
 package $packageName;
 
-import ${basePackageName}.cm.impl.*;
+import ${packageName}.cm.impl.*;
 
 public class $className {
 
