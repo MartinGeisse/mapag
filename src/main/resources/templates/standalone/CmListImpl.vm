@@ -11,41 +11,15 @@ import java.util.ArrayList;
 
 public final class CmListImpl<T extends CmNode> extends CmNodeImpl implements CmList<T> {
 
-    private final IElementType[] elementTypes;
     private final Class<T> elementClass;
     private final List<T> elements;
 
-    public CmListImpl(IElementType[] elementTypes, Class<T> elementClass, Object[] reduction) {
-        this.elementTypes = elementTypes;
+    public CmListImpl(Class<T> elementClass, Object[] childNodes) {
         this.elementClass = elementClass;
-        this.elements = ;
-
-        /*
-        TODO handle mergeable sublists here
-
-
-        InternalPsiUtil.foreachChild(this, child -> {
-            #if($intellij)
-                if (elementTypes.contains(child.getNode().getElementType())) {
-                    consumer.accept(elementClass.cast(child));
-                    return;
-                }
-            #else
-                IElementType childType = child.getNode().getElementType();
-                for (IElementType elementType : elementTypes) {
-                    if (childType == elementType) {
-                        consumer.accept(elementClass.cast(child));
-                        return;
-                    }
-                }
-            #end
-            if (child instanceof CmListImpl<?> && child.getNode().getElementType() == getNode().getElementType()) {
-                CmListImpl<?> typedChild = (CmListImpl<?>)child;
-                typedChild.cast(elementClass).foreach(consumer);
-            }
-        });
-
-        */
+        this.elements = new ArrayList<>();
+        for (Object childNode : childNodes) {
+            elements.add(elementClass.cast(childNode));
+        }
     }
 
     public <S extends CmNode> CmListImpl<S> cast(Class<S> subclass) {

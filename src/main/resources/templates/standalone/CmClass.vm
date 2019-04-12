@@ -4,12 +4,19 @@ import ${cmPackageName}.*;
 
 public $classModifiers class $className extends $superclass $interfaces {
 
+    #foreach($child in $children)
+        private final $child.nodeTypeCm $child.nodeName;
+    #end
+
     public $className(Object[] childNodes) {
+        #foreach($child in $children)
+            this.${child.nodeName} = ($child.nodeTypeCm)childNodes[$child.childIndex];
+        #end
     }
 
-    #foreach($nodeGetter in $nodeGetters)
-	    public $nodeGetter.nodeTypeCm ${nodeGetter.getterName}() {
-            return ($nodeGetter.nodeTypeCm)InternalPsiUtil.getCmFromPsi(InternalPsiUtil.getChild(this, $nodeGetter.childIndex));
+    #foreach($child in $children)
+	    public $child.nodeTypeCm ${nodeGetter.getterName}() {
+            return $child.nodeName;
         }
     #end
 

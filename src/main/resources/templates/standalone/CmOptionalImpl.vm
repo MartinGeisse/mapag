@@ -7,8 +7,8 @@ public final class CmOptionalImpl<T extends CmNode> extends CmNodeImpl implement
 
     private final T it;
 
-    public CmOptionalImpl(Object[] reduction) {
-    // TODO
+    public CmOptionalImpl(Object[] childNodes) {
+        this.it = (childNodes.length == 0 ? null : (T)childNodes[0]);
     }
 
     public T getIt() {

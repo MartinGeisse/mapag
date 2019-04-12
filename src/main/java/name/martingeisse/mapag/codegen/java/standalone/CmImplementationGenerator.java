@@ -109,22 +109,23 @@ public class CmImplementationGenerator {
 			context.put("superclass", superclass);
 			context.put("classModifiers", isAbstract ? "abstract" : "final");
 
-			List<NodeGetter> nodeGetters = new ArrayList<>();
+			List<Child> children = new ArrayList<>();
 			if (alternative != null) {
 				int childIndex = 0;
 				for (ExpansionElement element : alternative.getExpansion().getElements()) {
 					String expressionName = element.getExpressionName();
 					if (expressionName != null) {
-						NodeGetter nodeGetter = new NodeGetter();
+						Child nodeGetter = new Child();
 						nodeGetter.childIndex = childIndex;
 						nodeGetter.nodeTypeCm = TypeSelectionUtil.getEffectiveTypeForSymbol(TypeSelectionUtil.Usage.CM, grammar, element.getSymbol());
+						nodeGetter.nodeName = expressionName;
 						nodeGetter.getterName = "get" + StringUtils.capitalize(expressionName);
-						nodeGetters.add(nodeGetter);
+						children.add(nodeGetter);
 					}
 					childIndex++;
 				}
 			}
-			context.put("nodeGetters", nodeGetters);
+			context.put("children", children);
 
 			List<String> interfaces = new ArrayList<>();
 			interfaces.add(cmName);
@@ -158,10 +159,11 @@ public class CmImplementationGenerator {
 
 	}
 
-	public class NodeGetter {
+	public class Child {
 
 		int childIndex;
 		String nodeTypeCm;
+		String nodeName;
 		String getterName;
 
 		public int getChildIndex() {
@@ -170,6 +172,10 @@ public class CmImplementationGenerator {
 
 		public String getNodeTypeCm() {
 			return nodeTypeCm;
+		}
+
+		public String getNodeName() {
+			return nodeName;
 		}
 
 		public String getGetterName() {

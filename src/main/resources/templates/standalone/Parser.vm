@@ -47,6 +47,38 @@ import ${cmImplPackageName}.IElementType;
             nextToken();
             return node;
 	    } else if (what instanceof Object[]) {
+
+
+        /*
+        TODO handle mergeable sublists here
+
+
+        InternalPsiUtil.foreachChild(this, child -> {
+            #if($intellij)
+                if (elementTypes.contains(child.getNode().getElementType())) {
+                    consumer.accept(elementClass.cast(child));
+                    return;
+                }
+            #else
+                IElementType childType = child.getNode().getElementType();
+                for (IElementType elementType : elementTypes) {
+                    if (childType == elementType) {
+                        consumer.accept(elementClass.cast(child));
+                        return;
+                    }
+                }
+            #end
+            if (child instanceof CmListImpl<?> && child.getNode().getElementType() == getNode().getElementType()) {
+                CmListImpl<?> typedChild = (CmListImpl<?>)child;
+                typedChild.cast(elementClass).foreach(consumer);
+            }
+        });
+
+        */
+
+
+
+
 			Object[] reduction = (Object[]) what;
 			IElementType elementType;
 			boolean publicNode;
