@@ -1,6 +1,5 @@
 package name.martingeisse.mapag.codegen.java.standalone;
 
-import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.*;
 import name.martingeisse.mapag.codegen.java.IdentifierUtil;
 import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
@@ -58,27 +57,27 @@ public class CmImplementationGenerator {
 	}
 
 	private void generateSingleAlternativeClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
-		PsiClassGenerator classGenerator = new PsiClassGenerator();
+		ImplementationClassGenerator classGenerator = new ImplementationClassGenerator();
 		classGenerator.cmName = IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative);
 		classGenerator.cmSuperclass = null;
-		classGenerator.superclass = "ASTWrapperPsiElement";
+		classGenerator.superclass = "CmNodeImpl";
 		classGenerator.isAbstract = false;
 		classGenerator.alternative = alternative;
 		classGenerator.generate();
 	}
 
 	private void generateMultiAlternativeBaseClass(NonterminalDefinition nonterminalDefinition) throws ConfigurationException, IOException {
-		PsiClassGenerator classGenerator = new PsiClassGenerator();
+		ImplementationClassGenerator classGenerator = new ImplementationClassGenerator();
 		classGenerator.cmName = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition);
 		classGenerator.cmSuperclass = null;
-		classGenerator.superclass = "ASTWrapperPsiElement";
+		classGenerator.superclass = "CmNodeImpl";
 		classGenerator.isAbstract = true;
 		classGenerator.alternative = null;
 		classGenerator.generate();
 	}
 
 	private void generateMultiAlternativeCaseClass(NonterminalDefinition nonterminalDefinition, Alternative alternative) throws ConfigurationException, IOException {
-		PsiClassGenerator classGenerator = new PsiClassGenerator();
+		ImplementationClassGenerator classGenerator = new ImplementationClassGenerator();
 		classGenerator.cmName = IdentifierUtil.getAlternativeTypeIdentifier(nonterminalDefinition, alternative);
 		classGenerator.cmSuperclass = IdentifierUtil.getNonterminalTypeIdentifier(nonterminalDefinition);
 		classGenerator.superclass = classGenerator.cmSuperclass + "Impl";
@@ -87,7 +86,7 @@ public class CmImplementationGenerator {
 		classGenerator.generate();
 	}
 
-	private class PsiClassGenerator {
+	private class ImplementationClassGenerator {
 
 		String cmName;
 		String cmSuperclass;
@@ -119,7 +118,6 @@ public class CmImplementationGenerator {
 						NodeGetter nodeGetter = new NodeGetter();
 						nodeGetter.childIndex = childIndex;
 						nodeGetter.nodeTypeCm = TypeSelectionUtil.getEffectiveTypeForSymbol(TypeSelectionUtil.Usage.CM, grammar, element.getSymbol());
-						nodeGetter.nodeTypePsi = TypeSelectionUtil.getEffectiveTypeForSymbol(TypeSelectionUtil.Usage.IMPL, grammar, element.getSymbol());
 						nodeGetter.getterName = "get" + StringUtils.capitalize(expressionName);
 						nodeGetters.add(nodeGetter);
 					}
@@ -164,7 +162,6 @@ public class CmImplementationGenerator {
 
 		int childIndex;
 		String nodeTypeCm;
-		String nodeTypePsi;
 		String getterName;
 
 		public int getChildIndex() {
@@ -173,10 +170,6 @@ public class CmImplementationGenerator {
 
 		public String getNodeTypeCm() {
 			return nodeTypeCm;
-		}
-
-		public String getNodeTypePsi() {
-			return nodeTypePsi;
 		}
 
 		public String getGetterName() {
