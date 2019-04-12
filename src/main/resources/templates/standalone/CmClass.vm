@@ -4,8 +4,7 @@ import ${cmPackageName}.*;
 
 public $classModifiers class $className extends $superclass $interfaces {
 
-    public $className(@NotNull ASTNode node) {
-        super(node);
+    public $className(Object[] childNodes) {
     }
 
     #foreach($nodeGetter in $nodeGetters)

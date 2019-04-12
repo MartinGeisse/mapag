@@ -4,6 +4,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class IElementType {
 
+    public static final IElementType BAD_CHARACTER = new IElementType("%badchar", null);
+
 	private static final AtomicInteger INDEX_ALLOCATOR = new AtomicInteger();
 
 	private final int index;

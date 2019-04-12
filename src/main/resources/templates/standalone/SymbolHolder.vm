@@ -1,5 +1,7 @@
 package $packageName;
 
+import ${basePackageName}.cm.impl.*;
+
 public class $className {
 
 	//
