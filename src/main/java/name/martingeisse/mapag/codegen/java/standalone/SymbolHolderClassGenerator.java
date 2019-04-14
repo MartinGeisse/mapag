@@ -48,13 +48,22 @@ public class SymbolHolderClassGenerator {
 				for (Alternative alternative : nonterminal.getAlternatives()) {
 					String variable = IdentifierUtil.getAlternativeVariableIdentifier(nonterminal, alternative);
 					String implementationClass = IdentifierUtil.getAlternativeTypeIdentifier(nonterminal, alternative) + "Impl";
-					nonterminalAlternatives.add(new NonterminalAlternativeEntry(variable, implementationClass, true));
+					String factory = implementationClass + "::new";
+					nonterminalAlternatives.add(new NonterminalAlternativeEntry(variable, implementationClass, factory));
 				}
 			} else {
 				String variable = IdentifierUtil.getNonterminalVariableIdentifier(nonterminal);
 				String implementationClass = IdentifierUtil.getNonterminalTypeIdentifier(nonterminal) + "Impl";
-				boolean useFactory = nonterminal.getPsiStyle() instanceof PsiStyle.Optional;
-				nonterminalAlternatives.add(new NonterminalAlternativeEntry(variable, implementationClass, useFactory));
+				PsiStyle psiStyle = nonterminal.getPsiStyle();
+				String factory;
+				if (psiStyle instanceof PsiStyle.Optional) {
+					factory = "CmOptionalImpl::new";
+				} else if (psiStyle instanceof PsiStyle.Repetition) {
+					factory = "(row, column, childNodes) -> new CmListImpl(row, column, TODO, childNodes)";
+				} else {
+					throw new RuntimeException("unknown PSI style: " + psiStyle);
+				}
+				nonterminalAlternatives.add(new NonterminalAlternativeEntry(variable, implementationClass, factory));
 			}
 		}
 		Collections.sort(nonterminalAlternatives, Comparator.comparing(NonterminalAlternativeEntry::getVariable));
@@ -79,12 +88,12 @@ public class SymbolHolderClassGenerator {
 
 		private final String variable;
 		private final String implementationClass;
-		private final boolean useFactory;
+		private final String factory;
 
-		public NonterminalAlternativeEntry(String variable, String implementationClass, boolean useFactory) {
+		public NonterminalAlternativeEntry(String variable, String implementationClass, String factory) {
 			this.variable = variable;
 			this.implementationClass = implementationClass;
-			this.useFactory = useFactory;
+			this.factory = factory;
 		}
 
 		public String getVariable() {
@@ -95,8 +104,8 @@ public class SymbolHolderClassGenerator {
 			return implementationClass;
 		}
 
-		public boolean isUseFactory() {
-			return useFactory;
+		public String getFactory() {
+			return factory;
 		}
 
 	}
