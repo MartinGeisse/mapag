@@ -18,7 +18,11 @@ public class $className {
 	//
 
 #foreach($nonterminalAlternative in $nonterminalAlternatives)
-	public static final $nonterminalElementTypeClass $nonterminalAlternative.variable = new $nonterminalElementTypeClass("$nonterminalAlternative.variable", $nonterminalAlternative.implementationClass::new);
+    #if($nonterminalAlternative.useFactory)
+	    public static final $nonterminalElementTypeClass $nonterminalAlternative.variable = new $nonterminalElementTypeClass("$nonterminalAlternative.variable", $nonterminalAlternative.implementationClass::new);
+    #else
+	    public static final $nonterminalElementTypeClass $nonterminalAlternative.variable = new $nonterminalElementTypeClass("$nonterminalAlternative.variable", null);
+    #end
 #end
 
 

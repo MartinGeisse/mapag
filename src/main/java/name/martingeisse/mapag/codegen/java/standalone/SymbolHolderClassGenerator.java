@@ -6,6 +6,7 @@ import name.martingeisse.mapag.codegen.java.JavaPropertyNames;
 import name.martingeisse.mapag.grammar.canonical.Alternative;
 import name.martingeisse.mapag.grammar.canonical.Grammar;
 import name.martingeisse.mapag.grammar.canonical.NonterminalDefinition;
+import name.martingeisse.mapag.grammar.canonical.PsiStyle;
 import name.martingeisse.mapag.util.ListUtil;
 import org.apache.velocity.VelocityContext;
 
@@ -47,12 +48,13 @@ public class SymbolHolderClassGenerator {
 				for (Alternative alternative : nonterminal.getAlternatives()) {
 					String variable = IdentifierUtil.getAlternativeVariableIdentifier(nonterminal, alternative);
 					String implementationClass = IdentifierUtil.getAlternativeTypeIdentifier(nonterminal, alternative) + "Impl";
-					nonterminalAlternatives.add(new NonterminalAlternativeEntry(variable, implementationClass));
+					nonterminalAlternatives.add(new NonterminalAlternativeEntry(variable, implementationClass, true));
 				}
 			} else {
 				String variable = IdentifierUtil.getNonterminalVariableIdentifier(nonterminal);
 				String implementationClass = IdentifierUtil.getNonterminalTypeIdentifier(nonterminal) + "Impl";
-				nonterminalAlternatives.add(new NonterminalAlternativeEntry(variable, implementationClass));
+				boolean useFactory = nonterminal.getPsiStyle() instanceof PsiStyle.Optional;
+				nonterminalAlternatives.add(new NonterminalAlternativeEntry(variable, implementationClass, useFactory));
 			}
 		}
 		Collections.sort(nonterminalAlternatives, Comparator.comparing(NonterminalAlternativeEntry::getVariable));
@@ -77,10 +79,12 @@ public class SymbolHolderClassGenerator {
 
 		private final String variable;
 		private final String implementationClass;
+		private final boolean useFactory;
 
-		public NonterminalAlternativeEntry(String variable, String implementationClass) {
+		public NonterminalAlternativeEntry(String variable, String implementationClass, boolean useFactory) {
 			this.variable = variable;
 			this.implementationClass = implementationClass;
+			this.useFactory = useFactory;
 		}
 
 		public String getVariable() {
@@ -89,6 +93,10 @@ public class SymbolHolderClassGenerator {
 
 		public String getImplementationClass() {
 			return implementationClass;
+		}
+
+		public boolean isUseFactory() {
+			return useFactory;
 		}
 
 	}
