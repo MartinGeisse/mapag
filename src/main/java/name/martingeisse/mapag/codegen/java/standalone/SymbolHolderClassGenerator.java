@@ -60,7 +60,7 @@ public class SymbolHolderClassGenerator {
 					factory = "CmOptionalImpl::new";
 				} else if (psiStyle instanceof PsiStyle.Repetition) {
 					PsiStyle.Repetition repetitionStyle = (PsiStyle.Repetition)psiStyle;
-					String elementType = IdentifierUtil.getNonterminalTypeIdentifier(repetitionStyle.getElementSymbol());
+					String elementType = TypeSelectionUtil.getEffectiveTypeForSymbol(TypeSelectionUtil.Usage.CM, grammar, repetitionStyle.getElementSymbol());
 					factory = "(row, column, childNodes) -> new CmListImpl<>(row, column, " + elementType + ".class, childNodes)";
 				} else {
 					throw new RuntimeException("unknown PSI style: " + psiStyle);
