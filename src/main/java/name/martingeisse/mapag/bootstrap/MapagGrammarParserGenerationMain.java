@@ -5,7 +5,6 @@ import name.martingeisse.mapag.codegen.CodeGenerationParameters;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.java.intellij.IntellijCodeGenerationDriver;
-import name.martingeisse.mapag.codegen.java.standalone.StandaloneCodeGenerationDriver;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.extended.Grammar;
@@ -34,14 +33,11 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 	private static void run() throws Exception {
 		Properties codeGenerationProperties = new Properties();
 
-		// TODO changed
-		codeGenerationProperties.setProperty("package", "name.martingeisse.mapag.test");
+		codeGenerationProperties.setProperty("package", "name.martingeisse.mapag.input");
 
 		codeGenerationProperties.setProperty("parser.class", "MapagGeneratedMapagParser");
 		// codeGenerationProperties.setProperty("parser.debug", "true");
-		// TODO changed
-		// codeGenerationProperties.setProperty("symbol.elementType.class", "MapagElementType");
-		codeGenerationProperties.setProperty("symbol.elementType.class", "IElementType");
+		codeGenerationProperties.setProperty("symbol.elementType.class", "MapagElementType");
 		codeGenerationProperties.setProperty("symbol.holder.class", "Symbols");
 
 		codeGenerationProperties.setProperty("intellij.psi.utilClass", "name.martingeisse.mapag.input.psi.PsiUtil");
@@ -330,8 +326,7 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
 		};
 		CodeGenerationParameters parameters = new CodeGenerationParameters(grammarInfo, stateMachine, configuration, outputFileFactory);
-		// TODO changed
-		new StandaloneCodeGenerationDriver().generate(parameters);
+		new IntellijCodeGenerationDriver().generate(parameters);
 
 	}
 
