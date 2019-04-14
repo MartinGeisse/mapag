@@ -40,10 +40,15 @@ import ${cmImplPackageName}.CmTokenImpl;
     }
 
     private void reportErrorForCurrentToken(String errorMessage) {
-        // TODO
+		int errorTokenIndex = isAtEof() ? (tokens.size() - 1) : tokenPointer;
+		reportError(tokens[tokenPointer], errorMessage);
     }
 
-	private CmTokenImpl buildCm(Object what, IElementType parentElementType) {
+    protected void reportError(CmTokenImpl token, String message) {
+        System.err.println("syntax error in row " + row + ", column " + column + ": " + message);
+    }
+
+	private CmNode buildCm(Object what, IElementType parentElementType) {
 	    if (what == null) {
 	        CmTokenImpl node = getToken();
             nextToken();
@@ -92,7 +97,7 @@ import ${cmImplPackageName}.CmTokenImpl;
 				elementType = (IElementType)reduction[0];
 				publicNode = true;
 			}
-			List<CmTokenImpl> childNodes = new ArrayList<>();
+			List<CmNode> childNodes = new ArrayList<>();
 			for (int i = 1; i < reduction.length; i++) {
 				childNodes.add(buildCm(reduction[i], elementType));
 			}
