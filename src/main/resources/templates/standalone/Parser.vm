@@ -57,21 +57,21 @@ import ${cmImplPackageName}.CmTokenImpl;
             nextToken();
             return node;
 	    } else if (what instanceof Object[]) {
+			CmTokenImpl locationToken = getLocationToken();
 			Object[] reduction = (Object[]) what;
-			IElementType elementType;
-			List<CmNode> childNodes = new ArrayList<>();
 			if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
-				elementType = listNodeGenerationWrapper.elementType;
-                collectListChildNodes(reduction, elementType, childNodes);
+    			List<CmNode> childNodes = new ArrayList<>();
+                collectListChildNodes(reduction, listNodeGenerationWrapper.elementType, childNodes);
+                // return new CmListImpl(locationToken.getRow(), locationToken.getColumn(), elementClass, childNodes);
 			} else {
-				elementType = (IElementType)reduction[0];
+    			List<CmNode> childNodes = new ArrayList<>();
                 for (int i = 1; i < reduction.length; i++) {
-                    childNodes.add(buildCm(reduction[i], elementType));
+                    childNodes.add(buildCm(reduction[i]));
                 }
+				IElementType elementType = (IElementType)reduction[0];
+			    elementType.getCmNodeFactory().createCmNode(locationToken.getRow(), locationToken.getColumn(), childNodes.toArray(new CmNode[0]));
 			}
-			CmTokenImpl locationToken = getLocationToken();
-			elementType.getCmNodeFactory().createCmNode(locationToken.getRow(), locationToken.getColumn(), childNodes.toArray(new CmNode[0]));
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
 			return buildCm(((List<?>)what).toArray());
@@ -92,13 +92,13 @@ import ${cmImplPackageName}.CmTokenImpl;
 	            Object[] subReduction = (Object[])reductionItem;
 	            if (subReduction[0] instanceof ListNodeGenerationWrapper) {
     	            ListNodeGenerationWrapper subWrapper = (ListNodeGenerationWrapper)subReduction[0];
-    	            if (wrapper.elementType == elementType) {
+    	            if (subWrapper.elementType == elementType) {
     	                collectListChildNodes(subReduction, elementType, childNodeDestination);
     	                continue;
     	            }
 	            }
 	        }
-            childNodeDestination.add(buildCm(what));
+            childNodeDestination.add(buildCm(reductionItem));
 	    }
 	}
 
