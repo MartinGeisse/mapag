@@ -3,6 +3,7 @@
 #set($badCharacterElementType = "IElementType.BAD_CHARACTER")
 
 #define($imports)
+import ${cmPackageName}.CmNode;
 import ${cmImplPackageName}.IElementType;
 import ${cmImplPackageName}.CmTokenImpl;
 #end
@@ -93,12 +94,12 @@ import ${cmImplPackageName}.CmTokenImpl;
 			}
 			List<CmTokenImpl> childNodes = new ArrayList<>();
 			for (int i = 1; i < reduction.length; i++) {
-				childNodes.add(buildAst(reduction[i], elementType));
+				childNodes.add(buildCm(reduction[i], elementType));
 			}
 			return new CmTokenImpl(elementType, childNodes.toArray(new CmTokenImpl[childNodes.size()]), publicNode);
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
-			return buildAst(((List<?>)what).toArray(), parentElementType);
+			return buildCm(((List<?>)what).toArray(), parentElementType);
 		} else if (what instanceof ErrorLocationIndicator) {
 		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
 			reportErrorForCurrentToken("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
