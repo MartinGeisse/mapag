@@ -4,6 +4,7 @@
 
 #define($imports)
 import ${cmImplPackageName}.IElementType;
+import ${cmImplPackageName}.CmTokenImpl;
 #end
 
 #define($implements)
@@ -19,7 +20,7 @@ import ${cmImplPackageName}.IElementType;
         tokenPointer = tokenMarker;
     }
 
-    private ASTNode getToken() {
+    private CmTokenImpl getToken() {
         return tokenPointer >= tokens.length ? null : tokens[tokenPointer];
     }
 
@@ -41,9 +42,9 @@ import ${cmImplPackageName}.IElementType;
         // TODO
     }
 
-	private ASTNode buildAst(Object what, IElementType parentElementType) {
+	private CmTokenImpl buildAst(Object what, IElementType parentElementType) {
 	    if (what == null) {
-	        ASTNode node = getToken();
+	        CmTokenImpl node = getToken();
             nextToken();
             return node;
 	    } else if (what instanceof Object[]) {
@@ -90,11 +91,11 @@ import ${cmImplPackageName}.IElementType;
 				elementType = (IElementType)reduction[0];
 				publicNode = true;
 			}
-			List<ASTNode> childNodes = new ArrayList<>();
+			List<CmTokenImpl> childNodes = new ArrayList<>();
 			for (int i = 1; i < reduction.length; i++) {
 				childNodes.add(buildAst(reduction[i], elementType));
 			}
-			return new ASTNode(elementType, childNodes.toArray(new ASTNode[childNodes.size()]), publicNode);
+			return new CmTokenImpl(elementType, childNodes.toArray(new CmTokenImpl[childNodes.size()]), publicNode);
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
 			return buildAst(((List<?>)what).toArray(), parentElementType);

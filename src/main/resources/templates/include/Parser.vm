@@ -131,9 +131,8 @@ public class $className $implements {
 	private PsiBuilder psiBuilder;
 	private PsiBuilder.Marker speculativeTokenConsumptionMarker;
 #else
-    private ASTNode[] tokens;
+    private CmTokenImpl[] tokens;
     private int tokenPointer, tokenMarker;
-    private ASTNode astRootNode;
 #end
 
 	private boolean used = false;
@@ -158,7 +157,7 @@ public class $className $implements {
 		parse();
 	}
 #else
-    public ASTNode parse(ASTNode[] tokens) {
+    public CmNode parse(CmTokenImpl[] tokens) {
         this.tokens = tokens;
         parse();
         return astRootNode;
