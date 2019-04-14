@@ -47,9 +47,7 @@ public class CmImplementationGenerator {
 				generateSingleAlternativeClass(nonterminalDefinition, nonterminalDefinition.getAlternatives().get(0));
 			} else {
 				generateMultiAlternativeBaseClass(nonterminalDefinition);
-				List<Alternative> sortedAlternatives = new ArrayList<>(nonterminalDefinition.getAlternatives());
-				sortedAlternatives.sort(Comparators.alternativeComparator);
-				for (Alternative alternative : sortedAlternatives) {
+				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
 					generateMultiAlternativeCaseClass(nonterminalDefinition, alternative);
 				}
 			}

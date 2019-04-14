@@ -42,9 +42,7 @@ public class CmGenerator {
 				generateSingleAlternative(nonterminalDefinition, nonterminalDefinition.getAlternatives().get(0));
 			} else {
 				generateMultiAlternativeBase(nonterminalDefinition);
-				List<Alternative> sortedAlternatives = new ArrayList<>(nonterminalDefinition.getAlternatives());
-				sortedAlternatives.sort(Comparators.alternativeComparator); // TODO why?
-				for (Alternative alternative : sortedAlternatives) {
+				for (Alternative alternative : nonterminalDefinition.getAlternatives()) {
 					generateMultiAlternativeCase(nonterminalDefinition, alternative);
 				}
 			}
