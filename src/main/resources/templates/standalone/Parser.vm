@@ -59,19 +59,19 @@ import ${cmImplPackageName}.CmTokenImpl;
 	    } else if (what instanceof Object[]) {
 			CmTokenImpl locationToken = getLocationToken();
 			Object[] reduction = (Object[]) what;
+			IElementType elementType;
+   			List<CmNode> childNodes = new ArrayList<>();
 			if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
-    			List<CmNode> childNodes = new ArrayList<>();
-                collectListChildNodes(reduction, listNodeGenerationWrapper.elementType, childNodes);
-                // return new CmListImpl(locationToken.getRow(), locationToken.getColumn(), elementClass, childNodes);
+				elementType = listNodeGenerationWrapper.elementType;
+                collectListChildNodes(reduction, elementType, childNodes);
 			} else {
-    			List<CmNode> childNodes = new ArrayList<>();
+				IElementType elementType = (IElementType)reduction[0];
                 for (int i = 1; i < reduction.length; i++) {
                     childNodes.add(buildCm(reduction[i]));
                 }
-				IElementType elementType = (IElementType)reduction[0];
-			    elementType.getCmNodeFactory().createCmNode(locationToken.getRow(), locationToken.getColumn(), childNodes.toArray(new CmNode[0]));
 			}
+            return elementType.getCmNodeFactory().createCmNode(locationToken.getRow(), locationToken.getColumn(), childNodes.toArray(new CmNode[0]));
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
 			return buildCm(((List<?>)what).toArray());
@@ -85,6 +85,7 @@ import ${cmImplPackageName}.CmTokenImpl;
 		}
 	}
 
+    // elementType is the IElementType of the list itself, not of the list's elements
 	private void collectListChildNodes(Object[] reduction, IElementType elementType, List<CmNode> childNodeDestination) {
 	    for (int i = 1; i < reduction.length; i++) {
 	        Object reductionItem = reduction[i];
