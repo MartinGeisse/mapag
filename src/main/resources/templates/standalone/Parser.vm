@@ -66,7 +66,7 @@ import ${cmImplPackageName}.CmTokenImpl;
 				elementType = listNodeGenerationWrapper.elementType;
                 collectListChildNodes(reduction, elementType, childNodes);
 			} else {
-				IElementType elementType = (IElementType)reduction[0];
+				elementType = (IElementType)reduction[0];
                 for (int i = 1; i < reduction.length; i++) {
                     childNodes.add(buildCm(reduction[i]));
                 }
@@ -82,7 +82,10 @@ import ${cmImplPackageName}.CmTokenImpl;
 		} else if (what instanceof UnrecoverableSyntaxException) {
             reportErrorForCurrentToken(((UnrecoverableSyntaxException)what).getMessage());
             tokenPointer = tokens.length;
-		}
+			return null;
+		} else {
+		    throw new RuntimeException("unknown object in raw parse tree: " + what);
+        }
 	}
 
     // elementType is the IElementType of the list itself, not of the list's elements
