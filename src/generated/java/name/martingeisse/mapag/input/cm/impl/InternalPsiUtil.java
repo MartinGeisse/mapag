@@ -76,8 +76,8 @@ public final class InternalPsiUtil {
     public static PsiElement getPsiFromCm(CmNode cm) {
         if (cm instanceof PsiElement) {
             return (PsiElement)cm;
-        } else if (cm instanceof CmToken) {
-			return ((CmTokenImpl)cm).getPsi();
+        } else if (cm instanceof CmTokenImpl) {
+            return ((CmTokenImpl)cm).getPsi();
         } else {
             throw new RuntimeException("found CM node that is neither a PSI node nor a token: " + cm);
         }

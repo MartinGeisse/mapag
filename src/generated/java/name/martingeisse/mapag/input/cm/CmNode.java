@@ -4,4 +4,6 @@ public interface CmNode {
 
 	CmNode getCmParent();
 
+	int compareStartOffset(CmNode other);
+
 }

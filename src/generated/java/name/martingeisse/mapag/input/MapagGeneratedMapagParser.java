@@ -854,6 +854,8 @@ public class MapagGeneratedMapagParser     implements PsiParser, LightPsiParser
 
 	private static class ListNodeGenerationWrapper {
 
+        // note: this is the IElementType of the list itself, not of the list's elements. The word "element" has
+        // two meanings here, unfortunately.
 		IElementType elementType;
 
 		ListNodeGenerationWrapper(IElementType elementType) {

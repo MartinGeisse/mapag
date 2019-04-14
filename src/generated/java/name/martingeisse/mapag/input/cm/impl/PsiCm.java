@@ -23,4 +23,10 @@ public interface PsiCm extends CmNode {
         return InternalPsiUtil.getCmFromPsi(parentPsi);
     }
 
+    default int compareStartOffset(CmNode other) {
+        int thisOffset = getPsi().getTextRange().getStartOffset();
+        int otherOffset = InternalPsiUtil.getPsiFromCm(other).getTextRange().getStartOffset();
+        return thisOffset - otherOffset;
+    }
+
 }
