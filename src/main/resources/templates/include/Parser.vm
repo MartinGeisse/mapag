@@ -133,6 +133,7 @@ public class $className $implements {
 #else
     private CmTokenImpl[] tokens;
     private int tokenPointer, tokenMarker;
+    private CmNode cmRootNode;
 #end
 
 	private boolean used = false;
@@ -160,7 +161,7 @@ public class $className $implements {
     public CmNode parse(CmTokenImpl[] tokens) {
         this.tokens = tokens;
         parse();
-        return astRootNode;
+        return cmRootNode;
     }
 #end
 
@@ -270,7 +271,7 @@ public class $className $implements {
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
 #else
         tokenPointer = tokenMarker = 0;
-        astRootNode = buildAst(parseTreeStack[0], null);
+        cmRootNode = buildCm(parseTreeStack[0], null);
 #end
 
 #if($debug)

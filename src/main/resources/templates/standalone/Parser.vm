@@ -42,7 +42,7 @@ import ${cmImplPackageName}.CmTokenImpl;
         // TODO
     }
 
-	private CmTokenImpl buildAst(Object what, IElementType parentElementType) {
+	private CmTokenImpl buildCm(Object what, IElementType parentElementType) {
 	    if (what == null) {
 	        CmTokenImpl node = getToken();
             nextToken();
