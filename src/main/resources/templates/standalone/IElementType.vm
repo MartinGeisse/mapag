@@ -43,7 +43,7 @@ public class IElementType {
 	}
 
     public interface CmNodeFactory {
-        CmNode createCmNode(Object[] childNodes);
+        CmNode createCmNode(int row, int column, Object[] childNodes);
     }
 
 }
