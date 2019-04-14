@@ -25,6 +25,10 @@ import ${cmImplPackageName}.CmTokenImpl;
         return tokenPointer >= tokens.length ? null : tokens[tokenPointer];
     }
 
+    private CmTokenImpl getLocationToken() {
+        return tokenPointer >= tokens.length ? tokens[tokens.length - 1] : tokens[tokenPointer];
+    }
+
     private IElementType getTokenType() {
         return tokenPointer >= tokens.length ? null : tokens[tokenPointer].getElementType();
     }
@@ -40,71 +44,37 @@ import ${cmImplPackageName}.CmTokenImpl;
     }
 
     private void reportErrorForCurrentToken(String errorMessage) {
-		int errorTokenIndex = isAtEof() ? (tokens.size() - 1) : tokenPointer;
-		reportError(tokens[tokenPointer], errorMessage);
+		reportError(getLocationToken(), errorMessage);
     }
 
-    protected void reportError(CmTokenImpl token, String message) {
-        System.err.println("syntax error in row " + row + ", column " + column + ": " + message);
+    protected void reportError(CmTokenImpl locationToken, String message) {
+        System.err.println("syntax error in row " + locationToken.getRow() + ", column " + locationToken.getColumn() + ": " + message);
     }
 
-	private CmNode buildCm(Object what, IElementType parentElementType) {
+	private CmNode buildCm(Object what) {
 	    if (what == null) {
 	        CmTokenImpl node = getToken();
             nextToken();
             return node;
 	    } else if (what instanceof Object[]) {
-
-
-        /*
-        TODO handle mergeable sublists here
-
-
-        InternalPsiUtil.foreachChild(this, child -> {
-            #if($intellij)
-                if (elementTypes.contains(child.getNode().getElementType())) {
-                    consumer.accept(elementClass.cast(child));
-                    return;
-                }
-            #else
-                IElementType childType = child.getNode().getElementType();
-                for (IElementType elementType : elementTypes) {
-                    if (childType == elementType) {
-                        consumer.accept(elementClass.cast(child));
-                        return;
-                    }
-                }
-            #end
-            if (child instanceof CmListImpl<?> && child.getNode().getElementType() == getNode().getElementType()) {
-                CmListImpl<?> typedChild = (CmListImpl<?>)child;
-                typedChild.cast(elementClass).foreach(consumer);
-            }
-        });
-
-        */
-
-
-
-
 			Object[] reduction = (Object[]) what;
 			IElementType elementType;
-			boolean publicNode;
+			List<CmNode> childNodes = new ArrayList<>();
 			if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
 				elementType = listNodeGenerationWrapper.elementType;
-				publicNode = (parentElementType == null || elementType != parentElementType);
+                collectListChildNodes(reduction, elementType, childNodes);
 			} else {
 				elementType = (IElementType)reduction[0];
-				publicNode = true;
+                for (int i = 1; i < reduction.length; i++) {
+                    childNodes.add(buildCm(reduction[i], elementType));
+                }
 			}
-			List<CmNode> childNodes = new ArrayList<>();
-			for (int i = 1; i < reduction.length; i++) {
-				childNodes.add(buildCm(reduction[i], elementType));
-			}
-			return new CmTokenImpl(elementType, childNodes.toArray(new CmTokenImpl[childNodes.size()]), publicNode);
+			CmTokenImpl locationToken = getLocationToken();
+			elementType.getCmNodeFactory().createCmNode(locationToken.getRow(), locationToken.getColumn(), childNodes.toArray(new CmNode[0]));
 		} else if (what instanceof List<?>) {
 			// an object list has the same meaning as an object array (needed for error symbols)
-			return buildCm(((List<?>)what).toArray(), parentElementType);
+			return buildCm(((List<?>)what).toArray());
 		} else if (what instanceof ErrorLocationIndicator) {
 		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
 			reportErrorForCurrentToken("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
@@ -113,6 +83,23 @@ import ${cmImplPackageName}.CmTokenImpl;
             reportErrorForCurrentToken(((UnrecoverableSyntaxException)what).getMessage());
             tokenPointer = tokens.length;
 		}
+	}
+
+	private void collectListChildNodes(Object[] reduction, IElementType elementType, List<CmNode> childNodeDestination) {
+	    for (int i = 1; i < reduction.length; i++) {
+	        Object reductionItem = reduction[i];
+	        if (reductionItem instanceof Object[]) {
+	            Object[] subReduction = (Object[])reductionItem;
+	            if (subReduction[0] instanceof ListNodeGenerationWrapper) {
+    	            ListNodeGenerationWrapper subWrapper = (ListNodeGenerationWrapper)subReduction[0];
+    	            if (wrapper.elementType == elementType) {
+    	                collectListChildNodes(subReduction, elementType, childNodeDestination);
+    	                continue;
+    	            }
+	            }
+	        }
+            childNodeDestination.add(buildCm(what));
+	    }
 	}
 
 #end

@@ -271,7 +271,7 @@ public class $className $implements {
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
 #else
         tokenPointer = tokenMarker = 0;
-        cmRootNode = buildCm(parseTreeStack[0], null);
+        cmRootNode = buildCm(parseTreeStack[0]);
 #end
 
 #if($debug)
