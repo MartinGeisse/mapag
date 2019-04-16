@@ -93,10 +93,8 @@ public abstract class AbstractParserClassGenerator {
 					String parseNodeHead;
 
 					if (nonterminalDefinition.getPsiStyle() instanceof PsiStyle.Repetition) {
-						PsiStyle.Repetition repetition = (PsiStyle.Repetition)nonterminalDefinition.getPsiStyle();
 						String repetitionSymbol = symbolHolderPrefix + '.' + IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
-						String childSymbol = symbolHolderPrefix + '.' + IdentifierUtil.getNonterminalVariableIdentifier(repetition.getElementSymbol());
-						parseNodeHead = "new ListNodeGenerationWrapper(" + repetitionSymbol + ", " + childSymbol + ")";
+						parseNodeHead = "new ListNodeGenerationWrapper(" + repetitionSymbol + ")";
 					} else if (nonterminalDefinition.getPsiStyle().isDistinctSymbolPerAlternative()) {
 						parseNodeHead = symbolHolderPrefix + '.' + IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
 					} else {
@@ -216,6 +214,7 @@ public abstract class AbstractParserClassGenerator {
 	}
 
 	protected abstract String getTemplateName();
+
 	protected abstract void configureVelocityContext(VelocityContext context);
 
 }
