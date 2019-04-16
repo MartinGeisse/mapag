@@ -88,8 +88,6 @@ import ${cmImplPackageName}.CmTokenImpl;
         }
 	}
 
-    public static final Object SEPARATOR_REPLACEMENT = new Object();
-
     // elementType is the IElementType of the list itself, not of the list's elements
 	private void collectListChildNodes(Object[] reduction, IElementType elementType, List<CmNode> childNodeDestination) {
 	    for (int i = 1; i < reduction.length; i++) {

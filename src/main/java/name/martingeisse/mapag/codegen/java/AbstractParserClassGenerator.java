@@ -93,8 +93,8 @@ public abstract class AbstractParserClassGenerator {
 					String parseNodeHead;
 
 					if (nonterminalDefinition.getPsiStyle() instanceof PsiStyle.Repetition) {
-						String repetitionSymbol = symbolHolderPrefix + '.' + IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
-						parseNodeHead = "new ListNodeGenerationWrapper(" + repetitionSymbol + ")";
+						String symbol = symbolHolderPrefix + '.' + IdentifierUtil.getNonterminalVariableIdentifier(nonterminalDefinition);
+						parseNodeHead = "new ListNodeGenerationWrapper(" + symbol + ")";
 					} else if (nonterminalDefinition.getPsiStyle().isDistinctSymbolPerAlternative()) {
 						parseNodeHead = symbolHolderPrefix + '.' + IdentifierUtil.getAlternativeVariableIdentifier(nonterminalDefinition, alternative);
 					} else {
