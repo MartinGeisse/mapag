@@ -10,6 +10,9 @@ public final class CmOptionalImpl<T extends CmNode> extends CmNodeImpl implement
     public CmOptionalImpl(int row, int column, Object[] childNodes) {
         super(row, column);
         this.it = (childNodes.length == 0 ? null : (T)childNodes[0]);
+        if (it != null) {
+            it.setParent(this);
+        }
     }
 
     public T getIt() {

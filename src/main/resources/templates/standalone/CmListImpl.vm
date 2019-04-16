@@ -19,7 +19,9 @@ public final class CmListImpl<T extends CmNode> extends CmNodeImpl implements Cm
         this.elementClass = elementClass;
         this.elements = new ArrayList<>();
         for (Object childNode : childNodes) {
-            elements.add(elementClass.cast(childNode));
+            T typedChildNode = elementClass.cast(childNode);
+            elements.add(typedChildNode);
+            typedChildNode.setParent(this);
         }
     }
 
