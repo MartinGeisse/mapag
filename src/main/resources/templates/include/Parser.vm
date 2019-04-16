@@ -517,16 +517,19 @@ public class $className $implements {
 
 	private static class ListNodeGenerationWrapper {
 
-        // note: this is the IElementType of the list itself, not of the list's elements. The word "element" has
-        // two meanings here, unfortunately.
-		IElementType elementType;
+        // the IElementType of the list itself
+		IElementType listElementType;
 
-		ListNodeGenerationWrapper(IElementType elementType) {
-			this.elementType = elementType;
+		// the IElementType of valid child nodes (i.e. list elements, but not separators)
+		IElementType childElementType;
+
+		ListNodeGenerationWrapper(IElementType listElementType, IElementType childElementType) {
+			this.listElementType = listElementType;
+			this.childElementType = childElementType;
 		}
 
 		public String toString() {
-		    return "LIST(" + elementType + ")";
+		    return "LIST(" + listElementType + " / " + childElementType + ")";
 		}
 
 	}

@@ -53,7 +53,7 @@
 			boolean buildMarker;
 			if (reduction[0] instanceof ListNodeGenerationWrapper) {
 				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
-				elementType = listNodeGenerationWrapper.elementType;
+				elementType = listNodeGenerationWrapper.listElementType;
 				buildMarker = (parentElementType == null || elementType != parentElementType);
 			} else {
 				elementType = (IElementType)reduction[0];
