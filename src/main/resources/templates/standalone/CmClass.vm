@@ -20,7 +20,7 @@ public $classModifiers class $className extends $superclass $interfaces {
         super(row, column);
         #foreach($child in $children)
             this.${child.nodeName} = ($child.nodeTypeCm)childNodes[$child.childIndex];
-            this.${child.nodeName}.setParent(this);
+            ((CmNodeImpl)this.${child.nodeName}).setParent(this);
         #end
     }
 

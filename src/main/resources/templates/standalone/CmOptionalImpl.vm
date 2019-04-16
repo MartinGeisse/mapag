@@ -11,7 +11,7 @@ public final class CmOptionalImpl<T extends CmNode> extends CmNodeImpl implement
         super(row, column);
         this.it = (childNodes.length == 0 ? null : (T)childNodes[0]);
         if (it != null) {
-            it.setParent(this);
+            ((CmNodeImpl)it).setParent(this);
         }
     }
 

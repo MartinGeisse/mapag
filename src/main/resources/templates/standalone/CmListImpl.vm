@@ -21,7 +21,7 @@ public final class CmListImpl<T extends CmNode> extends CmNodeImpl implements Cm
         for (Object childNode : childNodes) {
             T typedChildNode = elementClass.cast(childNode);
             elements.add(typedChildNode);
-            typedChildNode.setParent(this);
+            ((CmNodeImpl)typedChildNode).setParent(this);
         }
     }
 
