@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
 import name.martingeisse.mapag.codegen.Configuration;
@@ -61,12 +62,17 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 			try {
 
 				// create the output folder and resource folder
-				VirtualFile moduleFolder = module.getModuleFile().getParent();
-				final VirtualFile existingOutputFolder = moduleFolder.findChild("gen");
+				VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
+				if (contentRoots.length == 0) {
+					console.print("no IntelliJ module content root to generate code", ConsoleViewContentType.ERROR_OUTPUT);
+					return;
+				}
+				VirtualFile moduleFolder = contentRoots[0];
+				final VirtualFile existingOutputFolder = moduleFolder.findChild("mapag-generated-src");
 				final VirtualFile outputFolder;
 				if (existingOutputFolder == null) {
 					try {
-						outputFolder = moduleFolder.createChildDirectory(this, "gen");
+						outputFolder = moduleFolder.createChildDirectory(this, "mapag-generated-src");
 					} catch (IOException e) {
 						console.print("Could not create 'gen' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
 						return;
@@ -74,11 +80,11 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 				} else {
 					outputFolder = existingOutputFolder;
 				}
-				final VirtualFile existingResourcesFolder = moduleFolder.findChild("gen_resources");
+				final VirtualFile existingResourcesFolder = moduleFolder.findChild("mapag-generated-resources");
 				final VirtualFile resourcesFolder;
 				if (existingResourcesFolder == null) {
 					try {
-						resourcesFolder = moduleFolder.createChildDirectory(this, "gen_resources");
+						resourcesFolder = moduleFolder.createChildDirectory(this, "mapag-generated-resources");
 					} catch (IOException e) {
 						console.print("Could not create 'gen_resources' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
 						return;
