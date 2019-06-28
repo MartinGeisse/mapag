@@ -4,7 +4,8 @@ import com.google.common.collect.ImmutableList;
 import name.martingeisse.mapag.codegen.CodeGenerationParameters;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.codegen.OutputFileFactory;
-import name.martingeisse.mapag.codegen.java.intellij.IntellijCodeGenerationDriver;
+import name.martingeisse.mapag.codegen.java.common.CommonCodeGenerationDriver;
+import name.martingeisse.mapag.codegen.java.intellij.IntellijImplementationCodeGenerationDriver;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.grammar.extended.Grammar;
@@ -326,7 +327,8 @@ public class MapagGrammarParserGenerationMain extends BootstrapBase {
 
 		};
 		CodeGenerationParameters parameters = new CodeGenerationParameters(grammarInfo, stateMachine, configuration, outputFileFactory);
-		new IntellijCodeGenerationDriver().generate(parameters);
+		new CommonCodeGenerationDriver().generate(parameters);
+		new IntellijImplementationCodeGenerationDriver().generate(parameters);
 
 	}
 
