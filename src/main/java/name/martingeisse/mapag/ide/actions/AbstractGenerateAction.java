@@ -67,12 +67,12 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 					console.print("no IntelliJ module content root to generate code", ConsoleViewContentType.ERROR_OUTPUT);
 					return;
 				}
-				VirtualFile moduleFolder = contentRoots[0];
-				final VirtualFile existingOutputFolder = moduleFolder.findChild("mapag-generated-src");
+				VirtualFile contentRoot = contentRoots[0];
+				final VirtualFile existingOutputFolder = contentRoot.findChild("mapag-generated-src");
 				final VirtualFile outputFolder;
 				if (existingOutputFolder == null) {
 					try {
-						outputFolder = moduleFolder.createChildDirectory(this, "mapag-generated-src");
+						outputFolder = contentRoot.createChildDirectory(this, "mapag-generated-src");
 					} catch (IOException e) {
 						console.print("Could not create 'gen' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
 						return;
@@ -80,11 +80,11 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 				} else {
 					outputFolder = existingOutputFolder;
 				}
-				final VirtualFile existingResourcesFolder = moduleFolder.findChild("mapag-generated-resources");
+				final VirtualFile existingResourcesFolder = contentRoot.findChild("mapag-generated-resources");
 				final VirtualFile resourcesFolder;
 				if (existingResourcesFolder == null) {
 					try {
-						resourcesFolder = moduleFolder.createChildDirectory(this, "mapag-generated-resources");
+						resourcesFolder = contentRoot.createChildDirectory(this, "mapag-generated-resources");
 					} catch (IOException e) {
 						console.print("Could not create 'gen_resources' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
 						return;
