@@ -35,7 +35,7 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 	}
 
 	protected void onConsoleOpened(AnActionEvent event, ConsoleViewImpl console) {
-		console.print("Generating MaPaG Parser...", ConsoleViewContentType.NORMAL_OUTPUT);
+		console.print("Generating MaPaG Parser...\n", ConsoleViewContentType.NORMAL_OUTPUT);
 	}
 
 	protected boolean needsPropertiesFile(AnActionEvent event) {
@@ -47,7 +47,7 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 		// we need a module to place output files in. Should this use ModuleRootManager?
 		Module module = LangDataKeys.MODULE.getData(event.getDataContext());
 		if (module == null) {
-			console.print("No module available to place output files in", ConsoleViewContentType.ERROR_OUTPUT);
+			console.print("No module available to place output files in\n", ConsoleViewContentType.ERROR_OUTPUT);
 			return;
 		}
 
@@ -80,13 +80,14 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 				} else {
 					outputFolder = existingOutputFolder;
 				}
+				console.print("output folder path: " + outputFolder.getCanonicalPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
 				final VirtualFile existingResourcesFolder = contentRoot.findChild("mapag-generated-resources");
 				final VirtualFile resourcesFolder;
 				if (existingResourcesFolder == null) {
 					try {
 						resourcesFolder = contentRoot.createChildDirectory(this, "mapag-generated-resources");
 					} catch (IOException e) {
-						console.print("Could not create 'gen_resources' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
+						console.print("Could not create 'gen_resources' folder: " + e + "\n", ConsoleViewContentType.ERROR_OUTPUT);
 						return;
 					}
 				} else {
@@ -129,9 +130,10 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 			} catch (IOException e) {
 				throw new RuntimeException("unexpected IOException", e);
 			}
+			console.print("Background action completed...\n", ConsoleViewContentType.NORMAL_OUTPUT);
 		});
 
-		console.print("Done.", ConsoleViewContentType.NORMAL_OUTPUT);
+		console.print("Done.\n", ConsoleViewContentType.NORMAL_OUTPUT);
 	}
 
 	private VirtualFile createPackageFolder(VirtualFile parent, String packageName) throws IOException {
