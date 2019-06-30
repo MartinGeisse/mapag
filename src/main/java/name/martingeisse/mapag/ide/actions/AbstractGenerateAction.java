@@ -13,7 +13,7 @@ import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.grammar.canonical.info.GrammarInfo;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.ide.MapagSourceFile;
-import name.martingeisse.mapag.input.PsiToGrammarConverter;
+import name.martingeisse.mapag.input.CmToGrammarConverter;
 import name.martingeisse.mapag.sm.StateMachine;
 import name.martingeisse.mapag.sm.StateMachineBuilder;
 import name.martingeisse.mapag.util.UserMessageException;
@@ -53,7 +53,7 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 
 		// do it!
 		name.martingeisse.mapag.grammar.extended.Grammar extendedGrammar =
-			new PsiToGrammarConverter(true).convert(sourceFile);
+			new CmToGrammarConverter(true).convert(sourceFile);
 		name.martingeisse.mapag.grammar.canonical.Grammar canonicalGrammar =
 			new GrammarCanonicalizer(extendedGrammar).run().getResult();
 		GrammarInfo grammarInfo = new GrammarInfo(canonicalGrammar);
@@ -74,7 +74,7 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 					try {
 						outputFolder = contentRoot.createChildDirectory(this, "mapag-generated-src");
 					} catch (IOException e) {
-						console.print("Could not create 'gen' folder: " + e, ConsoleViewContentType.ERROR_OUTPUT);
+						console.print("Could not create 'gen' folder: " + e + "\n", ConsoleViewContentType.ERROR_OUTPUT);
 						return;
 					}
 				} else {
