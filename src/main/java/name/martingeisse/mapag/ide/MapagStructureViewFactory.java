@@ -8,7 +8,10 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import name.martingeisse.mapag.input.psi.*;
+import name.martingeisse.mapag.input.cm.impl.GrammarImpl;
+import name.martingeisse.mapag.input.cm.impl.Grammar_PrecedenceTableImpl;
+import name.martingeisse.mapag.input.cm.impl.Grammar_TerminalDeclarationsImpl;
+import name.martingeisse.mapag.input.cm.impl.ProductionImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,13 +25,13 @@ import java.util.List;
 public class MapagStructureViewFactory implements PsiStructureViewFactory {
 
 	private static boolean shouldInclude(PsiElement element) {
-		if (element instanceof Grammar_TerminalDeclarations) {
+		if (element instanceof Grammar_TerminalDeclarationsImpl) {
 			return true;
 		}
-		if (element instanceof Grammar_PrecedenceTable) {
+		if (element instanceof Grammar_PrecedenceTableImpl) {
 			return true;
 		}
-		if (element instanceof Production) {
+		if (element instanceof ProductionImpl) {
 			return true;
 		}
 		return false;
@@ -40,7 +43,7 @@ public class MapagStructureViewFactory implements PsiStructureViewFactory {
 		if (!(psiFile instanceof MapagSourceFile)) {
 			return null;
 		}
-		Grammar grammar = ((MapagSourceFile) psiFile).getGrammar();
+		GrammarImpl grammar = ((MapagSourceFile) psiFile).getGrammar();
 		if (grammar == null) {
 			return null;
 		}
@@ -93,14 +96,14 @@ public class MapagStructureViewFactory implements PsiStructureViewFactory {
 		@Nullable
 		@Override
 		public String getPresentableText() {
-			if (element instanceof Grammar_TerminalDeclarations) {
+			if (element instanceof Grammar_TerminalDeclarationsImpl) {
 				return "%terminals {...}";
 			}
-			if (element instanceof Grammar_PrecedenceTable) {
+			if (element instanceof Grammar_PrecedenceTableImpl) {
 				return "%precedence {...}";
 			}
-			if (element instanceof Production) {
-				String name = ((Production) element).getName();
+			if (element instanceof ProductionImpl) {
+				String name = ((ProductionImpl) element).getName();
 				return (name == null ? "(production)" : name);
 			}
 			return element.toString();

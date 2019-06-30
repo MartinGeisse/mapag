@@ -1,4 +1,4 @@
-package $packageName;
+package $basePackageName;
 
 $imports
 
@@ -131,9 +131,9 @@ public class $className $implements {
 	private PsiBuilder psiBuilder;
 	private PsiBuilder.Marker speculativeTokenConsumptionMarker;
 #else
-    private ASTNode[] tokens;
+    private CmTokenImpl[] tokens;
     private int tokenPointer, tokenMarker;
-    private ASTNode astRootNode;
+    private CmNode cmRootNode;
 #end
 
 	private boolean used = false;
@@ -158,10 +158,10 @@ public class $className $implements {
 		parse();
 	}
 #else
-    public ASTNode parse(ASTNode[] tokens) {
+    public CmNode parse(CmTokenImpl[] tokens) {
         this.tokens = tokens;
         parse();
-        return astRootNode;
+        return cmRootNode;
     }
 #end
 
@@ -271,7 +271,7 @@ public class $className $implements {
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
 #else
         tokenPointer = tokenMarker = 0;
-        astRootNode = buildAst(parseTreeStack[0], null);
+        cmRootNode = buildCm(parseTreeStack[0]);
 #end
 
 #if($debug)
@@ -517,6 +517,8 @@ public class $className $implements {
 
 	private static class ListNodeGenerationWrapper {
 
+        // note: this is the IElementType of the list itself, not of the list's elements. The word "element" has
+        // two meanings here, unfortunately.
 		IElementType elementType;
 
 		ListNodeGenerationWrapper(IElementType elementType) {

@@ -1,0 +1,35 @@
+package $packageName;
+
+import ${cmPackageName}.*;
+
+public $classModifiers class $className extends $superclass $interfaces {
+
+#if($isAbstract)
+
+    public $className(int row, int column) {
+        super(row, column);
+    }
+
+#else
+
+    #foreach($child in $children)
+        private final $child.nodeTypeCm $child.nodeName;
+    #end
+
+    public $className(int row, int column, Object[] childNodes) {
+        super(row, column);
+        #foreach($child in $children)
+            this.${child.nodeName} = ($child.nodeTypeCm)childNodes[$child.childIndex];
+            ((CmNodeImpl)this.${child.nodeName}).setParent(this);
+        #end
+    }
+
+    #foreach($child in $children)
+	    public $child.nodeTypeCm ${child.getterName}() {
+            return $child.nodeName;
+        }
+    #end
+
+#end
+
+}

@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import name.martingeisse.mapag.codegen.Configuration;
 import name.martingeisse.mapag.grammar.canonicalization.GrammarCanonicalizer;
 import name.martingeisse.mapag.ide.MapagSourceFile;
-import name.martingeisse.mapag.input.PsiToGrammarConverter;
+import name.martingeisse.mapag.input.CmToGrammarConverter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -31,7 +31,7 @@ public class ShowCanonicalGrammarAction extends AbstractGrammarAndConsoleAction 
 	protected void execute(AnActionEvent event, ConsoleViewImpl console, MapagSourceFile sourceFile, Configuration configuration) throws Exception {
 
 		name.martingeisse.mapag.grammar.extended.Grammar extendedGrammar =
-			new PsiToGrammarConverter(true).convert(sourceFile);
+			new CmToGrammarConverter(true).convert(sourceFile);
 		name.martingeisse.mapag.grammar.canonical.Grammar canonicalGrammar =
 			new GrammarCanonicalizer(extendedGrammar).run().getResult();
 

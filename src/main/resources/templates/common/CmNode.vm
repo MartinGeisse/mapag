@@ -1,7 +1,13 @@
 package $packageName;
 
-public interface CmNode {
+public interface CmNode extends CmLinked {
+
+	default CmNode getCmNode() {
+		return this;
+	}
 
 	CmNode getCmParent();
+
+	int compareStartOffset(CmNode other);
 
 }

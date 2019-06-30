@@ -1,11 +1,18 @@
+
+
+
+
+
 package name.martingeisse.mapag.input;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiParser;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
+    import com.intellij.lang.ASTNode;
+    import com.intellij.lang.LightPsiParser;
+    import com.intellij.lang.PsiBuilder;
+    import com.intellij.lang.PsiParser;
+    import com.intellij.psi.TokenType;
+    import com.intellij.psi.tree.IElementType;
+
+
 
 import java.io.DataInputStream;
 import java.io.InputStream;
@@ -13,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
+public class MapagGeneratedMapagParser     implements PsiParser, LightPsiParser
+ {
 
 	// ------------------------------------------------------------------------------------------------
 	// --- generated stuff
@@ -23,38 +31,38 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 	private static final int EOF_SYMBOL_CODE = 0;
 	private static final int ERROR_SYMBOL_CODE = 1;
 	private static final IElementType[] SYMBOL_CODE_TO_ELEMENT_TYPE = {
-		null, // %eof -- doesn't have an IElementType
-		null, // %error -- doesn't have an IElementType
-		TokenType.BAD_CHARACTER, // %badchar
-		Symbols.ASTERISK,
-		Symbols.BAR,
-		Symbols.BLOCK_COMMENT,
-		Symbols.CLOSING_CURLY_BRACE,
-		Symbols.CLOSING_PARENTHESIS,
-		Symbols.COLON,
-		Symbols.COMMA,
-		Symbols.EXPANDS_TO,
-		Symbols.IDENTIFIER,
-		Symbols.KW_EMPTY,
-		Symbols.KW_EOF,
-		Symbols.KW_ERROR,
-		Symbols.KW_LEFT,
-		Symbols.KW_NONASSOC,
-		Symbols.KW_PRECEDENCE,
-		Symbols.KW_REDUCE,
-		Symbols.KW_REDUCE_ON_ERROR,
-		Symbols.KW_RESOLVE,
-		Symbols.KW_RIGHT,
-		Symbols.KW_SHIFT,
-		Symbols.KW_START,
-		Symbols.KW_TERMINALS,
-		Symbols.LINE_COMMENT,
-		Symbols.OPENING_CURLY_BRACE,
-		Symbols.OPENING_PARENTHESIS,
-		Symbols.PLUS,
-		Symbols.QUESTION_MARK,
-		Symbols.SEMICOLON,
-	};
+    	null, // %eof -- doesn't have an IElementType
+    	null, // %error -- doesn't have an IElementType
+    	TokenType.BAD_CHARACTER, // %badchar
+                    Symbols.ASTERISK,
+                    Symbols.BAR,
+                    Symbols.BLOCK_COMMENT,
+                    Symbols.CLOSING_CURLY_BRACE,
+                    Symbols.CLOSING_PARENTHESIS,
+                    Symbols.COLON,
+                    Symbols.COMMA,
+                    Symbols.EXPANDS_TO,
+                    Symbols.IDENTIFIER,
+                    Symbols.KW_EMPTY,
+                    Symbols.KW_EOF,
+                    Symbols.KW_ERROR,
+                    Symbols.KW_LEFT,
+                    Symbols.KW_NONASSOC,
+                    Symbols.KW_PRECEDENCE,
+                    Symbols.KW_REDUCE,
+                    Symbols.KW_REDUCE_ON_ERROR,
+                    Symbols.KW_RESOLVE,
+                    Symbols.KW_RIGHT,
+                    Symbols.KW_SHIFT,
+                    Symbols.KW_START,
+                    Symbols.KW_TERMINALS,
+                    Symbols.LINE_COMMENT,
+                    Symbols.OPENING_CURLY_BRACE,
+                    Symbols.OPENING_PARENTHESIS,
+                    Symbols.PLUS,
+                    Symbols.QUESTION_MARK,
+                    Symbols.SEMICOLON,
+        	};
 
 	// state machine (general)
 	private static final int START_STATE = 0;
@@ -62,344 +70,6 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 	// state machine (action table)
 	private static final int ACTION_TABLE_WIDTH = 54;
 	private static final int[] ACTION_TABLE;
-	// state machine (alternatives / reduction table)
-	private static final int[] ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH = {
-		2,
-		1,
-		1,
-		1,
-		2,
-		3,
-		2,
-		2,
-		6,
-		6,
-		2,
-		3,
-		3,
-		4,
-		6,
-		5,
-		2,
-		2,
-		1,
-		4,
-		4,
-		3,
-		1,
-		3,
-		2,
-		4,
-		4,
-		0,
-		2,
-		0,
-		1,
-		0,
-		2,
-		3,
-		2,
-		1,
-		1,
-		3,
-		0,
-		2,
-		6,
-		1,
-		1,
-		1,
-		2,
-		1,
-		1,
-		1,
-		3,
-		3,
-		4,
-		0,
-		2,
-		2,
-		4,
-		1,
-		1,
-		1,
-		1,
-		1,
-	};
-	private static final Object[] ALTERNATIVE_INDEX_TO_PARSE_NODE_HEAD = {
-		name.martingeisse.mapag.input.Symbols.rightHandSide,
-		name.martingeisse.mapag.input.Symbols.expression_Empty,
-		name.martingeisse.mapag.input.Symbols.expression_Identifier,
-		name.martingeisse.mapag.input.Symbols.expression_Error,
-		name.martingeisse.mapag.input.Symbols.expression_Sequence,
-		name.martingeisse.mapag.input.Symbols.expression_Or,
-		name.martingeisse.mapag.input.Symbols.expression_ZeroOrMore,
-		name.martingeisse.mapag.input.Symbols.expression_OneOrMore,
-		name.martingeisse.mapag.input.Symbols.expression_SeparatedZeroOrMore,
-		name.martingeisse.mapag.input.Symbols.expression_SeparatedOneOrMore,
-		name.martingeisse.mapag.input.Symbols.expression_Optional,
-		name.martingeisse.mapag.input.Symbols.expression_Parenthesized,
-		name.martingeisse.mapag.input.Symbols.expression_Named,
-		name.martingeisse.mapag.input.Symbols.production_SingleUnnamed,
-		name.martingeisse.mapag.input.Symbols.production_SingleNamed,
-		name.martingeisse.mapag.input.Symbols.production_Multi,
-		name.martingeisse.mapag.input.Symbols.production_ErrorWithoutNonterminalNameWithSemicolon,
-		name.martingeisse.mapag.input.Symbols.production_ErrorWithoutNonterminalNameWithClosingCurlyBrace,
-		name.martingeisse.mapag.input.Symbols.production_ErrorWithoutNonterminalNameAtEof,
-		name.martingeisse.mapag.input.Symbols.production_ErrorWithNonterminalNameWithSemicolon,
-		name.martingeisse.mapag.input.Symbols.production_ErrorWithNonterminalNameWithClosingCurlyBrace,
-		name.martingeisse.mapag.input.Symbols.production_ErrorWithNonterminalNameAtEof,
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty),
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty),
-		name.martingeisse.mapag.input.Symbols.production_Multi_Alternatives_Unnamed,
-		name.martingeisse.mapag.input.Symbols.production_Multi_Alternatives_Named,
-		name.martingeisse.mapag.input.Symbols.grammar_TerminalDeclarations,
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_PrecedenceDeclaration),
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_PrecedenceDeclaration),
-		name.martingeisse.mapag.input.Symbols.grammar_PrecedenceTable_Optional,
-		name.martingeisse.mapag.input.Symbols.grammar_PrecedenceTable_Optional,
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_AlternativeAttribute),
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_AlternativeAttribute),
-		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_Normal,
-		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_ErrorWithSemicolon,
-		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_ErrorWithoutSemicolon,
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA_Nonempty),
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA_Nonempty),
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.production_Multi_Alternatives_List),
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.production_Multi_Alternatives_List),
-		name.martingeisse.mapag.input.Symbols.grammar,
-		name.martingeisse.mapag.input.Symbols.terminalDeclaration,
-		name.martingeisse.mapag.input.Symbols.precedenceDeclarationSymbol,
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_Production_Nonempty),
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_Production_Nonempty),
-		name.martingeisse.mapag.input.Symbols.resolveDeclaration_Action_Shift,
-		name.martingeisse.mapag.input.Symbols.resolveDeclaration_Action_Reduce,
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_IDENTIFIER_COMMA_Nonempty),
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_SeparatedList_IDENTIFIER_COMMA_Nonempty),
-		name.martingeisse.mapag.input.Symbols.resolveDeclaration,
-		name.martingeisse.mapag.input.Symbols.grammar_PrecedenceTable,
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_ResolveDeclaration),
-		new ListNodeGenerationWrapper(name.martingeisse.mapag.input.Symbols.synthetic_List_ResolveDeclaration),
-		name.martingeisse.mapag.input.Symbols.alternativeAttribute_Precedence,
-		name.martingeisse.mapag.input.Symbols.alternativeAttribute_ResolveBlock,
-		name.martingeisse.mapag.input.Symbols.alternativeAttribute_ReduceOnError,
-		name.martingeisse.mapag.input.Symbols.alternativeAttribute_Eof,
-		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_Normal_Associativity_Left,
-		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_Normal_Associativity_Right,
-		name.martingeisse.mapag.input.Symbols.precedenceDeclaration_Normal_Associativity_Nonassoc,
-	};
-	private static final int[] ALTERNATIVE_INDEX_TO_NONTERMINAL_SYMBOL_CODE = {
-		45,
-		32,
-		32,
-		32,
-		32,
-		32,
-		32,
-		32,
-		32,
-		32,
-		32,
-		32,
-		32,
-		40,
-		40,
-		40,
-		40,
-		40,
-		40,
-		40,
-		40,
-		40,
-		52,
-		52,
-		41,
-		41,
-		36,
-		47,
-		47,
-		35,
-		35,
-		46,
-		46,
-		37,
-		37,
-		37,
-		51,
-		51,
-		42,
-		42,
-		33,
-		53,
-		39,
-		48,
-		48,
-		44,
-		44,
-		50,
-		50,
-		43,
-		34,
-		49,
-		49,
-		31,
-		31,
-		31,
-		31,
-		38,
-		38,
-		38,
-	};
-	// state machine (error messages)
-	private static final String[] STATE_INPUT_EXPECTATION = {
-		"%terminals",
-		"",
-		"%eof %precedence %reduceOnError %resolve ;",
-		"%eof %precedence %reduceOnError %resolve ;",
-		"identifier",
-		"%eof %precedence %reduceOnError %resolve ;",
-		"%eof %precedence %reduceOnError %resolve ;",
-		"{",
-		"resolve-declaration %reduce %shift }",
-		"resolve-declaration %reduce %shift }",
-		"%eof %precedence %reduceOnError %resolve ;",
-		"expression",
-		"expression",
-		"expression",
-		"expression ) * + , : ? |",
-		"expression ) * + , : ? |",
-		"expression ) * + , : ? |",
-		"expression %empty %error ( ) * + , : ? identifier |",
-		"expression %empty %error ( ) * + , : ? identifier |",
-		"expression",
-		"expression",
-		"expression",
-		"expression",
-		"expression ) * + : ? |",
-		"expression ) * + : ? |",
-		"expression ) * + : ? |",
-		"expression %empty %error ( ) * + : ? identifier |",
-		"expression %empty %error ( ) * + : ? identifier |",
-		"expression",
-		"expression %empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"expression %empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"expression %eof %precedence %reduceOnError %resolve * + : ; ? |",
-		"expression",
-		"expression",
-		"expression {",
-		"expression identifier }",
-		"expression",
-		"%empty %error ( ) * + , : ? identifier |",
-		"%empty %error ( ) * + : ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ::= ; ? identifier |",
-		"%empty %error ( ) * + , : ? identifier |",
-		"%empty %error ( ) * + : ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"%empty %error ( ) * + , : ? identifier |",
-		"%empty %error ( ) * + : ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"* +",
-		"* +",
-		"* +",
-		"%empty %error ( ) * + , : ? identifier |",
-		"%empty %error ( ) * + : ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"%empty %error ( ) * + , : ? identifier |",
-		"%empty %error ( ) * + : ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"%empty %error ( ) * + , : ? identifier |",
-		"%empty %error ( ) * + : ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"identifier",
-		"identifier",
-		"identifier",
-		"%empty %error ( ) * + , : ? identifier |",
-		"%empty %error ( ) * + : ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"%empty %error ( ) * + , : ? identifier |",
-		"%empty %error ( ) * + : ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"%empty %error ( ) * + , : ? identifier |",
-		"%empty %error ( ) * + : ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"%empty %error ( ) * + , : ? identifier |",
-		"%empty %error ( ) * + : ? identifier |",
-		"%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
-		"%precedence %start",
-		"%start",
-		"identifier",
-		";",
-		"production",
-		"production",
-		"{",
-		"precedence-declaration %left %nonassoc %right }",
-		"precedence-declaration %left %nonassoc %right }",
-		"%start",
-		"%start",
-		"{",
-		"identifier",
-		", }",
-		"%precedence %start",
-		"%left %nonassoc %right ; }",
-		"%left %nonassoc %right }",
-		"identifier",
-		", ;",
-		"%left %nonassoc %right }",
-		"identifier",
-		"identifier",
-		"identifier",
-		"identifier",
-		", ;",
-		"; }",
-		"identifier",
-		"identifier",
-		": ::=",
-		"identifier",
-		"::=",
-		";",
-		"identifier",
-		"; }",
-		"identifier",
-		"identifier",
-		"%empty %error ( identifier }",
-		"identifier",
-		";",
-		"identifier",
-		";",
-		"%empty %error ( identifier }",
-		";",
-		"%empty %error ( identifier }",
-		"%empty %error ( identifier }",
-		"identifier",
-		", ;",
-		"%reduce %shift }",
-		"identifier",
-		"identifier",
-		"%eof %precedence %reduceOnError %resolve ;",
-		"%left %nonassoc %right }",
-		"identifier",
-		"identifier",
-		"%reduce %shift }",
-		", ;",
-		"identifier",
-		", ;",
-		", ;",
-		", ;",
-		"identifier",
-		", }",
-		", }",
-		", }",
-	};
-	// other
-	private static final IElementType FILE_ELEMENT_TYPE = name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE;
-	private static final int RECOVERY_SYNC_LENGTH = 3;
-	// static table, but has to be initialized at startup since element type indices aren't compile-time constants
-	private static int[] elementTypeIndexToSymbolCode;
-
-	// ------------------------------------------------------------------------------------------------
-	// --- non-generated stuff (initialization and static stuff)
-	// ------------------------------------------------------------------------------------------------
-
 	static {
 		try (InputStream inputStream = MapagGeneratedMapagParser.class.getResourceAsStream("/MapagGeneratedMapagParser.actions")) {
 			try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
@@ -413,17 +83,415 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		}
 	}
 
-	private PsiBuilder psiBuilder;
-	private PsiBuilder.Marker speculativeTokenConsumptionMarker;
+	// state machine (alternatives / reduction table)
+	private static final int[] ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH = {
+                    2,
+                    1,
+                    1,
+                    1,
+                    2,
+                    3,
+                    2,
+                    2,
+                    6,
+                    6,
+                    2,
+                    3,
+                    3,
+                    4,
+                    6,
+                    5,
+                    2,
+                    2,
+                    1,
+                    4,
+                    4,
+                    3,
+                    1,
+                    3,
+                    2,
+                    4,
+                    4,
+                    0,
+                    2,
+                    0,
+                    1,
+                    0,
+                    2,
+                    3,
+                    2,
+                    1,
+                    1,
+                    3,
+                    0,
+                    2,
+                    6,
+                    1,
+                    1,
+                    1,
+                    2,
+                    1,
+                    1,
+                    1,
+                    3,
+                    3,
+                    4,
+                    0,
+                    2,
+                    2,
+                    4,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+        	};
+	private static final Object[] ALTERNATIVE_INDEX_TO_PARSE_NODE_HEAD = {
+                    Symbols.rightHandSide,
+                    Symbols.expression_Empty,
+                    Symbols.expression_Identifier,
+                    Symbols.expression_Error,
+                    Symbols.expression_Sequence,
+                    Symbols.expression_Or,
+                    Symbols.expression_ZeroOrMore,
+                    Symbols.expression_OneOrMore,
+                    Symbols.expression_SeparatedZeroOrMore,
+                    Symbols.expression_SeparatedOneOrMore,
+                    Symbols.expression_Optional,
+                    Symbols.expression_Parenthesized,
+                    Symbols.expression_Named,
+                    Symbols.production_SingleUnnamed,
+                    Symbols.production_SingleNamed,
+                    Symbols.production_Multi,
+                    Symbols.production_ErrorWithoutNonterminalNameWithSemicolon,
+                    Symbols.production_ErrorWithoutNonterminalNameWithClosingCurlyBrace,
+                    Symbols.production_ErrorWithoutNonterminalNameAtEof,
+                    Symbols.production_ErrorWithNonterminalNameWithSemicolon,
+                    Symbols.production_ErrorWithNonterminalNameWithClosingCurlyBrace,
+                    Symbols.production_ErrorWithNonterminalNameAtEof,
+                    new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty),
+                    new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_TerminalDeclaration_COMMA_Nonempty),
+                    Symbols.production_Multi_Alternatives_Unnamed,
+                    Symbols.production_Multi_Alternatives_Named,
+                    Symbols.grammar_TerminalDeclarations,
+                    new ListNodeGenerationWrapper(Symbols.synthetic_List_PrecedenceDeclaration),
+                    new ListNodeGenerationWrapper(Symbols.synthetic_List_PrecedenceDeclaration),
+                    Symbols.grammar_PrecedenceTable_Optional,
+                    Symbols.grammar_PrecedenceTable_Optional,
+                    new ListNodeGenerationWrapper(Symbols.synthetic_List_AlternativeAttribute),
+                    new ListNodeGenerationWrapper(Symbols.synthetic_List_AlternativeAttribute),
+                    Symbols.precedenceDeclaration_Normal,
+                    Symbols.precedenceDeclaration_ErrorWithSemicolon,
+                    Symbols.precedenceDeclaration_ErrorWithoutSemicolon,
+                    new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA_Nonempty),
+                    new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_PrecedenceDeclarationSymbol_COMMA_Nonempty),
+                    new ListNodeGenerationWrapper(Symbols.production_Multi_Alternatives_List),
+                    new ListNodeGenerationWrapper(Symbols.production_Multi_Alternatives_List),
+                    Symbols.grammar,
+                    Symbols.terminalDeclaration,
+                    Symbols.precedenceDeclarationSymbol,
+                    new ListNodeGenerationWrapper(Symbols.synthetic_List_Production_Nonempty),
+                    new ListNodeGenerationWrapper(Symbols.synthetic_List_Production_Nonempty),
+                    Symbols.resolveDeclaration_Action_Shift,
+                    Symbols.resolveDeclaration_Action_Reduce,
+                    new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_IDENTIFIER_COMMA_Nonempty),
+                    new ListNodeGenerationWrapper(Symbols.synthetic_SeparatedList_IDENTIFIER_COMMA_Nonempty),
+                    Symbols.resolveDeclaration,
+                    Symbols.grammar_PrecedenceTable,
+                    new ListNodeGenerationWrapper(Symbols.synthetic_List_ResolveDeclaration),
+                    new ListNodeGenerationWrapper(Symbols.synthetic_List_ResolveDeclaration),
+                    Symbols.alternativeAttribute_Precedence,
+                    Symbols.alternativeAttribute_ResolveBlock,
+                    Symbols.alternativeAttribute_ReduceOnError,
+                    Symbols.alternativeAttribute_Eof,
+                    Symbols.precedenceDeclaration_Normal_Associativity_Left,
+                    Symbols.precedenceDeclaration_Normal_Associativity_Right,
+                    Symbols.precedenceDeclaration_Normal_Associativity_Nonassoc,
+        	};
+	private static final int[] ALTERNATIVE_INDEX_TO_NONTERMINAL_SYMBOL_CODE = {
+                    45,
+                    32,
+                    32,
+                    32,
+                    32,
+                    32,
+                    32,
+                    32,
+                    32,
+                    32,
+                    32,
+                    32,
+                    32,
+                    40,
+                    40,
+                    40,
+                    40,
+                    40,
+                    40,
+                    40,
+                    40,
+                    40,
+                    52,
+                    52,
+                    41,
+                    41,
+                    36,
+                    47,
+                    47,
+                    35,
+                    35,
+                    46,
+                    46,
+                    37,
+                    37,
+                    37,
+                    51,
+                    51,
+                    42,
+                    42,
+                    33,
+                    53,
+                    39,
+                    48,
+                    48,
+                    44,
+                    44,
+                    50,
+                    50,
+                    43,
+                    34,
+                    49,
+                    49,
+                    31,
+                    31,
+                    31,
+                    31,
+                    38,
+                    38,
+                    38,
+        	};
+
+	// state machine (error messages)
+	private static final String[] STATE_INPUT_EXPECTATION = {
+                    "%terminals",
+                    "",
+                    "%eof %precedence %reduceOnError %resolve ;",
+                    "%eof %precedence %reduceOnError %resolve ;",
+                    "identifier",
+                    "%eof %precedence %reduceOnError %resolve ;",
+                    "%eof %precedence %reduceOnError %resolve ;",
+                    "{",
+                    "resolve-declaration %reduce %shift }",
+                    "resolve-declaration %reduce %shift }",
+                    "%eof %precedence %reduceOnError %resolve ;",
+                    "expression",
+                    "expression",
+                    "expression",
+                    "expression ) * + , : ? |",
+                    "expression ) * + , : ? |",
+                    "expression ) * + , : ? |",
+                    "expression %empty %error ( ) * + , : ? identifier |",
+                    "expression %empty %error ( ) * + , : ? identifier |",
+                    "expression",
+                    "expression",
+                    "expression",
+                    "expression",
+                    "expression ) * + : ? |",
+                    "expression ) * + : ? |",
+                    "expression ) * + : ? |",
+                    "expression %empty %error ( ) * + : ? identifier |",
+                    "expression %empty %error ( ) * + : ? identifier |",
+                    "expression",
+                    "expression %empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "expression %empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "expression %eof %precedence %reduceOnError %resolve * + : ; ? |",
+                    "expression",
+                    "expression",
+                    "expression {",
+                    "expression identifier }",
+                    "expression",
+                    "%empty %error ( ) * + , : ? identifier |",
+                    "%empty %error ( ) * + : ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ::= ; ? identifier |",
+                    "%empty %error ( ) * + , : ? identifier |",
+                    "%empty %error ( ) * + : ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "%empty %error ( ) * + , : ? identifier |",
+                    "%empty %error ( ) * + : ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "* +",
+                    "* +",
+                    "* +",
+                    "%empty %error ( ) * + , : ? identifier |",
+                    "%empty %error ( ) * + : ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "%empty %error ( ) * + , : ? identifier |",
+                    "%empty %error ( ) * + : ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "%empty %error ( ) * + , : ? identifier |",
+                    "%empty %error ( ) * + : ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "identifier",
+                    "identifier",
+                    "identifier",
+                    "%empty %error ( ) * + , : ? identifier |",
+                    "%empty %error ( ) * + : ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "%empty %error ( ) * + , : ? identifier |",
+                    "%empty %error ( ) * + : ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "%empty %error ( ) * + , : ? identifier |",
+                    "%empty %error ( ) * + : ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "%empty %error ( ) * + , : ? identifier |",
+                    "%empty %error ( ) * + : ? identifier |",
+                    "%empty %eof %error %precedence %reduceOnError %resolve ( * + : ; ? identifier |",
+                    "%precedence %start",
+                    "%start",
+                    "identifier",
+                    ";",
+                    "production",
+                    "production",
+                    "{",
+                    "precedence-declaration %left %nonassoc %right }",
+                    "precedence-declaration %left %nonassoc %right }",
+                    "%start",
+                    "%start",
+                    "{",
+                    "identifier",
+                    ", }",
+                    "%precedence %start",
+                    "%left %nonassoc %right ; }",
+                    "%left %nonassoc %right }",
+                    "identifier",
+                    ", ;",
+                    "%left %nonassoc %right }",
+                    "identifier",
+                    "identifier",
+                    "identifier",
+                    "identifier",
+                    ", ;",
+                    "; }",
+                    "identifier",
+                    "identifier",
+                    ": ::=",
+                    "identifier",
+                    "::=",
+                    ";",
+                    "identifier",
+                    "; }",
+                    "identifier",
+                    "identifier",
+                    "%empty %error ( identifier }",
+                    "identifier",
+                    ";",
+                    "identifier",
+                    ";",
+                    "%empty %error ( identifier }",
+                    ";",
+                    "%empty %error ( identifier }",
+                    "%empty %error ( identifier }",
+                    "identifier",
+                    ", ;",
+                    "%reduce %shift }",
+                    "identifier",
+                    "identifier",
+                    "%eof %precedence %reduceOnError %resolve ;",
+                    "%left %nonassoc %right }",
+                    "identifier",
+                    "identifier",
+                    "%reduce %shift }",
+                    ", ;",
+                    "identifier",
+                    ", ;",
+                    ", ;",
+                    ", ;",
+                    "identifier",
+                    ", }",
+                    ", }",
+                    ", }",
+            };
+
+	// other
+	private static final int RECOVERY_SYNC_LENGTH = 3;
+
+    // target-specific declarations
+	
+    private static final IElementType FILE_ELEMENT_TYPE = name.martingeisse.mapag.ide.MapagParserDefinition.FILE_ELEMENT_TYPE;
+
+
+    private void beginSpeculativeTokenConsumption() {
+        speculativeTokenConsumptionMarker = psiBuilder.mark();
+    }
+
+    private void endSpeculativeTokenConsumption() {
+        speculativeTokenConsumptionMarker.rollbackTo();
+    }
+
+    private IElementType getTokenType() {
+        return psiBuilder.getTokenType();
+    }
+
+    private boolean isAtEof() {
+        return psiBuilder.eof();
+    }
+
+    private void nextToken() {
+        psiBuilder.advanceLexer();
+    }
+
+    private void reportErrorForCurrentToken(String errorMessage) {
+        psiBuilder.error(errorMessage);
+    }
+
+	private void feedPsiBuilder(Object what, IElementType parentElementType) {
+	    if (what == null) {
+            nextToken();
+	    } else if (what instanceof Object[]) {
+			Object[] reduction = (Object[]) what;
+			IElementType elementType;
+			boolean buildMarker;
+			if (reduction[0] instanceof ListNodeGenerationWrapper) {
+				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper)reduction[0];
+				elementType = listNodeGenerationWrapper.elementType;
+				buildMarker = (parentElementType == null || elementType != parentElementType);
+			} else {
+				elementType = (IElementType)reduction[0];
+				buildMarker = true;
+			}
+			PsiBuilder.Marker marker = null;
+			if (buildMarker) {
+				marker = psiBuilder.mark();
+			}
+			for (int i = 1; i < reduction.length; i++) {
+				feedPsiBuilder(reduction[i], elementType);
+			}
+			if (buildMarker) {
+				marker.done(elementType);
+			}
+		} else if (what instanceof List<?>) {
+			// an object list has the same meaning as an object array (needed for error symbols)
+			feedPsiBuilder(((List<?>)what).toArray(), parentElementType);
+		} else if (what instanceof ErrorLocationIndicator) {
+		    ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator)what;
+			reportErrorForCurrentToken("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
+		} else if (what instanceof UnrecoverableSyntaxException) {
+            reportErrorForCurrentToken(((UnrecoverableSyntaxException)what).getMessage());
+            while (!isAtEof()) {
+            	nextToken();
+            }
+		}
+	}
+
+
 
 	// ------------------------------------------------------------------------------------------------
-	// --- The main parser code. Code generation here mostly deals with IntelliJ vs. standalone.
+	// --- non-generated stuff (initialization and static stuff)
 	// ------------------------------------------------------------------------------------------------
-	private boolean used = false;
-	private int[] stateStack = new int[256];
-	private Object[] parseTreeStack = new Object[256];
-	private int stackSize = 0;
-	private int state = START_STATE;
+
+	// static table, but has to be initialized at startup since element type indices aren't compile-time constants
+	private static int[] elementTypeIndexToSymbolCode;
 
 	/**
 	 * This method initializes static tables on the first parse run -- we need element type
@@ -435,18 +503,18 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		}
 		int maxElementTypeIndex = 0;
 		for (IElementType token : SYMBOL_CODE_TO_ELEMENT_TYPE) {
-			if (token != null) {
-				if (maxElementTypeIndex < token.getIndex()) {
-					maxElementTypeIndex = token.getIndex();
-				}
-			}
+		    if (token != null) {
+                if (maxElementTypeIndex < token.getIndex()) {
+                    maxElementTypeIndex = token.getIndex();
+                }
+		    }
 		}
 		elementTypeIndexToSymbolCode = new int[maxElementTypeIndex + 1];
 		Arrays.fill(elementTypeIndexToSymbolCode, -1);
 		for (int symbolCode = 0; symbolCode < SYMBOL_CODE_TO_ELEMENT_TYPE.length; symbolCode++) {
 			IElementType token = SYMBOL_CODE_TO_ELEMENT_TYPE[symbolCode];
 			if (token != null) {
-				elementTypeIndexToSymbolCode[token.getIndex()] = symbolCode;
+    			elementTypeIndexToSymbolCode[token.getIndex()] = symbolCode;
 			}
 		}
 	}
@@ -462,6 +530,19 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		throw new RuntimeException("unknown token: " + elementType);
 	}
 
+	// ------------------------------------------------------------------------------------------------
+	// --- The main parser code. Code generation here mostly deals with IntelliJ vs. standalone.
+	// ------------------------------------------------------------------------------------------------
+
+	private PsiBuilder psiBuilder;
+	private PsiBuilder.Marker speculativeTokenConsumptionMarker;
+
+	private boolean used = false;
+	private int[] stateStack = new int[256];
+	private Object[] parseTreeStack = new Object[256];
+	private int stackSize = 0;
+	private int state = START_STATE;
+
 	@Override
 	public ASTNode parse(IElementType type, PsiBuilder psiBuilder) {
 		parseLight(type, psiBuilder);
@@ -473,13 +554,13 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		if (type != FILE_ELEMENT_TYPE) {
 			throw new IllegalArgumentException("unsupported top-level element type to parse: " + type);
 		}
-		this.psiBuilder = psiBuilder;
+	    this.psiBuilder = psiBuilder;
 		parse();
 	}
 
 	private void parse() {
 
-		// prevent re-use of this object since the internal state gets changed during parsing
+        // prevent re-use of this object since the internal state gets changed during parsing
 		if (used) {
 			throw new IllegalStateException("cannot re-use this parser object");
 		}
@@ -488,48 +569,50 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		// initialize static parser information
 		initializeStatic();
 
-		// handle unrecoverable syntax errors
-		PsiBuilder.Marker wholeFileMarker = psiBuilder.mark();
-		PsiBuilder.Marker preParseMarker = psiBuilder.mark();
-		try {
 
-			// Parse the input using the generated machine to build a parse tree. The state machine cannot execute the
-			// accept action here since the input cannot contain EOF.
-			while (!isAtEof()) {
-				if (consumeSymbol(getSymbolCodeForElementType(getTokenType()), null)) {
-					nextToken();
-				} else {
-					recoverFromError();
-				}
-			}
+        // handle unrecoverable syntax errors
+        PsiBuilder.Marker wholeFileMarker = psiBuilder.mark();
+        PsiBuilder.Marker preParseMarker = psiBuilder.mark();
+        try {
 
-			// Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
-			// a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
-			{
-				int originalState = state;
-				if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
-					recoverFromError();
-					if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
-						throw new UnrecoverableSyntaxException(originalState);
-					}
-				}
-			}
+            // Parse the input using the generated machine to build a parse tree. The state machine cannot execute the
+            // accept action here since the input cannot contain EOF.
+            while (!isAtEof()) {
+           		if (consumeSymbol(getSymbolCodeForElementType(getTokenType()), null)) {
+                	nextToken();
+           		} else {
+           			recoverFromError();
+           		}
+            }
 
-		} catch (UnrecoverableSyntaxException e) {
+            // Consume the EOF token. This should (possibly after some reductions) accept the input. If not, this causes
+            // a syntax error (unexpected EOF), since the parser generator wouldn't emit a "shift EOF" action.
+            {
+                int originalState = state;
+                if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
+                    recoverFromError();
+                    if (!consumeSymbol(EOF_SYMBOL_CODE, null)) {
+                        throw new UnrecoverableSyntaxException(originalState);
+                    }
+                }
+            }
 
-			// Build a "code fragment" node that contains the parsed and partially reduced part (i.e. the parse tree
-			// stack), then the exception. This will report the error properly and also consume the remaining tokens.
-			List<Object> nodeBuilder = new ArrayList<>();
-			nodeBuilder.add(Symbols.__PARSED_FRAGMENT);
-			for (int i = 0; i < stackSize; i++) {
-				nodeBuilder.add(parseTreeStack[i]);
-			}
-			nodeBuilder.add(e);
-			parseTreeStack[0] = nodeBuilder.toArray();
-			stackSize = 1;
+        } catch (UnrecoverableSyntaxException e) {
 
-		}
-		preParseMarker.rollbackTo();
+
+            // Build a "code fragment" node that contains the parsed and partially reduced part (i.e. the parse tree
+            // stack), then the exception. This will report the error properly and also consume the remaining tokens.
+            List<Object> nodeBuilder = new ArrayList<>();
+            nodeBuilder.add(Symbols.__PARSED_FRAGMENT);
+            for (int i=0; i<stackSize; i++) {
+                nodeBuilder.add(parseTreeStack[i]);
+            }
+            nodeBuilder.add(e);
+            parseTreeStack[0] = nodeBuilder.toArray();
+            stackSize = 1;
+
+        }
+        preParseMarker.rollbackTo();
 
 		// At this point, the state stack should contain single element (the start state) and the associated parse
 		// tree stack contains the root node as its single element. If anything in the input tried to prevent that,
@@ -547,12 +630,13 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		nextToken();
 		wholeFileMarker.done(FILE_ELEMENT_TYPE);
 
+
 	}
 
 	/**
 	 * Consumes a symbol (token, nonterminal or EOF). This performs one or several actions until the symbol gets shifted
 	 * (or, in the case of EOF, accepted).
-	 * <p>
+	 *
 	 * Returns true on success, false on syntax error. This method does not handle syntax errors itself.
 	 */
 	private boolean consumeSymbol(int symbolCode, Object symbolData) throws UnrecoverableSyntaxException {
@@ -590,6 +674,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		Object parseNodeHead = ALTERNATIVE_INDEX_TO_PARSE_NODE_HEAD[alternativeIndex];
 		int nonterminalSymbolCode = ALTERNATIVE_INDEX_TO_NONTERMINAL_SYMBOL_CODE[alternativeIndex];
 
+
 		// pop (rightHandSideLength) states off the state stack
 		if (rightHandSideLength > 0) {
 			stackSize -= rightHandSideLength;
@@ -608,97 +693,57 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 	}
 
-	private void feedPsiBuilder(Object what, IElementType parentElementType) {
-		if (what == null) {
-			nextToken();
-		} else if (what instanceof Object[]) {
-			Object[] reduction = (Object[]) what;
-			IElementType elementType;
-			boolean buildMarker;
-			if (reduction[0] instanceof ListNodeGenerationWrapper) {
-				ListNodeGenerationWrapper listNodeGenerationWrapper = (ListNodeGenerationWrapper) reduction[0];
-				elementType = listNodeGenerationWrapper.elementType;
-				buildMarker = (parentElementType == null || elementType != parentElementType);
-			} else {
-				elementType = (IElementType) reduction[0];
-				buildMarker = true;
-			}
-			PsiBuilder.Marker marker = null;
-			if (buildMarker) {
-				marker = psiBuilder.mark();
-			}
-			for (int i = 1; i < reduction.length; i++) {
-				feedPsiBuilder(reduction[i], elementType);
-			}
-			if (buildMarker) {
-				marker.done(elementType);
-			}
-		} else if (what instanceof List<?>) {
-			// an object list has the same meaning as an object array (needed for error symbols)
-			feedPsiBuilder(((List<?>) what).toArray(), parentElementType);
-		} else if (what instanceof ErrorLocationIndicator) {
-			ErrorLocationIndicator errorLocationIndicator = (ErrorLocationIndicator) what;
-			reportErrorForCurrentToken("expected one of: " + STATE_INPUT_EXPECTATION[errorLocationIndicator.state]);
-		} else if (what instanceof UnrecoverableSyntaxException) {
-			reportErrorForCurrentToken(((UnrecoverableSyntaxException) what).getMessage());
-			while (!isAtEof()) {
-				nextToken();
-			}
-		}
-	}
-
 	private void recoverFromError() throws UnrecoverableSyntaxException {
 
 		int originalState = state; // used for error messages
 
-		// First, attempt implicit reduce-on-error to reduce a nonterminal that was actually completed directly before
-		// the error, but not yet reduced since LR(1) would demand the right lookahead token to reduce. We want
-		// to reduce that nonterminal to give other IDE parts a better partial PSI to work with. However, we must
-		// make sure that we don't reduce a state away from the stack that could handle the error symbol, because
-		// we would prevent subsequent error recovery. Also, we obviously cannot reduce "the" alternative if there
-		// are multiple ones. Note that specifying %reduceOnError overrides any of these concerns, but doing so places
-		// the corresponding reductions into the parse table, so once we're here, we can ignore that modifier.
-		// Note that we might be able to reduce multiple times before we have to start error recovery, hence the loop.
-		outerLoop:
-		while (true) {
+    	// First, attempt implicit reduce-on-error to reduce a nonterminal that was actually completed directly before
+    	// the error, but not yet reduced since LR(1) would demand the right lookahead token to reduce. We want
+    	// to reduce that nonterminal to give other IDE parts a better partial PSI to work with. However, we must
+    	// make sure that we don't reduce a state away from the stack that could handle the error symbol, because
+    	// we would prevent subsequent error recovery. Also, we obviously cannot reduce "the" alternative if there
+    	// are multiple ones. Note that specifying %reduceOnError overrides any of these concerns, but doing so places
+    	// the corresponding reductions into the parse table, so once we're here, we can ignore that modifier.
+    	// Note that we might be able to reduce multiple times before we have to start error recovery, hence the loop.
+    	outerLoop: while (true) {
 
-			// look for a unique reduce action code in the action table
-			int reduceActionCode = 0;
-			for (int i = 0; i < ACTION_TABLE_WIDTH; i++) {
-				int action = ACTION_TABLE[state * ACTION_TABLE_WIDTH + i];
-				if (action < 0 && action != Integer.MIN_VALUE) {
-					if (reduceActionCode == 0) {
-						reduceActionCode = action; // found a reduce action
-					} else if (reduceActionCode != action) {
-						break outerLoop; // found a different reduce action, so we cannot reduce
-					}
-				}
-			}
+    	    // look for a unique reduce action code in the action table
+            int reduceActionCode = 0;
+            for (int i = 0; i < ACTION_TABLE_WIDTH; i++) {
+                int action = ACTION_TABLE[state * ACTION_TABLE_WIDTH + i];
+                if (action < 0 && action != Integer.MIN_VALUE) {
+                    if (reduceActionCode == 0) {
+                        reduceActionCode = action; // found a reduce action
+                    } else if (reduceActionCode != action) {
+                        break outerLoop; // found a different reduce action, so we cannot reduce
+                    }
+                }
+            }
 			if (reduceActionCode == 0) {
 				break;
 			}
 
-			// Make sure we don't remove a state from the stack that could consume %error. At depth
-			// (rightHandSideLength) on the state stack lies the state to reveal by reducing (and before shifting
-			// the nonterminal), so that state is NOT checked here -- even if it can handle %error, reducing won't
-			// prevent that. Only the states above it on the stack are checked. As an implicit special case, we can
-			// always reduce an alternative with a zero-length right hand side, no matter the current state and stack
-			// contents.
-			int alternativeIndex = -reduceActionCode - 1;
-			int rightHandSideLength = ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH[alternativeIndex];
-			int probeState = state, depth = 0;
-			while (depth < rightHandSideLength) {
-				if (ACTION_TABLE[probeState * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] != 0) {
-					break outerLoop; // found error-handling state
-				}
-				depth++;
-				probeState = stateStack[stackSize - depth];
-			}
+            // Make sure we don't remove a state from the stack that could consume %error. At depth
+            // (rightHandSideLength) on the state stack lies the state to reveal by reducing (and before shifting
+            // the nonterminal), so that state is NOT checked here -- even if it can handle %error, reducing won't
+            // prevent that. Only the states above it on the stack are checked. As an implicit special case, we can
+            // always reduce an alternative with a zero-length right hand side, no matter the current state and stack
+            // contents.
+            int alternativeIndex = -reduceActionCode - 1;
+            int rightHandSideLength = ALTERNATIVE_INDEX_TO_RIGHT_HAND_SIDE_LENGTH[alternativeIndex];
+            int probeState = state, depth = 0;
+            while (depth < rightHandSideLength) {
+                if (ACTION_TABLE[probeState * ACTION_TABLE_WIDTH + ERROR_SYMBOL_CODE] != 0) {
+                    break outerLoop; // found error-handling state
+                }
+                depth++;
+                probeState = stateStack[stackSize - depth];
+            }
 
-			// no state found that could recover, so let's reduce
-			reduce(alternativeIndex);
+            // no state found that could recover, so let's reduce
+            reduce(alternativeIndex);
 
-		}
+    	}
 
 		// Attempt error recovery. For now, this parser uses the same logic as Java CUP: find the first state from the
 		// stack that can shift an error symbol, then throw away input terminals until parsing succeeds for
@@ -725,7 +770,7 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 		// all symbols (terminals and nonterminals) we removed make up the first part of the erroneous content
 		List<Object> errorNodeBuilder = new ArrayList<>();
-		errorNodeBuilder.add(Symbols.__PARSED_FRAGMENT); // not an error-indicating element type, see next paragraph
+        errorNodeBuilder.add(Symbols.__PARSED_FRAGMENT); // not an error-indicating element type, see next paragraph
 		for (int i = stackSize; i < originalStackSize; i++) {
 			errorNodeBuilder.add(parseTreeStack[i]);
 		}
@@ -758,12 +803,12 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 			beginSpeculativeTokenConsumption();
 			boolean success = true;
 			for (int i = 0; i < RECOVERY_SYNC_LENGTH && !isAtEof(); i++) {
-				if (consumeSymbol(getSymbolCodeForElementType(getTokenType()), null)) {
-					nextToken();
-				} else {
-					success = false;
-					break;
-				}
+           		if (consumeSymbol(getSymbolCodeForElementType(getTokenType()), null)) {
+                	nextToken();
+           		} else {
+           			success = false;
+           			break;
+           		}
 			}
 			if (success && isAtEof()) {
 				success = consumeSymbol(EOF_SYMBOL_CODE, null);
@@ -795,48 +840,22 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 
 	}
 
-	private void beginSpeculativeTokenConsumption() {
-		speculativeTokenConsumptionMarker = psiBuilder.mark();
-	}
+    private static class UnrecoverableSyntaxException extends Exception {
 
-	private void endSpeculativeTokenConsumption() {
-		speculativeTokenConsumptionMarker.rollbackTo();
-	}
+        UnrecoverableSyntaxException(int state) {
+            super("expected one of: " + STATE_INPUT_EXPECTATION[state]);
+        }
 
-	private IElementType getTokenType() {
-		return psiBuilder.getTokenType();
-	}
+    }
 
-	// ------------------------------------------------------------------------------------------------
-	// --- Separate IntelliJ vs. standalone compatibility layer
-	// ------------------------------------------------------------------------------------------------
-
-	private boolean isAtEof() {
-		return psiBuilder.eof();
-	}
-
-	private void nextToken() {
-		psiBuilder.advanceLexer();
-	}
-
-	private void reportErrorForCurrentToken(String errorMessage) {
-		psiBuilder.error(errorMessage);
-	}
-
-	private static class UnrecoverableSyntaxException extends Exception {
-
-		UnrecoverableSyntaxException(int state) {
-			super("expected one of: " + STATE_INPUT_EXPECTATION[state]);
-		}
-
-	}
-
-	private static class ErrorLocationIndicator {
-		int state;
-	}
+    private static class ErrorLocationIndicator {
+        int state;
+    }
 
 	private static class ListNodeGenerationWrapper {
 
+        // note: this is the IElementType of the list itself, not of the list's elements. The word "element" has
+        // two meanings here, unfortunately.
 		IElementType elementType;
 
 		ListNodeGenerationWrapper(IElementType elementType) {
@@ -844,9 +863,10 @@ public class MapagGeneratedMapagParser implements PsiParser, LightPsiParser {
 		}
 
 		public String toString() {
-			return "LIST(" + elementType + ")";
+		    return "LIST(" + elementType + ")";
 		}
 
 	}
 
 }
+

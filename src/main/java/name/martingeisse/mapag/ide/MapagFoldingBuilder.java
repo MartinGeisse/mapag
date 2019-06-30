@@ -5,9 +5,9 @@ import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
-import name.martingeisse.mapag.input.psi.Grammar_PrecedenceTable;
-import name.martingeisse.mapag.input.psi.Grammar_TerminalDeclarations;
-import name.martingeisse.mapag.input.psi.Production;
+import name.martingeisse.mapag.input.cm.impl.Grammar_PrecedenceTableImpl;
+import name.martingeisse.mapag.input.cm.impl.Grammar_TerminalDeclarationsImpl;
+import name.martingeisse.mapag.input.cm.impl.ProductionImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +28,7 @@ public class MapagFoldingBuilder implements FoldingBuilder {
 	}
 
 	private void collectFoldingRegions(PsiElement psiElement, List<FoldingDescriptor> destination) {
-		if (psiElement instanceof Grammar_TerminalDeclarations || psiElement instanceof Grammar_PrecedenceTable || psiElement instanceof Production) {
+		if (psiElement instanceof Grammar_TerminalDeclarationsImpl || psiElement instanceof Grammar_PrecedenceTableImpl || psiElement instanceof ProductionImpl) {
 			if (psiElement.getNode() != null && psiElement.getTextRange() != null) {
 				destination.add(new FoldingDescriptor(psiElement.getNode(), psiElement.getTextRange()));
 			}
@@ -42,14 +42,14 @@ public class MapagFoldingBuilder implements FoldingBuilder {
 	@Override
 	public String getPlaceholderText(@NotNull ASTNode astNode) {
 		PsiElement psiElement = astNode.getPsi();
-		if (psiElement instanceof Grammar_TerminalDeclarations) {
+		if (psiElement instanceof Grammar_TerminalDeclarationsImpl) {
 			return "%terminals {...}";
 		}
-		if (psiElement instanceof Grammar_PrecedenceTable) {
+		if (psiElement instanceof Grammar_PrecedenceTableImpl) {
 			return "%precedence {...}";
 		}
-		if (psiElement instanceof Production) {
-			return ((Production) psiElement).getName() + " ::= ";
+		if (psiElement instanceof ProductionImpl) {
+			return ((ProductionImpl) psiElement).getName() + " ::= ";
 		} else {
 			return psiElement.toString();
 		}

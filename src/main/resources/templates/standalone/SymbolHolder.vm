@@ -1,5 +1,8 @@
 package $packageName;
 
+import ${packageName}.cm.*;
+import ${packageName}.cm.impl.*;
+
 public class $className {
 
 	//
@@ -7,7 +10,7 @@ public class $className {
 	//
 
 #foreach($terminal in $terminals)
-	public static final $terminalElementTypeClass $terminal = new $terminalElementTypeClass("$terminal");
+	public static final $terminalElementTypeClass $terminal = new $terminalElementTypeClass("$terminal", null);
 #end
 
 
@@ -16,7 +19,7 @@ public class $className {
 	//
 
 #foreach($nonterminalAlternative in $nonterminalAlternatives)
-	public static final $nonterminalElementTypeClass $nonterminalAlternative = new $nonterminalElementTypeClass("$nonterminalAlternative");
+    public static final $nonterminalElementTypeClass $nonterminalAlternative.variable = new $nonterminalElementTypeClass("$nonterminalAlternative.variable", $nonterminalAlternative.factory);
 #end
 
 
@@ -25,6 +28,6 @@ public class $className {
 	//
 
     // partially parsed input in case of an error
-	public static final $nonterminalElementTypeClass __PARSED_FRAGMENT = new $nonterminalElementTypeClass("__PARSED_FRAGMENT");
+	public static final $nonterminalElementTypeClass __PARSED_FRAGMENT = new $nonterminalElementTypeClass("__PARSED_FRAGMENT", null);
 
 }
