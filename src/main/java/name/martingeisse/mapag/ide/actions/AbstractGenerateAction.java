@@ -62,12 +62,17 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 			try {
 
 				// create the output folder and resource folder
-				VirtualFile contentRoot = ModuleRootManager.getInstance(module).getContentRoots()[0];
-				final VirtualFile existingOutputFolder = contentRoot.findChild("gen_java");
+				VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
+				if (contentRoots.length == 0) {
+					console.print("no IntelliJ module content root to generate code", ConsoleViewContentType.ERROR_OUTPUT);
+					return;
+				}
+				VirtualFile contentRoot = contentRoots[0];
+				final VirtualFile existingOutputFolder = contentRoot.findChild("mapag-generated-src");
 				final VirtualFile outputFolder;
 				if (existingOutputFolder == null) {
 					try {
-						outputFolder = contentRoot.createChildDirectory(this, "gen_java");
+						outputFolder = contentRoot.createChildDirectory(this, "mapag-generated-src");
 					} catch (IOException e) {
 						console.print("Could not create 'gen' folder: " + e + "\n", ConsoleViewContentType.ERROR_OUTPUT);
 						return;
@@ -76,11 +81,11 @@ public abstract class AbstractGenerateAction extends AbstractGrammarAndConsoleAc
 					outputFolder = existingOutputFolder;
 				}
 				console.print("output folder path: " + outputFolder.getCanonicalPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
-				final VirtualFile existingResourcesFolder = contentRoot.findChild("gen_resources");
+				final VirtualFile existingResourcesFolder = contentRoot.findChild("mapag-generated-resources");
 				final VirtualFile resourcesFolder;
 				if (existingResourcesFolder == null) {
 					try {
-						resourcesFolder = contentRoot.createChildDirectory(this, "gen_resources");
+						resourcesFolder = contentRoot.createChildDirectory(this, "mapag-generated-resources");
 					} catch (IOException e) {
 						console.print("Could not create 'gen_resources' folder: " + e + "\n", ConsoleViewContentType.ERROR_OUTPUT);
 						return;
